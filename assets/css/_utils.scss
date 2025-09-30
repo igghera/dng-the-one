@@ -1,0 +1,23 @@
+@use 'mixins' as *;
+
+.debug {
+  @apply outline-dashed outline-2 outline-offset-2;
+
+  outline-color: red;
+
+  &--blue {
+    outline-color: blue;
+  }
+
+  &--green {
+    outline-color: green;
+  }
+
+  &--inset {
+    outline-offset: -4px;
+  }
+}
+
+.no-scrollbar {
+  @include no-scrollbar;
+}

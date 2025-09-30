@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'Futura LT Pro';
+  src: url('/fonts/FuturaLTPro-Medium.woff2') format('woff2'),
+      url('/fonts/FuturaLTPro-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Futura LT Pro';
+  src: url('/fonts/FuturaLTPro-Light.woff2') format('woff2'),
+      url('/fonts/FuturaLTPro-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}

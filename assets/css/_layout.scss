@@ -1,0 +1,9 @@
+.site-grid {
+  --cols: 6;
+  --gap-x: 16px;
+  --gap-y: 0px;
+
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-gap: var(--gap-y) var(--gap-x);
+}

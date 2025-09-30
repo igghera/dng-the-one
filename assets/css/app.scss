@@ -1,0 +1,27 @@
+@use 'fonts';
+@use 'typography';
+@use 'utils';
+@use 'functions';
+@use 'layout';
+
+html {
+  @apply text-white;
+  background-color: rgb(73, 42, 26);
+
+  /* Hide scrollbar for different browsers */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-scrolling: none;
+  scrollbar-width: none; /* Firefox */
+}
+
+body {
+  font-kerning: none;
+  -webkit-text-rendering: optimizeSpeed;
+  text-rendering: optimizeSpeed;
+  -webkit-overflow-scrolling: none;
+  overscroll-behavior: none;
+
+  @apply text-balance font-body select-none;
+}
