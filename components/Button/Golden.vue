@@ -5,7 +5,9 @@
 		:to="to"
 		:data-size="size"
 	>
-		<slot />
+		<span>
+			<slot />
+		</span>
 	</component>
 </template>
 
@@ -42,17 +44,19 @@ const componentTag = computed(() => {
 .button-golden {
 	@apply uppercase text-white flex items-center justify-center text-center overflow-clip;
 
-	background: linear-gradient(
+	animation: golden-button-animation 4.5s linear infinite;
+	background-repeat: repeat-x;
+	background-size: 200% 100%;
+	background-image: repeating-linear-gradient(
 		98deg,
-		rgba(215, 154, 59, 0.35) -7.05%,
-		rgba(255, 214, 122, 0.35) 21.84%,
-		rgba(215, 154, 59, 0.35) 49.61%,
-		rgba(255, 214, 122, 0.35) 79.61%,
-		rgba(215, 154, 59, 0.35) 107.39%
+		rgba(215, 154, 59, 0.35) -3.525%,
+		rgba(255, 214, 122, 0.35) 10.92%,
+		rgba(215, 154, 59, 0.35) 24.805%,
+		rgba(255, 214, 122, 0.35) 39.805%,
+		rgba(215, 154, 59, 0.35) 53.695%
 	);
 	border: toRem(1.3) solid var(--Stroke-button, #ffffc433);
 	border-radius: toRem(10);
-	box-shadow: 0px 3px 10px 0px #764800a6;
 	height: toRem(50);
 
 	@screen md {
@@ -69,6 +73,20 @@ const componentTag = computed(() => {
 
 	&[data-size='wide'] {
 		padding: 0 toRem(75);
+	}
+
+	& > span {
+		filter: drop-shadow(0px 3px 10px #764800a6);
+	}
+}
+
+@keyframes golden-button-animation {
+	from {
+		background-position: 0% 50%;
+	}
+
+	to {
+		background-position: 60% 50%;
 	}
 }
 </style>
