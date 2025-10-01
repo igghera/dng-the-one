@@ -5,9 +5,13 @@
 				<span class="golden-text text-3xl font-medium uppercase"
 					>Main experience</span
 				>
-				<ButtonGolden size="auto" to="/">Auto</ButtonGolden>
-				<ButtonGolden size="square">Square</ButtonGolden>
-				<ButtonGolden size="wide">Wide</ButtonGolden>
+				<ButtonGolden size="auto" to="/">{{ $t('select') }}</ButtonGolden>
+
+				<ButtonGolden size="square">
+					<IconArrowRight class="w-[14px]" />
+				</ButtonGolden>
+
+				<ButtonGolden size="wide">{{ $t('start') }}</ButtonGolden>
 			</div>
 		</section>
 
