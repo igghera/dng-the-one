@@ -15,7 +15,8 @@
 }
 
 .golden-text {
-  background: linear-gradient(90deg,
+  animation: golden-text-animation 3s linear infinite;
+  background: repeating-linear-gradient(90deg,
     #D79A3B 0%,
     #FFF6E2 25%,
     #D79A3B 49.04%,
@@ -25,7 +26,19 @@
   -webkit-background-clip: text;
   background-clip: text;
 
+  background-size: 200% 100%;
+
   -webkit-text-fill-color: transparent;
 
   -webkit-text-stroke: toRem(0.5) theme('colors.gold-light');
+}
+
+@keyframes golden-text-animation {
+  from {
+    background-position: 0% 50%;
+  }
+
+  to {
+    background-position: 100% 50%;
+  }
 }
