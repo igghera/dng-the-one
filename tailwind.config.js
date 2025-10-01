@@ -5,7 +5,8 @@ export default {
     extend: {
       colors: {
         current: 'currentColor',
-        gold: '#FFDBA5'
+        gold: '#FFDBA5',
+        'gold-light': '#FFF6E2'
       },
 
       fontFamily: {
