@@ -73,3 +73,9 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Convert images to WebP preserving their names (ImageMagick)
+
+```bash
+$ magick mogrify -format webp -quality 90 -define webp:lossless=false -define webp:alpha-quality=100 *
+```

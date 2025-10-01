@@ -5,8 +5,9 @@
 @use 'layout';
 
 html {
-  @apply text-white;
-  background-color: rgb(73, 42, 26);
+  @apply text-white bg-no-repeat bg-cover bg-center;
+
+  background-image: url('/images/bg.webp');
 
   /* Hide scrollbar for different browsers */
   &::-webkit-scrollbar {
