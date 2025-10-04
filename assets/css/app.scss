@@ -5,7 +5,7 @@
 @use 'layout';
 
 html {
-  @apply text-white bg-no-repeat bg-cover bg-center;
+  @apply text-white bg-no-repeat bg-cover bg-top bg-fixed;
 
   background-image: url('/images/bg.webp');
 

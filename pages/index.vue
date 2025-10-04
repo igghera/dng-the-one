@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="flex flex-col gap-y-20">
 		<section class="main-experience | debug debug--green debug--inset">
 			<div class="flex flex-col items-center justify-center gap-y-5">
 				<span class="golden-text text-3xl font-medium uppercase"
@@ -15,7 +15,9 @@
 			</div>
 		</section>
 
-		<section class="h-[275svh] debug debug--inset"></section>
+		<ExperienceResults class="debug debug--inset" />
+
+		<section />
 	</div>
 </template>
 

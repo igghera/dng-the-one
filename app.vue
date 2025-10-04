@@ -34,7 +34,7 @@ watchEffect(onInvalidate => {
 
 	gsap.ticker.add(update)
 
-	get(lenisRef).lenis.stop()
+	// get(lenisRef).lenis.stop()
 	get(lenisRef).lenis.scrollTo(0, { immediate: true, force: true })
 
 	// disable lag smoothing in GSAP to prevent any delay in scroll animations
