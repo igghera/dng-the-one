@@ -5,13 +5,17 @@
 		:to="to"
 		:data-size="size"
 	>
-		<span>
+		<span class="glow" aria-hidden="true" />
+
+		<span class="text">
 			<slot />
 		</span>
 	</component>
 </template>
 
 <script setup>
+import { get, set } from '@vueuse/core'
+
 //
 // Props
 //
@@ -29,6 +33,61 @@ const props = defineProps({
 })
 
 //
+// Refs / State
+//
+const { gsap, Observer } = useGSAP()
+
+const mouseX = shallowRef(0)
+const mouseY = shallowRef(0)
+
+let mouseObserver = null
+
+//
+// Lifecycle
+//
+onMounted(() => {
+	const mm = gsap.matchMedia()
+
+	mm.add(
+		{
+			isDesktop: '(min-width: 1024px)',
+			isMobile: '(max-width: 1023px)',
+		},
+		context => {
+			const { isDesktop } = context.conditions
+
+			if (isDesktop) {
+				mouseObserver = Observer.create({
+					onMove(observer) {
+						const { x, y } = observer
+
+						gsap.to(mouseX, {
+							value: x,
+							duration: 0.3,
+							ease: 'power2.out',
+							overwrite: true,
+						})
+
+						gsap.to(mouseY, {
+							value: y,
+							duration: 0.3,
+							ease: 'power2.out',
+							overwrite: true,
+						})
+					},
+				})
+			} else {
+				mouseObserver?.kill()
+			}
+		}
+	)
+})
+
+onBeforeUnmount(() => {
+	mouseObserver?.kill()
+})
+
+//
 // Computed
 //
 const componentTag = computed(() => {
@@ -42,7 +101,7 @@ const componentTag = computed(() => {
 @use '@/assets/css/functions' as *;
 
 .button-golden {
-	@apply uppercase text-white flex items-center justify-center text-center overflow-clip;
+	@apply uppercase text-white flex items-center justify-center text-center overflow-clip relative;
 
 	animation: golden-button-animation 4.5s linear infinite;
 	background-repeat: repeat-x;
@@ -74,10 +133,24 @@ const componentTag = computed(() => {
 	&[data-size='wide'] {
 		padding: 0 toRem(75);
 	}
+}
 
-	& > span {
-		filter: drop-shadow(0px 3px 10px #764800a6);
-	}
+.glow {
+	@apply absolute z-[1] aspect-square size-full pointer-events-none bg-fixed;
+	@apply lg-down:hidden;
+
+	background-image: radial-gradient(
+		circle at v-bind('`${mouseX}px`') v-bind('`${mouseY}px`'),
+		rgba(255, 255, 255, 0.35) 0px,
+		rgba(255, 255, 255, 0.35) 20px,
+		rgba(255, 255, 255, 0) 100px
+	);
+}
+
+.text {
+	@apply relative z-[2];
+
+	filter: drop-shadow(0px 3px 10px #764800a6);
 }
 
 @keyframes golden-button-animation {
