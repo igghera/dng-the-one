@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-col gap-y-20">
-		<section class="main-experience | debug debug--green debug--inset">
+		<section class="main-experience">
 			<div class="flex flex-col items-center justify-center gap-y-5">
 				<span class="golden-text text-3xl font-medium uppercase"
 					>Main experience</span
@@ -15,9 +15,9 @@
 			</div>
 		</section>
 
-		<ExperienceResults class="debug debug--inset" />
+		<ExperienceResults />
 
-		<section />
+		<ExperienceTimelineIntro />
 	</div>
 </template>
 
