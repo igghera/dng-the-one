@@ -19,7 +19,9 @@ import { reflector, vec2, Fn } from 'three/tsl'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
-import { FloorMaterial } from './materials'
+import { ktxLoader, textureLoader } from '~/assets/js/loaders'
+
+import { FloorMaterial, BackgroundMaterial } from './materials'
 import { getDisplacement } from './materials/floor'
 
 //
@@ -39,6 +41,8 @@ const isDebug = Object.hasOwn(urlParams, 'debug')
 
 let scene, camera, renderer, mesh, controls
 
+const textures = new Map()
+
 //
 // Lifecycle
 //
@@ -47,8 +51,11 @@ onMounted(async () => {
 	createCamera()
 	createRenderer()
 
+	await loadTextures()
+
 	createCube()
-	createFloor()
+	createSea()
+	createBackground()
 
 	if (isDebug) createControls()
 
@@ -122,7 +129,42 @@ function createCube() {
 	scene.add(mesh)
 }
 
-function createFloor() {
+async function loadTextures() {
+	ktxLoader.detectSupport(renderer)
+
+	// const ktx = await ktxLoader.load([
+	// 	'/webgl/bg_A.ktx2',
+	// 	'/webgl/bg_B.ktx2',
+	// 	'/webgl/bg_C.ktx2',
+	// ])
+
+	const png = await textureLoader.load([
+		'/webgl/bg_A.png',
+		'/webgl/bg_B.png',
+		'/webgl/bg_C.png',
+	])
+
+	// textures.set('bg_A', ktx[0])
+	// textures.set('bg_B', ktx[1])
+	// textures.set('bg_C', ktx[2])
+
+	textures.set('bg_A_png', png[0])
+	textures.set('bg_B_png', png[1])
+	textures.set('bg_C_png', png[2])
+}
+
+function createBackground() {
+	const geometry = new THREE.PlaneGeometry(20, 10, 1, 1)
+	const material = new BackgroundMaterial(textures).material
+	const mesh = new THREE.Mesh(geometry, material)
+
+	mesh.position.y = 3.5
+	mesh.position.z = -5.5
+
+	scene.add(mesh)
+}
+
+function createSea() {
 	const reflection = reflector({ resolutionScale: 0.5 })
 	reflection.target.rotateX(-Math.PI / 2)
 	reflection.target.position.y = -1

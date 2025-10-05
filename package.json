@@ -4,10 +4,11 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "dev": "node scripts/copyBasisLib.js && nuxt dev",
+    "generate": "node scripts/copyBasisLib.js && nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "copy:basis": "node scripts/copyBasisLib.js"
   },
   "dependencies": {
     "@nuxtjs/i18n": "^10.1.0",
