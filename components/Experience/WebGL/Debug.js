@@ -1,6 +1,11 @@
 import { Pane } from 'tweakpane'
 
-import { displacementFrequency, displacementAmplitude } from './materials/floor'
+import {
+  displacementFrequency,
+  displacementAmplitude,
+  timeScale,
+  displacementStrength,
+} from './materials/floor'
 
 export class Debug {
   constructor() {
@@ -18,7 +23,9 @@ export class Debug {
       expanded: true,
     })
 
-    sea.addBinding(displacementFrequency, 'value', { label: 'Displacement Frequency', min: 1, max: 25 })
-    sea.addBinding(displacementAmplitude, 'value', { label: 'Displacement Amplitude', min: 0, max: 1 })
+    sea.addBinding(displacementFrequency, 'value', { label: 'Frequency', min: 1, max: 25 })
+    sea.addBinding(displacementAmplitude, 'value', { label: 'Amplitude', min: 0, max: 1 })
+    sea.addBinding(displacementStrength, 'value', { label: 'Strength', min: 0, max: 0.2 })
+    sea.addBinding(timeScale, 'value', { label: 'Time Scale', min: 0, max: 5 })
   }
 }

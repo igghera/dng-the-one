@@ -15,12 +15,12 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
-import { reflector, vec2, positionWorld, Fn } from 'three/tsl'
+import { reflector, vec2, Fn } from 'three/tsl'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
 import { FloorMaterial } from './materials'
-import { displacementFrequency, displacementAmplitude } from './materials/floor'
+import { getDisplacement } from './materials/floor'
 
 //
 // Refs / State
@@ -37,7 +37,7 @@ const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
-let perfPanel, scene, camera, renderer, mesh, controls
+let scene, camera, renderer, mesh, controls
 
 //
 // Lifecycle
@@ -128,11 +128,7 @@ function createFloor() {
 	reflection.target.position.y = -1
 
 	const uvDisplacement = Fn(() => {
-		const displacement = positionWorld.x
-			.mul(displacementFrequency)
-			.sin()
-			.mul(displacementAmplitude)
-		return vec2(0, displacement.mul(0.3))
+		return vec2(getDisplacement.x.mul(0.3), getDisplacement.y.mul(0.3))
 	})()
 
 	reflection.uvNode = reflection.uvNode.add(uvDisplacement)
@@ -141,7 +137,7 @@ function createFloor() {
 
 	FloorMaterial.emissiveNode = reflection.mul(0.2)
 
-	const geometry = new THREE.PlaneGeometry(10, 10, 150, 150)
+	const geometry = new THREE.PlaneGeometry(20, 10, 150, 150)
 	geometry.rotateX(-Math.PI / 2)
 	const mesh = new THREE.Mesh(geometry, FloorMaterial)
 	mesh.position.y = -1
