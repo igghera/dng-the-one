@@ -15,13 +15,17 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
-import { reflector, vec2, Fn } from 'three/tsl'
+import { reflector, vec2, Fn, instancedBufferAttribute } from 'three/tsl'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
 import { ktxLoader, textureLoader } from '~/assets/js/loaders'
 
-import { FloorMaterial, BackgroundMaterial } from './materials'
+import {
+	FloorMaterial,
+	BackgroundMaterial,
+	ParticlesMaterial,
+} from './materials'
 import { getDisplacement } from './materials/floor'
 
 //
@@ -49,6 +53,7 @@ const textures = new Map()
 onMounted(async () => {
 	createScene()
 	createCamera()
+
 	await createRenderer()
 
 	await loadTextures()
@@ -56,6 +61,8 @@ onMounted(async () => {
 	createCube()
 	createSea()
 	createBackground()
+
+	await createParticles()
 
 	if (isDebug) createControls()
 
@@ -141,19 +148,37 @@ async function loadTextures() {
 		'/webgl/bg_C.ktx2',
 	])
 
-	// const png = await textureLoader.load([
-	// 	'/webgl/bg_A.png',
-	// 	'/webgl/bg_B.png',
-	// 	'/webgl/bg_C.png',
-	// ])
-
 	textures.set('bg_A', ktx[0])
 	textures.set('bg_B', ktx[1])
 	textures.set('bg_C', ktx[2])
+}
 
-	// textures.set('bg_A_png', png[0])
-	// textures.set('bg_B_png', png[1])
-	// textures.set('bg_C_png', png[2])
+async function createParticles() {
+	const map = await textureLoader.load('/webgl/particle.webp')
+	map.colorSpace = THREE.SRGBColorSpace
+
+	const count = 900
+	const positions = new Float32Array(count * 3)
+
+	let i, radius
+	for (i = 0; i < count; i++) {
+		radius = gsap.utils.random(0.15, 1)
+		const x = Math.cos(i * 0.01 * Math.PI * 2) * radius
+		const y = Math.random() * 4 - 1
+		const z = Math.sin(i * 0.01 * Math.PI * 2) * radius
+
+		positions[i * 3 + 0] = x
+		positions[i * 3 + 1] = y
+		positions[i * 3 + 2] = z
+	}
+	const positionsAttribute = new THREE.InstancedBufferAttribute(positions, 3)
+
+	const { material } = new ParticlesMaterial(map, positionsAttribute)
+
+	const particles = new THREE.Sprite(material)
+	particles.count = count
+
+	scene.add(particles)
 }
 
 function createBackground() {
@@ -180,9 +205,9 @@ function createSea() {
 
 	scene.add(reflection.target)
 
-	FloorMaterial.emissiveNode = reflection.mul(0.2)
+	FloorMaterial.emissiveNode = reflection.mul(0.5)
 
-	const geometry = new THREE.PlaneGeometry(20, 10, 150, 150)
+	const geometry = new THREE.PlaneGeometry(20, 10, 250, 150)
 	geometry.rotateX(-Math.PI / 2)
 	const mesh = new THREE.Mesh(geometry, FloorMaterial)
 	mesh.position.y = -1

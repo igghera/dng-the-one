@@ -85,5 +85,5 @@ $ magick mogrify -format webp -quality 90 -define webp:lossless=false -define we
 REF: https://claude.ai/chat/0719143b-9c17-4a50-94ca-9d9ccb1048ab
 
 ```bash
-$ basisu -ktx2 *.
+$ basisu -ktx2 *
 ```

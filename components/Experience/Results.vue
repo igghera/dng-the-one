@@ -56,7 +56,7 @@
 }
 
 .copy {
-	@apply text-gold max-w-64;
+	@apply text-gold max-w-64 text-center;
 	@apply lg:max-w-80;
 
 	grid-area: c;

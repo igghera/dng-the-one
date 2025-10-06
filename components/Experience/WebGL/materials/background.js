@@ -17,7 +17,7 @@ export class BackgroundMaterial {
 
     this.material.colorNode = Fn(() => {
       const alpha = smoothstep(0.25, 0.95, uv().y).oneMinus()
-      const col = texture(textures.get('bg_A'))
+      const col = texture(textures.get('bg_C'))
       return vec4(col.toVec3(), alpha)
     })()
   }
