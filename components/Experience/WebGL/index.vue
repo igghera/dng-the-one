@@ -15,7 +15,8 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
-import { reflector, vec2, Fn, instancedBufferAttribute } from 'three/tsl'
+import { reflector, vec2, Fn, pass, uniform } from 'three/tsl'
+import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
@@ -43,9 +44,15 @@ const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
-let scene, camera, renderer, mesh, controls
+let scene, camera, renderer, controls, postProcessing
 
 const textures = new Map()
+
+const dofParams = Object.freeze({
+	focusDistance: uniform(4.9),
+	focalLength: uniform(8.4),
+	bokehScale: uniform(8),
+})
 
 //
 // Lifecycle
@@ -58,11 +65,12 @@ onMounted(async () => {
 
 	await loadTextures()
 
-	createCube()
 	createSea()
 	createBackground()
 
 	await createParticles()
+
+	createPostprocessing()
 
 	if (isDebug) createControls()
 
@@ -70,12 +78,13 @@ onMounted(async () => {
 		if (!get(visible)) return
 
 		updateScene(time)
-		renderer.render(scene, camera)
+		// renderer.render(scene, camera)
+		postProcessing.render()
 	})
 
 	if (isDebug) {
 		const { Debug } = await import('./Debug')
-		new Debug()
+		new Debug(dofParams)
 	}
 })
 
@@ -98,7 +107,6 @@ watch([componentWidth, componentHeight], value => {
 //
 function updateScene(time = 0) {
 	controls?.update()
-	mesh?.rotation?.set(time * 0.2, time * 0.13, time * 0.17)
 }
 
 function createScene() {
@@ -129,14 +137,6 @@ async function createRenderer() {
 	renderer.toneMapping = THREE.ACESFilmicToneMapping
 
 	renderer.setSize(get(componentWidth), get(componentHeight))
-}
-
-function createCube() {
-	const geometry = new THREE.BoxGeometry(1, 1, 1)
-	const material = new THREE.MeshNormalMaterial()
-	mesh = new THREE.Mesh(geometry, material)
-	mesh.position.z = -1
-	scene.add(mesh)
 }
 
 async function loadTextures() {
@@ -218,6 +218,24 @@ function createControls() {
 	controls = new OrbitControls(camera, renderer.domElement)
 	controls.enableDamping = true
 	controls.enableZoom = false
+}
+
+function createPostprocessing() {
+	postProcessing = new THREE.PostProcessing(renderer)
+
+	const scenePass = pass(scene, camera)
+	const scenePassColor = scenePass.getTextureNode()
+	const scenePassViewZ = scenePass.getViewZNode()
+
+	const dofPass = dof(
+		scenePassColor,
+		scenePassViewZ,
+		dofParams.focusDistance,
+		dofParams.focalLength,
+		dofParams.bokehScale
+	)
+
+	postProcessing.outputNode = dofPass
 }
 </script>
 

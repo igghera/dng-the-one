@@ -19,7 +19,7 @@ export class ParticlesMaterial {
 
     this.material.scaleNode = Fn(() => {
       const noise = mx_noise_vec3(positionWorld.add(time.mul(0.34)), 5).mul(0.5)
-      const value = remap(noise.y, -1, 1, 0.015, 0.03)
+      const value = remap(noise.y, -1, 1, 0.01, 0.025)
 
       return value.toVec2()
     })()
