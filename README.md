@@ -79,3 +79,11 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ```bash
 $ magick mogrify -format webp -quality 90 -define webp:lossless=false -define webp:alpha-quality=100 *
 ```
+
+## Convert images to KTX2 preserving their names (basisu)
+
+REF: https://claude.ai/chat/0719143b-9c17-4a50-94ca-9d9ccb1048ab
+
+```bash
+$ basisu -ktx2 *.
+```

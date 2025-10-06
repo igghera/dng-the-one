@@ -38,7 +38,7 @@ export class KTXLoader {
    */
   #loadTexture(url) {
     return new Promise(resolve => {
-      this.loader.loadAsync(url, texture => {
+      this.loader.load(url, texture => {
         resolve(texture)
       })
     })

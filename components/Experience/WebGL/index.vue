@@ -49,7 +49,7 @@ const textures = new Map()
 onMounted(async () => {
 	createScene()
 	createCamera()
-	createRenderer()
+	await createRenderer()
 
 	await loadTextures()
 
@@ -63,7 +63,7 @@ onMounted(async () => {
 		if (!get(visible)) return
 
 		updateScene(time)
-		renderer.renderAsync(scene, camera)
+		renderer.render(scene, camera)
 	})
 
 	if (isDebug) {
@@ -106,16 +106,18 @@ function createCamera() {
 		20
 	)
 
-	camera.position.set(0, 1, 4)
-	camera.lookAt(0, 0, 0)
+	camera.position.set(0, 0.5, 4)
+	camera.lookAt(0, 0, -1)
 }
 
-function createRenderer() {
+async function createRenderer() {
 	renderer = new THREE.WebGPURenderer({
 		canvas: get(canvasRef),
 		alpha: true,
 		antialias: true,
 	})
+
+	await renderer.init()
 
 	renderer.toneMapping = THREE.ACESFilmicToneMapping
 
@@ -126,31 +128,32 @@ function createCube() {
 	const geometry = new THREE.BoxGeometry(1, 1, 1)
 	const material = new THREE.MeshNormalMaterial()
 	mesh = new THREE.Mesh(geometry, material)
+	mesh.position.z = -1
 	scene.add(mesh)
 }
 
 async function loadTextures() {
 	ktxLoader.detectSupport(renderer)
 
-	// const ktx = await ktxLoader.load([
-	// 	'/webgl/bg_A.ktx2',
-	// 	'/webgl/bg_B.ktx2',
-	// 	'/webgl/bg_C.ktx2',
-	// ])
-
-	const png = await textureLoader.load([
-		'/webgl/bg_A.png',
-		'/webgl/bg_B.png',
-		'/webgl/bg_C.png',
+	const ktx = await ktxLoader.load([
+		'/webgl/bg_A.ktx2',
+		'/webgl/bg_B.ktx2',
+		'/webgl/bg_C.ktx2',
 	])
 
-	// textures.set('bg_A', ktx[0])
-	// textures.set('bg_B', ktx[1])
-	// textures.set('bg_C', ktx[2])
+	// const png = await textureLoader.load([
+	// 	'/webgl/bg_A.png',
+	// 	'/webgl/bg_B.png',
+	// 	'/webgl/bg_C.png',
+	// ])
 
-	textures.set('bg_A_png', png[0])
-	textures.set('bg_B_png', png[1])
-	textures.set('bg_C_png', png[2])
+	textures.set('bg_A', ktx[0])
+	textures.set('bg_B', ktx[1])
+	textures.set('bg_C', ktx[2])
+
+	// textures.set('bg_A_png', png[0])
+	// textures.set('bg_B_png', png[1])
+	// textures.set('bg_C_png', png[2])
 }
 
 function createBackground() {
