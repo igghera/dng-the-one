@@ -26,6 +26,9 @@ importers:
       pinia:
         specifier: ^3.0.3
         version: 3.0.3(typescript@5.9.2)(vue@3.5.22(typescript@5.9.2))
+      stats.js:
+        specifier: ^0.17.0
+        version: 0.17.0
       three:
         specifier: ^0.180.0
         version: 0.180.0
@@ -4343,6 +4346,9 @@ packages:
 
   stat-mode@0.3.0:
     resolution: {integrity: sha512-QjMLR0A3WwFY2aZdV0okfFEJB5TRjkggXZjxP3A1RsWsNHNu3YPv8btmtc6iCFZ0Rul3FE93OYogvhOUClU+ng==}
+
+  stats.js@0.17.0:
+    resolution: {integrity: sha512-hNKz8phvYLPEcRkeG1rsGmV5ChMjKDAWU7/OJJdDErPBNChQXxCo3WZurGpnWc6gZhAzEPFad1aVgyOANH1sMw==}
 
   statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
@@ -9646,6 +9652,8 @@ snapshots:
   standard-as-callback@2.1.0: {}
 
   stat-mode@0.3.0: {}
+
+  stats.js@0.17.0: {}
 
   statuses@1.5.0: {}
 

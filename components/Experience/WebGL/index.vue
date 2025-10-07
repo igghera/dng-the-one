@@ -8,6 +8,7 @@
 		/>
 
 		<ClientOnly>
+			<div id="stats-wrapper" v-if="isDebug"></div>
 			<div id="debug-wrapper" v-if="isDebug"></div>
 		</ClientOnly>
 	</div>
@@ -45,7 +46,14 @@ const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
-let scene, camera, renderer, controls, postProcessing, godrays, background
+let scene,
+	camera,
+	renderer,
+	controls,
+	postProcessing,
+	godrays,
+	background,
+	statsPanel
 
 const textures = new Map()
 
@@ -79,14 +87,23 @@ onMounted(async () => {
 	gsap.ticker.add(time => {
 		if (!get(visible)) return
 
+		statsPanel?.begin()
+
 		updateScene(time)
 		// renderer.render(scene, camera)
 		postProcessing.render()
+
+		statsPanel?.end()
 	})
 
 	if (isDebug) {
 		const { Debug } = await import('./Debug')
 		new Debug(dofParams, godrays, background)
+
+		const stats = await import('stats.js')
+		statsPanel = stats.default()
+		statsPanel.dom.style.position = null
+		document.getElementById('stats-wrapper').appendChild(statsPanel.dom)
 	}
 })
 
@@ -268,5 +285,9 @@ function createPostprocessing() {
 
 #debug-wrapper {
 	@apply absolute z-[1] right-10 top-20 w-80;
+}
+
+#stats-wrapper {
+	@apply absolute z-[1] left-10 top-20 w-80;
 }
 </style>
