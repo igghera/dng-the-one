@@ -8,9 +8,16 @@ import {
 } from './materials/floor'
 
 import {
+  GodraysMaterial,
   scaleBottom as godraysScaleBottom,
   scaleTop as godraysScaleTop,
   scaleHeight as godraysScaleHeight,
+  noiseScale as godraysNoiseScale,
+  godraysColor,
+  timeSpeed as godraysTimeSpeed,
+  smoothTop as godraysSmoothTop,
+  smoothBottom as godraysSmoothBottom,
+  fresnelPower as godraysFresnelPower
 } from './materials/godrays'
 
 export class Debug {
@@ -60,8 +67,21 @@ export class Debug {
 
     godraysFolder.addBlade({ view: 'separator' })
 
-    godraysFolder.addBinding(godraysScaleTop, 'value', { label: 'Scale Top', min: 0.05, max: 3 })
-    godraysFolder.addBinding(godraysScaleBottom, 'value', { label: 'Scale Bottom', min: 0.05, max: 3 })
-    godraysFolder.addBinding(godraysScaleHeight, 'value', { label: 'Scale Height', min: 0.05, max: 3 })
+    godraysFolder.addBinding(godraysScaleTop, 'value', { label: 'Radius Top', min: 0.05, max: 3 })
+    godraysFolder.addBinding(godraysScaleBottom, 'value', { label: 'Radius Bottom', min: 0.05, max: 3 })
+    godraysFolder.addBinding(godraysScaleHeight, 'value', { label: 'Height', min: 0.05, max: 3 })
+
+    godraysFolder.addBlade({ view: 'separator' })
+
+    godraysFolder.addBinding(GodraysMaterial, 'opacity', { label: 'Opacity', min: 0.01, max: 1 })
+    godraysFolder.addBinding(godraysNoiseScale, 'value', { label: 'Amount', min: 1, max: 20 })
+    godraysFolder.addBinding(godraysTimeSpeed, 'value', { label: 'Speed', min: 0, max: 3 })
+    godraysFolder.addBinding(godraysFresnelPower, 'value', { label: 'Fresnel Power', min: 0.1, max: 3 })
+
+    godraysFolder.addBlade({ view: 'separator' })
+
+    godraysFolder.addBinding(godraysColor, 'value', { label: 'Color', color: { type: 'float' } })
+    godraysFolder.addBinding(godraysSmoothTop, 'value', { label: 'Smooth Top', min: 0, max: 1 })
+    godraysFolder.addBinding(godraysSmoothBottom, 'value', { label: 'Smooth Bottom', min: 0, max: 1 })
   }
 }
