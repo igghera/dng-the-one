@@ -26,6 +26,7 @@ import {
 	FloorMaterial,
 	BackgroundMaterial,
 	ParticlesMaterial,
+	GodraysMaterial,
 } from './materials'
 import { getDisplacement } from './materials/floor'
 
@@ -44,7 +45,7 @@ const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
-let scene, camera, renderer, controls, postProcessing
+let scene, camera, renderer, controls, postProcessing, godrays
 
 const textures = new Map()
 
@@ -67,6 +68,7 @@ onMounted(async () => {
 
 	createSea()
 	createBackground()
+	createGodrays()
 
 	await createParticles()
 
@@ -84,7 +86,7 @@ onMounted(async () => {
 
 	if (isDebug) {
 		const { Debug } = await import('./Debug')
-		new Debug(dofParams)
+		new Debug(dofParams, godrays)
 	}
 })
 
@@ -190,6 +192,15 @@ function createBackground() {
 	mesh.position.z = -5.5
 
 	scene.add(mesh)
+}
+
+function createGodrays() {
+	const geometry = new THREE.CylinderGeometry(0.5, 0.5, 5, 64, 1, true)
+
+	godrays = new THREE.Mesh(geometry, GodraysMaterial)
+	godrays.position.set(0, 1.5, -1.3)
+
+	scene.add(godrays)
 }
 
 function createSea() {
