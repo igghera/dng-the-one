@@ -20,16 +20,35 @@ import {
   fresnelPower as godraysFresnelPower
 } from './materials/godrays'
 
+import {
+  progress as backgroundProgress,
+} from './materials/background'
+
 export class Debug {
-  constructor(dof, godrays) {
+  constructor(dof, godrays, background) {
     this.pane = new Pane({
       title: 'Debug',
       container: document.getElementById('debug-wrapper'),
     })
 
+    this.createBackground(background)
     this.createSea()
     this.createDof(dof)
     this.createGodrays(godrays)
+  }
+
+  createBackground(background) {
+    const backgroundFolder = this.pane.addFolder({
+      title: 'Background',
+      expanded: true,
+    })
+
+    backgroundFolder.addBinding(background.position, 'z', { label: 'Depth', min: -10, max: -3 })
+    backgroundFolder.addBinding(background.position, 'y', { label: 'Position Y', min: -5, max: 5 })
+
+    backgroundFolder.addBlade({ view: 'separator' })
+
+    backgroundFolder.addBinding(backgroundProgress, 'value', { label: 'Progress', min: 0, max: 1 })
   }
 
   createSea() {
@@ -58,7 +77,7 @@ export class Debug {
   createGodrays(godrays) {
     const godraysFolder = this.pane.addFolder({
       title: 'Godrays',
-      expanded: true,
+      expanded: false,
     })
 
     godraysFolder.addBinding(godrays.position, 'x', { label: 'Position X', min: -3, max: 3 })

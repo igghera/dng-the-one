@@ -45,7 +45,7 @@ const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
-let scene, camera, renderer, controls, postProcessing, godrays
+let scene, camera, renderer, controls, postProcessing, godrays, background
 
 const textures = new Map()
 
@@ -86,7 +86,7 @@ onMounted(async () => {
 
 	if (isDebug) {
 		const { Debug } = await import('./Debug')
-		new Debug(dofParams, godrays)
+		new Debug(dofParams, godrays, background)
 	}
 })
 
@@ -145,14 +145,16 @@ async function loadTextures() {
 	ktxLoader.detectSupport(renderer)
 
 	const ktx = await ktxLoader.load([
-		'/webgl/bg_A.ktx2',
-		'/webgl/bg_B.ktx2',
-		'/webgl/bg_C.ktx2',
+		'/webgl/backgrounds/01-mobile.ktx2',
+		'/webgl/backgrounds/02-mobile.ktx2',
+		'/webgl/backgrounds/03-mobile.ktx2',
+		'/webgl/backgrounds/04-mobile.ktx2',
 	])
 
-	textures.set('bg_A', ktx[0])
-	textures.set('bg_B', ktx[1])
-	textures.set('bg_C', ktx[2])
+	textures.set('bg_01_mobile', ktx[0])
+	textures.set('bg_02_mobile', ktx[1])
+	textures.set('bg_03_mobile', ktx[2])
+	textures.set('bg_04_mobile', ktx[3])
 }
 
 async function createParticles() {
@@ -184,14 +186,14 @@ async function createParticles() {
 }
 
 function createBackground() {
-	const geometry = new THREE.PlaneGeometry(20, 10, 1, 1)
+	const geometry = new THREE.PlaneGeometry(1.08, 1.92, 1, 1)
 	const material = new BackgroundMaterial(textures).material
-	const mesh = new THREE.Mesh(geometry, material)
+	background = new THREE.Mesh(geometry, material)
 
-	mesh.position.y = 3.5
-	mesh.position.z = -5.5
+	background.position.set(0, -1, -5)
+	background.scale.set(15, 15, 1)
 
-	scene.add(mesh)
+	scene.add(background)
 }
 
 function createGodrays() {
@@ -216,7 +218,7 @@ function createSea() {
 
 	scene.add(reflection.target)
 
-	FloorMaterial.emissiveNode = reflection.mul(0.5)
+	FloorMaterial.emissiveNode = reflection.mul(0.7)
 
 	const geometry = new THREE.PlaneGeometry(20, 10, 250, 150)
 	geometry.rotateX(-Math.PI / 2)
@@ -260,6 +262,6 @@ function createPostprocessing() {
 }
 
 #debug-wrapper {
-	@apply absolute z-[1] right-10 top-20;
+	@apply absolute z-[1] right-10 top-20 w-80;
 }
 </style>
