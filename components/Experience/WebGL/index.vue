@@ -151,6 +151,11 @@ async function loadTextures() {
 		'/webgl/backgrounds/04-mobile.ktx2',
 	])
 
+	ktx[0].colorSpace = THREE.SRGBColorSpace
+	ktx[1].colorSpace = THREE.SRGBColorSpace
+	ktx[2].colorSpace = THREE.SRGBColorSpace
+	ktx[3].colorSpace = THREE.SRGBColorSpace
+
 	textures.set('bg_01_mobile', ktx[0])
 	textures.set('bg_02_mobile', ktx[1])
 	textures.set('bg_03_mobile', ktx[2])
