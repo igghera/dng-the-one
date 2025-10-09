@@ -41,6 +41,7 @@ import { get, set } from '@vueuse/core'
 // Refs / State
 //
 const appStore = useAppStore()
+const uiStore = useUiStore()
 
 const el = useCurrentElement()
 const inputRef = useTemplateRef('inputRef')
@@ -89,8 +90,12 @@ const handleInput = () => {
 	dummy.remove()
 }
 
-function setContinueButtonVisible() {
+const setContinueButtonVisible = () => {
 	set(continueButtonVisible, appStore.getUsername.length >= 3)
+}
+
+const handleSubmit = () => {
+	uiStore.setExperienceEnterNameVisible(false)
 }
 </script>
 
