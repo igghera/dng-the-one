@@ -21,14 +21,18 @@
 			</div>
 		</form>
 
-		<ButtonGolden class="button" size="square">
+		<ButtonGolden
+			class="button"
+			size="square"
+			:data-visible="continueButtonVisible"
+		>
 			<IconArrowRight class="w-4" />
 		</ButtonGolden>
 	</Container>
 </template>
 
 <script setup>
-import { get } from '@vueuse/core'
+import { get, set } from '@vueuse/core'
 
 //
 // Refs / State
@@ -41,6 +45,8 @@ const inputRef = useTemplateRef('inputRef')
 const isVisible = useElementVisibility(el)
 
 const { isMobile } = useViewport()
+
+const continueButtonVisible = ref(false)
 
 const inputMinWidthMobile = 128
 const inputMinWidthDesktop = 176
@@ -57,6 +63,8 @@ watchEffect(() => {
 //
 const handleInput = () => {
 	appStore.setUsername(get(inputRef)?.value)
+
+	setContinueButtonVisible()
 
 	const dummy = document.createElement('span')
 	Object.assign(dummy.style, {
@@ -76,6 +84,10 @@ const handleInput = () => {
 	get(inputRef).style.width = `${Math.max(targetMinWidth, dummy.clientWidth)}px`
 
 	dummy.remove()
+}
+
+function setContinueButtonVisible() {
+	set(continueButtonVisible, appStore.getUsername.length >= 3)
 }
 </script>
 
@@ -118,7 +130,12 @@ const handleInput = () => {
 
 .button {
 	@apply self-center;
+	@apply duration-500 ease-out;
 
 	grid-area: c;
+
+	&[data-visible='false'] {
+		@apply pointer-events-none opacity-0;
+	}
 }
 </style>

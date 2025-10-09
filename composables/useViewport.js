@@ -6,7 +6,7 @@ export function useViewport() {
   })
 
   const isMedium = computed(() => {
-    return windowWidth.value >= 768
+    return windowWidth.value >= 768 && windowWidth.value < 1024
   })
 
   const isDesktop = computed(() => {
