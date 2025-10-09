@@ -7,6 +7,11 @@
     "copy": "Live the experience and<br>unleash your unique energy"
   },
 
+  "experience_enter_name": {
+    "title": "Type your name<br>to start the experience ",
+    "input_palceholder": "Your name"
+  },
+
   "results": {
     "pre_title": "Your the one aura match with:"
   },

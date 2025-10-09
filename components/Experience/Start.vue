@@ -3,7 +3,7 @@
 		<header
 			class="flex flex-col gap-y-2 items-center justify-center text-center self-start"
 		>
-			<h1 class="display-1 | golden-text | uppercase">
+			<h1 class="display-1 | text-gold uppercase">
 				{{ $t('experience_start.title') }}
 			</h1>
 
@@ -22,7 +22,7 @@
 <script setup>
 //
 // Refs / State
-////
+//
 const uiStore = useUiStore()
 
 //
@@ -30,6 +30,7 @@ const uiStore = useUiStore()
 //
 const handleClick = () => {
 	uiStore.setExperienceStartVisible(false)
+	uiStore.setExperienceEnterNameVisible(true)
 }
 </script>
 

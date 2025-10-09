@@ -6,6 +6,11 @@
 			v-show="uiStore.isExperienceStartVisible"
 			class="relative z-[1]"
 		/>
+
+		<ExperienceEnterName
+			v-show="uiStore.isExperienceEnterNameVisible"
+			class="relative z-[1]"
+		/>
 	</section>
 </template>
 
