@@ -2,11 +2,16 @@
   "start": "Start",
   "select": "Select",
 
-  "results": {
-    "pre_title": "Your the one aura  match with:"
+  "experience_start": {
+    "title": "Find your Aura",
+    "copy": "Live the experience and<br>unleash your unique energy"
   },
 
-  "experience_intro": {
+  "results": {
+    "pre_title": "Your the one aura match with:"
+  },
+
+  "timeline_intro": {
     "copy": "A 20-years journey of timeless elegance, where intensity and sensuality blend to create an unforgettable fragrance experience.",
     "cta": "Explore The One collection"
   }

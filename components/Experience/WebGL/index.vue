@@ -71,7 +71,6 @@ onMounted(async () => {
 	createCamera()
 
 	await createRenderer()
-
 	await loadTextures()
 
 	createSea()

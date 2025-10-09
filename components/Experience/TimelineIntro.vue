@@ -11,10 +11,10 @@
 		</picture>
 
 		<p class="copy | text-gold">
-			{{ $t('experience_intro.copy') }}
+			{{ $t('timeline_intro.copy') }}
 		</p>
 
-		<ButtonGolden>{{ $t('experience_intro.cta') }}</ButtonGolden>
+		<ButtonGolden>{{ $t('timeline_intro.cta') }}</ButtonGolden>
 	</Container>
 </template>
 

@@ -1,5 +1,15 @@
 @use 'functions' as *;
 
+.display-1 {
+  @apply leading-none tracking-[0.05em];
+
+  font-size: toRem(22);
+
+  @screen lg {
+    font-size: toRem(75);
+  }
+}
+
 .ui-1 {
   @apply text-sm leading-[1.4] tracking-[0.05em];
   @apply md:text-base;
@@ -37,6 +47,16 @@
 
   @screen lg {
     font-size: toRem(17);
+  }
+}
+
+.body-4 {
+  @apply leading-none tracking-[0.05em];
+
+  font-size: toRem(15);
+
+  @screen lg {
+    font-size: toRem(20);
   }
 }
 
