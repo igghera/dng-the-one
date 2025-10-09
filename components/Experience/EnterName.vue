@@ -10,12 +10,13 @@
 		<form class="form">
 			<div class="input-wrapper">
 				<input
-					class="input"
+					class="input | body-3"
 					type="text"
 					name="username"
 					autocomplete="off"
 					:placeholder="$t('experience_enter_name.input_palceholder')"
 					ref="inputRef"
+					@input="handleInput"
 				/>
 			</div>
 		</form>
@@ -32,6 +33,8 @@ import { get } from '@vueuse/core'
 //
 // Refs / State
 //
+const appStore = useAppStore()
+
 const el = useCurrentElement()
 const inputRef = useTemplateRef('inputRef')
 
@@ -43,6 +46,13 @@ const isVisible = useElementVisibility(el)
 watchEffect(() => {
 	if (get(isVisible)) get(inputRef)?.focus()
 })
+
+//
+// Methods
+//
+const handleInput = () => {
+	appStore.setUsername(get(inputRef)?.value)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -78,7 +88,7 @@ watchEffect(() => {
 }
 
 .input {
-	@apply text-center appearance-none bg-transparent placeholder:text-white/30 outline-none w-32;
+	@apply text-center appearance-none bg-transparent placeholder:text-white/30 outline-none w-32 uppercase;
 	@apply lg:w-44;
 }
 
