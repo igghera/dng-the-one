@@ -40,6 +40,11 @@ const inputRef = useTemplateRef('inputRef')
 
 const isVisible = useElementVisibility(el)
 
+const { isMobile } = useViewport()
+
+const inputMinWidthMobile = 128
+const inputMinWidthDesktop = 176
+
 //
 // Watchers
 //
@@ -52,6 +57,25 @@ watchEffect(() => {
 //
 const handleInput = () => {
 	appStore.setUsername(get(inputRef)?.value)
+
+	const dummy = document.createElement('span')
+	Object.assign(dummy.style, {
+		position: 'fixed',
+		top: '0',
+		left: '-9999px',
+		textTransform: 'uppercase',
+	})
+	dummy.innerHTML = get(inputRef)?.value
+
+	document.body.appendChild(dummy)
+
+	const targetMinWidth = get(isMobile)
+		? inputMinWidthMobile
+		: inputMinWidthDesktop
+
+	get(inputRef).style.width = `${Math.max(targetMinWidth, dummy.clientWidth)}px`
+
+	dummy.remove()
 }
 </script>
 
