@@ -1,5 +1,5 @@
 <template>
-	<Container>
+	<Container class="pointer-events-none">
 		<header class="header">
 			<h2
 				class="display-2 | text-gold"
@@ -121,7 +121,7 @@ const handleSubmit = () => {
 }
 
 .form {
-	@apply grid grid-rows-subgrid justify-items-center;
+	@apply grid grid-rows-subgrid justify-items-center pointer-events-auto;
 
 	grid-area: b / c;
 
@@ -145,7 +145,7 @@ const handleSubmit = () => {
 }
 
 .button {
-	@apply self-end;
+	@apply self-end pointer-events-auto;
 	@apply duration-500 ease-out;
 
 	grid-area: c;

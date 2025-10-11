@@ -1,5 +1,5 @@
 <template>
-	<Container class="experience-start">
+	<Container class="pointer-events-none">
 		<header
 			class="flex flex-col gap-y-2 items-center justify-center text-center self-start"
 		>
@@ -13,7 +13,11 @@
 			/>
 		</header>
 
-		<ButtonGolden class="self-end" size="wide" @click="handleClick">
+		<ButtonGolden
+			class="self-end pointer-events-auto"
+			size="wide"
+			@click="handleClick"
+		>
 			{{ $t('start') }}
 		</ButtonGolden>
 	</Container>

@@ -287,6 +287,6 @@ function createPostprocessing() {
 }
 
 #stats-wrapper {
-	@apply absolute z-[1] left-10 top-20 w-80;
+	@apply absolute z-[1] left-5 bottom-14 w-80;
 }
 </style>

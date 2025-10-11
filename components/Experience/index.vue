@@ -22,7 +22,7 @@ const uiStore = useUiStore()
 @use '@/assets/css/functions' as *;
 
 .experience {
-	@apply grid h-screen;
+	@apply grid h-[100svh];
 
 	grid-template-areas:
 		'.'
