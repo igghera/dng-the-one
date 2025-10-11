@@ -96,6 +96,7 @@ const setContinueButtonVisible = () => {
 
 const handleSubmit = () => {
 	uiStore.setExperienceEnterNameVisible(false)
+	uiStore.setExperienceStep01Visible(true)
 }
 </script>
 

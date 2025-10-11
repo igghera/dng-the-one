@@ -80,6 +80,28 @@
   }
 }
 
+.body-5 {
+  @apply leading-tight tracking-[0.05em];
+
+  font-size: toRem(15);
+
+  @screen lg {
+    font-size: toRem(30);
+  }
+}
+
+.body-6 {
+  @apply leading-tight tracking-[0.05em];
+
+  font-size: toRem(16);
+
+  @screen lg {
+    @apply leading-none;
+
+    font-size: toRem(21);
+  }
+}
+
 .golden-text {
   animation: golden-text-animation 3s linear infinite;
   background: repeating-linear-gradient(90deg,

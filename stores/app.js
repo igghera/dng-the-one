@@ -1,12 +1,16 @@
 export const useAppStore = defineStore('appStore', {
   state: () => ({
     audioEnabled: false,
-    username: ''
+    username: '',
+
+    step01Selection: null
   }),
 
   actions: {
     reset() {
       this.username = ''
+
+      this.step01Selection = null
     },
 
     setAudioEnabled(enabled) {
@@ -15,11 +19,16 @@ export const useAppStore = defineStore('appStore', {
 
     setUsername(username) {
       this.username = username
+    },
+
+    setStep01Selection(selection) {
+      this.step01Selection = selection
     }
   },
 
   getters: {
     isAudioEnabled: (state) => state.audioEnabled,
-    getUsername: (state) => state.username
+    getUsername: (state) => state.username,
+    getStep01Selection: (state) => state.step01Selection
   }
 })

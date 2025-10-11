@@ -12,6 +12,17 @@
     "input_palceholder": "Your name"
   },
 
+  "experience_step_01": {
+    "title": "What’s the energy<br>you’re known for?",
+    "instructions": "Turn to select your preference",
+    "labels": [
+      "Your<br>fearless<br>attitude",
+      "Your<br>graceful<br>charm",
+      "Your<br>glowing<br>warmth",
+      "Your<br>mysterious<br>allure"
+    ]
+  },
+
   "results": {
     "pre_title": "Your the one aura match with:"
   },

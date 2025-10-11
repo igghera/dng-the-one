@@ -88,22 +88,41 @@ onMounted(async () => {
 	gsap.ticker.add(time => {
 		if (!get(visible)) return
 
-		statsPanel?.begin()
-
 		updateScene(time)
-		// renderer.render(scene, camera)
-		postProcessing.render()
+		// renderer.renderAsync(scene, camera)
+		postProcessing.renderAsync()
 
-		statsPanel?.end()
+		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
+
+		statsPanel?.update()
 	})
 
 	if (isDebug) {
 		const { Debug } = await import('./Debug')
 		new Debug(dofParams, godrays, background)
 
-		const stats = await import('stats.js')
-		statsPanel = stats.default()
+		const { default: Stats } = await import('stats-gl')
+		statsPanel = new Stats({
+			trackGPU: true,
+			trackHz: true,
+			trackCPT: false,
+			logsPerSecond: 4,
+			graphsPerSecond: 30,
+			samplesLog: 40,
+			samplesGraph: 10,
+			precision: 2,
+			horizontal: false,
+			minimal: false,
+			mode: 0,
+		})
+
+		statsPanel.init(renderer)
+
 		statsPanel.dom.style.position = null
+		statsPanel.dom.style.top = null
+		statsPanel.dom.style.left = null
+		statsPanel.dom.style.zIndex = null
+
 		document.getElementById('stats-wrapper').appendChild(statsPanel.dom)
 	}
 })
@@ -299,6 +318,6 @@ function setBackgroundSize() {
 }
 
 #stats-wrapper {
-	@apply absolute z-[1] left-5 bottom-14 w-80;
+	@apply absolute z-[1] left-1 top-20;
 }
 </style>
