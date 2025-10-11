@@ -23,15 +23,17 @@ export class BackgroundMaterial {
       const colC = texture(textures.get('bg_03_mobile'))
       const colD = texture(textures.get('bg_04_mobile'))
 
-      const progressAB = smoothstep(0.23, 0.33, progress)
-      const progressBC = smoothstep(0.56, 0.66, progress)
-      const progressCD = smoothstep(0.89, 1, progress)
+      const progressAB = smoothstep(0.12, 0.25, progress)
+      const progressBC = smoothstep(0.375, 0.5, progress)
+      const progressCD = smoothstep(0.625, 0.75, progress)
+      const progressDA = smoothstep(0.875, 1, progress)
 
       const alpha = smoothstep(0.25, 0.95, uv().y).oneMinus()
 
       const col = mix(colA, colB, progressAB)
       col.assign(mix(col, colC, progressBC))
       col.assign(mix(col, colD, progressCD))
+      col.assign(mix(col, colA, progressDA))
 
       return vec4(col.toVec3(), alpha)
     })()

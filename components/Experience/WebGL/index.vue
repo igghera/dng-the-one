@@ -46,6 +46,8 @@ const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
+const { isPortrait, isLandscape } = useViewport()
+
 let scene,
 	camera,
 	renderer,
@@ -116,6 +118,8 @@ watch(pixelRatio, value => {
 watch([componentWidth, componentHeight], value => {
 	camera.aspect = value[0] / value[1]
 	camera.updateProjectionMatrix()
+
+	setBackgroundSize()
 
 	renderer.setSize(value[0], value[1])
 })
@@ -207,12 +211,13 @@ async function createParticles() {
 }
 
 function createBackground() {
-	const geometry = new THREE.PlaneGeometry(1.08, 1.92, 1, 1)
+	const geometry = new THREE.PlaneGeometry(1, 1, 1, 1)
 	const material = new BackgroundMaterial(textures).material
 	background = new THREE.Mesh(geometry, material)
 
 	background.position.set(0, -1, -5)
-	background.scale.set(15, 15, 1)
+
+	setBackgroundSize()
 
 	scene.add(background)
 }
@@ -270,6 +275,13 @@ function createPostprocessing() {
 	)
 
 	postProcessing.outputNode = dofPass
+}
+
+function setBackgroundSize() {
+	if (!!!background) return
+
+	if (get(isPortrait)) background.scale.set(10.8, 19.2, 1)
+	else if (get(isLandscape)) background.scale.set(19.2, 10.8, 1)
 }
 </script>
 
