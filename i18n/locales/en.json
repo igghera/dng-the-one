@@ -23,6 +23,17 @@
     ]
   },
 
+  "experience_step_02": {
+    "title": "What’s the signature light<br>you bring into the room?",
+    "instructions": "Swipe up to choose",
+    "labels": [
+      "Daring and unforgettable",
+      "Light-hearted and bright",
+      "Gracefully magnetic",
+      "Smooth and understated"
+    ]
+  },
+
   "results": {
     "pre_title": "Your the one aura match with:"
   },

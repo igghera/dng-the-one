@@ -102,6 +102,18 @@
   }
 }
 
+.body-7 {
+  @apply leading-[1.375] tracking-[0.05em];
+
+  font-size: toRem(16);
+
+  @screen lg {
+    @apply leading-none;
+
+    font-size: toRem(26);
+  }
+}
+
 .golden-text {
   animation: golden-text-animation 3s linear infinite;
   background: repeating-linear-gradient(90deg,

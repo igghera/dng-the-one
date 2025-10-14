@@ -1,0 +1,88 @@
+---
+description: TailwindCSS v3 custom at-rules and directives
+globs: *.css,*.scss,*.sass,*.pcss,*.vue
+alwaysApply: false
+---
+
+# TailwindCSS v3 At-Rules
+
+This project uses **TailwindCSS v3** for styling. The following custom CSS at-rules and directives are **VALID** and should not be flagged as errors:
+
+## Valid TailwindCSS At-Rules
+
+### `@tailwind`
+
+Used to inject Tailwind's base, components, utilities, and variants styles into your CSS.
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+### `@apply`
+
+Used to inline any existing utility classes into your own custom CSS.
+
+```css
+.btn-primary {
+	@apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+}
+```
+
+### `@layer`
+
+Used to tell Tailwind which "bucket" a set of custom styles belong to.
+
+```css
+@layer components {
+	.card {
+		@apply rounded-lg shadow-md p-4;
+	}
+}
+```
+
+### `@screen`
+
+Used to create media queries that reference your breakpoints by name.
+
+```css
+@screen sm {
+	.custom-class {
+		@apply text-lg;
+	}
+}
+```
+
+### `@variants`
+
+Used to generate responsive, hover, focus, and other variants of your own utilities.
+
+```css
+@variants hover, focus {
+	.custom-utility {
+		@apply bg-black;
+	}
+}
+```
+
+### `@responsive`
+
+Used to generate responsive variants (deprecated in v3 but may still exist in legacy code).
+
+## Theme Function
+
+The `theme()` function is also valid for accessing Tailwind config values:
+
+```css
+.element {
+	color: theme('colors.blue.500');
+}
+```
+
+## Project Context
+
+- All SCSS files in `assets/css/` may use these at-rules
+- All Vue files in `/components/` and `/pages/` may use these at-rules
+- These are part of TailwindCSS v3 and should be treated as valid syntax
+- The build process will properly transpile these directives
