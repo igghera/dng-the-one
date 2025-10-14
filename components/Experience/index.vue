@@ -40,6 +40,10 @@ const uiStore = useUiStore()
 		'.';
 	grid-template-columns: 1fr;
 	grid-template-rows: toRem(100) 1fr toRem(80);
+
+	@screen lg {
+		grid-template-rows: toRem(150) 1fr toRem(80);
+	}
 }
 
 :deep(> .webgl) {

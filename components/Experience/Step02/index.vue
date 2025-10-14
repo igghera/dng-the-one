@@ -19,7 +19,11 @@
 			</div>
 		</header>
 
-		<div class="content | debug | pointer-events-auto">content</div>
+		<div class="content | pointer-events-auto bg-[#ff000050]">
+			<div class="track">
+				<ExperienceStep02Track />
+			</div>
+		</div>
 
 		<ButtonGolden class="cta" size="wide" @click="handleClick">
 			{{ $t('select') }}
@@ -92,7 +96,35 @@ const handleClick = () => {
 }
 
 .content {
+	--mask-top-from-position: 70%;
+	--mask-top-to-position: 90%;
+	--mask-top-from-color: black;
+	--mask-top-to-color: transparent;
+	--mask-top: linear-gradient(
+		to top,
+		var(--mask-top-from-color) var(--mask-top-from-position),
+		var(--mask-top-to-color) var(--mask-top-to-position)
+	);
+
+	--mask-bottom-from-position: 70%;
+	--mask-bottom-to-position: 90%;
+	--mask-bottom-from-color: black;
+	--mask-bottom-to-color: transparent;
+	--mask-bottom: linear-gradient(
+		to bottom,
+		var(--mask-bottom-from-color) var(--mask-bottom-from-position),
+		var(--mask-bottom-to-color) var(--mask-bottom-to-position)
+	);
+
+	// mask-image: var(--mask-bottom), var(--mask-top);
+	mask-composite: intersect;
+	mask-repeat: no-repeat;
+
 	grid-area: b;
+}
+
+.track {
+	@apply flex flex-col items-start;
 }
 
 .instructions,
