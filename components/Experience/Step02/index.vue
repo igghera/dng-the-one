@@ -19,9 +19,13 @@
 			</div>
 		</header>
 
-		<div class="content | pointer-events-auto bg-[#ff000050]">
-			<div class="track">
-				<ExperienceStep02Track />
+		<div class="content | pointer-events-auto bg-[#ff000000]">
+			<div class="track-wrapper">
+				<ExperienceStep02Track class="track" />
+			</div>
+
+			<div class="dragger-wrapper" style="transform: translateY(-50%)">
+				<ExperienceStep02Dragger class="dragger" />
 			</div>
 		</div>
 
@@ -58,6 +62,8 @@ const handleClick = () => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/css/functions' as *;
+
 :deep(.site-grid) {
 	--cols: 1;
 
@@ -120,11 +126,29 @@ const handleClick = () => {
 	mask-composite: intersect;
 	mask-repeat: no-repeat;
 
+	@apply grid items-center;
+
 	grid-area: b;
 }
 
-.track {
-	@apply flex flex-col items-start;
+.track-wrapper {
+	@apply flex items-end justify-self-center;
+
+	height: clamp(350px, 440px, 50svh);
+
+	> * {
+		@apply col-start-1 row-start-1;
+	}
+}
+
+.dragger-wrapper {
+	@apply aspect-square self-end justify-self-center;
+
+	width: toRem(72);
+
+	@screen lg {
+		width: toRem(96);
+	}
 }
 
 .instructions,

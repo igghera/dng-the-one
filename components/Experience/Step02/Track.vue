@@ -3,7 +3,7 @@
 		class="w-[0.375rem] lg:w-2"
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
-		viewBox="0 0 8 450"
+		viewBox="0 0 8 600"
 		overflow="visible"
 	>
 		<path
@@ -11,7 +11,7 @@
 			stroke-dasharray="1.5 18"
 			stroke-dashoffset="0"
 			stroke-width="8"
-			d="M4 0v450"
+			d="M4 0v600"
 		/>
 
 		<circle
