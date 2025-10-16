@@ -76,6 +76,10 @@
 							<g ref="draggerMaskRef">
 								<circle cx="48" cy="48" r="48" fill="url(#dragger-gradient)" />
 							</g>
+
+							<g transform="translate(0, 550)" ref="trackMaskInitialRef">
+								<rect x="0" y="0" width="96" height="300" fill="black"></rect>
+							</g>
 						</mask>
 
 						<radialGradient id="dragger-gradient">
@@ -125,6 +129,7 @@ const { gsap, Draggable } = useGSAP()
 const draggerRef = useTemplateRef('draggerRef')
 const draggerMaskRef = useTemplateRef('draggerMaskRef')
 const trackRef = useTemplateRef('trackRef')
+const trackMaskInitialRef = useTemplateRef('trackMaskInitialRef')
 
 const dotsCoords = [
 	{ x: 48, y: 450 },
@@ -251,6 +256,10 @@ onMounted(() => {
 		gsap.set(get(draggerMaskRef), {
 			y: draggableInstance[0].y,
 		})
+
+		gsap.set(get(trackMaskInitialRef), {
+			y: () => Math.max(450, draggableInstance[0].y),
+		})
 	}
 
 	update()
@@ -355,19 +364,11 @@ const translateTrackToPosition = yPosition => {
 		var(--mask-bottom-to-color) var(--mask-bottom-to-position)
 	);
 
-	// mask-image: var(--mask-bottom), var(--mask-top);
+	mask-image: var(--mask-bottom), var(--mask-top);
 	mask-composite: intersect;
 	mask-repeat: no-repeat;
 
 	@apply grid items-center;
-
-	@screen lg {
-		--mask-top-from-position: 70%;
-		--mask-top-to-position: 90%;
-
-		--mask-bottom-from-position: 70%;
-		--mask-bottom-to-position: 90%;
-	}
 
 	grid-area: b;
 }
