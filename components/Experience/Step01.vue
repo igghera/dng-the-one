@@ -342,6 +342,7 @@ const animateIn = () => {
 const handleClick = () => {
 	appStore.setStep01Selection(get(knobStep))
 	uiStore.setExperienceStep01Visible(false)
+	uiStore.setExperienceStep02Visible(true)
 }
 </script>
 
