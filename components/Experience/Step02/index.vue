@@ -29,14 +29,18 @@
 					overflow="visible"
 					ref="trackRef"
 				>
-					<g>
+					<g mask="url(#dragger-mask)">
+						<rect x="0" y="0" width="96" height="600" fill="transparent" />
+
 						<path
 							class="stroke-gold-light"
 							stroke-dasharray="1.5 18"
-							stroke-dashoffset="0"
 							stroke-width="8"
 							d="M48 0v600"
 						/>
+					</g>
+
+					<g>
 						<circle
 							v-for="(dot, idx) in dotsCoords"
 							:key="idx"
@@ -53,8 +57,9 @@
 						ref="draggerRef"
 					>
 						<path
-							class="stroke-gold-light fill-transparent"
+							class="stroke-gold-light"
 							stroke-width="2.336"
+							fill="transparent"
 							d="M1.284 47.994C1.284 22.393 22.04 1.64 47.641 1.64c25.601 0 46.355 20.754 46.355 46.355 0 25.602-20.754 46.356-46.355 46.357-25.602 0-46.357-20.755-46.357-46.357Z"
 						/>
 
@@ -65,16 +70,17 @@
 					</g>
 
 					<defs>
-						<mask id="dragger-mask" transform="translate(0, 550)">
-							<path
-								fill="url(#dragger-gradient)"
-								d="M1.284 47.994C1.284 22.393 22.04 1.64 47.641 1.64c25.601 0 46.355 20.754 46.355 46.355 0 25.602-20.754 46.356-46.355 46.357-25.602 0-46.357-20.755-46.357-46.357Z"
-							/>
+						<mask id="dragger-mask">
+							<rect x="0" y="-100" width="96" height="700" fill="white" />
+
+							<g ref="draggerMaskRef">
+								<circle cx="48" cy="48" r="48" fill="url(#dragger-gradient)" />
+							</g>
 						</mask>
 
 						<radialGradient id="dragger-gradient">
-							<stop offset="30%" stop-color="black" />
-							<stop offset="100%" stop-color="exlude" />
+							<stop offset="50%" stop-color="black" />
+							<stop offset="100%" stop-color="white" />
 						</radialGradient>
 					</defs>
 				</svg>
@@ -117,6 +123,7 @@ const ctaVisible = shallowRef(false)
 const { gsap, Draggable } = useGSAP()
 
 const draggerRef = useTemplateRef('draggerRef')
+const draggerMaskRef = useTemplateRef('draggerMaskRef')
 const trackRef = useTemplateRef('trackRef')
 
 const dotsCoords = [
@@ -229,20 +236,24 @@ onMounted(() => {
 		overshootTolerance: 0.1,
 		edgeResistance: 1,
 		onDrag() {
-			// update()
+			update()
 		},
 		onThrowUpdate() {
-			// update()
+			update()
 		},
 		onThrowComplete() {
-			updateDraggableBounds()
+			updateCurrentStep()
 			translateTrackToPosition(draggableInstance[0].y)
 		},
 	})
 
 	function update() {
-		console.log('update')
+		gsap.set(get(draggerMaskRef), {
+			y: draggableInstance[0].y,
+		})
 	}
+
+	update()
 })
 
 onBeforeUnmount(() => {
@@ -256,7 +267,7 @@ const handleClick = () => {
 	console.log('handleClick')
 }
 
-const updateDraggableBounds = () => {
+const updateCurrentStep = () => {
 	const prevIndex = get(currentStep)
 	const newIndex = dotsCoords.findIndex(
 		dot => draggableInstance[0].y + 48 === dot.y
@@ -344,7 +355,7 @@ const translateTrackToPosition = yPosition => {
 		var(--mask-bottom-to-color) var(--mask-bottom-to-position)
 	);
 
-	mask-image: var(--mask-bottom), var(--mask-top);
+	// mask-image: var(--mask-bottom), var(--mask-top);
 	mask-composite: intersect;
 	mask-repeat: no-repeat;
 
