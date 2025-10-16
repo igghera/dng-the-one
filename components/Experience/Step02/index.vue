@@ -19,33 +19,39 @@
 			</div>
 		</header>
 
-		<div class="content | pointer-events-auto bg-[#ff000030]">
+		<div class="content">
 			<div class="track-wrapper">
 				<svg
-					class="w-[4.5rem] lg:w-24 bg-[#0000ff50]"
+					class="track"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 96 600"
 					overflow="visible"
+					ref="trackRef"
 				>
-					<path
-						class="stroke-gold-light"
-						stroke-dasharray="1.5 18"
-						stroke-dashoffset="0"
-						stroke-width="8"
-						d="M48 0v600"
-					/>
+					<g>
+						<path
+							class="stroke-gold-light"
+							stroke-dasharray="1.5 18"
+							stroke-dashoffset="0"
+							stroke-width="8"
+							d="M48 0v600"
+						/>
+						<circle
+							v-for="(dot, idx) in dotsCoords"
+							:key="idx"
+							class="fill-gold-light"
+							:cx="dot.x"
+							:cy="dot.y"
+							r="10"
+						/>
+					</g>
 
-					<circle
-						v-for="(dot, idx) in dotsCoords"
-						:key="idx"
-						class="fill-gold-light"
-						:cx="dot.x"
-						:cy="dot.y"
-						r="10"
-					/>
-
-					<g class="dragger" transform="translate(0, 520)" ref="draggerRef">
+					<g
+						class="dragger | pointer-events-auto"
+						transform="translate(0, 520)"
+						ref="draggerRef"
+					>
 						<path
 							class="stroke-gold-light fill-transparent"
 							stroke-width="2.336"
@@ -108,9 +114,10 @@ const currentStep = shallowRef(-1)
 const instructionsVisible = shallowRef(true)
 const ctaVisible = shallowRef(false)
 
-const { Draggable } = useGSAP()
+const { gsap, Draggable } = useGSAP()
 
 const draggerRef = useTemplateRef('draggerRef')
+const trackRef = useTemplateRef('trackRef')
 
 const dotsCoords = [
 	{ x: 48, y: 450 },
@@ -118,6 +125,8 @@ const dotsCoords = [
 	{ x: 48, y: 136 },
 	{ x: 48, y: -17 },
 ]
+
+const trackTranslateValues = [-15, 11, 37, 62]
 
 let draggableInstance = null
 
@@ -132,6 +141,10 @@ const labels = computed(() => {
 // Lifecycle
 //
 onMounted(() => {
+	gsap.set(get(trackRef), {
+		yPercent: trackTranslateValues[0],
+	})
+
 	draggableInstance = Draggable.create(get(draggerRef), {
 		type: 'y',
 		inertia: true,
@@ -223,6 +236,7 @@ onMounted(() => {
 		},
 		onThrowComplete() {
 			updateDraggableBounds()
+			translateTrackToPosition(draggableInstance[0].y)
 		},
 	})
 
@@ -251,6 +265,21 @@ const updateDraggableBounds = () => {
 	const index = newIndex === -1 ? prevIndex : newIndex
 
 	set(currentStep, index)
+}
+
+const translateTrackToPosition = yPosition => {
+	const snappedPosition = getClosestValue(
+		dotsCoords.map(dot => dot.y),
+		yPosition
+	)
+
+	const index = dotsCoords.findIndex(dot => dot.y === snappedPosition)
+
+	gsap.to(get(trackRef), {
+		yPercent: trackTranslateValues[index],
+		duration: 1.5,
+		ease: 'expo.out',
+	})
 }
 </script>
 
@@ -295,8 +324,8 @@ const updateDraggableBounds = () => {
 }
 
 .content {
-	--mask-top-from-position: 70%;
-	--mask-top-to-position: 90%;
+	--mask-top-from-position: 80%;
+	--mask-top-to-position: 95%;
 	--mask-top-from-color: black;
 	--mask-top-to-color: transparent;
 	--mask-top: linear-gradient(
@@ -305,8 +334,8 @@ const updateDraggableBounds = () => {
 		var(--mask-top-to-color) var(--mask-top-to-position)
 	);
 
-	--mask-bottom-from-position: 70%;
-	--mask-bottom-to-position: 90%;
+	--mask-bottom-from-position: 80%;
+	--mask-bottom-to-position: 95%;
 	--mask-bottom-from-color: black;
 	--mask-bottom-to-color: transparent;
 	--mask-bottom: linear-gradient(
@@ -315,11 +344,19 @@ const updateDraggableBounds = () => {
 		var(--mask-bottom-to-color) var(--mask-bottom-to-position)
 	);
 
-	// mask-image: var(--mask-bottom), var(--mask-top);
+	mask-image: var(--mask-bottom), var(--mask-top);
 	mask-composite: intersect;
 	mask-repeat: no-repeat;
 
 	@apply grid items-center;
+
+	@screen lg {
+		--mask-top-from-position: 70%;
+		--mask-top-to-position: 90%;
+
+		--mask-bottom-from-position: 70%;
+		--mask-bottom-to-position: 90%;
+	}
 
 	grid-area: b;
 }
@@ -332,6 +369,10 @@ const updateDraggableBounds = () => {
 	> * {
 		@apply col-start-1 row-start-1;
 	}
+}
+
+.track {
+	@apply w-[4.5rem] lg:w-24;
 }
 
 .instructions,
