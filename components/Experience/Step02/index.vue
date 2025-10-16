@@ -19,32 +19,107 @@
 			</div>
 		</header>
 
-		<div class="content | pointer-events-auto bg-[#ff000000]">
+		<div class="content | pointer-events-auto bg-[#ff000030]">
 			<div class="track-wrapper">
-				<ExperienceStep02Track class="track" />
-			</div>
+				<svg
+					class="w-[4.5rem] lg:w-24 bg-[#0000ff50]"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 96 600"
+					overflow="visible"
+				>
+					<path
+						class="stroke-gold-light"
+						stroke-dasharray="1.5 18"
+						stroke-dashoffset="0"
+						stroke-width="8"
+						d="M48 0v600"
+					/>
 
-			<div class="dragger-wrapper" style="transform: translateY(-50%)">
-				<ExperienceStep02Dragger class="dragger" />
+					<circle
+						v-for="(dot, idx) in dotsCoords"
+						:key="idx"
+						class="fill-gold-light"
+						:cx="dot.x"
+						:cy="dot.y"
+						r="10"
+					/>
+
+					<g class="dragger" transform="translate(0, 520)" ref="draggerRef">
+						<path
+							class="stroke-gold-light fill-transparent"
+							stroke-width="2.336"
+							d="M1.284 47.994C1.284 22.393 22.04 1.64 47.641 1.64c25.601 0 46.355 20.754 46.355 46.355 0 25.602-20.754 46.356-46.355 46.357-25.602 0-46.357-20.755-46.357-46.357Z"
+						/>
+
+						<path
+							class="fill-gold-light"
+							d="M47.16 42.563a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
+						/>
+					</g>
+
+					<defs>
+						<mask id="dragger-mask" transform="translate(0, 550)">
+							<path
+								fill="url(#dragger-gradient)"
+								d="M1.284 47.994C1.284 22.393 22.04 1.64 47.641 1.64c25.601 0 46.355 20.754 46.355 46.355 0 25.602-20.754 46.356-46.355 46.357-25.602 0-46.357-20.755-46.357-46.357Z"
+							/>
+						</mask>
+
+						<radialGradient id="dragger-gradient">
+							<stop offset="30%" stop-color="black" />
+							<stop offset="100%" stop-color="exlude" />
+						</radialGradient>
+					</defs>
+				</svg>
 			</div>
 		</div>
 
-		<ButtonGolden class="cta" size="wide" @click="handleClick">
+		<p
+			class="instructions | body-5 | text-gold-light"
+			:data-visible="instructionsVisible"
+		>
+			{{ $t('experience_step_02.instructions') }}
+		</p>
+
+		<ButtonGolden
+			class="cta"
+			size="wide"
+			:data-visible="ctaVisible"
+			@click="handleClick"
+		>
 			{{ $t('select') }}
 		</ButtonGolden>
 	</Container>
 </template>
 
 <script setup>
+import { get, set } from '@vueuse/core'
+
 //
 // Refs / State
 //
-const appStore = useAppStore()
-const uiStore = useUiStore()
+// const appStore = useAppStore()
+// const uiStore = useUiStore()
 
 const { rt, tm } = useI18n()
 
-const currentStep = shallowRef(0)
+const currentStep = shallowRef(-1)
+const instructionsVisible = shallowRef(true)
+const ctaVisible = shallowRef(false)
+
+const { Draggable } = useGSAP()
+
+const draggerRef = useTemplateRef('draggerRef')
+
+const dotsCoords = [
+	{ x: 48, y: 450 },
+	{ x: 48, y: 293 },
+	{ x: 48, y: 136 },
+	{ x: 48, y: -17 },
+]
+
+let draggableInstance = null
 
 //
 // Computed
@@ -54,10 +129,128 @@ const labels = computed(() => {
 })
 
 //
+// Lifecycle
+//
+onMounted(() => {
+	draggableInstance = Draggable.create(get(draggerRef), {
+		type: 'y',
+		inertia: true,
+		bounds: {
+			top: -17 - 48,
+			left: 0,
+			height: 700,
+			width: 96,
+		},
+		snap: function (value) {
+			// console.log('Snap value:', value)
+
+			let values = null
+
+			switch (get(currentStep)) {
+				case -1:
+					// X ❌
+					// X ❌
+					// X ❌
+					// X ✅
+					// O ❌
+					// console.log('snap() case -1')
+
+					values = [dotsCoords[0].y - 48]
+					break
+				case 0:
+					// X ❌
+					// X ❌
+					// X ✅
+					// O ✅
+					// / ❌
+					// console.log('snap() case 0')
+
+					values = [dotsCoords[1].y - 48, dotsCoords[0].y - 48]
+					break
+				case 1:
+					// X ❌
+					// X ✅
+					// O ✅
+					// X ✅
+					// / ❌
+					// console.log('snap() case 1')
+
+					values = [
+						dotsCoords[2].y - 48,
+						dotsCoords[1].y - 48,
+						dotsCoords[0].y - 48,
+					]
+					break
+				case 2:
+					// X ✅
+					// 0 ✅
+					// X ✅
+					// X ❌
+					// / ❌
+					// console.log('snap() case 2')
+
+					values = [
+						dotsCoords[3].y - 48,
+						dotsCoords[2].y - 48,
+						dotsCoords[1].y - 48,
+					]
+					break
+				case 3:
+					// O ✅
+					// X ✅
+					// X ❌
+					// X ❌
+					// / ❌
+					// console.log('snap() case 3')
+
+					values = [dotsCoords[3].y - 48, dotsCoords[2].y - 48]
+					break
+			}
+
+			// console.log('Snap values:', values)
+
+			return getClosestValue(values, value)
+		},
+		throwResistance: 20000,
+		maxDuration: 0.5,
+		overshootTolerance: 0.1,
+		edgeResistance: 1,
+		onDrag() {
+			// update()
+		},
+		onThrowUpdate() {
+			// update()
+		},
+		onThrowComplete() {
+			updateDraggableBounds()
+		},
+	})
+
+	function update() {
+		console.log('update')
+	}
+})
+
+onBeforeUnmount(() => {
+	draggableInstance?.[0]?.kill()
+})
+
+//
 // Methods
 //
 const handleClick = () => {
 	console.log('handleClick')
+}
+
+const updateDraggableBounds = () => {
+	const prevIndex = get(currentStep)
+	const newIndex = dotsCoords.findIndex(
+		dot => draggableInstance[0].y + 48 === dot.y
+	)
+
+	const index = newIndex === -1 ? prevIndex : newIndex
+
+	set(currentStep, index)
 }
 </script>
 
@@ -141,20 +334,14 @@ const handleClick = () => {
 	}
 }
 
-.dragger-wrapper {
-	@apply aspect-square self-end justify-self-center;
-
-	width: toRem(72);
-
-	@screen lg {
-		width: toRem(96);
-	}
-}
-
 .instructions,
 .cta {
 	@apply self-center;
 
 	grid-area: c;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
 }
 </style>
