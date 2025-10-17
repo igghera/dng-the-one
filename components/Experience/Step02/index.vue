@@ -67,6 +67,30 @@
 							class="fill-gold-light"
 							d="M47.16 42.563a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
 						/>
+
+						<g class="arrows">
+							<g
+								class="dragger-arrow"
+								transform="translate(37, -20)"
+								:data-visible="currentStep < 3"
+							>
+								<path
+									class="fill-gold-light"
+									d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
+								/>
+							</g>
+
+							<g
+								class="dragger-arrow"
+								transform="translate(37, 116) scale(1, -1)"
+								:data-visible="currentStep > 0"
+							>
+								<path
+									class="fill-gold-light"
+									d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
+								/>
+							</g>
+						</g>
 					</g>
 
 					<defs>
@@ -93,7 +117,7 @@
 
 		<p
 			class="instructions | body-5 | text-gold-light"
-			:data-visible="instructionsVisible"
+			:data-visible="currentStep === -1"
 		>
 			{{ $t('experience_step_02.instructions') }}
 		</p>
@@ -101,7 +125,7 @@
 		<ButtonGolden
 			class="cta"
 			size="wide"
-			:data-visible="ctaVisible"
+			:data-visible="currentStep >= 0"
 			@click="handleClick"
 		>
 			{{ $t('select') }}
@@ -115,14 +139,12 @@ import { get, set } from '@vueuse/core'
 //
 // Refs / State
 //
-// const appStore = useAppStore()
-// const uiStore = useUiStore()
+const appStore = useAppStore()
+const uiStore = useUiStore()
 
 const { rt, tm } = useI18n()
 
 const currentStep = shallowRef(-1)
-const instructionsVisible = shallowRef(true)
-const ctaVisible = shallowRef(false)
 
 const { gsap, Draggable } = useGSAP()
 
@@ -161,7 +183,7 @@ onMounted(() => {
 		type: 'y',
 		inertia: true,
 		bounds: {
-			top: -17 - 48,
+			top: -17 - 48 - 18,
 			left: 0,
 			height: 700,
 			width: 96,
@@ -242,13 +264,16 @@ onMounted(() => {
 		edgeResistance: 1,
 		onDrag() {
 			update()
+			updateCurrentStep()
+		},
+		onDragEnd() {
+			gsap.delayedCall(0.1, () => {
+				translateTrackToPosition(draggableInstance[0].endY)
+			})
 		},
 		onThrowUpdate() {
 			update()
-		},
-		onThrowComplete() {
 			updateCurrentStep()
-			translateTrackToPosition(draggableInstance[0].y)
 		},
 	})
 
@@ -273,14 +298,17 @@ onBeforeUnmount(() => {
 // Methods
 //
 const handleClick = () => {
-	console.log('handleClick')
+	appStore.setStep02Selection(get(currentStep))
+	uiStore.setExperienceStep02Visible(false)
 }
 
 const updateCurrentStep = () => {
 	const prevIndex = get(currentStep)
-	const newIndex = dotsCoords.findIndex(
-		dot => draggableInstance[0].y + 48 === dot.y
+	const closest = getClosestValue(
+		dotsCoords.map(dot => dot.y),
+		draggableInstance[0].y + 48
 	)
+	const newIndex = dotsCoords.findIndex(dot => closest === dot.y)
 
 	const index = newIndex === -1 ? prevIndex : newIndex
 
@@ -299,6 +327,7 @@ const translateTrackToPosition = yPosition => {
 		yPercent: trackTranslateValues[index],
 		duration: 1.5,
 		ease: 'expo.out',
+		overwrite: true,
 	})
 }
 </script>
@@ -387,14 +416,31 @@ const translateTrackToPosition = yPosition => {
 	@apply w-[4.5rem] lg:w-24;
 }
 
+.dragger-arrow {
+	@apply transition-opacity duration-300 ease-out;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
+}
+
 .instructions,
 .cta {
 	@apply self-center;
+	@apply transition-opacity duration-500 ease-out;
 
 	grid-area: c;
 
 	&[data-visible='false'] {
 		@apply opacity-0;
+	}
+
+	&:is(.cta) {
+		@apply delay-300;
+
+		&[data-visible='true'] {
+			@apply pointer-events-auto;
+		}
 	}
 }
 </style>
