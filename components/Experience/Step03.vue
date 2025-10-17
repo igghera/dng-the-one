@@ -13,11 +13,12 @@
 				:key="idx"
 				class="dragger"
 				:data-index="idx"
+				ref="draggersRef"
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 32 32"
-					class="w-6 landscape:w-8 relative z-[1]"
+					class="w-6 landscape:w-8 relative z-[1] row-start-1 col-start-1"
 					overflow="visible"
 				>
 					<g filter="url(#dot-glow)">
@@ -25,10 +26,7 @@
 					</g>
 				</svg>
 
-				<span
-					class="text-base leading-none tracking-[0.05em] text-gold-light self-end translate-y-8"
-					>{{ label }}</span
-				>
+				<span class="dragger-label">{{ label }}</span>
 			</div>
 
 			<svg
@@ -53,7 +51,10 @@
 			{{ $t('experience_step_03.instructions') }}
 		</p>
 
-		<svg xmlns="http://www.w3.org/2000/svg">
+		<svg
+			class="row-start-1 row-end-4 col-start-1"
+			xmlns="http://www.w3.org/2000/svg"
+		>
 			<defs>
 				<filter
 					id="dot-glow"
@@ -158,10 +159,11 @@ const appStore = useAppStore()
 const uiStore = useUiStore()
 
 const { rt, tm } = useI18n()
-const { gsap, Draggable } = useGSAP()
+const { gsap, Draggable, Flip } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
 const instructionsRef = useTemplateRef('instructionsRef')
+const draggersRef = useTemplateRef('draggersRef')
 
 const instructionsVisible = shallowRef(true)
 const labelsVisible = shallowRef(true)
@@ -176,7 +178,23 @@ let draggableInstance = null
 // Lifecycle
 //
 onMounted(() => {
-	// Do stuff
+	draggableInstance = Draggable.create(get(draggersRef), {
+		onDragEnd: self => {
+			moveToInitialPosition(self.target)
+		},
+	})
+
+	function moveToInitialPosition(elem) {
+		const state = Flip.getState(elem)
+
+		gsap.set(elem, { clearProps: 'transform' })
+
+		Flip.from(state, {
+			duration: 0.5,
+			ease: 'power1.out',
+			overwrite: true,
+		})
+	}
 })
 
 onBeforeUnmount(() => {
@@ -211,7 +229,7 @@ const animateIn = () => {}
 }
 
 .content {
-	@apply grid aspect-[260/290] self-center h-4/5 max-w-full pointer-events-auto;
+	@apply grid aspect-[260/290] self-center h-4/5 max-w-full;
 
 	grid-area: b;
 
@@ -227,7 +245,12 @@ const animateIn = () => {}
 }
 
 .dragger {
-	@apply inline-grid items-center justify-items-center text-center;
+	@apply aspect-square size-16 inline-grid items-center justify-items-center pointer-events-auto relative z-[1];
+
+	grid-template-rows:
+		theme('spacing.16')
+		1fr;
+	grid-template-columns: 1fr;
 
 	&[data-index='0'] {
 		@apply self-start justify-self-start;
@@ -245,8 +268,12 @@ const animateIn = () => {}
 	}
 
 	& > * {
-		@apply col-start-1 row-start-1;
+		@apply pointer-events-none;
 	}
+}
+
+.dragger-label {
+	@apply text-base leading-none tracking-[0.05em] text-gold-light absolute top-full left-1/2 -translate-x-1/2 text-center w-[200%];
 }
 
 .dropzone {
