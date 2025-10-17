@@ -34,6 +34,16 @@
     ]
   },
 
+  "experience_step_03": {
+    "title": "What’s the energy<br>you’re known for?",
+    "instructions": "Drag and drop into the circle",
+    "labels": [
+      "Men's",
+      "Women's",
+      "I don't care"
+    ]
+  },
+
   "results": {
     "pre_title": "Your the one aura match with:"
   },

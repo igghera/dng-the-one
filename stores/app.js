@@ -4,7 +4,8 @@ export const useAppStore = defineStore('appStore', {
     username: '',
 
     step01Selection: null,
-    step02Selection: null
+    step02Selection: null,
+    step03Selection: null
   }),
 
   actions: {
@@ -13,6 +14,7 @@ export const useAppStore = defineStore('appStore', {
 
       this.step01Selection = null
       this.step02Selection = null
+      this.step03Selection = null
     },
 
     setAudioEnabled(enabled) {
@@ -29,6 +31,10 @@ export const useAppStore = defineStore('appStore', {
 
     setStep02Selection(selection) {
       this.step02Selection = selection
+    },
+
+    setStep03Selection(selection) {
+      this.step03Selection = selection
     }
   },
 
@@ -36,6 +42,7 @@ export const useAppStore = defineStore('appStore', {
     isAudioEnabled: (state) => state.audioEnabled,
     getUsername: (state) => state.username,
     getStep01Selection: (state) => state.step01Selection,
-    getStep02Selection: (state) => state.step02Selection
+    getStep02Selection: (state) => state.step02Selection,
+    getStep03Selection: (state) => state.step03Selection
   }
 })

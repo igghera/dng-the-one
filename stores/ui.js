@@ -1,9 +1,10 @@
 export const useUiStore = defineStore('uiStore', {
   state: () => ({
-    experienceStartVisible: true,
+    experienceStartVisible: false,
     experienceEnterNameVisible: false,
     experienceStep01Visible: false,
-    experienceStep02Visible: false
+    experienceStep02Visible: false,
+    experienceStep03Visible: true
   }),
 
   actions: {
@@ -12,6 +13,7 @@ export const useUiStore = defineStore('uiStore', {
       this.experienceEnterNameVisible = false
       this.experienceStap01Visible = false
       this.experienceStep02Visible = false
+      this.experienceStep03Visible = false
     },
 
     setExperienceStartVisible(visible) {
@@ -28,6 +30,10 @@ export const useUiStore = defineStore('uiStore', {
 
     setExperienceStep02Visible(visible) {
       this.experienceStep02Visible = visible
+    },
+
+    setExperienceStep03Visible(visible) {
+      this.experienceStep03Visible = visible
     }
   },
 
@@ -35,6 +41,7 @@ export const useUiStore = defineStore('uiStore', {
     isExperienceStartVisible: (state) => state.experienceStartVisible,
     isExperienceEnterNameVisible: (state) => state.experienceEnterNameVisible,
     isExperienceStep01Visible: (state) => state.experienceStep01Visible,
-    isExperienceStep02Visible: (state) => state.experienceStep02Visible
+    isExperienceStep02Visible: (state) => state.experienceStep02Visible,
+    isExperienceStep03Visible: (state) => state.experienceStep03Visible
   }
 })

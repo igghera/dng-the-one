@@ -21,6 +21,11 @@
 			v-if="uiStore.isExperienceStep02Visible"
 			class="relative z-[1]"
 		/>
+
+		<ExperienceStep03
+			v-if="uiStore.isExperienceStep03Visible"
+			class="relative z-[1]"
+		/>
 	</section>
 </template>
 
