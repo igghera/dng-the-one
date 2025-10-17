@@ -300,6 +300,7 @@ onBeforeUnmount(() => {
 const handleClick = () => {
 	appStore.setStep02Selection(get(currentStep))
 	uiStore.setExperienceStep02Visible(false)
+	uiStore.setExperienceStep03Visible(true)
 }
 
 const updateCurrentStep = () => {
