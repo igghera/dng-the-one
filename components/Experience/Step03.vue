@@ -153,13 +153,12 @@
 </template>
 
 <script setup>
-import { get, set } from '@vueuse/core'
+import { get } from '@vueuse/core'
 
 //
 // Refs / State
 //
 const appStore = useAppStore()
-const uiStore = useUiStore()
 
 const { rt, tm } = useI18n()
 const { gsap, Draggable, Flip } = useGSAP()
@@ -170,9 +169,6 @@ const headerRef = useTemplateRef('headerRef')
 const instructionsRef = useTemplateRef('instructionsRef')
 const draggersRef = useTemplateRef('draggersRef')
 const dropzoneRef = useTemplateRef('dropzoneRef')
-
-const instructionsVisible = shallowRef(true)
-const labelsVisible = shallowRef(true)
 
 const labels = computed(() => {
 	return Object.values(tm('experience_step_03.labels')).map(label => rt(label))
@@ -190,6 +186,7 @@ onMounted(() => {
 
 			if (inDropzone) {
 				moveToFinalPosition(self.target)
+				appStore.setStep03Selection(Number(self.target.dataset.index))
 			} else {
 				moveToInitialPosition(self.target)
 			}

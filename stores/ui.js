@@ -1,10 +1,10 @@
 export const useUiStore = defineStore('uiStore', {
   state: () => ({
-    experienceStartVisible: false,
+    experienceStartVisible: true,
     experienceEnterNameVisible: false,
     experienceStep01Visible: false,
     experienceStep02Visible: false,
-    experienceStep03Visible: true
+    experienceStep03Visible: false
   }),
 
   actions: {
