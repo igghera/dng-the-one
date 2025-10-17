@@ -26,7 +26,7 @@
 					</g>
 				</svg>
 
-				<span class="dragger-label">{{ label }}</span>
+				<span class="dragger-label" data-dragger-label>{{ label }}</span>
 			</div>
 
 			<svg
@@ -34,14 +34,17 @@
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
 				viewBox="0 0 98 115"
+				ref="dropzoneRef"
 			>
 				<path
 					class="stroke-gold-light"
 					stroke-width="2.336"
+					data-dropzone-circle
 					d="M1.168 65.653c0-26.225 21.26-47.486 47.485-47.486 26.226 0 47.487 21.26 47.487 47.486S74.879 113.14 48.653 113.14c-26.225 0-47.485-21.26-47.485-47.486Z"
 				/>
 				<path
 					class="fill-gold-light"
+					data-dropzone-arrow
 					d="M52.539 28.935a.843.843 0 1 1 1.192 1.192l-4.5 4.5a.844.844 0 0 1-1.192 0l-4.5-4.5a.846.846 0 0 1-.022-1.214.846.846 0 0 1 1.214.022l3.06 3.06V.844a.843.843 0 1 1 1.688 0v31.15z"
 				/>
 			</svg>
@@ -161,9 +164,12 @@ const uiStore = useUiStore()
 const { rt, tm } = useI18n()
 const { gsap, Draggable, Flip } = useGSAP()
 
+const { isPortrait } = useViewport()
+
 const headerRef = useTemplateRef('headerRef')
 const instructionsRef = useTemplateRef('instructionsRef')
 const draggersRef = useTemplateRef('draggersRef')
+const dropzoneRef = useTemplateRef('dropzoneRef')
 
 const instructionsVisible = shallowRef(true)
 const labelsVisible = shallowRef(true)
@@ -180,7 +186,13 @@ let draggableInstance = null
 onMounted(() => {
 	draggableInstance = Draggable.create(get(draggersRef), {
 		onDragEnd: self => {
-			moveToInitialPosition(self.target)
+			const inDropzone = Draggable.hitTest(self.target, get(dropzoneRef), '1%')
+
+			if (inDropzone) {
+				moveToFinalPosition(self.target)
+			} else {
+				moveToInitialPosition(self.target)
+			}
 		},
 	})
 
@@ -195,10 +207,87 @@ onMounted(() => {
 			overwrite: true,
 		})
 	}
-})
 
-onBeforeUnmount(() => {
-	draggableInstance?.[0]?.kill()
+	function moveToFinalPosition(elem) {
+		// Kill all Draggable instances
+		for (const draggable of draggableInstance) {
+			draggable.kill()
+		}
+
+		// Get other items
+		const otherElems = draggableInstance.reduce((acc, draggable) => {
+			if (draggable.target !== elem) {
+				acc.push(draggable.target)
+			}
+
+			return acc
+		}, [])
+
+		const state = Flip.getState(elem)
+
+		gsap.set(elem, {
+			alignSelf: () => (get(isPortrait) ? 'center' : 'end'),
+			justifySelf: () => 'center',
+			x: 0,
+			y: 0,
+			yPercent: () => (get(isPortrait) ? 5 : -25),
+		})
+
+		const tl = gsap.timeline()
+		tl.addLabel('start')
+
+		// Fade out other items
+		tl.to(
+			otherElems,
+			{
+				autoAlpha: 0,
+				stagger: 0.1,
+				duration: 0.8,
+			},
+			'start'
+		)
+
+		// Move selected item to dropzone's center
+		tl.add(
+			Flip.from(state, {
+				duration: 1.5,
+				ease: 'expo.out',
+			}),
+			'start'
+		)
+
+		// Fade out selected item's label
+		tl.to(
+			[
+				elem.querySelector('[data-dragger-label]'),
+				get(dropzoneRef).querySelector('[data-dropzone-arrow]'),
+			],
+			{
+				autoAlpha: 0,
+				duration: 0.5,
+			},
+			'start+=0.3'
+		)
+
+		tl.to(
+			[get(headerRef), get(instructionsRef)],
+			{
+				autoAlpha: 0,
+				stagger: 0.15,
+				duration: 0.8,
+			},
+			'>0.5'
+		)
+
+		tl.to(
+			get(dropzoneRef).querySelector('[data-dropzone-circle]'),
+			{
+				opacity: 0,
+				duration: 0.8,
+			},
+			'<0.5'
+		)
+	}
 })
 
 //
