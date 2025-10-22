@@ -40,7 +40,7 @@ export class Debug {
   createBackground(background) {
     const backgroundFolder = this.pane.addFolder({
       title: 'Background',
-      expanded: true,
+      expanded: false,
     })
 
     backgroundFolder.addBinding(background.position, 'z', { label: 'Depth', min: -10, max: -3 })
@@ -54,13 +54,11 @@ export class Debug {
   createSea() {
     const sea = this.pane.addFolder({
       title: 'Sea',
-      expanded: false,
+      expanded: true,
     })
 
-    sea.addBinding(displacementFrequency, 'value', { label: 'Frequency', min: 1, max: 25 })
-    sea.addBinding(displacementAmplitude, 'value', { label: 'Amplitude', min: 0, max: 1 })
-    sea.addBinding(displacementStrength, 'value', { label: 'Strength', min: 0, max: 0.2 })
-    sea.addBinding(timeScale, 'value', { label: 'Time Scale', min: 0, max: 5 })
+    sea.addBinding(displacementStrength, 'value', { label: 'Strength', min: 0, max: 2 })
+    sea.addBinding(timeScale, 'value', { label: 'Time Scale', min: 0, max: 0.03, step: 0.001 })
   }
 
   createDof(dof) {

@@ -29,7 +29,10 @@ import {
 	ParticlesMaterial,
 	GodraysMaterial,
 } from './materials'
-import { getDisplacement } from './materials/floor'
+import {
+	getDisplacement,
+	noiseTexture as seaNoiseTexture,
+} from './materials/floor'
 
 //
 // Refs / State
@@ -188,6 +191,7 @@ async function loadTextures() {
 		'/webgl/backgrounds/02-mobile.ktx2',
 		'/webgl/backgrounds/03-mobile.ktx2',
 		'/webgl/backgrounds/04-mobile.ktx2',
+		'/webgl/noises/noise.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
@@ -195,10 +199,17 @@ async function loadTextures() {
 	ktx[2].colorSpace = THREE.SRGBColorSpace
 	ktx[3].colorSpace = THREE.SRGBColorSpace
 
+	ktx[4].colorSpace = THREE.NoColorSpace
+	ktx[4].wrapS = ktx[4].wrapT = THREE.RepeatWrapping
+
 	textures.set('bg_01_mobile', ktx[0])
 	textures.set('bg_02_mobile', ktx[1])
 	textures.set('bg_03_mobile', ktx[2])
 	textures.set('bg_04_mobile', ktx[3])
+
+	textures.set('noise', ktx[4])
+
+	seaNoiseTexture.value = textures.get('noise')
 }
 
 async function createParticles() {

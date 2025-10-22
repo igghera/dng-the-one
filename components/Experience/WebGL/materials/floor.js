@@ -1,25 +1,70 @@
 import { MeshBasicNodeMaterial } from 'three/webgpu'
-import { uniform, Fn, positionLocal, positionWorld, time, mx_noise_vec3, vec4 } from 'three/tsl'
+import { uniform, Fn, positionLocal, time, vec2, vec3, vec4, texture, uv } from 'three/tsl'
 
 export const FloorMaterial = new MeshBasicNodeMaterial()
 
-export const displacementFrequency = uniform(8)
-export const displacementAmplitude = uniform(0.15)
-export const displacementStrength = uniform(0.05)
-export const timeScale = uniform(1)
+export const displacementStrength = uniform(0.15)
+export const timeScale = uniform(0.015)
+
+const t = time.mul(timeScale)
+
+export const noiseTexture = texture(null)
 
 export const getDisplacement = Fn(() => {
-  const t = time.mul(timeScale)
-  const noise = mx_noise_vec3(
-    positionWorld.add(t),
-    displacementAmplitude
-  ).mul(displacementFrequency)
+  const uvR = uv().add(vec2(t.mul(0.37), t))
+  const texR = texture(noiseTexture, uvR)
 
-  return noise.mul(displacementStrength)
+  const uvG = uv().add(vec2(t.mul(-0.67), t.mul(1.32)))
+  const texG = texture(noiseTexture, uvG)
+
+  return vec3(texR.r, texG.g, 0).mul(displacementStrength)
 })()
 
 FloorMaterial.positionNode = Fn(() => {
   return positionLocal.add(getDisplacement)
+})()
+
+FloorMaterial.normalNode = Fn(() => {
+  // Calculate the gradient of the displacement function
+  const eps = 0.01
+
+  // Sample displacement at neighboring UV coordinates
+  const uvU = uv().add(vec2(eps, 0))
+  const uvV = uv().add(vec2(0, eps))
+
+  // Calculate displacement at neighboring points
+  const displacementU = Fn(() => {
+    const uvR = uvU.add(vec2(t.mul(0.37), t))
+    const texR = texture(noiseTexture, uvR)
+    const uvG = uvU.add(vec2(t.mul(-0.67), t.mul(1.32)))
+    const texG = texture(noiseTexture, uvG)
+    return vec3(texR.r, texG.g, 0).mul(displacementStrength)
+  })()
+
+  const displacementV = Fn(() => {
+    const uvR = uvV.add(vec2(t.mul(0.37), t))
+    const texR = texture(noiseTexture, uvR)
+    const uvG = uvV.add(vec2(t.mul(-0.67), t.mul(1.32)))
+    const texG = texture(noiseTexture, uvG)
+    return vec3(texR.r, texG.g, 0).mul(displacementStrength)
+  })()
+
+  // Calculate partial derivatives
+  const dDisplacementDU = displacementU.sub(getDisplacement).div(eps)
+  const dDisplacementDV = displacementV.sub(getDisplacement).div(eps)
+
+  // Base tangent vectors for a plane (assuming XY plane)
+  const baseTangentU = vec3(1, 0, 0)
+  const baseTangentV = vec3(0, 1, 0)
+
+  // Add displacement derivatives to base tangents
+  const tangentU = baseTangentU.add(dDisplacementDU)
+  const tangentV = baseTangentV.add(dDisplacementDV)
+
+  // Calculate normal as cross product
+  const normal = tangentU.cross(tangentV).normalize()
+
+  return normal
 })()
 
 FloorMaterial.colorNode = Fn(() => {
