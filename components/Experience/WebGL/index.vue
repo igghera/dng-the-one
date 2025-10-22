@@ -34,6 +34,8 @@ import {
 	noiseTexture as seaNoiseTexture,
 } from './materials/floor'
 
+import { noiseTexture as godraysNoiseTexture } from './materials/godrays'
+
 //
 // Refs / State
 //
@@ -210,6 +212,7 @@ async function loadTextures() {
 	textures.set('noise', ktx[4])
 
 	seaNoiseTexture.value = textures.get('noise')
+	godraysNoiseTexture.value = textures.get('noise')
 }
 
 async function createParticles() {

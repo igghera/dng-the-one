@@ -1,8 +1,6 @@
 import { Pane } from 'tweakpane'
 
 import {
-  displacementFrequency,
-  displacementAmplitude,
   timeScale,
   displacementStrength,
 } from './materials/floor'
@@ -54,7 +52,7 @@ export class Debug {
   createSea() {
     const sea = this.pane.addFolder({
       title: 'Sea',
-      expanded: true,
+      expanded: false,
     })
 
     sea.addBinding(displacementStrength, 'value', { label: 'Strength', min: 0, max: 2 })
@@ -75,7 +73,7 @@ export class Debug {
   createGodrays(godrays) {
     const godraysFolder = this.pane.addFolder({
       title: 'Godrays',
-      expanded: false,
+      expanded: true,
     })
 
     godraysFolder.addBinding(godrays.position, 'x', { label: 'Position X', min: -3, max: 3 })
@@ -91,9 +89,9 @@ export class Debug {
     godraysFolder.addBlade({ view: 'separator' })
 
     godraysFolder.addBinding(GodraysMaterial, 'opacity', { label: 'Opacity', min: 0.01, max: 1 })
-    godraysFolder.addBinding(godraysNoiseScale, 'value', { label: 'Amount', min: 1, max: 20 })
-    godraysFolder.addBinding(godraysTimeSpeed, 'value', { label: 'Speed', min: 0, max: 3 })
-    godraysFolder.addBinding(godraysFresnelPower, 'value', { label: 'Fresnel Power', min: 0.1, max: 3 })
+    godraysFolder.addBinding(godraysNoiseScale, 'value', { label: 'Amount', min: 0.1, max: 3 })
+    godraysFolder.addBinding(godraysTimeSpeed, 'value', { label: 'Speed', min: 0, max: 0.5 })
+    godraysFolder.addBinding(godraysFresnelPower, 'value', { label: 'Fresnel Power', min: 0.1, max: 5 })
 
     godraysFolder.addBlade({ view: 'separator' })
 

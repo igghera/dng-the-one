@@ -6,7 +6,7 @@ import {
   positionLocal,
   If,
   uv,
-  mx_worley_noise_float,
+  texture,
   normalLocal,
   color,
   time,
@@ -20,12 +20,14 @@ import {
 export const scaleTop = uniform(0.5)
 export const scaleBottom = uniform(1.65)
 export const scaleHeight = uniform(1)
-export const noiseScale = uniform(5)
+export const noiseScale = uniform(0.6)
 export const godraysColor = uniform(color(1, 1, 1))
-export const timeSpeed = uniform(0.3)
+export const timeSpeed = uniform(0.07)
 export const smoothTop = uniform(0.1)
 export const smoothBottom = uniform(0.1)
 export const fresnelPower = uniform(1.5)
+
+export const noiseTexture = texture(null)
 
 export const GodraysMaterial = new MeshBasicNodeMaterial({
   transparent: true,
@@ -51,7 +53,7 @@ GodraysMaterial.positionNode = Fn(() => {
 
 GodraysMaterial.colorNode = Fn(() => {
   const customUV = normalLocal.mul(noiseScale).add(time.mul(timeSpeed))
-  const noise = mx_worley_noise_float(customUV)
+  const noise = texture(noiseTexture, customUV).g
 
   const smooth = smoothstep(0, smoothBottom, uv().y).mul(smoothstep(0, smoothTop, uv().y.oneMinus()))
 
