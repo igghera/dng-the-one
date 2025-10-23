@@ -29,7 +29,8 @@ export class DrawMaterial {
 
     this.material.opacityNode = Fn(() => {
       const tex = texture(map)
-      const alpha = smoothstep(this.progress, this.progress.add(this.smooth), tex.r.mul(this.smooth.oneMinus()).add(this.smooth))
+      const progress = this.progress.oneMinus()
+      const alpha = smoothstep(progress, progress.add(this.smooth), tex.r.mul(this.smooth.oneMinus()).add(this.smooth))
       return alpha.mul(getNoise())
     })()
   }
