@@ -28,7 +28,7 @@ import {
 } from './materials/particles'
 
 export class Debug {
-  constructor(dof, godrays, background, particles) {
+  constructor(dof, godrays, background, particles, endDrawMaterial) {
     this.pane = new Pane({
       title: 'Debug',
       container: document.getElementById('debug-wrapper'),
@@ -39,6 +39,7 @@ export class Debug {
     this.createDof(dof)
     this.createGodrays(godrays)
     this.createParticles(particles)
+    this.createEndDrawPlane(endDrawMaterial)
   }
 
   createBackground(background) {
@@ -109,10 +110,22 @@ export class Debug {
   createParticles(particles) {
     const particlesFolder = this.pane.addFolder({
       title: 'Particles',
-      expanded: true,
+      expanded: false,
     })
 
     particlesFolder.addBinding(particlesSizeMin, 'value', { label: 'Size Min', min: 0, max: 0.05, step: 0.0005 })
     particlesFolder.addBinding(particlesSizeMax, 'value', { label: 'Size Max', min: 0, max: 0.1, step: 0.0005 })
+  }
+
+  createEndDrawPlane(material) {
+    const endDrawPlaneFolder = this.pane.addFolder({
+      title: 'End Draw Plane',
+      expanded: true,
+    })
+
+    endDrawPlaneFolder.addBinding(material.progress, 'value', { label: 'Progress', min: 0, max: 1 })
+    endDrawPlaneFolder.addBinding(material.smooth, 'value', { label: 'Smooth', min: 0, max: 1 })
+    endDrawPlaneFolder.addBinding(material.colorA, 'value', { label: 'Color A', color: { type: 'float' } })
+    endDrawPlaneFolder.addBinding(material.colorB, 'value', { label: 'Color B', color: { type: 'float' } })
   }
 }

@@ -28,6 +28,7 @@ import {
 	BackgroundMaterial,
 	ParticlesMaterial,
 	GodraysMaterial,
+	DrawMaterial,
 } from './materials'
 import {
 	getDisplacement,
@@ -36,6 +37,7 @@ import {
 
 import { noiseTexture as godraysNoiseTexture } from './materials/godrays'
 import { noiseTexture as particlesNoiseTexture } from './materials/particles'
+import { noiseTexture as drawNoiseTexture } from './materials/draw'
 
 //
 // Refs / State
@@ -62,13 +64,14 @@ let scene,
 	godrays,
 	background,
 	particles,
+	endDrawMaterial,
 	statsPanel
 
 const textures = new Map()
 
 const dofParams = Object.freeze({
 	focusDistance: uniform(7.4),
-	focalLength: uniform(7.3),
+	focalLength: uniform(11),
 	bokehScale: uniform(8),
 })
 
@@ -85,6 +88,8 @@ onMounted(async () => {
 	createSea()
 	createBackground()
 	createGodrays()
+
+	createWinDrawingPlane()
 
 	await createParticles()
 
@@ -106,7 +111,7 @@ onMounted(async () => {
 
 	if (isDebug) {
 		const { Debug } = await import('./Debug')
-		new Debug(dofParams, godrays, background, particles)
+		new Debug(dofParams, godrays, background, particles, endDrawMaterial)
 
 		const { default: Stats } = await import('stats-gl')
 		statsPanel = new Stats({
@@ -216,6 +221,7 @@ async function loadTextures() {
 	seaNoiseTexture.value = textures.get('noise')
 	godraysNoiseTexture.value = textures.get('noise')
 	particlesNoiseTexture.value = textures.get('noise')
+	drawNoiseTexture.value = textures.get('noise')
 }
 
 async function createParticles() {
@@ -266,6 +272,17 @@ function createGodrays() {
 	godrays.position.set(0, 1.5, -1.3)
 
 	scene.add(godrays)
+}
+
+async function createWinDrawingPlane() {
+	const map = await textureLoader.load('/webgl/draw/product-outline.png')
+	map.colorSpace = THREE.NoColorSpace
+
+	const geometry = new THREE.PlaneGeometry(1.24, 1.74, 1, 1)
+	endDrawMaterial = new DrawMaterial(map)
+	const mesh = new THREE.Mesh(geometry, endDrawMaterial.material)
+
+	scene.add(mesh)
 }
 
 function createSea() {
