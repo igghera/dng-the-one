@@ -1,6 +1,8 @@
 import { SpriteNodeMaterial, AdditiveBlending } from 'three/webgpu'
 import { instancedBufferAttribute, Fn, mx_noise_vec3, time, remap, positionWorld, texture } from 'three/tsl'
 
+export const noiseTexture = texture(null)
+
 export class ParticlesMaterial {
   constructor(map, positionsAttribute) {
     this.material = new SpriteNodeMaterial({
