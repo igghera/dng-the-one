@@ -35,6 +35,7 @@ import {
 } from './materials/floor'
 
 import { noiseTexture as godraysNoiseTexture } from './materials/godrays'
+import { noiseTexture as particlesNoiseTexture } from './materials/particles'
 
 //
 // Refs / State
@@ -84,7 +85,7 @@ onMounted(async () => {
 	createBackground()
 	createGodrays()
 
-	await createParticles()
+	// await createParticles()
 
 	createPostprocessing()
 
@@ -213,6 +214,7 @@ async function loadTextures() {
 
 	seaNoiseTexture.value = textures.get('noise')
 	godraysNoiseTexture.value = textures.get('noise')
+	particlesNoiseTexture.value = textures.get('noise')
 }
 
 async function createParticles() {

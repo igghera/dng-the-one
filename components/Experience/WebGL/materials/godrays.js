@@ -1,7 +1,6 @@
 import { MeshBasicNodeMaterial, DoubleSide, AdditiveBlending } from 'three/webgpu'
 import {
   Fn,
-  vec4,
   uniform,
   positionLocal,
   If,
@@ -22,10 +21,11 @@ export const scaleBottom = uniform(1.65)
 export const scaleHeight = uniform(1)
 export const noiseScale = uniform(0.6)
 export const godraysColor = uniform(color(1, 1, 1))
+export const opacity = uniform(0.2)
 export const timeSpeed = uniform(0.07)
 export const smoothTop = uniform(0.1)
-export const smoothBottom = uniform(0.1)
-export const fresnelPower = uniform(1.5)
+export const smoothBottom = uniform(0.22)
+export const fresnelPower = uniform(3)
 
 export const noiseTexture = texture(null)
 
@@ -33,7 +33,7 @@ export const GodraysMaterial = new MeshBasicNodeMaterial({
   transparent: true,
   side: DoubleSide,
   blending: AdditiveBlending,
-  opacity: 0.2,
+  color: 0x000000,
   depthWrite: false
 })
 
@@ -51,20 +51,16 @@ GodraysMaterial.positionNode = Fn(() => {
   return pos
 })()
 
-GodraysMaterial.colorNode = Fn(() => {
-  const customUV = normalLocal.mul(noiseScale).add(time.mul(timeSpeed))
-  const noise = texture(noiseTexture, customUV).g
-
+GodraysMaterial.opacityNode = Fn(() => {
+  const customUV = normalLocal.xy.mul(noiseScale).add(time.mul(timeSpeed))
+  const noise = texture(noiseTexture, customUV)
   const smooth = smoothstep(0, smoothBottom, uv().y).mul(smoothstep(0, smoothTop, uv().y.oneMinus()))
-
   const viewDirection = cameraPosition.sub(positionWorld).normalize()
   const invertedFresnel = dot(normalWorld, viewDirection).abs().pow(fresnelPower)
 
-  const alpha = noise.mul(invertedFresnel).mul(smooth)
-
-  return vec4(0, 0, 0, alpha)
+  return noise.g.mulAssign(invertedFresnel).mulAssign(smooth).mulAssign(opacity)
 })()
 
 GodraysMaterial.emissiveNode = Fn(() => {
-  return vec4(godraysColor, 1)
+  return godraysColor
 })()

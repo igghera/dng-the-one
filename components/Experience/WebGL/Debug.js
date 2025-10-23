@@ -6,12 +6,12 @@ import {
 } from './materials/floor'
 
 import {
-  GodraysMaterial,
   scaleBottom as godraysScaleBottom,
   scaleTop as godraysScaleTop,
   scaleHeight as godraysScaleHeight,
   noiseScale as godraysNoiseScale,
   godraysColor,
+  opacity as godraysOpacity,
   timeSpeed as godraysTimeSpeed,
   smoothTop as godraysSmoothTop,
   smoothBottom as godraysSmoothBottom,
@@ -88,10 +88,10 @@ export class Debug {
 
     godraysFolder.addBlade({ view: 'separator' })
 
-    godraysFolder.addBinding(GodraysMaterial, 'opacity', { label: 'Opacity', min: 0.01, max: 1 })
+    godraysFolder.addBinding(godraysOpacity, 'value', { label: 'Opacity', min: 0.01, max: 1 })
     godraysFolder.addBinding(godraysNoiseScale, 'value', { label: 'Amount', min: 0.1, max: 3 })
     godraysFolder.addBinding(godraysTimeSpeed, 'value', { label: 'Speed', min: 0, max: 0.5 })
-    godraysFolder.addBinding(godraysFresnelPower, 'value', { label: 'Fresnel Power', min: 0.1, max: 5 })
+    godraysFolder.addBinding(godraysFresnelPower, 'value', { label: 'Fresnel Power', min: 0.1, max: 8 })
 
     godraysFolder.addBlade({ view: 'separator' })
 
