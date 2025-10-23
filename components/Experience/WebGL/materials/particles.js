@@ -1,7 +1,10 @@
 import { SpriteNodeMaterial, AdditiveBlending } from 'three/webgpu'
-import { instancedBufferAttribute, Fn, mx_noise_vec3, time, remap, positionWorld, texture } from 'three/tsl'
+import { instancedBufferAttribute, Fn, mx_noise_vec3, time, remap, uniform, texture } from 'three/tsl'
 
 export const noiseTexture = texture(null)
+
+export const sizeMin = uniform(0.0045)
+export const sizeMax = uniform(0.02)
 
 export class ParticlesMaterial {
   constructor(map, positionsAttribute) {
@@ -13,28 +16,29 @@ export class ParticlesMaterial {
       sizeAttenuation: true,
     })
 
+    const originalPosition = instancedBufferAttribute(positionsAttribute)
+
+    const getNoise = Fn(() => {
+      return mx_noise_vec3(originalPosition.add(time.mul(0.1)), 2)
+    })
+
     this.material.positionNode = Fn(() => {
-      const originalPosition = instancedBufferAttribute(positionsAttribute)
-      const noise = mx_noise_vec3(originalPosition.add(time.mul(0.1)), 2).mul(0.1)
-      return originalPosition.add(noise)
+      return originalPosition.add(getNoise().mul(0.2))
     })()
 
     this.material.scaleNode = Fn(() => {
-      const noise = mx_noise_vec3(positionWorld.add(time.mul(0.34)), 5).mul(0.5)
-      const value = remap(noise.y, -1, 1, 0.01, 0.025)
+      const value = remap(getNoise().y, -1, 1, sizeMin, sizeMax)
 
       return value.toVec2()
     })()
 
     this.material.colorNode = Fn(() => {
-      const tex0 = texture(map)
+      return texture(map)
+    })()
 
-      const noise = mx_noise_vec3(positionWorld.add(time.mul(0.34)), 5).mul(0.5)
-      const alpha = remap(noise.x, -0.3, 1, 0, 1)
-
-      tex0.mulAssign(alpha)
-
-      return tex0
+    this.material.opacityNode = Fn(() => {
+      const noise = getNoise().remap(0, 1, 0, 1)
+      return noise
     })()
   }
 }

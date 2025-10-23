@@ -61,13 +61,14 @@ let scene,
 	postProcessing,
 	godrays,
 	background,
+	particles,
 	statsPanel
 
 const textures = new Map()
 
 const dofParams = Object.freeze({
-	focusDistance: uniform(4.9),
-	focalLength: uniform(8.4),
+	focusDistance: uniform(7.4),
+	focalLength: uniform(7.3),
 	bokehScale: uniform(8),
 })
 
@@ -85,7 +86,7 @@ onMounted(async () => {
 	createBackground()
 	createGodrays()
 
-	// await createParticles()
+	await createParticles()
 
 	createPostprocessing()
 
@@ -105,7 +106,7 @@ onMounted(async () => {
 
 	if (isDebug) {
 		const { Debug } = await import('./Debug')
-		new Debug(dofParams, godrays, background)
+		new Debug(dofParams, godrays, background, particles)
 
 		const { default: Stats } = await import('stats-gl')
 		statsPanel = new Stats({
@@ -221,15 +222,16 @@ async function createParticles() {
 	const map = await textureLoader.load('/webgl/particle.webp')
 	map.colorSpace = THREE.SRGBColorSpace
 
-	const count = 900
+	const count = 9000
 	const positions = new Float32Array(count * 3)
 
-	let i, radius
+	let i
 	for (i = 0; i < count; i++) {
-		radius = gsap.utils.random(0.15, 1)
-		const x = Math.cos(i * 0.01 * Math.PI * 2) * radius
-		const y = Math.random() * 4 - 1
-		const z = Math.sin(i * 0.01 * Math.PI * 2) * radius
+		const rnd = Math.random()
+		const easedRandom = gsap.parseEase('circ.inOut')(rnd)
+		const x = gsap.utils.mapRange(0, 1, -5, 5, easedRandom)
+		const y = gsap.utils.random(-1, 3)
+		const z = gsap.utils.random(-4, 1)
 
 		positions[i * 3 + 0] = x
 		positions[i * 3 + 1] = y
@@ -239,7 +241,7 @@ async function createParticles() {
 
 	const { material } = new ParticlesMaterial(map, positionsAttribute)
 
-	const particles = new THREE.Sprite(material)
+	particles = new THREE.Sprite(material)
 	particles.count = count
 
 	scene.add(particles)
@@ -272,14 +274,14 @@ function createSea() {
 	reflection.target.position.y = -1
 
 	const uvDisplacement = Fn(() => {
-		return vec2(getDisplacement.x.mul(0.3), getDisplacement.y.mul(0.3))
+		return vec2(getDisplacement().x.mul(0.3), getDisplacement().y.mul(0.3))
 	})()
 
 	reflection.uvNode = reflection.uvNode.add(uvDisplacement)
 
 	scene.add(reflection.target)
 
-	FloorMaterial.emissiveNode = reflection.mul(0.7)
+	FloorMaterial.emissiveNode = reflection.mul(0.5)
 
 	const geometry = new THREE.PlaneGeometry(20, 10, 250, 150)
 	geometry.rotateX(-Math.PI / 2)
@@ -291,7 +293,7 @@ function createSea() {
 function createControls() {
 	controls = new OrbitControls(camera, renderer.domElement)
 	controls.enableDamping = true
-	controls.enableZoom = false
+	controls.enableZoom = true
 }
 
 function createPostprocessing() {

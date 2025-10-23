@@ -22,8 +22,13 @@ import {
   progress as backgroundProgress,
 } from './materials/background'
 
+import {
+  sizeMin as particlesSizeMin,
+  sizeMax as particlesSizeMax,
+} from './materials/particles'
+
 export class Debug {
-  constructor(dof, godrays, background) {
+  constructor(dof, godrays, background, particles) {
     this.pane = new Pane({
       title: 'Debug',
       container: document.getElementById('debug-wrapper'),
@@ -33,6 +38,7 @@ export class Debug {
     this.createSea()
     this.createDof(dof)
     this.createGodrays(godrays)
+    this.createParticles(particles)
   }
 
   createBackground(background) {
@@ -56,7 +62,7 @@ export class Debug {
     })
 
     sea.addBinding(displacementStrength, 'value', { label: 'Strength', min: 0, max: 2 })
-    sea.addBinding(timeScale, 'value', { label: 'Time Scale', min: 0, max: 0.03, step: 0.001 })
+    sea.addBinding(timeScale, 'value', { label: 'Speed', min: -0.1, max: 0.1, step: 0.001 })
   }
 
   createDof(dof) {
@@ -73,7 +79,7 @@ export class Debug {
   createGodrays(godrays) {
     const godraysFolder = this.pane.addFolder({
       title: 'Godrays',
-      expanded: true,
+      expanded: false,
     })
 
     godraysFolder.addBinding(godrays.position, 'x', { label: 'Position X', min: -3, max: 3 })
@@ -98,5 +104,15 @@ export class Debug {
     godraysFolder.addBinding(godraysColor, 'value', { label: 'Color', color: { type: 'float' } })
     godraysFolder.addBinding(godraysSmoothTop, 'value', { label: 'Smooth Top', min: 0, max: 1 })
     godraysFolder.addBinding(godraysSmoothBottom, 'value', { label: 'Smooth Bottom', min: 0, max: 1 })
+  }
+
+  createParticles(particles) {
+    const particlesFolder = this.pane.addFolder({
+      title: 'Particles',
+      expanded: true,
+    })
+
+    particlesFolder.addBinding(particlesSizeMin, 'value', { label: 'Size Min', min: 0, max: 0.05, step: 0.0005 })
+    particlesFolder.addBinding(particlesSizeMax, 'value', { label: 'Size Max', min: 0, max: 0.1, step: 0.0005 })
   }
 }
