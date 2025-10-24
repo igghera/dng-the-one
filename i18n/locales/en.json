@@ -44,6 +44,37 @@
     ]
   },
 
+  "experience_end": {
+    "intro_title": [
+      "Just a moment.<br>We're unveiling your",
+      "The One Aura"
+    ],
+    "title": "My The One aura is",
+    "options": [
+      {
+        "title": "Elegant",
+        "copy": "Your aura moves before you do, a silent force that draws every gaze"
+      },
+      {
+        "title": "Option 2",
+        "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
+      },
+      {
+        "title": "Option 3",
+        "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
+      },
+      {
+        "title": "Option 4",
+        "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
+      },
+      {
+        "title": "Option 5",
+        "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
+      }
+    ],
+    "cta": "Press & Hold"
+  },
+
   "results": {
     "pre_title": "Your the one aura match with:"
   },

@@ -159,6 +159,7 @@ import { get } from '@vueuse/core'
 // Refs / State
 //
 const appStore = useAppStore()
+const uiStore = useUiStore()
 
 const { rt, tm } = useI18n()
 const { gsap, Draggable, Flip } = useGSAP()
@@ -230,7 +231,12 @@ onMounted(() => {
 			yPercent: () => (get(isPortrait) ? 5 : -25),
 		})
 
-		const tl = gsap.timeline()
+		const tl = gsap.timeline({
+			onComplete: () => {
+				uiStore.setExperienceStep03Visible(false)
+				uiStore.setExperienceEndVisible(true)
+			},
+		})
 		tl.addLabel('start')
 
 		// Fade out other items

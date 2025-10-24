@@ -4,9 +4,10 @@ import { Draggable } from 'gsap/Draggable'
 import { InertiaPlugin } from 'gsap/InertiaPlugin'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 import { Flip } from 'gsap/Flip'
+import { SplitText } from 'gsap/SplitText'
 
 export function useGSAP() {
-  gsap.registerPlugin(Observer, Draggable, InertiaPlugin, DrawSVGPlugin, Flip)
+  gsap.registerPlugin(Observer, Draggable, InertiaPlugin, DrawSVGPlugin, Flip, SplitText)
 
   gsap.ticker.fps(60)
 
@@ -14,6 +15,7 @@ export function useGSAP() {
     gsap,
     Observer,
     Draggable,
-    Flip
+    Flip,
+    SplitText
   }
 }

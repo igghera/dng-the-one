@@ -28,7 +28,7 @@ import {
 	BackgroundMaterial,
 	ParticlesMaterial,
 	GodraysMaterial,
-	DrawMaterial,
+	experienceEndDrawMaterial,
 } from './materials'
 import {
 	getDisplacement,
@@ -64,7 +64,7 @@ let scene,
 	godrays,
 	background,
 	particles,
-	endDrawMaterial,
+	debugPanel,
 	statsPanel
 
 const textures = new Map()
@@ -107,11 +107,18 @@ onMounted(async () => {
 		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
 
 		statsPanel?.update()
+		debugPanel?.pane?.refresh()
 	})
 
 	if (isDebug) {
 		const { Debug } = await import('./Debug')
-		new Debug(dofParams, godrays, background, particles, endDrawMaterial)
+		debugPanel = new Debug(
+			dofParams,
+			godrays,
+			background,
+			particles,
+			experienceEndDrawMaterial
+		)
 
 		const { default: Stats } = await import('stats-gl')
 		statsPanel = new Stats({
@@ -137,6 +144,26 @@ onMounted(async () => {
 
 		document.getElementById('stats-wrapper').appendChild(statsPanel.dom)
 	}
+})
+
+//
+// Events
+//
+emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
+	gsap.fromTo(
+		experienceEndDrawMaterial.progress,
+		{
+			value: 0,
+		},
+		{
+			value: 1,
+			duration: 2.5,
+			ease: 'power1.out',
+			onComplete: () => {
+				emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE)
+			},
+		}
+	)
 })
 
 //
@@ -276,11 +303,11 @@ function createGodrays() {
 
 async function createWinDrawingPlane() {
 	const map = await textureLoader.load('/webgl/draw/product-outline.png')
-	map.colorSpace = THREE.NoColorSpace
+	map.colorSpace = THREE.SRGBColorSpace
 
 	const geometry = new THREE.PlaneGeometry(1.24, 1.74, 1, 1)
-	endDrawMaterial = new DrawMaterial(map)
-	const mesh = new THREE.Mesh(geometry, endDrawMaterial.material)
+	experienceEndDrawMaterial.init(map)
+	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
 	scene.add(mesh)
 }

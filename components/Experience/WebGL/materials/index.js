@@ -4,4 +4,12 @@ import { ParticlesMaterial } from './particles'
 import { GodraysMaterial } from './godrays'
 import { DrawMaterial } from './draw'
 
-export { FloorMaterial, BackgroundMaterial, ParticlesMaterial, GodraysMaterial, DrawMaterial }
+const experienceEndDrawMaterial = new DrawMaterial()
+
+export {
+  FloorMaterial,
+  BackgroundMaterial,
+  ParticlesMaterial,
+  GodraysMaterial,
+  experienceEndDrawMaterial,
+}

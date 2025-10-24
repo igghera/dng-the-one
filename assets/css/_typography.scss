@@ -10,6 +10,16 @@
   }
 }
 
+.display-1-alt {
+  @apply leading-none tracking-[0.05em];
+
+  font-size: toRem(26);
+
+  @screen lg {
+    font-size: toRem(75);
+  }
+}
+
 .display-2 {
   @apply leading-none tracking-[0.05em];
 
@@ -111,6 +121,16 @@
     @apply leading-none;
 
     font-size: toRem(26);
+  }
+}
+
+.body-8 {
+  @apply leading-none tracking-[0.05em];
+
+  font-size: toRem(16);
+
+  @screen lg {
+    font-size: toRem(30);
   }
 }
 
