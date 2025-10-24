@@ -12,9 +12,10 @@ export class BackgroundMaterial {
     })
 
     this.material = new MeshBasicNodeMaterial({
-      color: 0x0000ff,
+      color: 0x000000,
       transparent: true,
-      dithering: false
+      dithering: true,
+      visible: true
     })
 
     this.material.colorNode = Fn(() => {

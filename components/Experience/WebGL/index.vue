@@ -16,7 +16,15 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
-import { reflector, vec2, Fn, pass, uniform } from 'three/tsl'
+import {
+	reflector,
+	vec2,
+	Fn,
+	pass,
+	uniform,
+	positionWorld,
+	float,
+} from 'three/tsl'
 import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
@@ -102,7 +110,7 @@ onMounted(async () => {
 	createPostprocessing()
 	createMouse()
 
-	if (isDebug) createControls()
+	// if (isDebug) createControls()
 
 	gsap.ticker.add(time => {
 		if (!get(visible)) return
@@ -195,7 +203,7 @@ watch([componentWidth, componentHeight], value => {
 function updateScene(time = 0) {
 	controls?.update()
 
-	// offset camera on pointer movement
+	// Offset camera on pointer movement
 	tickSinceLastPointerMove++
 	tickSinceLastPointerMove > 5 && (pointerIsMoving = false)
 
@@ -208,9 +216,9 @@ function updateScene(time = 0) {
 
 	camera.lookAt(0, 0, -5)
 
-	camera.position.x = cameraPositionOffset.x * 0.2
-	camera.position.y = cameraPositionOffset.y * 0.2
-	camera.rotation.z = cameraRotationOffset.value * 0.25
+	camera.position.x = cameraPositionOffset.x * 0.1
+	camera.position.y = cameraPositionOffset.y * 0.1
+	camera.rotation.z = cameraRotationOffset.value * 0.15
 }
 
 function createScene() {
@@ -222,7 +230,7 @@ function createCamera() {
 		40,
 		get(componentWidth) / get(componentHeight),
 		0.1,
-		20
+		50
 	)
 
 	camera.position.set(0, 0.5, 4)
@@ -349,7 +357,16 @@ function createSea() {
 
 	scene.add(reflection.target)
 
-	FloorMaterial.emissiveNode = reflection.mul(0.5)
+	const getReflectivity = Fn(() => {
+		const base = float(0.45)
+		const value = positionWorld.x.div(2).abs().clamp(0, 1).oneMinus()
+
+		const x = base.add(value).clamp(0, 1)
+
+		return x
+	})
+
+	FloorMaterial.emissiveNode = reflection.mul(getReflectivity()).mul(0.6)
 
 	const geometry = new THREE.PlaneGeometry(20, 10, 250, 150)
 	geometry.rotateX(-Math.PI / 2)
@@ -405,6 +422,7 @@ function createPostprocessing() {
 	)
 
 	postProcessing.outputNode = dofPass
+	// postProcessing.outputNode = scenePass
 }
 
 function setBackgroundSize() {

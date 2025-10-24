@@ -14,6 +14,7 @@ export class ParticlesMaterial {
       blending: AdditiveBlending,
       transparent: true,
       sizeAttenuation: true,
+      visible: true
     })
 
     const originalPosition = instancedBufferAttribute(positionsAttribute)

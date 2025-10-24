@@ -34,7 +34,8 @@ export const GodraysMaterial = new MeshBasicNodeMaterial({
   side: DoubleSide,
   blending: AdditiveBlending,
   color: 0x000000,
-  depthWrite: false
+  depthWrite: false,
+  visible: true
 })
 
 GodraysMaterial.positionNode = Fn(() => {

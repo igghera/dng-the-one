@@ -2,7 +2,7 @@ import { Pane } from 'tweakpane'
 
 import {
   timeScale,
-  displacementStrength,
+  displacementStrength
 } from './materials/floor'
 
 import {
@@ -19,7 +19,7 @@ import {
 } from './materials/godrays'
 
 import {
-  progress as backgroundProgress,
+  progress as backgroundProgress
 } from './materials/background'
 
 import {
@@ -45,7 +45,7 @@ export class Debug {
   createBackground(background) {
     const backgroundFolder = this.pane.addFolder({
       title: 'Background',
-      expanded: false,
+      expanded: true,
     })
 
     backgroundFolder.addBinding(background.position, 'z', { label: 'Depth', min: -10, max: -3 })
@@ -120,7 +120,7 @@ export class Debug {
   createEndDrawPlane(material) {
     const endDrawPlaneFolder = this.pane.addFolder({
       title: 'End Draw Plane',
-      expanded: true,
+      expanded: false,
     })
 
     endDrawPlaneFolder.addBinding(material.progress, 'value', { label: 'Progress', min: 0, max: 1 })

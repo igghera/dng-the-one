@@ -1,5 +1,5 @@
 import { MeshBasicNodeMaterial } from 'three/webgpu'
-import { uniform, Fn, positionLocal, time, vec2, vec3, vec4, texture, uv } from 'three/tsl'
+import { uniform, Fn, positionLocal, time, vec2, vec3, texture, uv } from 'three/tsl'
 
 export const FloorMaterial = new MeshBasicNodeMaterial()
 
@@ -69,5 +69,5 @@ FloorMaterial.normalNode = Fn(() => {
 })()
 
 FloorMaterial.colorNode = Fn(() => {
-  return vec4(0, 0, 0, 1)
+  return vec3(0)
 })()
