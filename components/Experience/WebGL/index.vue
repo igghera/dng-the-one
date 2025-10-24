@@ -42,7 +42,7 @@ import { noiseTexture as drawNoiseTexture } from './materials/draw'
 //
 // Refs / State
 //
-const { gsap } = useGSAP()
+const { gsap, Observer } = useGSAP()
 
 const el = useCurrentElement()
 const canvasRef = useTemplateRef('canvasRef')
@@ -65,7 +65,13 @@ let scene,
 	background,
 	particles,
 	debugPanel,
-	statsPanel
+	statsPanel,
+	pointerObserver,
+	pointerIsMoving = false,
+	tickSinceLastPointerMove = 0
+
+const cameraRotationOffset = { value: 0 }
+const cameraPositionOffset = { x: 0, y: 0 }
 
 const textures = new Map()
 
@@ -94,6 +100,7 @@ onMounted(async () => {
 	await createParticles()
 
 	createPostprocessing()
+	createMouse()
 
 	if (isDebug) createControls()
 
@@ -187,6 +194,23 @@ watch([componentWidth, componentHeight], value => {
 //
 function updateScene(time = 0) {
 	controls?.update()
+
+	// offset camera on pointer movement
+	tickSinceLastPointerMove++
+	tickSinceLastPointerMove > 5 && (pointerIsMoving = false)
+
+	if (!pointerIsMoving) {
+		cameraRotationOffset.value *= 0.9999
+
+		Math.abs(cameraRotationOffset.value) < 0.0005 &&
+			(cameraRotationOffset.value = 0)
+	}
+
+	camera.lookAt(0, 0, -5)
+
+	camera.position.x = cameraPositionOffset.x * 0.2
+	camera.position.y = cameraPositionOffset.y * 0.2
+	camera.rotation.z = cameraRotationOffset.value * 0.25
 }
 
 function createScene() {
@@ -332,6 +356,31 @@ function createSea() {
 	const mesh = new THREE.Mesh(geometry, FloorMaterial)
 	mesh.position.y = -1
 	scene.add(mesh)
+}
+
+function createMouse() {
+	pointerObserver = Observer.create({
+		type: 'pointer,touch',
+		onMove(observer) {
+			pointerIsMoving = true
+			tickSinceLastPointerMove = 0
+
+			const { y, x, deltaX } = observer
+
+			gsap.to(cameraRotationOffset, {
+				value: () => deltaX / get(componentWidth),
+				duration: 0.4,
+				overwrite: true,
+			})
+
+			gsap.to(cameraPositionOffset, {
+				x: () => (x / get(componentWidth)) * 2 - 1,
+				y: () => -(y / get(componentHeight)) * 2 + 1,
+				duration: 1,
+				overwrite: true,
+			})
+		},
+	})
 }
 
 function createControls() {
