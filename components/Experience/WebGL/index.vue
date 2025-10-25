@@ -6,11 +6,6 @@
 			:width="componentWidth"
 			:height="componentHeight"
 		/>
-
-		<ClientOnly>
-			<div id="stats-wrapper" v-if="isDebug"></div>
-			<div id="debug-wrapper" v-if="isDebug"></div>
-		</ClientOnly>
 	</div>
 </template>
 
@@ -25,7 +20,7 @@ import {
 	positionWorld,
 	float,
 } from 'three/tsl'
-import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
+// import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
@@ -110,7 +105,7 @@ onMounted(async () => {
 	createPostprocessing()
 	createMouse()
 
-	// if (isDebug) createControls()
+	if (isDebug) createControls()
 
 	gsap.ticker.add(time => {
 		if (!get(visible)) return
@@ -203,6 +198,8 @@ watch([componentWidth, componentHeight], value => {
 function updateScene(time = 0) {
 	controls?.update()
 
+	if (isDebug) return
+
 	// Offset camera on pointer movement
 	tickSinceLastPointerMove++
 	tickSinceLastPointerMove > 5 && (pointerIsMoving = false)
@@ -244,11 +241,11 @@ async function createRenderer() {
 		antialias: true,
 	})
 
-	await renderer.init()
-
+	renderer.setClearColor(0x000000, 1)
 	renderer.toneMapping = THREE.ACESFilmicToneMapping
-
 	renderer.setSize(get(componentWidth), get(componentHeight))
+
+	await renderer.init()
 }
 
 async function loadTextures() {
@@ -413,16 +410,17 @@ function createPostprocessing() {
 	const scenePassColor = scenePass.getTextureNode()
 	const scenePassViewZ = scenePass.getViewZNode()
 
-	const dofPass = dof(
-		scenePassColor,
-		scenePassViewZ,
-		dofParams.focusDistance,
-		dofParams.focalLength,
-		dofParams.bokehScale
-	)
+	postProcessing.outputNode = scenePass
 
-	postProcessing.outputNode = dofPass
-	// postProcessing.outputNode = scenePass
+	// const dofPass = dof(
+	// 	scenePassColor,
+	// 	scenePassViewZ,
+	// 	dofParams.focusDistance,
+	// 	dofParams.focalLength,
+	// 	dofParams.bokehScale
+	// )
+
+	// postProcessing.outputNode = dofPass
 }
 
 function setBackgroundSize() {
@@ -440,13 +438,5 @@ function setBackgroundSize() {
 
 .canvas {
 	@apply w-full h-full;
-}
-
-#debug-wrapper {
-	@apply absolute z-[1] right-10 top-20 w-80;
-}
-
-#stats-wrapper {
-	@apply absolute z-[1] left-1 top-20;
 }
 </style>
