@@ -3,6 +3,7 @@ import { Fn, uniform, vec2, vec4, uv, step, pow, dot, screenSize, abs, length, m
 
 export const progress = uniform(1)
 export const radius = uniform(0.1)
+export const borderWidth = uniform(0.015)
 
 export const MaskMaterial = new MeshBasicNodeMaterial({
   color: 0xffffff
@@ -33,9 +34,12 @@ MaskMaterial.colorNode = Fn(() => {
   const scale = remap(progress, 0, 1, 1, 0.5)
   const rad = remap(progress, 0, 1, radius.mul(0.8), radius.mul(0.25))
 
+  const colorMask = sdfRoundedRect(p, vec2(width.sub(borderWidth), height.sub(borderWidth)).mul(scale.sub(vec2())), rad)
+  const borderMask = sdfRoundedRect(p, vec2(width, height).mul(scale), rad).sub(colorMask)
+
   return vec4(
-    sdfRoundedRect(p, vec2(width, height).mul(scale), rad),
-    0,
+    colorMask,
+    borderMask,
     0,
     1
   )

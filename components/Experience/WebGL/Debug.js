@@ -29,7 +29,8 @@ import {
 
 import {
   progress as maskProgress,
-  radius as maskRadius
+  radius as maskRadius,
+  borderWidth as maskBorderWidth
 } from './materials/mask'
 
 export class Debug {
@@ -143,5 +144,6 @@ export class Debug {
 
     maskFolder.addBinding(maskProgress, 'value', { label: 'Progress', min: 0, max: 1 })
     maskFolder.addBinding(maskRadius, 'value', { label: 'Radius', min: 0, max: 1, step: 0.01 })
+    maskFolder.addBinding(maskBorderWidth, 'value', { label: 'Border Width', min: 0, max: 0.05, step: 0.001 })
   }
 }
