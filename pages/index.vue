@@ -21,6 +21,7 @@ const isDebug = Object.hasOwn(urlParams, 'debug')
 onMounted(async () => {
 	if (isDebug) {
 		const eruda = await import('eruda')
+		console.log(eruda)
 		eruda.init({
 			container: document.getElementById('eruda-wrapper'),
 			tools: ['console'],
