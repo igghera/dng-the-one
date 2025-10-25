@@ -32,6 +32,7 @@ import {
 	ParticlesMaterial,
 	GodraysMaterial,
 	experienceEndDrawMaterial,
+	MaskMaterial,
 } from './materials'
 import {
 	getDisplacement,
@@ -71,7 +72,9 @@ let scene,
 	statsPanel,
 	pointerObserver,
 	pointerIsMoving = false,
-	tickSinceLastPointerMove = 0
+	tickSinceLastPointerMove = 0,
+	maskScene,
+	maskCamera
 
 const cameraRotationOffset = { value: 0 }
 const cameraPositionOffset = { x: 0, y: 0 }
@@ -90,6 +93,7 @@ const dofParams = Object.freeze({
 onMounted(async () => {
 	createScene()
 	createCamera()
+	createMask()
 
 	await createRenderer()
 	await loadTextures()
@@ -112,7 +116,8 @@ onMounted(async () => {
 
 		updateScene(time)
 		// renderer.renderAsync(scene, camera)
-		postProcessing.renderAsync()
+		renderer.renderAsync(maskScene, maskCamera)
+		// postProcessing.renderAsync()
 
 		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
 
@@ -403,14 +408,28 @@ function createControls() {
 	controls.enableZoom = true
 }
 
+function createMask() {
+	maskScene = new THREE.Scene()
+	maskCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+
+	const geometry = new THREE.PlaneGeometry(2, 2)
+	const mesh = new THREE.Mesh(geometry, MaskMaterial)
+
+	maskScene.add(mesh)
+}
+
 function createPostprocessing() {
 	postProcessing = new THREE.PostProcessing(renderer)
 
 	const scenePass = pass(scene, camera)
-	const scenePassColor = scenePass.getTextureNode()
-	const scenePassViewZ = scenePass.getViewZNode()
+	const mask = pass(maskScene, maskCamera)
 
-	postProcessing.outputNode = scenePass
+	// const scenePassColor = scenePass.getTextureNode()
+	// const scenePassViewZ = scenePass.getViewZNode()
+
+	let compose = scenePass.mul(mask.r)
+
+	postProcessing.outputNode = compose
 
 	// const dofPass = dof(
 	// 	scenePassColor,

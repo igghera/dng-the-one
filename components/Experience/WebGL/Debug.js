@@ -27,6 +27,11 @@ import {
   sizeMax as particlesSizeMax,
 } from './materials/particles'
 
+import {
+  progress as maskProgress,
+  radius as maskRadius
+} from './materials/mask'
+
 export class Debug {
   constructor(dof, godrays, background, particles, endDrawMaterial) {
     this.pane = new Pane({
@@ -40,12 +45,13 @@ export class Debug {
     this.createGodrays(godrays)
     this.createParticles(particles)
     this.createEndDrawPlane(endDrawMaterial)
+    this.createMask()
   }
 
   createBackground(background) {
     const backgroundFolder = this.pane.addFolder({
       title: 'Background',
-      expanded: true,
+      expanded: false,
     })
 
     backgroundFolder.addBinding(background.position, 'z', { label: 'Depth', min: -10, max: -3 })
@@ -127,5 +133,15 @@ export class Debug {
     endDrawPlaneFolder.addBinding(material.smooth, 'value', { label: 'Smooth', min: 0, max: 1 })
     endDrawPlaneFolder.addBinding(material.colorA, 'value', { label: 'Color A', color: { type: 'float' } })
     endDrawPlaneFolder.addBinding(material.colorB, 'value', { label: 'Color B', color: { type: 'float' } })
+  }
+
+  createMask() {
+    const maskFolder = this.pane.addFolder({
+      title: 'Mask',
+      expanded: true,
+    })
+
+    maskFolder.addBinding(maskProgress, 'value', { label: 'Progress', min: 0, max: 1 })
+    maskFolder.addBinding(maskRadius, 'value', { label: 'Radius', min: 0, max: 1, step: 0.01 })
   }
 }
