@@ -21,6 +21,7 @@ import {
 	float,
 	screenUV,
 	mix,
+	time,
 } from 'three/tsl'
 // import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
@@ -441,6 +442,7 @@ function createPostprocessing() {
 	const angleOffset = (Math.PI / 180) * 70
 
 	const borderMix = angle
+		.add(time)
 		.add(angleOffset)
 		.mul(2)
 		.sin()
