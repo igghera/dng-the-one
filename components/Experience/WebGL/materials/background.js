@@ -1,5 +1,5 @@
 import { MeshBasicNodeMaterial } from 'three/webgpu'
-import { Fn, uv, smoothstep, uniform, mix, vec4, texture } from 'three/tsl'
+import { Fn, uv, smoothstep, uniform, mix, texture, positionWorld, length, distance } from 'three/tsl'
 
 export const progress = uniform(0)
 
@@ -29,14 +29,23 @@ export class BackgroundMaterial {
       const progressCD = smoothstep(0.625, 0.75, progress)
       const progressDA = smoothstep(0.875, 1, progress)
 
-      const alpha = smoothstep(0.25, 0.95, uv().y).oneMinus()
-
       const col = mix(colA, colB, progressAB)
       col.assign(mix(col, colC, progressBC))
       col.assign(mix(col, colD, progressCD))
       col.assign(mix(col, colA, progressDA))
 
-      return vec4(col.toVec3(), alpha)
+      return col.toVec3()
+    })()
+
+    this.material.opacityNode = Fn(() => {
+      const centerUV = uv().mul(2).sub(1)
+      const distanceFromCenter = length(centerUV.x)
+      distanceFromCenter.assign(smoothstep(0.05, 0.25, distanceFromCenter.oneMinus()))
+
+      const alpha = smoothstep(0.25, 0.95, uv().y).oneMinus()
+      alpha.mulAssign(distanceFromCenter)
+
+      return alpha
     })()
   }
 }

@@ -277,7 +277,7 @@ function createCamera() {
 		40,
 		get(componentWidth) / get(componentHeight),
 		0.1,
-		50
+		20
 	)
 
 	camera.position.set(0, 0.5, 4)
