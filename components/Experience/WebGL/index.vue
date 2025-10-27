@@ -19,6 +19,8 @@ import {
 	uniform,
 	positionWorld,
 	float,
+	screenUV,
+	mix,
 } from 'three/tsl'
 // import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
@@ -42,6 +44,12 @@ import {
 import { noiseTexture as godraysNoiseTexture } from './materials/godrays'
 import { noiseTexture as particlesNoiseTexture } from './materials/particles'
 import { noiseTexture as drawNoiseTexture } from './materials/draw'
+import {
+	maskColorA as maskBorderColorA,
+	maskColorB as maskBorderColorB,
+} from './materials/mask'
+
+import { cart2Polar } from './nodes'
 
 //
 // Refs / State
@@ -116,8 +124,8 @@ onMounted(async () => {
 
 		updateScene(time)
 		// renderer.renderAsync(scene, camera)
-		renderer.renderAsync(maskScene, maskCamera)
-		// postProcessing.renderAsync()
+		// renderer.renderAsync(maskScene, maskCamera)
+		postProcessing.renderAsync()
 
 		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
 
@@ -427,7 +435,25 @@ function createPostprocessing() {
 	// const scenePassColor = scenePass.getTextureNode()
 	// const scenePassViewZ = scenePass.getViewZNode()
 
-	let compose = scenePass.mul(mask.r)
+	const uvScreen = vec2(screenUV.x, screenUV.y.oneMinus())
+	const polar = cart2Polar(uvScreen.sub(0.5))
+	const angle = polar.y.toVar()
+	const angleOffset = (Math.PI / 180) * 70
+
+	const borderMix = angle
+		.add(angleOffset)
+		.mul(2)
+		.sin()
+		.mul(0.5)
+		.add(0.5)
+		.smoothstep(0, 1)
+	const borderColor = mix(maskBorderColorA, maskBorderColorB, borderMix)
+
+	const inner = scenePass.mul(mask.r).toVec4()
+	const outer = borderColor.mul(mask.g).toVec4()
+	const alpha = mask.r.add(mask.g).clamp(0, 1)
+
+	let compose = inner.add(outer).mul(alpha)
 
 	postProcessing.outputNode = compose
 

@@ -30,7 +30,9 @@ import {
 import {
   progress as maskProgress,
   radius as maskRadius,
-  borderWidth as maskBorderWidth
+  borderWidth as maskBorderWidth,
+  maskColorA as maskBorderColorA,
+  maskColorB as maskBorderColorB,
 } from './materials/mask'
 
 export class Debug {
@@ -138,12 +140,14 @@ export class Debug {
 
   createMask() {
     const maskFolder = this.pane.addFolder({
-      title: 'Mask',
+      title: 'End Mask',
       expanded: true,
     })
 
     maskFolder.addBinding(maskProgress, 'value', { label: 'Progress', min: 0, max: 1 })
     maskFolder.addBinding(maskRadius, 'value', { label: 'Radius', min: 0, max: 1, step: 0.01 })
-    maskFolder.addBinding(maskBorderWidth, 'value', { label: 'Border Width', min: 0, max: 0.05, step: 0.001 })
+    maskFolder.addBinding(maskBorderWidth, 'value', { label: 'Border Width', min: 0, max: 0.3, step: 0.001 })
+    maskFolder.addBinding(maskBorderColorA, 'value', { label: 'Border Color A', color: { type: 'float' } })
+    maskFolder.addBinding(maskBorderColorB, 'value', { label: 'Border Color B', color: { type: 'float' } })
   }
 }

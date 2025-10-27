@@ -1,19 +1,14 @@
 import { MeshBasicNodeMaterial } from 'three/webgpu'
-import { Fn, uniform, vec2, vec4, uv, step, pow, dot, screenSize, abs, length, max, min, remap } from 'three/tsl'
+import { Fn, uniform, vec2, vec4, uv, step, screenSize, abs, length, max, min, remap, color } from 'three/tsl'
 
 export const progress = uniform(1)
 export const radius = uniform(0.1)
-export const borderWidth = uniform(0.015)
+export const borderWidth = uniform(0.007)
+export const maskColorA = uniform(color(0.58, 0.41, 0.05))
+export const maskColorB = uniform(color(0.47, 0.21, 0.06))
 
 export const MaskMaterial = new MeshBasicNodeMaterial({
   color: 0xffffff
-})
-
-const getMask = Fn(() => {
-  const uv0 = uv().sub(0.5)
-  uv0.x.mulAssign(screenSize.x.div(screenSize.y))
-
-  return step(pow(radius, 2), dot(uv0, uv0)).oneMinus()
 })
 
 const sdfRoundedRect = Fn(( [p, size, r] ) => {
