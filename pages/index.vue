@@ -1,5 +1,9 @@
 <template>
 	<div class="flex flex-col gap-y-20">
+		<Transition name="fade">
+			<Preloader v-if="uiStore.isPreloaderVisible" />
+		</Transition>
+
 		<Experience />
 
 		<ExperienceResults />
@@ -15,6 +19,8 @@
 </template>
 
 <script setup>
+const uiStore = useUiStore()
+
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
@@ -47,5 +53,15 @@ onMounted(async () => {
 
 #eruda-wrapper {
 	@apply fixed z-[1] bottom-0 w-full;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.7s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

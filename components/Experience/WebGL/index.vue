@@ -124,6 +124,8 @@ onMounted(async () => {
 
 	if (isDebug) createControls()
 
+	emitter.emit(EVENTS.WEBGL_READY)
+
 	gsap.ticker.add(time => {
 		if (!get(visible)) return
 
