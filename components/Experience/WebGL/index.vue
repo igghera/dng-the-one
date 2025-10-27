@@ -6,6 +6,8 @@
 			:width="componentWidth"
 			:height="componentHeight"
 		/>
+
+		<div class="flash-effect" aria-hidden="true" ref="flashEffectRef" />
 	</div>
 </template>
 
@@ -48,6 +50,7 @@ import { noiseTexture as drawNoiseTexture } from './materials/draw'
 import {
 	maskColorA as maskBorderColorA,
 	maskColorB as maskBorderColorB,
+	borderWidth as maskBorderWidth,
 } from './materials/mask'
 
 import { cart2Polar } from './nodes'
@@ -59,6 +62,7 @@ const { gsap, Observer } = useGSAP()
 
 const el = useCurrentElement()
 const canvasRef = useTemplateRef('canvasRef')
+const flashEffectRef = useTemplateRef('flashEffectRef')
 
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
@@ -187,6 +191,38 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
 				emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE)
 			},
 		}
+	)
+})
+
+emitter.on(EVENTS.TRIGGER_FLASH_EFFECT, () => {
+	const tl = gsap.timeline()
+	tl.addLabel('start')
+
+	tl.to(
+		get(flashEffectRef),
+		{
+			opacity: 0.7,
+			duration: 0.1,
+			ease: 'power1.out',
+		},
+		'start'
+	)
+
+	tl.call(
+		() => {
+			maskBorderWidth.value = 0.015
+		},
+		null,
+		'>'
+	)
+	tl.to(
+		get(flashEffectRef),
+		{
+			opacity: 0,
+			duration: 1.5,
+			ease: 'power1.out',
+		},
+		'>'
 	)
 })
 
@@ -480,10 +516,15 @@ function setBackgroundSize() {
 
 <style lang="scss" scoped>
 .webgl {
-	@apply overflow-hidden;
+	@apply grid overflow-hidden;
 }
 
-.canvas {
-	@apply w-full h-full;
+.canvas,
+.flash-effect {
+	@apply w-full h-full col-start-1 row-start-1;
+}
+
+.flash-effect {
+	@apply pointer-events-none bg-gold-dark opacity-0;
 }
 </style>

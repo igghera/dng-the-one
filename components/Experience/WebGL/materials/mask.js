@@ -3,7 +3,7 @@ import { Fn, uniform, vec2, vec4, uv, step, screenSize, abs, length, max, min, r
 
 export const progress = uniform(0)
 export const radius = uniform(0.1)
-export const borderWidth = uniform(0.015)
+export const borderWidth = uniform(0)
 export const maskColorA = uniform(color(0.58, 0.41, 0.05))
 export const maskColorB = uniform(color(0.47, 0.21, 0.06))
 
@@ -25,8 +25,8 @@ MaskMaterial.colorNode = Fn(() => {
   p.x.mulAssign(screenSize.x.div(screenSize.y))
 
   const ratio = screenSize.x.div(screenSize.y)
-  const width = remap(progress, 0, 1, ratio.add(0.1), float(0.366).mul(2))
-  const height = remap(progress, 0, 1, ratio.add(0.1), float(0.650).mul(2))
+  const width = remap(progress, 0, 1, ratio.add(0.1), float(0.366).mul(2.2))
+  const height = remap(progress, 0, 1, ratio.add(0.1), float(0.650).mul(2.2))
 
   const scale = remap(progress, 0, 1, 1, 0.5)
   const rad = remap(progress, 0, 1, radius.mul(0.8), radius.mul(0.25))

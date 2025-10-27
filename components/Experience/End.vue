@@ -58,6 +58,7 @@
 
 <script setup>
 import { get, set } from '@vueuse/core'
+import { progress as maskProgress } from '~/components/Experience/WebGL/materials/mask'
 
 //
 // Refs / State
@@ -109,14 +110,16 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE, async () => {
 const createButtonTimeline = () => {
 	drawTimeline = gsap.timeline({
 		paused: true,
-		onComplete: () => {
+		onComplete: async () => {
 			set(canInteract, false)
 
-			gsap.to([get(ctaLabelRef), get(buttonRef)], {
+			await gsap.to([get(ctaLabelRef), get(buttonRef)], {
 				autoAlpha: 0,
-				stagger: 0.3,
-				duration: 0.7,
+				stagger: 0.2,
+				duration: 0.4,
 			})
+
+			animateMask()
 		},
 	})
 	drawTimeline.addLabel('start')
@@ -221,6 +224,32 @@ const animateInButton = () => {
 			autoAlpha: 1,
 			duration: 0.5,
 		}
+	)
+}
+
+const animateMask = () => {
+	const tl = gsap.timeline()
+	tl.addLabel('start')
+
+	tl.fromTo(
+		maskProgress,
+		{
+			value: 0,
+		},
+		{
+			value: 1,
+			duration: 1.1,
+			ease: 'circ.out',
+		},
+		'start'
+	)
+
+	tl.call(
+		() => {
+			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+		},
+		null,
+		'>-0.05'
 	)
 }
 </script>
