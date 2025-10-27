@@ -386,7 +386,7 @@ async function createWinDrawingPlane() {
 	const map = await textureLoader.load('/webgl/draw/product-outline.png')
 	map.colorSpace = THREE.SRGBColorSpace
 
-	const geometry = new THREE.PlaneGeometry(1.24, 1.74, 1, 1)
+	const geometry = new THREE.PlaneGeometry(0.828, 1.358, 1, 1)
 	experienceEndDrawMaterial.init(map)
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
