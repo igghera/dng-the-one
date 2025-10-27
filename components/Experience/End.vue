@@ -53,6 +53,22 @@
 				>{{ $t('experience_end.cta') }}</span
 			>
 		</button>
+
+		<Transition name="fade">
+			<div v-if="result" class="result">
+				<span class="body-9 | uppercase text-gold-light">
+					{{ $t('experience_end.title') }}
+				</span>
+
+				<span class="display-3 | golden-text | uppercase">
+					{{ result.title }}
+				</span>
+
+				<span class="body-10 | text-gold-light">
+					{{ result.copy }}
+				</span>
+			</div>
+		</Transition>
 	</Container>
 </template>
 
@@ -72,7 +88,10 @@ const ctaLabelRef = useTemplateRef('ctaLabelRef')
 
 const canInteract = shallowRef(true)
 
+const { rt, tm } = useI18n()
 const { gsap, Observer, SplitText } = useGSAP()
+
+const result = shallowRef(null)
 
 let drawTimeline, pointerObserver
 
@@ -107,6 +126,16 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE, async () => {
 //
 // Methods
 //
+const getResult = () => {
+	const options = Object.values(tm('experience_end.options')).map(option => ({
+		title: rt(option.title),
+		copy: rt(option.copy),
+	}))
+
+	// TODO: Implement proper result
+	return options[0]
+}
+
 const createButtonTimeline = () => {
 	drawTimeline = gsap.timeline({
 		paused: true,
@@ -247,6 +276,7 @@ const animateMask = () => {
 	tl.call(
 		() => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+			set(result, getResult())
 		},
 		null,
 		'>-0.05'
@@ -255,6 +285,8 @@ const animateMask = () => {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/css/functions' as *;
+
 :deep(.site-grid) {
 	--cols: 1;
 
@@ -265,5 +297,24 @@ const animateMask = () => {
 	@apply col-start-1 row-start-1 self-center grid items-center justify-items-center text-center pointer-events-auto *:pointer-events-none *:col-start-1 *:row-start-1;
 
 	-webkit-touch-callout: none; /* Disable context menu */
+}
+
+.result {
+	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
+
+	aspect-ratio: 240 / 300;
+	height: 30svh;
+	translate: 0 2svh;
+	row-gap: toRem(10);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.7s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

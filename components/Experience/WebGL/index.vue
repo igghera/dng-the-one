@@ -263,8 +263,8 @@ function updateScene(time = 0) {
 
 	camera.lookAt(0, 0, -5)
 
-	camera.position.x = cameraPositionOffset.x * 0.1
-	camera.position.y = cameraPositionOffset.y * 0.1
+	camera.position.x = cameraPositionOffset.x * 0.05
+	camera.position.y = cameraPositionOffset.y * 0.05
 	camera.rotation.z = cameraRotationOffset.value * 0.15
 }
 
