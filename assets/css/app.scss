@@ -5,9 +5,9 @@
 @use 'layout';
 
 html {
-  @apply text-white bg-no-repeat bg-cover bg-top bg-fixed;
+  @apply text-white bg-no-repeat bg-cover bg-top bg-fixed bg-gold-light;
 
-  background-image: url('/images/bg.webp');
+  // background-image: url('/images/bg.webp');
 
   /* Hide scrollbar for different browsers */
   &::-webkit-scrollbar {

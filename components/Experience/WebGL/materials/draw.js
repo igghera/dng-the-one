@@ -1,4 +1,4 @@
-import { uniform, texture, smoothstep, Fn, mix, color, time, uv } from 'three/tsl'
+import { uniform, texture, smoothstep, Fn, mix, color, time, uv, vec2 } from 'three/tsl'
 import { MeshBasicMaterial } from 'three/webgpu'
 
 export const noiseTexture = texture(null)
@@ -11,12 +11,13 @@ export class DrawMaterial {
 
   constructor() {
     this.material = new MeshBasicMaterial({
-      transparent: true,
+      transparent: true
     })
   }
 
   init(mask) {
-    const map = texture(mask)
+    const textureUV = vec2(uv().x, uv().y.oneMinus())
+    const map = texture(mask, textureUV)
 
     const getNoise = Fn(() => {
       return texture(noiseTexture, uv().add(time.mul(0.04), time.mul(0.023))).g

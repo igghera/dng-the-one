@@ -1,6 +1,9 @@
 <template>
 	<section class="experience">
-		<ExperienceWebGL class="relative z-0" />
+		<ExperienceWebGL
+			class="relative z-0"
+			:data-visible="uiStore.isWebglVisible"
+		/>
 
 		<ExperienceStart
 			v-show="uiStore.isExperienceStartVisible"
@@ -57,6 +60,12 @@ const uiStore = useUiStore()
 }
 
 :deep(> .webgl) {
+	@apply transition-opacity duration-1000 ease-out;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
+
 	grid-column: 1 / -1;
 	grid-row: 1 / 4;
 }

@@ -36,19 +36,41 @@ import {
 } from './materials/mask'
 
 export class Debug {
-  constructor(dof, godrays, background, particles, endDrawMaterial) {
+  constructor(dof, godrays, background, particles, endDrawMaterial, introDrawMaterial, introSceneVisibility) {
     this.pane = new Pane({
       title: 'Debug',
       container: document.getElementById('debug-wrapper'),
     })
 
+    this.createIntro(introDrawMaterial, introSceneVisibility)
     this.createBackground(background)
     this.createSea()
-    this.createDof(dof)
+    // this.createDof(dof)
     this.createGodrays(godrays)
     this.createParticles(particles)
     this.createEndDrawPlane(endDrawMaterial)
     this.createMask()
+  }
+
+  createIntro(material, visibility) {
+    const folder = this.pane.addFolder({
+      title: 'Intro',
+      expanded: true,
+    })
+
+    folder.addBinding(visibility, 'value', { label: 'Visibility', min: 0, max: 1 })
+
+    // folder.addBlade({ view: 'separator' })
+
+    // folder.addBinding(introBackgroundColorA, 'value', { label: 'Background Color A', color: { type: 'float' } })
+    // folder.addBinding(introBackgroundColorB, 'value', { label: 'Background Color B', color: { type: 'float' } })
+
+    folder.addBlade({ view: 'separator' })
+
+    folder.addBinding(material.smooth, 'value', { label: 'Shape Gradient Smooth', min: 0, max: 1 })
+    folder.addBinding(material.progress, 'value', { label: 'Shape Draw', min: 0, max: 1 })
+    folder.addBinding(material.colorA, 'value', { label: 'Shape Color A', color: { type: 'float' } })
+    folder.addBinding(material.colorB, 'value', { label: 'Shape Color B', color: { type: 'float' } })
   }
 
   createBackground(background) {
@@ -141,7 +163,7 @@ export class Debug {
   createMask() {
     const maskFolder = this.pane.addFolder({
       title: 'End Mask',
-      expanded: true,
+      expanded: false,
     })
 
     maskFolder.addBinding(maskProgress, 'value', { label: 'Progress', min: 0, max: 1 })

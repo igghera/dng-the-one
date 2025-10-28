@@ -24,6 +24,7 @@ import {
 	screenUV,
 	mix,
 	time,
+	select,
 } from 'three/tsl'
 // import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
@@ -36,8 +37,10 @@ import {
 	BackgroundMaterial,
 	ParticlesMaterial,
 	GodraysMaterial,
+	experienceIntroDrawMaterial,
 	experienceEndDrawMaterial,
 	MaskMaterial,
+	IntroBackgroundMaterial,
 } from './materials'
 import {
 	getDisplacement,
@@ -53,11 +56,13 @@ import {
 	borderWidth as maskBorderWidth,
 } from './materials/mask'
 
-import { cart2Polar } from './nodes'
+import { cart2Polar, noiseTexture, bgTexture } from './nodes'
 
 //
 // Refs / State
 //
+const uiStore = useUiStore()
+
 const { gsap, Observer } = useGSAP()
 
 const el = useCurrentElement()
@@ -86,6 +91,7 @@ let scene,
 	pointerObserver,
 	pointerIsMoving = false,
 	tickSinceLastPointerMove = 0,
+	introScene,
 	maskScene,
 	maskCamera
 
@@ -100,16 +106,20 @@ const dofParams = Object.freeze({
 	bokehScale: uniform(8),
 })
 
+const introSceneVisibility = uniform(1)
+
 //
 // Lifecycle
 //
 onMounted(async () => {
 	createScene()
 	createCamera()
-	createMask()
 
 	await createRenderer()
 	await loadTextures()
+
+	createIntroScene()
+	createMaskScene()
 
 	createSea()
 	createBackground()
@@ -125,6 +135,7 @@ onMounted(async () => {
 	if (isDebug) createControls()
 
 	emitter.emit(EVENTS.WEBGL_READY)
+	uiStore.setWebglVisible(true)
 
 	gsap.ticker.add(time => {
 		if (!get(visible)) return
@@ -132,6 +143,7 @@ onMounted(async () => {
 		updateScene(time)
 		// renderer.renderAsync(scene, camera)
 		// renderer.renderAsync(maskScene, maskCamera)
+		// renderer.renderAsync(introScene, camera)
 		postProcessing.renderAsync()
 
 		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
@@ -147,7 +159,9 @@ onMounted(async () => {
 			godrays,
 			background,
 			particles,
-			experienceEndDrawMaterial
+			experienceEndDrawMaterial,
+			experienceIntroDrawMaterial,
+			introSceneVisibility
 		)
 
 		const { default: Stats } = await import('stats-gl')
@@ -309,6 +323,7 @@ async function loadTextures() {
 		'/webgl/backgrounds/03-mobile.ktx2',
 		'/webgl/backgrounds/04-mobile.ktx2',
 		'/webgl/noises/noise.ktx2',
+		'/webgl/draw/product-outline.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
@@ -324,12 +339,21 @@ async function loadTextures() {
 	textures.set('bg_03_mobile', ktx[2])
 	textures.set('bg_04_mobile', ktx[3])
 
-	textures.set('noise', ktx[4])
+	noiseTexture.value = ktx[4]
 
-	seaNoiseTexture.value = textures.get('noise')
-	godraysNoiseTexture.value = textures.get('noise')
-	particlesNoiseTexture.value = textures.get('noise')
-	drawNoiseTexture.value = textures.get('noise')
+	ktx[5].colorSpace = THREE.NoColorSpace
+	textures.set('product_outline', ktx[5])
+
+	seaNoiseTexture.value = noiseTexture.value
+	godraysNoiseTexture.value = noiseTexture.value
+	particlesNoiseTexture.value = noiseTexture.value
+	drawNoiseTexture.value = noiseTexture.value
+
+	const images = await textureLoader.load(['/webgl/bg.webp'])
+
+	images[0].colorSpace = THREE.SRGBColorSpace
+
+	bgTexture.value = images[0]
 }
 
 async function createParticles() {
@@ -383,11 +407,8 @@ function createGodrays() {
 }
 
 async function createWinDrawingPlane() {
-	const map = await textureLoader.load('/webgl/draw/product-outline.png')
-	map.colorSpace = THREE.SRGBColorSpace
-
-	const geometry = new THREE.PlaneGeometry(0.828, 1.358, 1, 1)
-	experienceEndDrawMaterial.init(map)
+	const geometry = new THREE.PlaneGeometry(0.828, 1.36, 1, 1)
+	experienceEndDrawMaterial.init(textures.get('product_outline'))
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
 	scene.add(mesh)
@@ -408,9 +429,13 @@ function createSea() {
 
 	const getReflectivity = Fn(() => {
 		const base = float(0.45)
-		const value = positionWorld.x.div(2).abs().clamp(0, 1).oneMinus()
+		const value = positionWorld.x
+			.length()
+			.smoothstep(0.8, 9.5)
+			.oneMinus()
+			.pow(4)
 
-		const x = base.add(value).clamp(0, 1)
+		const x = base.add(value)
 
 		return x
 	})
@@ -455,7 +480,26 @@ function createControls() {
 	controls.enableZoom = true
 }
 
-function createMask() {
+async function createIntroScene() {
+	experienceIntroDrawMaterial.init(textures.get('product_outline'))
+
+	introScene = new THREE.Scene()
+
+	const geometry = new THREE.PlaneGeometry(0.828, 1.36, 1, 1)
+	const mesh = new THREE.Mesh(geometry, experienceIntroDrawMaterial.material)
+
+	const bg = new THREE.Mesh(
+		new THREE.PlaneGeometry(12, 12, 1, 1),
+		IntroBackgroundMaterial
+	)
+
+	bg.position.set(0, 0, -3)
+
+	introScene.add(mesh)
+	introScene.add(bg)
+}
+
+function createMaskScene() {
 	maskScene = new THREE.Scene()
 	maskCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
 
@@ -469,9 +513,11 @@ function createPostprocessing() {
 	postProcessing = new THREE.PostProcessing(renderer)
 
 	const scenePass = pass(scene, camera)
-	const mask = pass(maskScene, maskCamera)
+	const introPass = pass(introScene, camera)
+	const maskPass = pass(maskScene, maskCamera)
 
-	// const scenePassColor = scenePass.getTextureNode()
+	const introPassColor = introPass.getTextureNode()
+	const scenePassColor = scenePass.getTextureNode()
 	// const scenePassViewZ = scenePass.getViewZNode()
 
 	const uvScreen = vec2(screenUV.x, screenUV.y.oneMinus())
@@ -489,9 +535,19 @@ function createPostprocessing() {
 		.smoothstep(0, 1)
 	const borderColor = mix(maskBorderColorA, maskBorderColorB, borderMix)
 
-	const inner = scenePass.mul(mask.r).toVec4()
-	const outer = borderColor.mul(mask.g).toVec4()
-	const alpha = mask.r.add(mask.g).clamp(0, 1)
+	const getIntroAlpha = Fn(() => {
+		return select(introPassColor.rgb.equal(0), 0, 1)
+	})
+
+	const introToMain = mix(
+		scenePassColor,
+		introPassColor,
+		introSceneVisibility
+	).toVec4()
+
+	const inner = introToMain.mul(maskPass.r).toVec4()
+	const outer = borderColor.mul(maskPass.g).toVec4()
+	const alpha = maskPass.r.add(maskPass.g).clamp(0, 1)
 
 	let compose = inner.add(outer).mul(alpha)
 

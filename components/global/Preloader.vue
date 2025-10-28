@@ -5,10 +5,13 @@
 </template>
 
 <script setup>
+const { gsap } = useGSAP()
 const uiStore = useUiStore()
 
 emitter.once(EVENTS.WEBGL_READY, () => {
-	uiStore.setPreloaderVisible(false)
+	gsap.delayedCall(1, () => {
+		uiStore.setPreloaderVisible(false)
+	})
 })
 </script>
 
