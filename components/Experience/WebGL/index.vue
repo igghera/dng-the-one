@@ -49,7 +49,6 @@ import {
 
 import { noiseTexture as godraysNoiseTexture } from './materials/godrays'
 import { noiseTexture as particlesNoiseTexture } from './materials/particles'
-import { noiseTexture as drawNoiseTexture } from './materials/draw'
 import {
 	maskColorA as maskBorderColorA,
 	maskColorB as maskBorderColorB,
@@ -92,6 +91,8 @@ let scene,
 	pointerIsMoving = false,
 	tickSinceLastPointerMove = 0,
 	introScene,
+	introMesh,
+	introCamera,
 	maskScene,
 	maskCamera
 
@@ -143,7 +144,7 @@ onMounted(async () => {
 		updateScene(time)
 		// renderer.renderAsync(scene, camera)
 		// renderer.renderAsync(maskScene, maskCamera)
-		// renderer.renderAsync(introScene, camera)
+		// renderer.renderAsync(introScene, introCamera)
 		postProcessing.renderAsync()
 
 		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
@@ -193,6 +194,44 @@ onMounted(async () => {
 //
 // Events
 //
+emitter.on(EVENTS.ANIMATE_INTRO, () => {
+	const tl = gsap.timeline()
+	tl.addLabel('start')
+
+	tl.fromTo(
+		experienceIntroDrawMaterial.progress,
+		{
+			value: 0,
+		},
+		{
+			value: 1,
+			duration: 5,
+		},
+		'start'
+	)
+
+	tl.fromTo(
+		introMesh.position,
+		{
+			x: 0.5,
+		},
+		{
+			x: 0,
+			duration: 3,
+			ease: 'power2.out',
+		},
+		'start'
+	)
+
+	tl.call(
+		() => {
+			uiStore.setExperienceStartVisible(true)
+		},
+		null,
+		'<2.5'
+	)
+})
+
 emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
 	gsap.fromTo(
 		experienceEndDrawMaterial.progress,
@@ -252,6 +291,11 @@ watch(pixelRatio, value => {
 watch([componentWidth, componentHeight], value => {
 	camera.aspect = value[0] / value[1]
 	camera.updateProjectionMatrix()
+
+	if (introCamera) {
+		introCamera.aspect = value[0] / value[1]
+		introCamera.updateProjectionMatrix()
+	}
 
 	setBackgroundSize()
 
@@ -341,13 +385,12 @@ async function loadTextures() {
 
 	noiseTexture.value = ktx[4]
 
-	ktx[5].colorSpace = THREE.NoColorSpace
+	ktx[5].colorSpace = THREE.LinearSRGBColorSpace
 	textures.set('product_outline', ktx[5])
 
 	seaNoiseTexture.value = noiseTexture.value
 	godraysNoiseTexture.value = noiseTexture.value
 	particlesNoiseTexture.value = noiseTexture.value
-	drawNoiseTexture.value = noiseTexture.value
 
 	const images = await textureLoader.load(['/webgl/bg.webp'])
 
@@ -481,12 +524,24 @@ function createControls() {
 }
 
 async function createIntroScene() {
-	experienceIntroDrawMaterial.init(textures.get('product_outline'))
-
 	introScene = new THREE.Scene()
 
+	introCamera = new THREE.PerspectiveCamera(
+		40,
+		get(componentWidth) / get(componentHeight),
+		0.1,
+		10
+	)
+	introCamera.position.set(0, 0, 4)
+	introCamera.lookAt(0, 0, 0)
+
 	const geometry = new THREE.PlaneGeometry(0.828, 1.36, 1, 1)
-	const mesh = new THREE.Mesh(geometry, experienceIntroDrawMaterial.material)
+	geometry.scale(3, 3, 3)
+	experienceIntroDrawMaterial.smooth.value = 0.03
+	experienceIntroDrawMaterial.init(textures.get('product_outline'))
+	introMesh = new THREE.Mesh(geometry, experienceIntroDrawMaterial.material)
+	introMesh.name = 'IntroDrawPlane'
+	introMesh.position.set(0, -1, 0)
 
 	const bg = new THREE.Mesh(
 		new THREE.PlaneGeometry(12, 12, 1, 1),
@@ -495,7 +550,7 @@ async function createIntroScene() {
 
 	bg.position.set(0, 0, -3)
 
-	introScene.add(mesh)
+	introScene.add(introMesh)
 	introScene.add(bg)
 }
 
@@ -513,7 +568,7 @@ function createPostprocessing() {
 	postProcessing = new THREE.PostProcessing(renderer)
 
 	const scenePass = pass(scene, camera)
-	const introPass = pass(introScene, camera)
+	const introPass = pass(introScene, introCamera)
 	const maskPass = pass(maskScene, maskCamera)
 
 	const introPassColor = introPass.getTextureNode()
@@ -534,10 +589,6 @@ function createPostprocessing() {
 		.add(0.5)
 		.smoothstep(0, 1)
 	const borderColor = mix(maskBorderColorA, maskBorderColorB, borderMix)
-
-	const getIntroAlpha = Fn(() => {
-		return select(introPassColor.rgb.equal(0), 0, 1)
-	})
 
 	const introToMain = mix(
 		scenePassColor,

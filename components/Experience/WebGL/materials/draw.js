@@ -1,7 +1,6 @@
 import { uniform, texture, smoothstep, Fn, mix, color, time, uv, vec2 } from 'three/tsl'
 import { MeshBasicMaterial } from 'three/webgpu'
-
-export const noiseTexture = texture(null)
+import { noiseTexture } from '../nodes'
 
 export class DrawMaterial {
   progress = uniform(0)
