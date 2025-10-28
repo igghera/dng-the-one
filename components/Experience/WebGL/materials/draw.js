@@ -4,6 +4,7 @@ import { noiseTexture } from '../nodes'
 
 export class DrawMaterial {
   progress = uniform(0)
+  opacity = uniform(1)
   smooth = uniform(0.05)
   colorA = uniform(color(0.57, 0.48, 0.24))
   colorB = uniform(color(0.89, 0.81, 0.12))
@@ -33,7 +34,7 @@ export class DrawMaterial {
     this.material.opacityNode = Fn(() => {
       const progress = this.progress.oneMinus()
       const alpha = smoothstep(progress, progress.add(this.smooth), map.r.mul(this.smooth.oneMinus()).add(this.smooth))
-      return alpha.mul(getNoise())
+      return alpha.mul(getNoise()).mul(this.opacity)
     })()
   }
 }

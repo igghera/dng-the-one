@@ -67,6 +67,7 @@ export class Debug {
 
     folder.addBlade({ view: 'separator' })
 
+    folder.addBinding(material.opacity, 'value', { label: 'Shape Opacity', min: 0, max: 1 })
     folder.addBinding(material.smooth, 'value', { label: 'Shape Gradient Smooth', min: 0, max: 1 })
     folder.addBinding(material.progress, 'value', { label: 'Shape Draw', min: 0, max: 1 })
     folder.addBinding(material.colorA, 'value', { label: 'Shape Color A', color: { type: 'float' } })

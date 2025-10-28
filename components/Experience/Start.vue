@@ -114,8 +114,12 @@ const animateIn = () => {
 }
 
 const handleClick = () => {
-	uiStore.setExperienceStartVisible(false)
-	uiStore.setExperienceEnterNameVisible(true)
+	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)
+
+	gsap.to([get(titleRef), get(copyRef), get(buttonRef).$el], {
+		opacity: 0,
+		duration: 0.5,
+	})
 }
 </script>
 

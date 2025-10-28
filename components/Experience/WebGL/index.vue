@@ -194,42 +194,12 @@ onMounted(async () => {
 //
 // Events
 //
-emitter.on(EVENTS.ANIMATE_INTRO, () => {
-	const tl = gsap.timeline()
-	tl.addLabel('start')
+emitter.on(EVENTS.ANIMATE_IN_INTRO, () => {
+	animateInIntroShape()
+})
 
-	tl.fromTo(
-		experienceIntroDrawMaterial.progress,
-		{
-			value: 0,
-		},
-		{
-			value: 1,
-			duration: 5,
-		},
-		'start'
-	)
-
-	tl.fromTo(
-		introMesh.position,
-		{
-			x: 0.5,
-		},
-		{
-			x: 0,
-			duration: 3,
-			ease: 'power2.out',
-		},
-		'start'
-	)
-
-	tl.call(
-		() => {
-			uiStore.setExperienceStartVisible(true)
-		},
-		null,
-		'<2.5'
-	)
+emitter.on(EVENTS.ANIMATE_OUT_INTRO_SHAPE, () => {
+	animateOutIntroShape()
 })
 
 emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
@@ -305,6 +275,94 @@ watch([componentWidth, componentHeight], value => {
 //
 // Methods
 //
+function animateInIntroShape() {
+	const tl = gsap.timeline()
+	tl.addLabel('start')
+
+	introMesh.scale.set(1, 1, 1)
+
+	tl.fromTo(
+		experienceIntroDrawMaterial.progress,
+		{
+			value: 0,
+		},
+		{
+			value: 1,
+			duration: 5,
+		},
+		'start'
+	)
+
+	tl.fromTo(
+		introMesh.position,
+		{
+			x: 0.5,
+		},
+		{
+			x: 0,
+			duration: 3,
+			ease: 'power2.out',
+		},
+		'start'
+	)
+
+	tl.call(
+		() => {
+			uiStore.setExperienceStartVisible(true)
+		},
+		null,
+		'<2.5'
+	)
+}
+
+function animateOutIntroShape() {
+	const tl = gsap.timeline()
+	tl.addLabel('start')
+
+	const scale = { value: 1 }
+
+	tl.fromTo(
+		scale,
+		{ value: 1 },
+		{
+			value: 1.45,
+			ease: 'circ.in',
+			duration: 0.5,
+			onUpdate: () => {
+				introMesh.scale.set(scale.value, scale.value, 1)
+			},
+		},
+		'start'
+	)
+
+	tl.fromTo(
+		experienceIntroDrawMaterial.opacity,
+		{ value: 1 },
+		{
+			value: 0,
+			duration: 0.3,
+		},
+		'start+=0.15'
+	)
+
+	tl.call(
+		() => {
+			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+		},
+		null,
+		'start+=0.3'
+	)
+
+	tl.call(
+		() => {
+			uiStore.setExperienceEnterNameVisible(true)
+			uiStore.setExperienceStartVisible(false)
+		},
+		null,
+		'start+=0.5'
+	)
+}
+
 function updateScene(time = 0) {
 	controls?.update()
 

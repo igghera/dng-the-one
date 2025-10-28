@@ -11,7 +11,7 @@ const uiStore = useUiStore()
 emitter.once(EVENTS.WEBGL_READY, () => {
 	gsap.delayedCall(1, () => {
 		uiStore.setPreloaderVisible(false)
-		emitter.emit(EVENTS.ANIMATE_INTRO)
+		emitter.emit(EVENTS.ANIMATE_IN_INTRO)
 	})
 })
 </script>
