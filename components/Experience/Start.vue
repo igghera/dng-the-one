@@ -57,7 +57,7 @@ watch(visible, value => {
 	if (value) {
 		animateIn()
 	} else {
-		gsap.set([get(titleRef), get(copyRef), get(buttonRef)], { opacity: 0 })
+		gsap.set([get(titleRef), get(copyRef), get(buttonRef).$el], { opacity: 0 })
 		split?.revert()
 	}
 })

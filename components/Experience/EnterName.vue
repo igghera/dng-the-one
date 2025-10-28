@@ -1,13 +1,18 @@
 <template>
 	<Container class="pointer-events-none">
-		<header class="header">
+		<header class="header" style="opacity: 0" ref="headerRef">
 			<h2
-				class="display-2 | text-gold"
+				class="display-2 | golden-text"
 				v-html="$t('experience_enter_name.title')"
 			/>
 		</header>
 
-		<form class="form" @submit.prevent="handleSubmit">
+		<form
+			class="form"
+			style="opacity: 0"
+			@submit.prevent="handleSubmit"
+			ref="formRef"
+		>
 			<div class="input-wrapper">
 				<input
 					class="input | body-3"
@@ -43,7 +48,11 @@ import { get, set } from '@vueuse/core'
 const appStore = useAppStore()
 const uiStore = useUiStore()
 
+const { gsap } = useGSAP()
+
 const el = useCurrentElement()
+const headerRef = useTemplateRef('headerRef')
+const formRef = useTemplateRef('formRef')
 const inputRef = useTemplateRef('inputRef')
 
 const isVisible = useElementVisibility(el)
@@ -58,8 +67,25 @@ const inputMinWidthDesktop = 176
 //
 // Watchers
 //
-watchEffect(() => {
-	if (get(isVisible)) get(inputRef)?.focus()
+watch(isVisible, visible => {
+	if (visible) {
+		gsap.fromTo(
+			[get(headerRef), get(formRef)],
+			{
+				opacity: 0,
+			},
+			{
+				opacity: 1,
+				duration: 1,
+				stagger: 0.1,
+				onComplete: () => {
+					get(inputRef)?.focus()
+				},
+			}
+		)
+	} else {
+		gsap.set([get(headerRef), get(formRef)], { opacity: 0 })
+	}
 })
 
 //
