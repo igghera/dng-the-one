@@ -279,7 +279,7 @@ function animateInIntroShape() {
 	const tl = gsap.timeline()
 	tl.addLabel('start')
 
-	introMesh.scale.set(1, 1, 1)
+	introMesh.position.set(0, -1, 0)
 
 	tl.fromTo(
 		experienceIntroDrawMaterial.progress,
@@ -319,18 +319,13 @@ function animateOutIntroShape() {
 	const tl = gsap.timeline()
 	tl.addLabel('start')
 
-	const scale = { value: 1 }
-
 	tl.fromTo(
-		scale,
-		{ value: 1 },
+		introMesh.position,
+		{ z: 0 },
 		{
-			value: 1.45,
+			z: 3,
 			ease: 'circ.in',
 			duration: 0.5,
-			onUpdate: () => {
-				introMesh.scale.set(scale.value, scale.value, 1)
-			},
 		},
 		'start'
 	)
