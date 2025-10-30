@@ -299,7 +299,11 @@ watch(
 // Methods
 //
 function animateInIntroShape() {
-	const tl = gsap.timeline()
+	const tl = gsap.timeline({
+		onComplete: () => {
+			document.documentElement.dataset.init = true
+		},
+	})
 	tl.addLabel('start')
 
 	tl.fromTo(
