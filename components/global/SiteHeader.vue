@@ -13,7 +13,7 @@
 	@apply fixed z-40 top-3 w-full pointer-events-none;
 
 	:deep(.site-grid) {
-		@apply items-center;
+		@apply items-start;
 
 		grid-template-areas: 'a a b b c c';
 	}
