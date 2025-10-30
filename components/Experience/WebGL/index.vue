@@ -75,7 +75,7 @@ const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
-const { isPortrait, isLandscape } = useViewport()
+const { isPortrait, isLandscape, isMobile, isMedium, isDesktop } = useViewport()
 
 let scene,
 	camera,
@@ -105,7 +105,7 @@ const mainCameraParams = Object.freeze({
 
 const introMeshParams = Object.freeze({
 	positionStart: new THREE.Vector3(0.5, -0.8, 0),
-	positionEnd: new THREE.Vector3(-0.27, -0.8, 0),
+	positionEnd: new THREE.Vector3(0, -0.8, 0),
 })
 
 const cameraRotationOffset = { value: 0 }
@@ -287,6 +287,13 @@ watch([componentWidth, componentHeight], value => {
 
 	renderer.setSize(value[0], value[1])
 })
+
+watch(
+	() => [get(isMobile), get(isMedium), get(isDesktop)],
+	() => {
+		setIntroMeshScale()
+	}
+)
 
 //
 // Methods
@@ -677,6 +684,7 @@ async function createIntroScene() {
 	introCamera.lookAt(0, 0, 0)
 
 	const geometry = new THREE.PlaneGeometry(1.682, 2.124, 1, 1)
+	geometry.translate(-0.1, 0, 0)
 	geometry.scale(2.3, 2.3, 1)
 
 	experienceIntroDrawMaterial.smooth.value = 0.05
@@ -689,6 +697,8 @@ async function createIntroScene() {
 		introMeshParams.positionStart.y,
 		introMeshParams.positionStart.z
 	)
+
+	setIntroMeshScale()
 
 	const bg = new THREE.Mesh(
 		new THREE.PlaneGeometry(12, 12, 1, 1),
@@ -767,6 +777,18 @@ function setBackgroundSize() {
 
 	if (get(isPortrait)) background.scale.set(10.8, 19.2, 1)
 	else if (get(isLandscape)) background.scale.set(19.2, 10.8, 1)
+}
+
+function setIntroMeshScale() {
+	let scale = 0
+
+	if (get(isMobile)) scale = 0.5
+	else if (get(isMedium) && get(isLandscape)) scale = 0.65
+	else if (get(isMedium) && get(isPortrait)) scale = 0.5
+	else if (get(isDesktop) && get(isLandscape)) scale = 1
+	else if (get(isDesktop) && get(isPortrait)) scale = 0.55
+
+	introMesh.scale.set(scale, scale, 1)
 }
 </script>
 
