@@ -6,9 +6,10 @@
 
 		<Experience />
 
-		<ExperienceResults />
-
-		<ExperienceTimelineIntro />
+		<template v-if="uiStore.isResultsVisible">
+			<ExperienceResults />
+			<ExperienceTimelineIntro />
+		</template>
 
 		<ClientOnly>
 			<div id="stats-wrapper" v-if="isDebug"></div>
