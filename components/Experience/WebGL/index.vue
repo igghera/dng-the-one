@@ -104,8 +104,8 @@ const mainCameraParams = Object.freeze({
 })
 
 const introMeshParams = Object.freeze({
-	positionStart: new THREE.Vector3(0.5, -0.5, 0),
-	positionEnd: new THREE.Vector3(-0.27, -0.5, 0),
+	positionStart: new THREE.Vector3(0.5, -0.8, 0),
+	positionEnd: new THREE.Vector3(-0.27, -0.8, 0),
 })
 
 const cameraRotationOffset = { value: 0 }
@@ -326,10 +326,18 @@ function animateInIntroShape() {
 
 	tl.call(
 		() => {
+			uiStore.setMainUiVisible(true)
+		},
+		null,
+		'<2'
+	)
+
+	tl.call(
+		() => {
 			uiStore.setExperienceStartVisible(true)
 		},
 		null,
-		'<2.5'
+		'<0.5'
 	)
 }
 
@@ -427,7 +435,7 @@ function updateScene(time = 0) {
 
 	// if (isDebug) return
 	if (mainCameraIsAnimating) return
-	if (false) return
+	if (true) return
 
 	// Offset camera on pointer movement
 	tickSinceLastPointerMove++

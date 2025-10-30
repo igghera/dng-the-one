@@ -1,17 +1,19 @@
 <template>
 	<NuxtLayout>
-		<SiteHeader />
+		<SiteHeader class="main-ui" :data-visible="uiStore.isMainUiVisible" />
 
 		<VueLenis root ref="lenisRef" :options="lenisOptions">
 			<NuxtPage />
 		</VueLenis>
 
-		<SiteFooter />
+		<SiteFooter class="main-ui" :data-visible="uiStore.isMainUiVisible" />
 	</NuxtLayout>
 </template>
 
 <script setup>
 import { get } from '@vueuse/core'
+
+const uiStore = useUiStore()
 
 const lenisRef = shallowRef()
 const { gsap } = useGSAP()
@@ -46,3 +48,13 @@ watchEffect(onInvalidate => {
 	})
 })
 </script>
+
+<style lang="scss" scoped>
+.main-ui {
+	@apply transition-opacity duration-1000 ease-out;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
+}
+</style>

@@ -1,5 +1,6 @@
 export const useUiStore = defineStore('uiStore', {
   state: () => ({
+    mainUiVisible: false,
     preloaderVisible: true,
     webglVisible: false,
     experienceStartVisible: false,
@@ -13,8 +14,9 @@ export const useUiStore = defineStore('uiStore', {
 
   actions: {
     reset() {
-      this.preloaderVisible = false,
-      this.webglVisible = false,
+      this.mainUiVisible = true
+      this.preloaderVisible = false
+      this.webglVisible = false
       this.experienceStartVisible = true
       this.experienceEnterNameVisible = false
       this.experienceStap01Visible = false
@@ -22,6 +24,10 @@ export const useUiStore = defineStore('uiStore', {
       this.experienceStep03Visible = false
       this.experienceEndVisible = false
       this.resultsVisible = false
+    },
+
+    setMainUiVisible(visible) {
+      this.mainUiVisible = visible
     },
 
     setPreloaderVisible(visible) {
@@ -62,6 +68,7 @@ export const useUiStore = defineStore('uiStore', {
   },
 
   getters: {
+    isMainUiVisible: (state) => state.mainUiVisible,
     isPreloaderVisible: (state) => state.preloaderVisible,
     isWebglVisible: (state) => state.webglVisible,
     isExperienceStartVisible: (state) => state.experienceStartVisible,
