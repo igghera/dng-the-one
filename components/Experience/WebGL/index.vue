@@ -103,6 +103,11 @@ const mainCameraParams = Object.freeze({
 	lookAt: new THREE.Vector3(0, 0, -5),
 })
 
+const introMeshParams = Object.freeze({
+	positionStart: new THREE.Vector3(0.5, -0.5, 0),
+	positionEnd: new THREE.Vector3(-0.27, -0.5, 0),
+})
+
 const cameraRotationOffset = { value: 0 }
 const cameraPositionOffset = { x: 0, y: 0 }
 
@@ -290,8 +295,6 @@ function animateInIntroShape() {
 	const tl = gsap.timeline()
 	tl.addLabel('start')
 
-	introMesh.position.set(0, -1, 0)
-
 	tl.fromTo(
 		experienceIntroDrawMaterial.progress,
 		{
@@ -307,10 +310,14 @@ function animateInIntroShape() {
 	tl.fromTo(
 		introMesh.position,
 		{
-			x: 0.5,
+			x: introMeshParams.positionStart.x,
+			y: introMeshParams.positionStart.y,
+			z: introMeshParams.positionStart.z,
 		},
 		{
-			x: 0,
+			x: introMeshParams.positionEnd.x,
+			y: introMeshParams.positionEnd.y,
+			z: introMeshParams.positionEnd.z,
 			duration: 3,
 			ease: 'power2.out',
 		},
@@ -420,6 +427,7 @@ function updateScene(time = 0) {
 
 	// if (isDebug) return
 	if (mainCameraIsAnimating) return
+	if (false) return
 
 	// Offset camera on pointer movement
 	tickSinceLastPointerMove++
@@ -438,8 +446,6 @@ function updateScene(time = 0) {
 		mainCameraParams.positionEnd.y + cameraPositionOffset.y * 0.5
 
 	camera.rotation.z = cameraRotationOffset.value * 0.15
-
-	console.log(camera.position.x)
 }
 
 function createScene() {
@@ -491,6 +497,7 @@ async function loadTextures() {
 		'/webgl/backgrounds/04-mobile.ktx2',
 		'/webgl/noises/noise.ktx2',
 		'/webgl/draw/product-outline.ktx2',
+		'/webgl/draw/intro-outline.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
@@ -510,6 +517,9 @@ async function loadTextures() {
 
 	ktx[5].colorSpace = THREE.LinearSRGBColorSpace
 	textures.set('product_outline', ktx[5])
+
+	ktx[6].colorSpace = THREE.LinearSRGBColorSpace
+	textures.set('intro_outline', ktx[6])
 
 	seaNoiseTexture.value = noiseTexture.value
 	godraysNoiseTexture.value = noiseTexture.value
@@ -658,13 +668,19 @@ async function createIntroScene() {
 	introCamera.position.set(0, 0, 4)
 	introCamera.lookAt(0, 0, 0)
 
-	const geometry = new THREE.PlaneGeometry(0.828, 1.36, 1, 1)
-	geometry.scale(3, 3, 3)
-	experienceIntroDrawMaterial.smooth.value = 0.03
-	experienceIntroDrawMaterial.init(textures.get('product_outline'))
+	const geometry = new THREE.PlaneGeometry(1.682, 2.124, 1, 1)
+	geometry.scale(2.3, 2.3, 1)
+
+	experienceIntroDrawMaterial.smooth.value = 0.05
+	experienceIntroDrawMaterial.init(textures.get('intro_outline'))
+
 	introMesh = new THREE.Mesh(geometry, experienceIntroDrawMaterial.material)
-	introMesh.name = 'IntroDrawPlane'
-	introMesh.position.set(0, -1, 0)
+
+	introMesh.position.set(
+		introMeshParams.positionStart.x,
+		introMeshParams.positionStart.y,
+		introMeshParams.positionStart.z
+	)
 
 	const bg = new THREE.Mesh(
 		new THREE.PlaneGeometry(12, 12, 1, 1),

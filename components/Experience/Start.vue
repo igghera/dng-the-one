@@ -39,8 +39,6 @@ import { get } from '@vueuse/core'
 //
 const { gsap, SplitText } = useGSAP()
 
-const uiStore = useUiStore()
-
 const el = useCurrentElement()
 const titleRef = useTemplateRef('titleRef')
 const copyRef = useTemplateRef('copyRef')
