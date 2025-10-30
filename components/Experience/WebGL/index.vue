@@ -688,7 +688,7 @@ async function createIntroScene() {
 	introCamera.lookAt(0, 0, 0)
 
 	const geometry = new THREE.PlaneGeometry(1.682, 2.124, 1, 1)
-	geometry.translate(-0.1, 0, 0)
+	geometry.translate(-0.115, 0, 0)
 	geometry.scale(2.3, 2.3, 1)
 
 	experienceIntroDrawMaterial.smooth.value = 0.05
