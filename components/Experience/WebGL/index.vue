@@ -89,12 +89,19 @@ let scene,
 	statsPanel,
 	pointerObserver,
 	pointerIsMoving = false,
+	mainCameraIsAnimating = false,
 	tickSinceLastPointerMove = 0,
 	introScene,
 	introMesh,
 	introCamera,
 	maskScene,
 	maskCamera
+
+const mainCameraParams = Object.freeze({
+	positionStart: new THREE.Vector3(0, -0.5, 4),
+	positionEnd: new THREE.Vector3(0, 0.5, 4),
+	lookAt: new THREE.Vector3(0, 0, -5),
+})
 
 const cameraRotationOffset = { value: 0 }
 const cameraPositionOffset = { x: 0, y: 0 }
@@ -133,7 +140,7 @@ onMounted(async () => {
 	createPostprocessing()
 	createMouse()
 
-	if (isDebug) createControls()
+	// if (isDebug) createControls()
 
 	emitter.emit(EVENTS.WEBGL_READY)
 	uiStore.setWebglVisible(true)
@@ -200,6 +207,10 @@ emitter.on(EVENTS.ANIMATE_IN_INTRO, () => {
 
 emitter.on(EVENTS.ANIMATE_OUT_INTRO_SHAPE, () => {
 	animateOutIntroShape()
+})
+
+emitter.on(EVENTS.ANIMATE_IN_MAIN_SCENE, () => {
+	animateInMainScene()
 })
 
 emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
@@ -323,7 +334,7 @@ function animateOutIntroShape() {
 		introMesh.position,
 		{ z: 0 },
 		{
-			z: 3,
+			z: 2.3,
 			ease: 'circ.in',
 			duration: 0.5,
 		},
@@ -358,10 +369,57 @@ function animateOutIntroShape() {
 	)
 }
 
+function animateInMainScene() {
+	const tl = gsap.timeline({
+		onStart: () => {
+			mainCameraIsAnimating = true
+		},
+		onComplete: () => {
+			mainCameraIsAnimating = false
+		},
+	})
+	tl.addLabel('start')
+
+	tl.fromTo(
+		introSceneVisibility,
+		{ value: 1 },
+		{ value: 0, duration: 0.1 },
+		'start'
+	)
+
+	tl.addLabel('animateCamera', '>')
+
+	tl.fromTo(
+		camera.position,
+		{ y: mainCameraParams.positionStart.y },
+		{
+			y: mainCameraParams.positionEnd.y,
+			duration: 3.5,
+			ease: 'power2.out',
+		},
+		'animateCamera'
+	)
+
+	tl.call(
+		() => {
+			uiStore.setExperienceStep01Visible(true)
+		},
+		null,
+		'animateCamera+=2'
+	)
+}
+
 function updateScene(time = 0) {
 	controls?.update()
 
-	if (isDebug) return
+	camera.lookAt(
+		mainCameraParams.lookAt.x,
+		mainCameraParams.lookAt.y,
+		mainCameraParams.lookAt.z
+	)
+
+	// if (isDebug) return
+	if (mainCameraIsAnimating) return
 
 	// Offset camera on pointer movement
 	tickSinceLastPointerMove++
@@ -374,11 +432,14 @@ function updateScene(time = 0) {
 			(cameraRotationOffset.value = 0)
 	}
 
-	camera.lookAt(0, 0, -5)
+	camera.position.x =
+		mainCameraParams.positionEnd.x + cameraPositionOffset.x * 1.5
+	camera.position.y =
+		mainCameraParams.positionEnd.y + cameraPositionOffset.y * 0.5
 
-	camera.position.x = cameraPositionOffset.x * 0.05
-	camera.position.y = cameraPositionOffset.y * 0.05
 	camera.rotation.z = cameraRotationOffset.value * 0.15
+
+	console.log(camera.position.x)
 }
 
 function createScene() {
@@ -393,8 +454,17 @@ function createCamera() {
 		20
 	)
 
-	camera.position.set(0, 0.5, 4)
-	camera.lookAt(0, 0, -1)
+	camera.position.set(
+		mainCameraParams.positionStart.x,
+		mainCameraParams.positionStart.y,
+		mainCameraParams.positionStart.z
+	)
+
+	camera.lookAt(
+		mainCameraParams.lookAt.x,
+		mainCameraParams.lookAt.y,
+		mainCameraParams.lookAt.z
+	)
 }
 
 async function createRenderer() {

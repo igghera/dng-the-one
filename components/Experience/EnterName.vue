@@ -13,7 +13,7 @@
 			@submit.prevent="handleSubmit"
 			ref="formRef"
 		>
-			<div class="input-wrapper">
+			<fieldset class="input-wrapper" :disabled="!canSubmit">
 				<input
 					class="input | body-3"
 					type="text"
@@ -25,7 +25,7 @@
 					ref="inputRef"
 					@input="handleInput"
 				/>
-			</div>
+			</fieldset>
 
 			<ButtonGolden
 				class="button"
@@ -60,6 +60,7 @@ const isVisible = useElementVisibility(el)
 const { isMobile } = useViewport()
 
 const continueButtonVisible = ref(false)
+const canSubmit = shallowRef(false)
 
 const inputMinWidthMobile = 128
 const inputMinWidthDesktop = 176
@@ -78,7 +79,9 @@ watch(isVisible, visible => {
 				opacity: 1,
 				duration: 1,
 				stagger: 0.1,
-				onComplete: () => {
+				onStart: async () => {
+					set(canSubmit, true)
+					await nextTick()
 					get(inputRef)?.focus()
 				},
 			}
@@ -120,9 +123,30 @@ const setContinueButtonVisible = () => {
 	set(continueButtonVisible, appStore.getUsername.length >= 3)
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
+	set(canSubmit, false)
+
+	await animateOut()
+
 	uiStore.setExperienceEnterNameVisible(false)
-	uiStore.setExperienceStep01Visible(true)
+	emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+
+	gsap.delayedCall(0.1, () => {
+		emitter.emit(EVENTS.ANIMATE_IN_MAIN_SCENE)
+	})
+}
+
+async function animateOut() {
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	tl.to(
+		[get(headerRef), get(formRef)],
+		{ opacity: 0, duration: 0.5, stagger: 0.2 },
+		'start'
+	)
+
+	return tl.play()
 }
 </script>
 

@@ -229,6 +229,7 @@ const uiStore = useUiStore()
 const { rt, tm } = useI18n()
 const { gsap, Draggable } = useGSAP()
 
+const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
 const knobWrapperRef = useTemplateRef('knobWrapperRef')
 const knobTrackRef = useTemplateRef('knobTrackRef')
@@ -252,12 +253,23 @@ const labels = computed(() => {
 	return Object.values(tm('experience_step_01.labels')).map(label => rt(label))
 })
 
+const isVisible = useElementVisibility(el)
+
 let draggableInstance = null
 
 //
 // Lifecycle
 //
-onMounted(() => {
+onBeforeUnmount(() => {
+	draggableInstance?.[0]?.kill()
+})
+
+//
+// Watchers
+//
+watch(isVisible, visible => {
+	if (!visible) return
+
 	animateIn()
 
 	draggableInstance = Draggable.create(get(knobRef), {
@@ -296,10 +308,6 @@ onMounted(() => {
 	}
 
 	update()
-})
-
-onBeforeUnmount(() => {
-	draggableInstance?.[0]?.kill()
 })
 
 //
