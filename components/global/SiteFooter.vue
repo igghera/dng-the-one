@@ -19,7 +19,7 @@
 <style lang="scss" scoped>
 .site-footer {
 	@apply fixed z-[40] bottom-3 w-full text-gold py-[5px] pointer-events-none;
-	@apply md-down:px-11;
+	@apply lg-down:px-11;
 
 	:deep(.site-grid) {
 		--cols: 2;
