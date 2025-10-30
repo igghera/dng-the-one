@@ -250,7 +250,7 @@ const backgroundStrokeRef = useTemplateRef('backgroundStrokeRef')
 const knobTrackRef = useTemplateRef('knobTrackRef')
 const instructionsRef = useTemplateRef('instructionsRef')
 
-const instructionsVisible = shallowRef(false)
+const instructionsVisible = shallowRef(true)
 const ctaVisible = shallowRef(false)
 const labelsVisible = shallowRef(false)
 
@@ -297,6 +297,8 @@ watch(isVisible, visible => {
 			return Math.round(value / 90) * 90
 		},
 		onDrag() {
+			set(instructionsVisible, false)
+			set(ctaVisible, true)
 			update()
 		},
 		onThrowUpdate() {
@@ -390,6 +392,9 @@ const animateIn = () => {
 		{
 			opacity: 1,
 			duration: 1,
+			onComplete: () => {
+				gsap.set(get(instructionsRef), { clearProps: 'all' })
+			},
 		},
 		'<0.8'
 	)
