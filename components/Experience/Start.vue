@@ -12,7 +12,7 @@
 			</h1>
 
 			<p
-				class="copy | body-4 | text-gold-light"
+				class="copy | body-4 | text-gold"
 				style="opacity: 0"
 				v-html="$t('experience_start.copy')"
 				ref="copyRef"
