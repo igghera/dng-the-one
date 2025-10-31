@@ -14,8 +14,6 @@
 </template>
 
 <script setup>
-import { get, set } from '@vueuse/core'
-
 //
 // Props
 //
@@ -105,14 +103,14 @@ const componentTag = computed(() => {
 
 	animation: golden-button-animation 4.5s linear infinite;
 	background-repeat: repeat-x;
-	background-size: 200% 100%;
+	background-size: 400px 100%;
 	background-image: repeating-linear-gradient(
 		98deg,
-		rgba(215, 154, 59, 0.35) -3.525%,
-		rgba(255, 214, 122, 0.35) 10.92%,
-		rgba(215, 154, 59, 0.35) 24.805%,
-		rgba(255, 214, 122, 0.35) 39.805%,
-		rgba(215, 154, 59, 0.35) 53.695%
+		rgba(215, 154, 59, 0.35) -14px,
+		rgba(255, 214, 122, 0.35) 44px,
+		rgba(215, 154, 59, 0.35) 100px,
+		rgba(255, 214, 122, 0.35) 160px,
+		rgba(215, 154, 59, 0.35) 214px
 	);
 	border: toRem(1.3) solid var(--Stroke-button, #ffffc433);
 	border-radius: toRem(10);
@@ -141,8 +139,8 @@ const componentTag = computed(() => {
 
 	background-image: radial-gradient(
 		circle at v-bind('`${mouseX}px`') v-bind('`${mouseY}px`'),
-		rgba(255, 255, 255, 0.35) 0px,
-		rgba(255, 255, 255, 0.35) 20px,
+		rgba(255, 255, 255, 0.25) 0px,
+		rgba(255, 255, 255, 0.25) 20px,
 		rgba(255, 255, 255, 0) 100px
 	);
 }
@@ -155,11 +153,11 @@ const componentTag = computed(() => {
 
 @keyframes golden-button-animation {
 	from {
-		background-position: 0% 50%;
+		background-position: -20px 50%;
 	}
 
 	to {
-		background-position: 60% 50%;
+		background-position: -134px 50%;
 	}
 }
 </style>
