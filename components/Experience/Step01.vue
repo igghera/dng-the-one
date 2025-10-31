@@ -1,6 +1,6 @@
 <template>
 	<Container class="pointer-events-none">
-		<header class="header" style="opacity: 0" ref="headerRef">
+		<header class="header" ref="headerRef">
 			<h2
 				class="display-2 | text-gold-light"
 				v-html="$t('experience_step_01.title')"
@@ -15,7 +15,7 @@
 				viewBox="0 0 456 456"
 				overflow="visible"
 			>
-				<g ref="dotsRef" style="opacity: 0">
+				<g ref="dotsRef">
 					<circle
 						v-for="({ x, y }, idx) in dotsCoords"
 						:key="idx"
@@ -30,7 +30,6 @@
 				<!-- Sun icon -->
 				<g>
 					<path
-						style="opacity: 0"
 						ref="sunIconRef"
 						fill="#ffffc4"
 						transform="translate(0 -107)"
@@ -39,17 +38,18 @@
 				</g>
 
 				<!-- Background stroke -->
-				<circle
-					cx="228"
-					cy="232.25"
-					r="223.25"
-					stroke="#ffffc4"
-					stroke-dasharray="2 12.6"
-					stroke-width="9"
-					stroke-opacity="0"
-					data-stroke-opacity-target="0.5"
-					ref="backgroundStrokeRef"
-				/>
+				<g mask="url(#knob-mask-background)">
+					<circle
+						cx="228"
+						cy="232.25"
+						r="223.25"
+						stroke="#ffffc4"
+						stroke-dasharray="2 12.6"
+						stroke-width="9"
+						stroke-opacity="0.5"
+						data-stroke-opacity-target="0.5"
+					/>
+				</g>
 
 				<g mask="url(#knob-mask)">
 					<circle
@@ -65,7 +65,6 @@
 
 			<svg
 				class="size-full relative z-[1] pointer-events-auto overflow-visible"
-				style="opacity: 0"
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
 				viewBox="0 0 456 456"
@@ -87,10 +86,22 @@
 				</g>
 
 				<defs>
+					<mask id="knob-mask-background">
+						<g class="origin-center -rotate-90">
+							<circle
+								cx="228"
+								cy="232.25"
+								r="223.25"
+								stroke="white"
+								stroke-width="25"
+								ref="knobTrackBackgroundRef"
+							/>
+						</g>
+					</mask>
+
 					<mask id="knob-mask">
 						<g class="origin-center -rotate-90">
 							<circle
-								id="knob-track"
 								cx="228"
 								cy="232.25"
 								r="223.25"
@@ -211,7 +222,6 @@
 		<p
 			class="instructions | body-5 | text-gold"
 			:data-visible="instructionsVisible"
-			ref="instructionsRef"
 		>
 			{{ $t('experience_step_01.instructions') }}
 		</p>
@@ -243,14 +253,12 @@ const { gsap, Draggable } = useGSAP()
 
 const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
-const knobWrapperRef = useTemplateRef('knobWrapperRef')
 const dotsRef = useTemplateRef('dotsRef')
 const sunIconRef = useTemplateRef('sunIconRef')
-const backgroundStrokeRef = useTemplateRef('backgroundStrokeRef')
+const knobTrackBackgroundRef = useTemplateRef('knobTrackBackgroundRef')
 const knobTrackRef = useTemplateRef('knobTrackRef')
-const instructionsRef = useTemplateRef('instructionsRef')
 
-const instructionsVisible = shallowRef(true)
+const instructionsVisible = shallowRef(false)
 const ctaVisible = shallowRef(false)
 const labelsVisible = shallowRef(false)
 
@@ -276,15 +284,10 @@ let draggableInstance = null
 //
 // Lifecycle
 //
-onBeforeUnmount(() => {
-	draggableInstance?.[0]?.kill()
-})
+onMounted(async () => {
+	setInitialStyles()
 
-//
-// Watchers
-//
-watch(isVisible, visible => {
-	if (!visible) return
+	await nextTick()
 
 	animateIn()
 
@@ -330,17 +333,25 @@ watch(isVisible, visible => {
 	update()
 })
 
+onBeforeUnmount(() => {
+	draggableInstance?.[0]?.kill()
+})
+
 //
 // Methods
 //
-const animateIn = () => {
-	const tl = gsap.timeline({
-		onComplete: () => {
-			// gsap.set([get(headerRef), get(knobWrapperRef), get(instructionsRef)], {
-			// 	clearProps: 'all',
-			// })
-		},
+const setInitialStyles = () => {
+	gsap.set([get(headerRef), get(dotsRef), get(sunIconRef), get(knobRef)], {
+		opacity: 0,
 	})
+
+	gsap.set(get(knobTrackBackgroundRef), {
+		drawSVG: '0% 0%',
+	})
+}
+
+const animateIn = () => {
+	const tl = gsap.timeline()
 	tl.addLabel('start')
 
 	// Header
@@ -385,38 +396,18 @@ const animateIn = () => {
 		'<'
 	)
 
-	// Instructions
+	// Draw background stroke
 	tl.fromTo(
-		[get(instructionsRef)],
+		get(knobTrackBackgroundRef),
 		{
-			opacity: 0,
+			drawSVG: '0% 0%',
 		},
 		{
-			opacity: 1,
-			duration: 1,
-			onComplete: () => {
-				gsap.set(get(instructionsRef), { clearProps: 'all' })
-			},
+			drawSVG: '0% 100%',
+			duration: 3,
+			ease: 'power1.out',
 		},
-		'<0.8'
-	)
-
-	// Background stroke opacity
-	tl.fromTo(
-		get(backgroundStrokeRef),
-		{
-			attr: {
-				'stroke-opacity': 0,
-			},
-		},
-		{
-			attr: {
-				'stroke-opacity': () =>
-					parseFloat(get(backgroundStrokeRef).dataset.strokeOpacityTarget),
-			},
-			duration: 1.5,
-		},
-		'<0.2'
+		'<0.3'
 	)
 
 	// Knob position
@@ -433,13 +424,13 @@ const animateIn = () => {
 				cx: () => get(knobDotRef).dataset.endX,
 				cy: () => get(knobDotRef).dataset.endY,
 			},
-			duration: 1.2,
+			duration: 1.6,
 			ease: 'power3.inOut',
 		},
-		'>'
+		'<1.5'
 	)
 
-	// Sun icon and dots
+	// Show sun icon and dots
 	tl.fromTo(
 		[get(sunIconRef), get(dotsRef)],
 		{
@@ -454,6 +445,7 @@ const animateIn = () => {
 		'<0.3'
 	)
 
+	// Hide sun icon
 	tl.to(
 		get(sunIconRef),
 		{
@@ -463,6 +455,7 @@ const animateIn = () => {
 		'>'
 	)
 
+	// Show labels and enable draggable
 	tl.call(
 		() => {
 			set(labelsVisible, true)
@@ -472,14 +465,13 @@ const animateIn = () => {
 		'<0.6'
 	)
 
+	// Show instructions
 	tl.call(
 		() => {
-			// set(labelsVisible, true)
-			// set(instructionsVisible, false)
-			// set(ctaVisible, true)
+			set(instructionsVisible, true)
 		},
 		null,
-		'>0.7'
+		'<0.4'
 	)
 }
 
@@ -549,7 +541,7 @@ const handleClick = () => {
 .instructions,
 .cta {
 	@apply self-start;
-	@apply transition-opacity duration-500 ease-out;
+	@apply transition-opacity duration-1000 ease-out;
 
 	grid-area: c;
 
