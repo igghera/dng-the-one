@@ -79,7 +79,7 @@
 						:data-start-y="dotsCoords[0].x"
 						:data-end-x="dotsCoords[0].x"
 						:data-end-y="dotsCoords[0].y"
-						r="19.519"
+						r="20"
 						fill="#ffffc4"
 						ref="knobDotRef"
 					/>
@@ -296,9 +296,31 @@ onMounted(async () => {
 		type: 'rotation',
 		inertia: true,
 		throwResistance: 50000,
+		dragResistance: 0,
+		edgeResistance: 1,
 		maxDuration: 0.5,
 		snap(value) {
 			return Math.round(value / 90) * 90
+		},
+		onPressInit() {
+			gsap.to(get(knobDotRef), {
+				attr: {
+					r: 26,
+				},
+				duration: 0.45,
+				ease: 'power1.out',
+				overwrite: true,
+			})
+		},
+		onRelease() {
+			gsap.to(get(knobDotRef), {
+				attr: {
+					r: 20,
+				},
+				duration: 0.8,
+				ease: 'power1.out',
+				overwrite: true,
+			})
 		},
 		onDrag() {
 			set(instructionsVisible, false)
