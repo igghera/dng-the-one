@@ -24,7 +24,7 @@
 			/>
 		</picture>
 
-		<p class="copy | body-3">
+		<p class="copy | body-3-alt">
 			[A fragrance that stands out for its sophisticated, authentic masculinity.
 			Radiant and intense.]
 		</p>

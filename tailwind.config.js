@@ -7,7 +7,7 @@ export default {
         current: 'currentColor',
         'gold-dark': '#B0692B',
         gold: '#FFDBA5',
-        'gold-light': '#FFF6E2'
+        'gold-light': '#FFFFC4'
       },
 
       fontFamily: {

@@ -52,10 +52,10 @@ const uiStore = useUiStore()
 		'a'
 		'.';
 	grid-template-columns: 1fr;
-	grid-template-rows: toRem(100) 1fr toRem(80);
+	grid-template-rows: toRem(94) 1fr toRem(80);
 
-	@screen lg {
-		grid-template-rows: toRem(150) 1fr toRem(80);
+	@screen md {
+		grid-template-rows: toRem(110) 1fr toRem(80);
 	}
 }
 

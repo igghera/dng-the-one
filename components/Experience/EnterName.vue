@@ -57,13 +57,10 @@ const inputRef = useTemplateRef('inputRef')
 
 const isVisible = useElementVisibility(el)
 
-const { isMobile } = useViewport()
-
 const continueButtonVisible = ref(false)
 const canSubmit = shallowRef(false)
 
-const inputMinWidthMobile = 128
-const inputMinWidthDesktop = 176
+const inputMinWidth = 176
 
 //
 // Watchers
@@ -94,7 +91,7 @@ watch(isVisible, visible => {
 //
 // Methods
 //
-const handleInput = () => {
+const handleInput = async () => {
 	appStore.setUsername(get(inputRef)?.value)
 
 	setContinueButtonVisible()
@@ -106,15 +103,13 @@ const handleInput = () => {
 		left: '-9999px',
 		textTransform: 'uppercase',
 	})
+	dummy.classList.add('body-3')
 	dummy.innerHTML = get(inputRef)?.value
 
 	document.body.appendChild(dummy)
+	await nextTick()
 
-	const targetMinWidth = get(isMobile)
-		? inputMinWidthMobile
-		: inputMinWidthDesktop
-
-	get(inputRef).style.width = `${Math.max(targetMinWidth, dummy.clientWidth)}px`
+	get(inputRef).style.width = `${Math.max(inputMinWidth, dummy.clientWidth)}px`
 
 	dummy.remove()
 }
@@ -191,8 +186,7 @@ async function animateOut() {
 }
 
 .input {
-	@apply text-center appearance-none bg-transparent placeholder:text-white/30 outline-none w-32 uppercase;
-	@apply lg:w-44;
+	@apply text-center appearance-none bg-transparent placeholder:text-gold/50 outline-none w-44 uppercase;
 }
 
 .button {
