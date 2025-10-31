@@ -203,15 +203,17 @@
 				</defs>
 			</svg>
 
-			<div class="knob-labels">
+			<div
+				class="knob-labels"
+				:class="{
+					'text-gold-light': knobStepLiveDrag < 2,
+					'text-gold-dark': knobStepLiveDrag >= 2,
+				}"
+			>
 				<span
 					v-for="(label, idx) in labels"
 					:key="idx"
 					class="knob-label"
-					:class="{
-						'text-gold-light': idx < 2,
-						'text-gold-dark': idx >= 2,
-					}"
 					:data-index="idx"
 					:data-visible="idx === knobStep && labelsVisible"
 					v-html="label"
@@ -272,12 +274,11 @@ const dotsCoords = [
 const knobRef = useTemplateRef('knobRef')
 const knobDotRef = useTemplateRef('knobDotRef')
 const knobStep = shallowRef(0)
+const knobStepLiveDrag = shallowRef(0)
 
 const labels = computed(() => {
 	return Object.values(tm('experience_step_01.labels')).map(label => rt(label))
 })
-
-const isVisible = useElementVisibility(el)
 
 let draggableInstance = null
 
@@ -307,6 +308,9 @@ onMounted(async () => {
 		onThrowUpdate() {
 			update()
 		},
+		onThrowComplete() {
+			updateKnobSteponThrowComplete()
+		},
 	})
 
 	draggableInstance?.[0]?.disable()
@@ -316,7 +320,8 @@ onMounted(async () => {
 
 		let step = Math.round(rotation / 90) % 4
 		if (Math.sign(step) === -1) step = 4 + step
-		set(knobStep, Math.abs(step))
+
+		set(knobStepLiveDrag, Math.abs(step))
 
 		let bg = rotation % 360
 		if (Math.sign(bg) === -1) bg = 360 + bg
@@ -328,6 +333,15 @@ onMounted(async () => {
 		gsap.set(get(knobTrackRef), {
 			drawSVG: `${start}% ${end}%`,
 		})
+	}
+
+	function updateKnobSteponThrowComplete() {
+		const { rotation } = draggableInstance[0]
+
+		let step = Math.floor(rotation / 90) % 4
+		if (Math.sign(step) === -1) step = 4 + step
+
+		set(knobStep, Math.abs(step))
 	}
 
 	update()
@@ -521,7 +535,7 @@ const handleClick = () => {
 
 .knob-labels {
 	@apply grid;
-
+	@apply transition-colors duration-500 ease-out;
 	@apply justify-self-center self-center;
 
 	> * {
