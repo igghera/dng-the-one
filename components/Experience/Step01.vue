@@ -44,7 +44,7 @@
 					cy="232.25"
 					r="223.25"
 					stroke="#ffffc4"
-					stroke-dasharray="1.8 16"
+					stroke-dasharray="2 12.6"
 					stroke-width="9"
 					stroke-opacity="0"
 					data-stroke-opacity-target="0.5"
@@ -57,7 +57,7 @@
 						cy="232.25"
 						r="223.25"
 						stroke="#ffffc4"
-						stroke-dasharray="1.8 16"
+						stroke-dasharray="2 12.6"
 						stroke-width="15"
 					/>
 				</g>
@@ -306,6 +306,8 @@ watch(isVisible, visible => {
 		},
 	})
 
+	draggableInstance?.[0]?.disable()
+
 	function update() {
 		const { rotation } = draggableInstance[0]
 
@@ -432,7 +434,7 @@ const animateIn = () => {
 				cy: () => get(knobDotRef).dataset.endY,
 			},
 			duration: 1.2,
-			ease: 'power1.inOut',
+			ease: 'power3.inOut',
 		},
 		'>'
 	)
@@ -449,7 +451,25 @@ const animateIn = () => {
 			ease: 'power1.inOut',
 			stagger: 0.6,
 		},
-		'<0.4'
+		'<0.3'
+	)
+
+	tl.to(
+		get(sunIconRef),
+		{
+			opacity: 0,
+			duration: 0.8,
+		},
+		'>'
+	)
+
+	tl.call(
+		() => {
+			set(labelsVisible, true)
+			draggableInstance?.[0]?.enable()
+		},
+		null,
+		'<0.6'
 	)
 
 	tl.call(
