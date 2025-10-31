@@ -157,7 +157,7 @@ onMounted(async () => {
 		// renderer.renderAsync(scene, camera)
 		// renderer.renderAsync(maskScene, maskCamera)
 		// renderer.renderAsync(introScene, introCamera)
-		postProcessing.renderAsync()
+		postProcessing.render()
 
 		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
 
