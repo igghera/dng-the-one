@@ -503,6 +503,11 @@ async function createRenderer() {
 	renderer.toneMapping = THREE.ACESFilmicToneMapping
 	renderer.setSize(get(componentWidth), get(componentHeight))
 
+	if (isDebug) {
+		const { Inspector } = await import('three/addons/inspector/Inspector')
+		renderer.inspector = new Inspector()
+	}
+
 	await renderer.init()
 }
 

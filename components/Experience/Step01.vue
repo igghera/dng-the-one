@@ -63,145 +63,143 @@
 				</g>
 			</svg>
 
-			<svg
-				class="size-full relative z-[1] pointer-events-auto overflow-visible"
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 456 456"
-				overflow="visible"
-				ref="knobRef"
-			>
-				<g filter="url(#knob-glow)">
-					<circle
-						:cx="dotsCoords[0].x"
-						:cy="dotsCoords[0].x"
-						:data-start-x="dotsCoords[0].x"
-						:data-start-y="dotsCoords[0].x"
-						:data-end-x="dotsCoords[0].x"
-						:data-end-y="dotsCoords[0].y"
-						r="20"
-						fill="#ffffc4"
-						ref="knobDotRef"
-					/>
-				</g>
-
-				<defs>
-					<mask id="knob-mask-background">
-						<g class="origin-center -rotate-90">
-							<circle
-								cx="228"
-								cy="232.25"
-								r="223.25"
-								stroke="white"
-								stroke-width="25"
-								ref="knobTrackBackgroundRef"
+			<div class="size-full relative z-[1] pointer-events-auto" ref="knobRef">
+				<svg
+					class="pointer-events-none"
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 456 456"
+					overflow="visible"
+				>
+					<g filter="url(#knob-glow)">
+						<circle
+							:cx="dotsCoords[0].x"
+							:cy="dotsCoords[0].x"
+							:data-start-x="dotsCoords[0].x"
+							:data-start-y="dotsCoords[0].x"
+							:data-end-x="dotsCoords[0].x"
+							:data-end-y="dotsCoords[0].y"
+							r="20"
+							fill="#ffffc4"
+							ref="knobDotRef"
+						/>
+					</g>
+					<defs>
+						<mask id="knob-mask-background">
+							<g class="origin-center -rotate-90">
+								<circle
+									cx="228"
+									cy="232.25"
+									r="223.25"
+									stroke="white"
+									stroke-width="25"
+									ref="knobTrackBackgroundRef"
+								/>
+							</g>
+						</mask>
+						<mask id="knob-mask">
+							<g class="origin-center -rotate-90">
+								<circle
+									cx="228"
+									cy="232.25"
+									r="223.25"
+									stroke="white"
+									stroke-width="25"
+									ref="knobTrackRef"
+								/>
+							</g>
+						</mask>
+						<filter
+							id="knob-glow"
+							width="1000"
+							height="1000"
+							x="-272"
+							y="-272"
+							color-interpolation-filters="sRGB"
+							filterUnits="userSpaceOnUse"
+						>
+							<feFlood flood-opacity="0" result="BackgroundImageFix" />
+							<feColorMatrix
+								in="SourceAlpha"
+								result="hardAlpha"
+								values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
 							/>
-						</g>
-					</mask>
-
-					<mask id="knob-mask">
-						<g class="origin-center -rotate-90">
-							<circle
-								cx="228"
-								cy="232.25"
-								r="223.25"
-								stroke="white"
-								stroke-width="25"
-								ref="knobTrackRef"
+							<feOffset />
+							<feGaussianBlur stdDeviation="4.764" />
+							<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+							<feBlend
+								in2="BackgroundImageFix"
+								result="effect1_dropShadow_1698_5905"
 							/>
-						</g>
-					</mask>
-
-					<filter
-						id="knob-glow"
-						width="1000"
-						height="1000"
-						x="-272"
-						y="-272"
-						color-interpolation-filters="sRGB"
-						filterUnits="userSpaceOnUse"
-					>
-						<feFlood flood-opacity="0" result="BackgroundImageFix" />
-						<feColorMatrix
-							in="SourceAlpha"
-							result="hardAlpha"
-							values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-						/>
-						<feOffset />
-						<feGaussianBlur stdDeviation="4.764" />
-						<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-						<feBlend
-							in2="BackgroundImageFix"
-							result="effect1_dropShadow_1698_5905"
-						/>
-						<feColorMatrix
-							in="SourceAlpha"
-							result="hardAlpha"
-							values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-						/>
-						<feOffset />
-						<feGaussianBlur stdDeviation="9.528" />
-						<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-						<feBlend
-							in2="effect1_dropShadow_1698_5905"
-							result="effect2_dropShadow_1698_5905"
-						/>
-						<feColorMatrix
-							in="SourceAlpha"
-							result="hardAlpha"
-							values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-						/>
-						<feOffset />
-						<feGaussianBlur stdDeviation="33.349" />
-						<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-						<feBlend
-							in2="effect2_dropShadow_1698_5905"
-							result="effect3_dropShadow_1698_5905"
-						/>
-						<feColorMatrix
-							in="SourceAlpha"
-							result="hardAlpha"
-							values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-						/>
-						<feOffset />
-						<feGaussianBlur stdDeviation="66.698" />
-						<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-						<feBlend
-							in2="effect3_dropShadow_1698_5905"
-							result="effect4_dropShadow_1698_5905"
-						/>
-						<feColorMatrix
-							in="SourceAlpha"
-							result="hardAlpha"
-							values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-						/>
-						<feOffset />
-						<feGaussianBlur stdDeviation="76.247" />
-						<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-						<feBlend
-							in2="effect4_dropShadow_1698_5905"
-							result="effect5_dropShadow_1698_5905"
-						/>
-						<feColorMatrix
-							in="SourceAlpha"
-							result="hardAlpha"
-							values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-						/>
-						<feOffset />
-						<feGaussianBlur stdDeviation="76.247" />
-						<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-						<feBlend
-							in2="effect5_dropShadow_1698_5905"
-							result="effect6_dropShadow_1698_5905"
-						/>
-						<feBlend
-							in="SourceGraphic"
-							in2="effect6_dropShadow_1698_5905"
-							result="shape"
-						/>
-					</filter>
-				</defs>
-			</svg>
+							<feColorMatrix
+								in="SourceAlpha"
+								result="hardAlpha"
+								values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+							/>
+							<feOffset />
+							<feGaussianBlur stdDeviation="9.528" />
+							<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+							<feBlend
+								in2="effect1_dropShadow_1698_5905"
+								result="effect2_dropShadow_1698_5905"
+							/>
+							<feColorMatrix
+								in="SourceAlpha"
+								result="hardAlpha"
+								values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+							/>
+							<feOffset />
+							<feGaussianBlur stdDeviation="33.349" />
+							<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+							<feBlend
+								in2="effect2_dropShadow_1698_5905"
+								result="effect3_dropShadow_1698_5905"
+							/>
+							<feColorMatrix
+								in="SourceAlpha"
+								result="hardAlpha"
+								values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+							/>
+							<feOffset />
+							<feGaussianBlur stdDeviation="66.698" />
+							<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+							<feBlend
+								in2="effect3_dropShadow_1698_5905"
+								result="effect4_dropShadow_1698_5905"
+							/>
+							<feColorMatrix
+								in="SourceAlpha"
+								result="hardAlpha"
+								values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+							/>
+							<feOffset />
+							<feGaussianBlur stdDeviation="76.247" />
+							<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+							<feBlend
+								in2="effect4_dropShadow_1698_5905"
+								result="effect5_dropShadow_1698_5905"
+							/>
+							<feColorMatrix
+								in="SourceAlpha"
+								result="hardAlpha"
+								values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+							/>
+							<feOffset />
+							<feGaussianBlur stdDeviation="76.247" />
+							<feColorMatrix values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
+							<feBlend
+								in2="effect5_dropShadow_1698_5905"
+								result="effect6_dropShadow_1698_5905"
+							/>
+							<feBlend
+								in="SourceGraphic"
+								in2="effect6_dropShadow_1698_5905"
+								result="shape"
+							/>
+						</filter>
+					</defs>
+				</svg>
+			</div>
 
 			<div
 				class="knob-labels"
@@ -253,7 +251,6 @@ const uiStore = useUiStore()
 const { rt, tm } = useI18n()
 const { gsap, Draggable } = useGSAP()
 
-const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
 const dotsRef = useTemplateRef('dotsRef')
 const sunIconRef = useTemplateRef('sunIconRef')
@@ -298,7 +295,7 @@ onMounted(async () => {
 		throwResistance: 50000,
 		dragResistance: 0,
 		edgeResistance: 1,
-		maxDuration: 0.5,
+		maxDuration: 0.8,
 		snap(value) {
 			return Math.round(value / 90) * 90
 		},
@@ -307,8 +304,8 @@ onMounted(async () => {
 				attr: {
 					r: 26,
 				},
-				duration: 0.45,
-				ease: 'power1.out',
+				duration: 0.5,
+				ease: 'back.out(2)',
 				overwrite: true,
 			})
 		},
@@ -317,8 +314,8 @@ onMounted(async () => {
 				attr: {
 					r: 20,
 				},
-				duration: 0.8,
-				ease: 'power1.out',
+				duration: 0.5,
+				ease: 'back.out(3)',
 				overwrite: true,
 			})
 		},
