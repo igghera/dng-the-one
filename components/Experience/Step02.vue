@@ -25,18 +25,18 @@
 					class="track"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
-					viewBox="0 0 96 600"
+					viewBox="0 0 116 600"
 					overflow="visible"
 					ref="trackRef"
 				>
 					<g mask="url(#dragger-mask)">
-						<rect x="0" y="0" width="96" height="600" fill="transparent" />
+						<rect x="0" y="0" width="116" height="600" fill="transparent" />
 
 						<path
 							class="stroke-gold-light"
 							stroke-dasharray="1.5 18"
 							stroke-width="8"
-							d="M48 0v600"
+							d="M58 0v600"
 						/>
 					</g>
 
@@ -56,23 +56,29 @@
 						transform="translate(0, 520)"
 						ref="draggerRef"
 					>
-						<path
-							class="stroke-gold-light"
-							stroke-width="2.336"
-							fill="transparent"
-							d="M1.284 47.994C1.284 22.393 22.04 1.64 47.641 1.64c25.601 0 46.355 20.754 46.355 46.355 0 25.602-20.754 46.356-46.355 46.357-25.602 0-46.357-20.755-46.357-46.357Z"
+						<circle
+							class="stroke-gold-light fill-transparent"
+							cx="58"
+							cy="55"
+							r="46"
+							stroke-width="2"
+							ref="draggerCircleRef"
 						/>
 
-						<path
-							class="fill-gold-light"
-							d="M47.16 42.563a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
-						/>
+						<g transform="translate(11, 4)">
+							<path
+								class="fill-gold-light"
+								d="M47.16 42.563a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
+							/>
+						</g>
 
 						<g class="arrows">
 							<g
 								class="dragger-arrow"
-								transform="translate(37, -20)"
-								:data-visible="currentStep < 3"
+								transform="translate(48, -14)"
+								:data-visible="
+									currentStep >= 0 && currentStep < 3 && !isPressed
+								"
 							>
 								<path
 									class="fill-gold-light"
@@ -82,8 +88,8 @@
 
 							<g
 								class="dragger-arrow"
-								transform="translate(37, 116) scale(1, -1)"
-								:data-visible="currentStep > 0"
+								transform="translate(48, 124) scale(1, -1)"
+								:data-visible="currentStep > 0 && !isPressed"
 							>
 								<path
 									class="fill-gold-light"
@@ -95,14 +101,14 @@
 
 					<defs>
 						<mask id="dragger-mask">
-							<rect x="0" y="-100" width="96" height="700" fill="white" />
+							<rect x="0" y="-100" width="116" height="700" fill="white" />
 
 							<g ref="draggerMaskRef">
-								<circle cx="48" cy="48" r="48" fill="url(#dragger-gradient)" />
+								<circle cx="58" cy="58" r="58" fill="url(#dragger-gradient)" />
 							</g>
 
 							<g transform="translate(0, 550)" ref="trackMaskInitialRef">
-								<rect x="0" y="0" width="96" height="300" fill="black"></rect>
+								<rect x="0" y="0" width="116" height="300" fill="black"></rect>
 							</g>
 						</mask>
 
@@ -145,19 +151,21 @@ const uiStore = useUiStore()
 const { rt, tm } = useI18n()
 
 const currentStep = shallowRef(-1)
+const isPressed = shallowRef(false)
 
 const { gsap, Draggable } = useGSAP()
 
 const draggerRef = useTemplateRef('draggerRef')
+const draggerCircleRef = useTemplateRef('draggerCircleRef')
 const draggerMaskRef = useTemplateRef('draggerMaskRef')
 const trackRef = useTemplateRef('trackRef')
 const trackMaskInitialRef = useTemplateRef('trackMaskInitialRef')
 
 const dotsCoords = [
-	{ x: 48, y: 450 },
-	{ x: 48, y: 293 },
-	{ x: 48, y: 136 },
-	{ x: 48, y: -17 },
+	{ x: 58, y: 450 },
+	{ x: 58, y: 293 },
+	{ x: 58, y: 136 },
+	{ x: 58, y: -17 },
 ]
 
 const trackTranslateValues = [-15, 11, 37, 62]
@@ -187,7 +195,7 @@ onMounted(() => {
 			top: -17 - 48 - 18,
 			left: 0,
 			height: 700,
-			width: 96,
+			width: 116,
 		},
 		snap: function (value) {
 			let values = null
@@ -201,7 +209,7 @@ onMounted(() => {
 					// O ❌
 					// console.log('snap() case -1')
 
-					values = [dotsCoords[0].y - 48]
+					values = [dotsCoords[0].y - 52]
 					break
 				case 0:
 					// X ❌
@@ -211,7 +219,7 @@ onMounted(() => {
 					// / ❌
 					// console.log('snap() case 0')
 
-					values = [dotsCoords[1].y - 48, dotsCoords[0].y - 48]
+					values = [dotsCoords[1].y - 52, dotsCoords[0].y - 52]
 					break
 				case 1:
 					// X ❌
@@ -222,9 +230,9 @@ onMounted(() => {
 					// console.log('snap() case 1')
 
 					values = [
-						dotsCoords[2].y - 48,
-						dotsCoords[1].y - 48,
-						dotsCoords[0].y - 48,
+						dotsCoords[2].y - 52,
+						dotsCoords[1].y - 52,
+						dotsCoords[0].y - 52,
 					]
 					break
 				case 2:
@@ -236,9 +244,9 @@ onMounted(() => {
 					// console.log('snap() case 2')
 
 					values = [
-						dotsCoords[3].y - 48,
-						dotsCoords[2].y - 48,
-						dotsCoords[1].y - 48,
+						dotsCoords[3].y - 52,
+						dotsCoords[2].y - 52,
+						dotsCoords[1].y - 52,
 					]
 					break
 				case 3:
@@ -249,7 +257,7 @@ onMounted(() => {
 					// / ❌
 					// console.log('snap() case 3')
 
-					values = [dotsCoords[3].y - 48, dotsCoords[2].y - 48]
+					values = [dotsCoords[3].y - 52, dotsCoords[2].y - 52]
 					break
 			}
 
@@ -261,6 +269,30 @@ onMounted(() => {
 		maxDuration: 0.6,
 		overshootTolerance: 0,
 		edgeResistance: 1,
+		onPress() {
+			set(isPressed, true)
+
+			gsap.to(get(draggerCircleRef), {
+				attr: {
+					r: 54,
+				},
+				duration: 0.5,
+				ease: 'back.out(2)',
+				overwrite: true,
+			})
+		},
+		onRelease() {
+			set(isPressed, false)
+
+			gsap.to(get(draggerCircleRef), {
+				attr: {
+					r: 46,
+				},
+				duration: 0.5,
+				ease: 'back.out(3)',
+				overwrite: true,
+			})
+		},
 		onDrag() {
 			update()
 		},
@@ -412,11 +444,11 @@ const translateTrackToPosition = yPosition => {
 }
 
 .track {
-	@apply w-[4.5rem] lg:w-24;
+	@apply w-[5rem] md:w-[7.25rem];
 }
 
 .dragger-arrow {
-	@apply transition-opacity duration-300 ease-out;
+	@apply transition-opacity duration-500 ease-out;
 
 	&[data-visible='false'] {
 		@apply opacity-0;
