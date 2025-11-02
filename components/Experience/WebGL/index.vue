@@ -24,10 +24,9 @@ import {
 	screenUV,
 	mix,
 	time,
-	select,
 } from 'three/tsl'
 // import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
-import { OrbitControls } from 'three/addons/controls/OrbitControls'
+// import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
 import { ktxLoader, textureLoader } from '~/assets/js/loaders'
@@ -560,7 +559,7 @@ async function createParticles() {
 	const map = await textureLoader.load('/webgl/particle.webp')
 	map.colorSpace = THREE.SRGBColorSpace
 
-	const count = 9000
+	const count = 8000
 	const positions = new Float32Array(count * 3)
 
 	let i

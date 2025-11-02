@@ -25,6 +25,10 @@ import {
 import {
   sizeMin as particlesSizeMin,
   sizeMax as particlesSizeMax,
+  opacity as particlesOpacity,
+  strength as particlesNoiseStrength,
+  speed as particlesSpeed,
+  particleColor as particlesColor,
 } from './materials/particles'
 
 import {
@@ -55,7 +59,7 @@ export class Debug {
   createIntro(material, visibility) {
     const folder = this.pane.addFolder({
       title: 'Intro',
-      expanded: true,
+      expanded: false,
     })
 
     folder.addBinding(visibility, 'value', { label: 'Visibility', min: 0, max: 1 })
@@ -142,9 +146,13 @@ export class Debug {
   createParticles(particles) {
     const particlesFolder = this.pane.addFolder({
       title: 'Particles',
-      expanded: false,
+      expanded: true,
     })
 
+    particlesFolder.addBinding(particlesOpacity, 'value', { label: 'Opacity', min: 0, max: 1 })
+    particlesFolder.addBinding(particlesColor, 'value', { label: 'Color', color: { type: 'float' } })
+    particlesFolder.addBinding(particlesNoiseStrength, 'value', { label: 'Noise Strength', min: 0, max: 1 })
+    particlesFolder.addBinding(particlesSpeed, 'value', { label: 'Speed', min: 0, max: 1, step: 0.01 })
     particlesFolder.addBinding(particlesSizeMin, 'value', { label: 'Size Min', min: 0, max: 0.05, step: 0.0005 })
     particlesFolder.addBinding(particlesSizeMax, 'value', { label: 'Size Max', min: 0, max: 0.1, step: 0.0005 })
   }

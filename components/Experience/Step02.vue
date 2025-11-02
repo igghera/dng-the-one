@@ -141,6 +141,11 @@
 
 <script setup>
 import { get, set } from '@vueuse/core'
+import {
+	opacity as particlesOpacity,
+	strength as particlesStrength,
+	speed as particlesSpeed,
+} from './WebGL/materials/particles'
 
 //
 // Refs / State
@@ -325,12 +330,62 @@ onBeforeUnmount(() => {
 })
 
 //
+// Watchers
+//
+watch(currentStep, (next, prev) => handleStepChange(next, prev))
+
+//
 // Methods
 //
 const handleClick = () => {
 	appStore.setStep02Selection(get(currentStep))
 	uiStore.setExperienceStep02Visible(false)
 	uiStore.setExperienceStep03Visible(true)
+}
+
+const handleStepChange = (next, prev) => {
+	let strength = 0
+	let speed = 0
+
+	// Initial transition
+	if (prev === -1 && next === 0) {
+		gsap.to(particlesOpacity, {
+			value: 1,
+			duration: 2,
+			overwrite: true,
+		})
+	}
+
+	switch (next) {
+		case 0:
+			strength = 0.2
+			speed = 0.1
+			break
+		case 1:
+			strength = 0.28
+			speed = 0.125
+			break
+		case 2:
+			strength = 0.36
+			speed = 0.15
+			break
+		case 3:
+			strength = 0.44
+			speed = 0.175
+			break
+	}
+
+	gsap.to(particlesStrength, {
+		value: strength,
+		duration: 2,
+		overwrite: true,
+	})
+
+	gsap.to(particlesSpeed, {
+		value: speed,
+		duration: 2,
+		overwrite: true,
+	})
 }
 
 const updateCurrentStep = () => {
