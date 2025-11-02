@@ -628,19 +628,15 @@ function createSea() {
 	scene.add(reflection.target)
 
 	const getReflectivity = Fn(() => {
-		const base = float(0.45)
-		const value = positionWorld.x
-			.length()
-			.smoothstep(0.8, 9.5)
-			.oneMinus()
-			.pow(4)
+		const base = float(0.55)
+		const value = positionWorld.x.length().smoothstep(0.8, 4).oneMinus().pow(2)
 
 		const x = base.add(value)
 
 		return x
 	})
 
-	FloorMaterial.emissiveNode = reflection.mul(getReflectivity()).mul(0.6)
+	FloorMaterial.emissiveNode = reflection.mul(getReflectivity()).mul(0.85)
 
 	const geometry = new THREE.PlaneGeometry(20, 10, 250, 150)
 	geometry.rotateX(-Math.PI / 2)

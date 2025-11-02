@@ -53,7 +53,7 @@
 
 					<g
 						class="dragger | pointer-events-auto"
-						transform="translate(0, 520)"
+						transform="translate(0, 580)"
 						ref="draggerRef"
 					>
 						<circle
@@ -194,7 +194,7 @@ onMounted(() => {
 		bounds: {
 			top: -17 - 48 - 18,
 			left: 0,
-			height: 700,
+			height: 760,
 			width: 116,
 		},
 		snap: function (value) {
