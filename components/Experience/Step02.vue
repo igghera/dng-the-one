@@ -182,6 +182,7 @@ onMounted(() => {
 	draggableInstance = Draggable.create(get(draggerRef), {
 		type: 'y',
 		inertia: true,
+		edgeResistance: 1,
 		bounds: {
 			top: -17 - 48 - 18,
 			left: 0,
@@ -189,8 +190,6 @@ onMounted(() => {
 			width: 96,
 		},
 		snap: function (value) {
-			// console.log('Snap value:', value)
-
 			let values = null
 
 			switch (get(currentStep)) {
@@ -259,12 +258,11 @@ onMounted(() => {
 			return getClosestValue(values, value)
 		},
 		throwResistance: 20000,
-		maxDuration: 0.5,
-		overshootTolerance: 0.1,
+		maxDuration: 0.6,
+		overshootTolerance: 0,
 		edgeResistance: 1,
 		onDrag() {
 			update()
-			updateCurrentStep()
 		},
 		onDragEnd() {
 			gsap.delayedCall(0.1, () => {

@@ -51,6 +51,27 @@
 					/>
 				</g>
 
+				<!-- TODO: Resume this later -->
+				<g v-if="false">
+					<rect
+						v-for="i in 96"
+						style="transform-box: fill-box; transform-origin: center"
+						:style="{
+							rotate: `${i * (360 / 96)}deg`,
+							translate: `${224 + Math.cos(i * ((Math.PI * 2) / 96)) * 220}px ${
+								230.25 + Math.sin(i * ((Math.PI * 2) / 96)) * 220
+							}px`,
+							scale: `${
+								0 + (Math.sin(i * (Math.PI / 180)) * 0.5 + 0.5) * 10
+							} 1`,
+						}"
+						:key="i"
+						width="10"
+						height="2"
+						fill="red"
+					/>
+				</g>
+
 				<g mask="url(#knob-mask)">
 					<circle
 						cx="228"
@@ -84,6 +105,7 @@
 							ref="knobDotRef"
 						/>
 					</g>
+
 					<defs>
 						<mask id="knob-mask-background">
 							<g class="origin-center -rotate-90">
