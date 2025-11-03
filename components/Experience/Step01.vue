@@ -28,9 +28,8 @@
 				</g>
 
 				<!-- Sun icon -->
-				<g>
+				<g class="sun-icon" :data-visible="sunIconVisible">
 					<path
-						ref="sunIconRef"
 						fill="#ffffc4"
 						transform="translate(0 -107)"
 						d="M227.593 353.509a1.95 1.95 0 0 1 1.939 1.723l.013.229v1.952a1.95 1.95 0 0 1-1.837 1.946 1.95 1.95 0 0 1-2.053-1.718l-.014-.228v-1.952a1.954 1.954 0 0 1 1.952-1.952m12.324-4.08.184.162 1.366 1.366a1.955 1.955 0 0 1 .082 2.669 1.953 1.953 0 0 1-2.659.253l-.183-.162-1.367-1.366a1.951 1.951 0 0 1 2.378-3.059zm-22.071.162a1.953 1.953 0 0 1 .162 2.577l-.162.183-1.366 1.366a1.95 1.95 0 0 1-2.669.082 1.95 1.95 0 0 1-.253-2.658l.162-.184 1.366-1.366a1.953 1.953 0 0 1 2.76 0m-5.87-11.699a1.952 1.952 0 0 1 .229 3.891l-.229.013h-1.952a1.953 1.953 0 0 1-1.495-3.204c.32-.382.773-.627 1.267-.686l.228-.014zm33.187 0a1.95 1.95 0 0 1 1.946 1.838 1.95 1.95 0 0 1-1.718 2.053l-.228.013h-1.953a1.953 1.953 0 0 1-1.946-1.837 1.95 1.95 0 0 1 1.718-2.053l.228-.014zm-28.867-12.083.184.162 1.366 1.367a1.95 1.95 0 0 1-1.197 3.321 1.95 1.95 0 0 1-1.379-.399l-.184-.162-1.366-1.366a1.951 1.951 0 0 1 2.375-3.059zm25.171.162c.336.337.538.784.568 1.258.03.475-.114.944-.406 1.319l-.162.184-1.366 1.366a1.954 1.954 0 0 1-2.923-2.577l.162-.183 1.367-1.367a1.95 1.95 0 0 1 2.76 0m-13.874-5.647a1.95 1.95 0 0 1 1.939 1.724l.013.228v1.952a1.951 1.951 0 0 1-3.89.229l-.014-.229v-1.952a1.953 1.953 0 0 1 1.952-1.952m0 9.76a9.76 9.76 0 1 1-9.751 10.184l-.009-.424.009-.423a9.766 9.766 0 0 1 9.751-9.337"
@@ -240,10 +239,10 @@ const { gsap, Draggable } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
 const dotsRef = useTemplateRef('dotsRef')
-const sunIconRef = useTemplateRef('sunIconRef')
 const knobTrackBackgroundRef = useTemplateRef('knobTrackBackgroundRef')
 
 const instructionsVisible = shallowRef(false)
+const sunIconVisible = shallowRef(false)
 const ctaVisible = shallowRef(false)
 const labelsVisible = shallowRef(false)
 
@@ -314,6 +313,8 @@ onMounted(async () => {
 		},
 		onDrag() {
 			set(instructionsVisible, false)
+			set(sunIconVisible, false)
+			set(labelsVisible, true)
 			set(ctaVisible, true)
 			update()
 		},
@@ -364,7 +365,7 @@ onBeforeUnmount(() => {
 // Methods
 //
 const setInitialStyles = () => {
-	gsap.set([get(headerRef), get(dotsRef), get(sunIconRef), get(knobRef)], {
+	gsap.set([get(headerRef), get(dotsRef), get(knobRef)], {
 		opacity: 0,
 	})
 
@@ -472,7 +473,7 @@ const animateIn = () => {
 
 	// Show sun icon and dots
 	tl.fromTo(
-		[get(sunIconRef), get(dotsRef)],
+		get(dotsRef),
 		{
 			opacity: 0,
 		},
@@ -485,24 +486,14 @@ const animateIn = () => {
 		'<0.3'
 	)
 
-	// Hide sun icon
-	tl.to(
-		get(sunIconRef),
-		{
-			opacity: 0,
-			duration: 0.8,
-		},
-		'>'
-	)
-
 	// Show labels and enable draggable
 	tl.call(
 		() => {
-			set(labelsVisible, true)
 			draggableInstance?.[0]?.enable()
+			set(sunIconVisible, true)
 		},
 		null,
-		'<0.6'
+		'<0.2'
 	)
 
 	// Show instructions
@@ -572,6 +563,14 @@ const handleClick = () => {
 .knob-label {
 	@apply text-center;
 	@apply transition-opacity duration-500 ease-out;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
+}
+
+.sun-icon {
+	@apply transition-opacity duration-300 ease-out;
 
 	&[data-visible='false'] {
 		@apply opacity-0;
