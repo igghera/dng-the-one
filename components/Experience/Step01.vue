@@ -40,46 +40,15 @@
 				<!-- Background stroke -->
 				<g mask="url(#knob-mask-background)">
 					<circle
+						mask="url(#track-mask)"
 						cx="228"
 						cy="232.25"
 						r="223.25"
 						stroke="#ffffc4"
 						stroke-dasharray="2 12.6"
-						stroke-width="9"
+						stroke-width="28"
 						stroke-opacity="0.5"
 						data-stroke-opacity-target="0.5"
-					/>
-				</g>
-
-				<!-- TODO: Resume this later -->
-				<g v-if="false">
-					<rect
-						v-for="i in 96"
-						style="transform-box: fill-box; transform-origin: center"
-						:style="{
-							rotate: `${i * (360 / 96)}deg`,
-							translate: `${224 + Math.cos(i * ((Math.PI * 2) / 96)) * 220}px ${
-								230.25 + Math.sin(i * ((Math.PI * 2) / 96)) * 220
-							}px`,
-							scale: `${
-								0 + (Math.sin(i * (Math.PI / 180)) * 0.5 + 0.5) * 10
-							} 1`,
-						}"
-						:key="i"
-						width="10"
-						height="2"
-						fill="red"
-					/>
-				</g>
-
-				<g mask="url(#knob-mask)">
-					<circle
-						cx="228"
-						cy="232.25"
-						r="223.25"
-						stroke="#ffffc4"
-						stroke-dasharray="2 12.6"
-						stroke-width="15"
 					/>
 				</g>
 			</svg>
@@ -107,6 +76,15 @@
 					</g>
 
 					<defs>
+						<mask id="track-mask">
+							<g
+								style="transform-box: fill-box; transform-origin: center"
+								ref="knobMaskWrapperNewRef"
+							>
+								<path fill="#fff" :d="pathMaskStart" ref="knobMaskNewRef" />
+							</g>
+						</mask>
+
 						<mask id="knob-mask-background">
 							<g class="origin-center -rotate-90">
 								<circle
@@ -116,18 +94,6 @@
 									stroke="white"
 									stroke-width="25"
 									ref="knobTrackBackgroundRef"
-								/>
-							</g>
-						</mask>
-						<mask id="knob-mask">
-							<g class="origin-center -rotate-90">
-								<circle
-									cx="228"
-									cy="232.25"
-									r="223.25"
-									stroke="white"
-									stroke-width="25"
-									ref="knobTrackRef"
 								/>
 							</g>
 						</mask>
@@ -277,7 +243,6 @@ const headerRef = useTemplateRef('headerRef')
 const dotsRef = useTemplateRef('dotsRef')
 const sunIconRef = useTemplateRef('sunIconRef')
 const knobTrackBackgroundRef = useTemplateRef('knobTrackBackgroundRef')
-const knobTrackRef = useTemplateRef('knobTrackRef')
 
 const instructionsVisible = shallowRef(false)
 const ctaVisible = shallowRef(false)
@@ -291,6 +256,8 @@ const dotsCoords = [
 ]
 
 const knobRef = useTemplateRef('knobRef')
+const knobMaskWrapperNewRef = useTemplateRef('knobMaskWrapperNewRef')
+const knobMaskNewRef = useTemplateRef('knobMaskNewRef')
 const knobDotRef = useTemplateRef('knobDotRef')
 const knobStep = shallowRef(0)
 const knobStepLiveDrag = shallowRef(0)
@@ -298,6 +265,11 @@ const knobStepLiveDrag = shallowRef(0)
 const labels = computed(() => {
 	return Object.values(tm('experience_step_01.labels')).map(label => rt(label))
 })
+
+const pathMaskStart =
+	'M468 228c0 132.548-107.452 240-240 240S-12 360.548-12 228C-12 109.255 74.238 10.652 187.5-8.597A241.6 241.6 0 0 1 228-12c13.803 0 27.334 1.165 40.5 3.403C381.762 10.652 468 109.255 468 228'
+const pathMaskEnd =
+	'M447 228c0 120.95-98.05 219-219 219S9 348.95 9 228C9 119.645 88.255 32.71 191.044 12.105 221.5 6 218.5-11 228-11s7.5 18.099 36.956 23.105C368.308 29.67 447 119.645 447 228'
 
 let draggableInstance = null
 
@@ -359,6 +331,10 @@ onMounted(async () => {
 	function update() {
 		const { rotation } = draggableInstance[0]
 
+		gsap.set(get(knobMaskWrapperNewRef), {
+			transform: `rotate(${rotation}deg)`,
+		})
+
 		let step = Math.round(rotation / 90) % 4
 		if (Math.sign(step) === -1) step = 4 + step
 
@@ -367,13 +343,6 @@ onMounted(async () => {
 		let bg = rotation % 360
 		if (Math.sign(bg) === -1) bg = 360 + bg
 		backgroundProgress.value = bg / 360
-
-		const start = 0
-		const end = (bg / 360) * 100
-
-		gsap.set(get(knobTrackRef), {
-			drawSVG: `${start}% ${end}%`,
-		})
 	}
 
 	function updateKnobSteponThrowComplete() {
@@ -483,6 +452,23 @@ const animateIn = () => {
 			ease: 'power3.inOut',
 		},
 		'<1.5'
+	)
+
+	tl.fromTo(
+		get(knobMaskNewRef),
+		{
+			morphSVG: {
+				shape: pathMaskStart,
+			},
+		},
+		{
+			morphSVG: {
+				shape: pathMaskEnd,
+				shapeIndex: 0,
+			},
+			duration: 1.5,
+		},
+		'<0.5'
 	)
 
 	// Show sun icon and dots
