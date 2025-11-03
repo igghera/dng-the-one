@@ -1,5 +1,5 @@
 import { SpriteNodeMaterial, AdditiveBlending } from 'three/webgpu'
-import { instancedBufferAttribute, Fn, color, mx_noise_vec3, time, remap, uniform, texture, add, mul } from 'three/tsl'
+import { instancedBufferAttribute, Fn, color, mx_noise_vec3, remap, uniform, texture } from 'three/tsl'
 
 export const sizeMin = uniform(0.013)
 export const sizeMax = uniform(0.035)

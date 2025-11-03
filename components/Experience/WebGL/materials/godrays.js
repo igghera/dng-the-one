@@ -8,26 +8,26 @@ import {
   texture,
   normalLocal,
   color,
-  time,
   smoothstep,
   cameraPosition,
   positionWorld,
   normalWorld,
   dot
 } from 'three/tsl'
+import { noiseTexture } from '../nodes'
 
-export const scaleTop = uniform(0.5)
-export const scaleBottom = uniform(1.65)
+export const scaleTop = uniform(0.4)
+export const scaleBottom = uniform(0.4)
 export const scaleHeight = uniform(1)
 export const noiseScale = uniform(0.6)
-export const godraysColor = uniform(color(1, 1, 1))
-export const opacity = uniform(0.07)
-export const timeSpeed = uniform(0.07)
+export const obstructionScale = uniform(1)
+export const godraysColor = uniform(color(0.73, 0.27, 0.02))
+export const opacity = uniform(0)
+export const timeSpeed = uniform(0)
 export const smoothTop = uniform(0.1)
-export const smoothBottom = uniform(0.22)
+export const smoothBottom = uniform(1)
 export const fresnelPower = uniform(3)
-
-export const noiseTexture = texture(null)
+export const offset = uniform(0)
 
 export const GodraysMaterial = new MeshBasicNodeMaterial({
   transparent: true,
@@ -35,7 +35,7 @@ export const GodraysMaterial = new MeshBasicNodeMaterial({
   blending: AdditiveBlending,
   color: 0x000000,
   depthWrite: false,
-  visible: false
+  visible: true
 })
 
 GodraysMaterial.positionNode = Fn(() => {
@@ -53,13 +53,13 @@ GodraysMaterial.positionNode = Fn(() => {
 })()
 
 GodraysMaterial.opacityNode = Fn(() => {
-  const customUV = normalLocal.xy.mul(noiseScale).add(time.mul(timeSpeed))
+  const customUV = normalLocal.xy.mul(noiseScale).add(offset)
   const noise = texture(noiseTexture, customUV)
   const smooth = smoothstep(0, smoothBottom, uv().y).mul(smoothstep(0, smoothTop, uv().y.oneMinus()))
   const viewDirection = cameraPosition.sub(positionWorld).normalize()
   const invertedFresnel = dot(normalWorld, viewDirection).abs().pow(fresnelPower)
 
-  return noise.g.mulAssign(invertedFresnel).mulAssign(smooth).mulAssign(opacity)
+  return noise.g.add(obstructionScale).clamp(0, 1).mulAssign(invertedFresnel).mulAssign(smooth).mulAssign(opacity)
 })()
 
 GodraysMaterial.emissiveNode = Fn(() => {

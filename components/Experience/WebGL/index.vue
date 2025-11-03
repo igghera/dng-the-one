@@ -41,16 +41,22 @@ import {
 	MaskMaterial,
 	IntroBackgroundMaterial,
 } from './materials'
+
 import {
 	getDisplacement,
 	noiseTexture as seaNoiseTexture,
 } from './materials/floor'
 
-import { noiseTexture as godraysNoiseTexture } from './materials/godrays'
 import {
 	offset as particlesOffset,
 	speed as particlesSpeed,
 } from './materials/particles'
+
+import {
+	offset as godraysOffset,
+	timeSpeed as godraysTimeSpeed,
+} from './materials/godrays'
+
 import {
 	maskColorA as maskBorderColorA,
 	maskColorB as maskBorderColorB,
@@ -121,7 +127,7 @@ const dofParams = Object.freeze({
 	bokehScale: uniform(8),
 })
 
-const introSceneVisibility = uniform(0)
+const introSceneVisibility = uniform(1)
 
 //
 // Lifecycle
@@ -156,6 +162,7 @@ onMounted(async () => {
 		if (!get(visible)) return
 
 		particlesOffset.value += particlesSpeed.value * deltaTime * 0.001
+		godraysOffset.value += godraysTimeSpeed.value * deltaTime * 0.001
 
 		updateScene(time)
 		// renderer.renderAsync(scene, camera)
@@ -551,7 +558,6 @@ async function loadTextures() {
 	textures.set('intro_outline', ktx[6])
 
 	seaNoiseTexture.value = noiseTexture.value
-	godraysNoiseTexture.value = noiseTexture.value
 
 	const images = await textureLoader.load(['/webgl/bg.webp'])
 
@@ -632,7 +638,7 @@ function createSea() {
 	scene.add(reflection.target)
 
 	const getReflectivity = Fn(() => {
-		const base = float(0.55)
+		const base = float(0.45)
 		const value = positionWorld.x.length().smoothstep(0.8, 4).oneMinus().pow(2)
 
 		const x = base.add(value)
