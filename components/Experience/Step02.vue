@@ -1,6 +1,6 @@
 <template>
 	<Container class="pointer-events-none">
-		<header class="header">
+		<header class="header" ref="headerRef">
 			<h2
 				class="display-2 | golden-text uppercase"
 				v-html="$t('experience_step_02.title')"
@@ -19,7 +19,7 @@
 			</div>
 		</header>
 
-		<div class="content">
+		<div class="content" ref="contentRef">
 			<div class="track-wrapper">
 				<svg
 					class="track"
@@ -169,6 +169,8 @@ const isPressed = shallowRef(false)
 
 const { gsap, Draggable } = useGSAP()
 
+const headerRef = useTemplateRef('headerRef')
+const contentRef = useTemplateRef('contentRef')
 const draggerRef = useTemplateRef('draggerRef')
 const draggerCircleRef = useTemplateRef('draggerCircleRef')
 const draggerMaskRef = useTemplateRef('draggerMaskRef')
@@ -196,10 +198,16 @@ const labels = computed(() => {
 //
 // Lifecycle
 //
-onMounted(() => {
+onMounted(async () => {
+	setInitialStyles()
+
+	await nextTick()
+
 	gsap.set(get(trackRef), {
 		yPercent: trackTranslateValues[0],
 	})
+
+	animateIn()
 
 	draggableInstance = Draggable.create(get(draggerRef), {
 		type: 'y',
@@ -346,6 +354,25 @@ watch(currentStep, (next, prev) => handleStepChange(next, prev))
 //
 // Methods
 //
+const setInitialStyles = () => {
+	gsap.set([get(headerRef), get(contentRef)], {
+		autoAlpha: 0,
+	})
+}
+
+const animateIn = () => {
+	return gsap.fromTo(
+		[get(headerRef), get(contentRef)],
+		{
+			autoAlpha: 0,
+		},
+		{
+			autoAlpha: 1,
+			duration: 1.2,
+			stagger: 0.2,
+		}
+	)
+}
 const handleClick = () => {
 	appStore.setStep02Selection(get(currentStep))
 	uiStore.setExperienceStep02Visible(false)
