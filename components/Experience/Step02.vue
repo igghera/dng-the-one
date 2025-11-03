@@ -121,12 +121,11 @@
 			</div>
 		</div>
 
-		<p
-			class="instructions | body-5 | text-gold-light"
-			:data-visible="currentStep === -1"
-		>
-			{{ $t('experience_step_02.instructions') }}
-		</p>
+		<div class="instructions" :data-visible="currentStep === -1">
+			<p class="instructions-inner pulse-100-60 | body-5 | text-gold-light">
+				{{ $t('experience_step_02.instructions') }}
+			</p>
+		</div>
 
 		<ButtonGolden
 			class="cta"

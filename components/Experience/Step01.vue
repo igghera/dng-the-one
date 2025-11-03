@@ -207,12 +207,11 @@
 			</div>
 		</div>
 
-		<p
-			class="instructions | body-5 | text-gold"
-			:data-visible="instructionsVisible"
-		>
-			{{ $t('experience_step_01.instructions') }}
-		</p>
+		<div class="instructions" :data-visible="instructionsVisible">
+			<p class="instructions-inner pulse-100-60 | body-5 | text-gold">
+				{{ $t('experience_step_01.instructions') }}
+			</p>
+		</div>
 
 		<ButtonGolden
 			class="cta"

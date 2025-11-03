@@ -3,6 +3,7 @@
 @use 'utils';
 @use 'functions';
 @use 'layout';
+@use 'animations';
 
 html {
   @apply text-white bg-no-repeat bg-cover bg-top bg-fixed bg-gold-light;

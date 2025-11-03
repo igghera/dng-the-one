@@ -1,0 +1,12 @@
+.pulse-100-60 {
+  animation: pulse-100-60 1s linear infinite alternate;
+}
+
+@keyframes pulse-100-60 {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
