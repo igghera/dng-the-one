@@ -145,6 +145,7 @@ import {
 	opacity as particlesOpacity,
 	strength as particlesStrength,
 	speed as particlesSpeed,
+	sizeMax as particlesSizeMax,
 } from './WebGL/materials/particles'
 
 //
@@ -346,6 +347,7 @@ const handleClick = () => {
 const handleStepChange = (next, prev) => {
 	let strength = 0
 	let speed = 0
+	let sizeMax = 0
 
 	// Initial transition
 	if (prev === -1 && next === 0) {
@@ -358,20 +360,24 @@ const handleStepChange = (next, prev) => {
 
 	switch (next) {
 		case 0:
-			strength = 0.2
+			strength = 0.23
 			speed = 0.1
+			sizeMax = 0.035
 			break
 		case 1:
-			strength = 0.28
-			speed = 0.125
+			strength = 0.35
+			speed = 0.16
+			sizeMax = 0.048
 			break
 		case 2:
-			strength = 0.36
-			speed = 0.15
+			strength = 0.48
+			speed = 0.21
+			sizeMax = 0.056
 			break
 		case 3:
-			strength = 0.44
-			speed = 0.175
+			strength = 0.65
+			speed = 0.26
+			sizeMax = 0.065
 			break
 	}
 
@@ -379,12 +385,21 @@ const handleStepChange = (next, prev) => {
 		value: strength,
 		duration: 2,
 		overwrite: true,
+		ease: 'sine.out',
 	})
 
 	gsap.to(particlesSpeed, {
 		value: speed,
 		duration: 2,
 		overwrite: true,
+		ease: 'sine.out',
+	})
+
+	gsap.to(particlesSizeMax, {
+		value: sizeMax,
+		duration: 2,
+		overwrite: true,
+		ease: 'sine.out',
 	})
 }
 

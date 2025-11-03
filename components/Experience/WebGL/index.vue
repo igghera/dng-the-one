@@ -47,7 +47,10 @@ import {
 } from './materials/floor'
 
 import { noiseTexture as godraysNoiseTexture } from './materials/godrays'
-import { noiseTexture as particlesNoiseTexture } from './materials/particles'
+import {
+	offset as particlesOffset,
+	speed as particlesSpeed,
+} from './materials/particles'
 import {
 	maskColorA as maskBorderColorA,
 	maskColorB as maskBorderColorB,
@@ -118,7 +121,7 @@ const dofParams = Object.freeze({
 	bokehScale: uniform(8),
 })
 
-const introSceneVisibility = uniform(1)
+const introSceneVisibility = uniform(0)
 
 //
 // Lifecycle
@@ -149,8 +152,10 @@ onMounted(async () => {
 	emitter.emit(EVENTS.WEBGL_READY)
 	uiStore.setWebglVisible(true)
 
-	gsap.ticker.add(time => {
+	gsap.ticker.add((time, deltaTime) => {
 		if (!get(visible)) return
+
+		particlesOffset.value += particlesSpeed.value * deltaTime * 0.001
 
 		updateScene(time)
 		// renderer.renderAsync(scene, camera)
@@ -496,6 +501,7 @@ async function createRenderer() {
 		canvas: get(canvasRef),
 		alpha: true,
 		antialias: true,
+		powerPreference: 'high-performance',
 	})
 
 	renderer.setClearColor(0x000000, 1)
@@ -546,7 +552,6 @@ async function loadTextures() {
 
 	seaNoiseTexture.value = noiseTexture.value
 	godraysNoiseTexture.value = noiseTexture.value
-	particlesNoiseTexture.value = noiseTexture.value
 
 	const images = await textureLoader.load(['/webgl/bg.webp'])
 
