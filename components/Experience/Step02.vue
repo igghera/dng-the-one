@@ -167,6 +167,8 @@ const { rt, tm } = useI18n()
 const currentStep = shallowRef(-1)
 const isPressed = shallowRef(false)
 
+const { idle: isIdle, reset: resetIdle, stop: stopIdle } = useIdle(2500)
+
 const { gsap, Draggable } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
@@ -187,6 +189,7 @@ const dotsCoords = [
 const trackTranslateValues = [-15, 11, 37, 62]
 
 let draggableInstance = null
+let idleTween = null
 
 //
 // Computed
@@ -199,7 +202,7 @@ const labels = computed(() => {
 // Lifecycle
 //
 onMounted(async () => {
-	setInitialStyles()
+	setInitialState()
 
 	await nextTick()
 
@@ -344,6 +347,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
 	draggableInstance?.[0]?.kill()
+	stopIdle()
 })
 
 //
@@ -351,10 +355,47 @@ onBeforeUnmount(() => {
 //
 watch(currentStep, (next, prev) => handleStepChange(next, prev))
 
+watch(isIdle, idle => {
+	if (idle) {
+		gsap.killTweensOf(get(draggerCircleRef))
+
+		const tl = gsap.timeline({ paused: true })
+		tl.addLabel('start')
+
+		tl.to(get(draggerCircleRef), { y: -3, duration: 0.35, ease: 'power1.out' })
+		tl.to(get(draggerCircleRef), { y: 3, duration: 0.5, ease: 'power1.out' })
+		tl.to(get(draggerCircleRef), { y: -3, duration: 0.5, ease: 'power1.out' })
+		tl.to(get(draggerCircleRef), { y: 3, duration: 0.5, ease: 'power1.out' })
+		tl.to(get(draggerCircleRef), { y: 0, duration: 0.35, ease: 'power1.inOut' })
+
+		idleTween = gsap.fromTo(
+			tl,
+			{ progress: 0 },
+			{
+				progress: 1,
+				duration: 2,
+				ease: 'none',
+				repeat: -1,
+				repeatDelay: 2,
+			}
+		)
+	} else {
+		idleTween?.kill()
+		idleTween = null
+
+		gsap.to(get(draggerCircleRef), {
+			y: 0,
+			duration: 0.35,
+			ease: 'sine.out',
+			overwrite: true,
+		})
+	}
+})
+
 //
 // Methods
 //
-const setInitialStyles = () => {
+const setInitialState = () => {
 	gsap.set([get(headerRef), get(contentRef)], {
 		autoAlpha: 0,
 	})
@@ -370,6 +411,9 @@ const animateIn = () => {
 			autoAlpha: 1,
 			duration: 1.2,
 			stagger: 0.2,
+			onComplete: () => {
+				resetIdle()
+			},
 		}
 	)
 }
