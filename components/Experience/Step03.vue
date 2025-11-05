@@ -35,12 +35,19 @@
 				fill="none"
 				viewBox="0 0 98 115"
 				ref="dropzoneRef"
+				overflow="visible"
 			>
-				<path
+				<circle
 					class="stroke-gold-light"
-					stroke-width="2.336"
+					cx="48"
+					cy="66"
+					r="46"
+					stroke-width="2"
+					stroke="red"
+					fill="transparent"
 					data-dropzone-circle
-					d="M1.168 65.653c0-26.225 21.26-47.486 47.485-47.486 26.226 0 47.487 21.26 47.487 47.486S74.879 113.14 48.653 113.14c-26.225 0-47.485-21.26-47.485-47.486Z"
+					data-default-radius="46"
+					ref="dropzoneCircleRef"
 				/>
 
 				<g class="dropzone-arrow-wrapper">
@@ -173,6 +180,7 @@ const headerRef = useTemplateRef('headerRef')
 const instructionsRef = useTemplateRef('instructionsRef')
 const draggersRef = useTemplateRef('draggersRef')
 const dropzoneRef = useTemplateRef('dropzoneRef')
+const dropzoneCircleRef = useTemplateRef('dropzoneCircleRef')
 
 const labels = computed(() => {
 	return Object.values(tm('experience_step_03.labels')).map(label => rt(label))
@@ -185,6 +193,12 @@ let draggableInstance = null
 //
 onMounted(() => {
 	draggableInstance = Draggable.create(get(draggersRef), {
+		onPress: () => {
+			zoomInDropzoneCircle()
+		},
+		onRelease: () => {
+			zoomOutDropzoneCircle()
+		},
 		onDragEnd: self => {
 			const inDropzone = Draggable.hitTest(self.target, get(dropzoneRef), '1%')
 
@@ -300,6 +314,32 @@ onMounted(() => {
 // Methods
 //
 const animateIn = () => {}
+
+const zoomInDropzoneCircle = () => {
+	const defaultRadius = Number(get(dropzoneCircleRef).dataset.defaultRadius)
+
+	gsap.to(get(dropzoneCircleRef), {
+		attr: {
+			r: () => defaultRadius + 5,
+		},
+		duration: 0.8,
+		ease: 'expo.out',
+		overwrite: true,
+	})
+}
+
+const zoomOutDropzoneCircle = () => {
+	const defaultRadius = Number(get(dropzoneCircleRef).dataset.defaultRadius)
+
+	gsap.to(get(dropzoneCircleRef), {
+		attr: {
+			r: defaultRadius,
+		},
+		duration: 1,
+		ease: 'expo.out',
+		overwrite: true,
+	})
+}
 </script>
 
 <style lang="scss" scoped>
