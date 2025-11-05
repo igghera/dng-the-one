@@ -364,9 +364,17 @@ const zoomOutDropzoneCircle = () => {
 }
 
 .content {
-	@apply grid aspect-[260/290] self-center h-4/5 max-w-full;
+	@apply grid aspect-[260/290] self-center;
 
 	grid-area: b;
+
+	@screen portrait {
+		@apply h-[70%];
+
+		@screen md {
+			@apply h-3/5;
+		}
+	}
 
 	@screen landscape {
 		@apply aspect-[860/310] h-auto;
