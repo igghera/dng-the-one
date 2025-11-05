@@ -7,7 +7,7 @@
 			/>
 		</header>
 
-		<div class="content" ref="knobWrapperRef">
+		<div class="content">
 			<div
 				v-for="(label, idx) in labels"
 				:key="idx"
@@ -42,11 +42,14 @@
 					data-dropzone-circle
 					d="M1.168 65.653c0-26.225 21.26-47.486 47.485-47.486 26.226 0 47.487 21.26 47.487 47.486S74.879 113.14 48.653 113.14c-26.225 0-47.485-21.26-47.485-47.486Z"
 				/>
-				<path
-					class="fill-gold-light"
-					data-dropzone-arrow
-					d="M52.539 28.935a.843.843 0 1 1 1.192 1.192l-4.5 4.5a.844.844 0 0 1-1.192 0l-4.5-4.5a.846.846 0 0 1-.022-1.214.846.846 0 0 1 1.214.022l3.06 3.06V.844a.843.843 0 1 1 1.688 0v31.15z"
-				/>
+
+				<g class="dropzone-arrow-wrapper">
+					<path
+						class="fill-gold-light"
+						data-dropzone-arrow
+						d="M52.539 28.935a.843.843 0 1 1 1.192 1.192l-4.5 4.5a.844.844 0 0 1-1.192 0l-4.5-4.5a.846.846 0 0 1-.022-1.214.846.846 0 0 1 1.214.022l3.06 3.06V.844a.843.843 0 1 1 1.688 0v31.15z"
+					/>
+				</g>
 			</svg>
 		</div>
 
@@ -378,6 +381,15 @@ const animateIn = () => {}
 	}
 }
 
+.dropzone-arrow-wrapper {
+	animation-name: bounce;
+	animation-duration: 1s;
+	animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-fill-mode: both;
+}
+
 .instructions {
 	@apply self-start;
 	@apply transition-opacity duration-500 ease-out;
@@ -390,6 +402,16 @@ const animateIn = () => {}
 
 	&[data-visible='true'] {
 		@apply pointer-events-auto;
+	}
+}
+
+@keyframes bounce {
+	0% {
+		transform: translateY(0px);
+	}
+
+	100% {
+		transform: translateY(10px);
 	}
 }
 </style>
