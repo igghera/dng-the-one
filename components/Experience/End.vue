@@ -5,9 +5,9 @@
 			style="opacity: 0.0001"
 			ref="introHeaderRef"
 		>
-			<h2 class="flex flex-col gap-y-2 lg:gap-y-7 text-center items-center">
+			<h2 class="flex flex-col gap-y-2 lg:gap-y-7 text-center items-stretch">
 				<span
-					class="body-8 | text-gold-light"
+					class="body-8 | text-gold-light whitespace-nowrap"
 					v-html="$t('experience_end.intro_title[0]')"
 				/>
 				<span
@@ -101,12 +101,12 @@ let drawTimeline, pointerObserver
 onMounted(async () => {
 	await animateInHeader()
 
-	gsap.delayedCall(2, () => {})
+	// gsap.delayedCall(2, () => {})
 
-	animateOutHeader()
-	emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
+	// animateOutHeader()
+	// emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
 
-	createButtonTimeline()
+	// createButtonTimeline()
 })
 
 onBeforeUnmount(() => {
