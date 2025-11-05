@@ -1,10 +1,6 @@
 <template>
 	<Container class="pointer-events-none">
-		<header
-			class="self-start col-start-1 row-start-1"
-			style="opacity: 0.0001"
-			ref="introHeaderRef"
-		>
+		<header class="header" style="opacity: 0.0001" ref="introHeaderRef">
 			<h2 class="flex flex-col gap-y-2 lg:gap-y-7 text-center items-stretch">
 				<span
 					class="body-8 | text-gold-light whitespace-nowrap"
@@ -101,12 +97,12 @@ let drawTimeline, pointerObserver
 onMounted(async () => {
 	await animateInHeader()
 
-	// gsap.delayedCall(2, () => {})
+	await gsap.delayedCall(2, () => {})
 
-	// animateOutHeader()
-	// emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
+	animateOutHeader()
+	emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
 
-	// createButtonTimeline()
+	createButtonTimeline()
 })
 
 onBeforeUnmount(() => {
@@ -291,6 +287,12 @@ const animateMask = () => {
 	--cols: 1;
 
 	@apply justify-items-center;
+}
+
+.header {
+	@apply self-start col-start-1 row-start-1;
+	@apply portrait:translate-y-full;
+	@apply landscape:translate-y-1/2;
 }
 
 .btn {

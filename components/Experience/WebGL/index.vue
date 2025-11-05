@@ -237,7 +237,7 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
 		},
 		{
 			value: 1,
-			duration: 2.5,
+			duration: 4,
 			ease: 'power1.out',
 			onComplete: () => {
 				emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE)
