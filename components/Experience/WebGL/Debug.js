@@ -60,7 +60,7 @@ export class Debug {
   createIntro(material, visibility) {
     const folder = this.pane.addFolder({
       title: 'Intro',
-      expanded: true,
+      expanded: false,
     })
 
     folder.addBinding(visibility, 'value', { label: 'Visibility', min: 0, max: 1 })
@@ -162,7 +162,7 @@ export class Debug {
   createEndDrawPlane(material) {
     const endDrawPlaneFolder = this.pane.addFolder({
       title: 'End Draw Plane',
-      expanded: true,
+      expanded: false,
     })
 
     endDrawPlaneFolder.addBinding(material.progress, 'value', { label: 'Progress', min: 0, max: 1 })
@@ -174,7 +174,7 @@ export class Debug {
   createMask() {
     const maskFolder = this.pane.addFolder({
       title: 'End Mask',
-      expanded: false,
+      expanded: true,
     })
 
     maskFolder.addBinding(maskProgress, 'value', { label: 'Progress', min: 0, max: 1 })
