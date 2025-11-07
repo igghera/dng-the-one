@@ -25,7 +25,7 @@ import {
 	mix,
 	time,
 } from 'three/tsl'
-// import { dof } from 'three/addons/tsl/display/DepthOfFieldNode'
+import { bloom } from 'three/addons/tsl/display/BloomNode'
 // import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
@@ -63,6 +63,12 @@ import {
 } from './materials/mask'
 
 import { cart2Polar, noiseTexture, bgTexture } from './nodes'
+
+import {
+	threshold as bloomThreshold,
+	strength as bloomStrength,
+	radius as bloomRadius,
+} from './nodes/bloom'
 
 //
 // Refs / State
@@ -734,11 +740,13 @@ function createPostprocessing() {
 	postProcessing = new THREE.PostProcessing(renderer)
 
 	const scenePass = pass(scene, camera)
+	const scenePassColor = scenePass.getTextureNode()
+
 	const introPass = pass(introScene, introCamera)
+	const introPassColor = introPass.getTextureNode()
+
 	const maskPass = pass(maskScene, maskCamera)
 
-	const introPassColor = introPass.getTextureNode()
-	const scenePassColor = scenePass.getTextureNode()
 	// const scenePassViewZ = scenePass.getViewZNode()
 
 	const uvScreen = vec2(screenUV.x, screenUV.y.oneMinus())
@@ -762,23 +770,18 @@ function createPostprocessing() {
 		introSceneVisibility
 	).toVec4()
 
-	const inner = introToMain.mul(maskPass.r).toVec4()
+	const bloomPass = bloom(introToMain)
+	bloomPass.strength = bloomStrength
+	bloomPass.radius = bloomRadius
+	bloomPass.threshold = bloomThreshold
+
+	const inner = introToMain.add(bloomPass).mul(maskPass.r).toVec4()
 	const outer = borderColor.mul(maskPass.g).toVec4()
 	const alpha = maskPass.r.add(maskPass.g).clamp(0, 1)
 
 	let compose = inner.add(outer).mul(alpha)
 
 	postProcessing.outputNode = compose
-
-	// const dofPass = dof(
-	// 	scenePassColor,
-	// 	scenePassViewZ,
-	// 	dofParams.focusDistance,
-	// 	dofParams.focalLength,
-	// 	dofParams.bokehScale
-	// )
-
-	// postProcessing.outputNode = dofPass
 }
 
 function setBackgroundSize() {

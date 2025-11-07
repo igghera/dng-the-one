@@ -20,6 +20,7 @@ const { gsap } = useGSAP()
 
 const lenisOptions = {
 	autoRaf: false,
+	prevent: node => node.id === 'profiler-shell',
 }
 
 watchEffect(onInvalidate => {

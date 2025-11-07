@@ -40,6 +40,12 @@ import {
   maskColorB as maskBorderColorB,
 } from './materials/mask'
 
+import {
+  threshold as bloomThreshold,
+  strength as bloomStrength,
+  radius as bloomRadius,
+} from './nodes/bloom'
+
 export class Debug {
   constructor(dof, godrays, background, particles, endDrawMaterial, introDrawMaterial, introSceneVisibility) {
     this.pane = new Pane({
@@ -55,6 +61,7 @@ export class Debug {
     this.createParticles(particles)
     this.createEndDrawPlane(endDrawMaterial)
     this.createMask()
+    this.createBloom()
   }
 
   createIntro(material, visibility) {
@@ -182,5 +189,16 @@ export class Debug {
     maskFolder.addBinding(maskBorderWidth, 'value', { label: 'Border Width', min: 0, max: 0.3, step: 0.001 })
     maskFolder.addBinding(maskBorderColorA, 'value', { label: 'Border Color A', color: { type: 'float' } })
     maskFolder.addBinding(maskBorderColorB, 'value', { label: 'Border Color B', color: { type: 'float' } })
+  }
+
+  createBloom() {
+    const bloomFolder = this.pane.addFolder({
+      title: 'Postprocess - Bloom',
+      expanded: true,
+    })
+
+    bloomFolder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 1, max: 2, step: 0.01 })
+    bloomFolder.addBinding(bloomStrength, 'value', { label: 'Strength', min: 0, max: 3, step: 0.01 })
+    bloomFolder.addBinding(bloomRadius, 'value', { label: 'Radius', min: 0, max: 1.5, step: 0.01 })
   }
 }
