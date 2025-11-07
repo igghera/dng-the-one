@@ -76,7 +76,10 @@
 
 <script setup>
 import { get, set } from '@vueuse/core'
-import { progress as maskProgress } from '~/components/Experience/WebGL/materials/mask'
+import {
+	progress as maskProgress,
+	borderWidth as maskBorderWidth,
+} from '~/components/Experience/WebGL/materials/mask'
 
 //
 // Refs / State
@@ -275,6 +278,18 @@ const animateMask = () => {
 			ease: 'circ.out',
 		},
 		'start'
+	)
+
+	tl.fromTo(
+		maskBorderWidth,
+		{
+			value: 0,
+		},
+		{
+			value: 0.015,
+			duration: 0.8,
+		},
+		'<0.3'
 	)
 
 	tl.call(

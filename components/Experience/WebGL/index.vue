@@ -60,7 +60,6 @@ import {
 import {
 	maskColorA as maskBorderColorA,
 	maskColorB as maskBorderColorB,
-	borderWidth as maskBorderWidth,
 } from './materials/mask'
 
 import { cart2Polar, noiseTexture, bgTexture } from './nodes'
@@ -260,13 +259,6 @@ emitter.on(EVENTS.TRIGGER_FLASH_EFFECT, () => {
 		'start'
 	)
 
-	tl.call(
-		() => {
-			maskBorderWidth.value = 0.015
-		},
-		null,
-		'>'
-	)
 	tl.to(
 		get(flashEffectRef),
 		{
