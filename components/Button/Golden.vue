@@ -1,7 +1,7 @@
 <template>
 	<component
 		:is="componentTag"
-		class="button-golden | ui-3"
+		class="button-golden | ui-3 text-shadow"
 		:to="to"
 		:data-size="size"
 	>

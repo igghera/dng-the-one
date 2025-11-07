@@ -1,7 +1,7 @@
 <template>
 	<Container class="pointer-events-none">
 		<header
-			class="flex flex-col gap-y-2 items-center justify-center text-center self-start"
+			class="flex flex-col gap-y-2 items-center justify-center text-center self-start | text-shadow"
 		>
 			<h1
 				class="display-1 | golden-text uppercase"

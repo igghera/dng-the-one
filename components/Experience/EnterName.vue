@@ -1,6 +1,6 @@
 <template>
 	<Container class="pointer-events-none">
-		<header class="header" style="opacity: 0" ref="headerRef">
+		<header class="header | text-shadow" style="opacity: 0" ref="headerRef">
 			<h2
 				class="display-2 | golden-text"
 				v-html="$t('experience_enter_name.title')"

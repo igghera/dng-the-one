@@ -1,6 +1,6 @@
 <template>
 	<Container class="pointer-events-none">
-		<header class="header" ref="headerRef">
+		<header class="header | text-shadow" ref="headerRef">
 			<h2
 				class="display-2 | golden-text"
 				v-html="$t('experience_step_03.title')"
@@ -26,7 +26,9 @@
 					</g>
 				</svg>
 
-				<span class="dragger-label" data-dragger-label>{{ label }}</span>
+				<span class="dragger-label | text-shadow" data-dragger-label>{{
+					label
+				}}</span>
 			</div>
 
 			<svg
@@ -60,7 +62,10 @@
 			</svg>
 		</div>
 
-		<p class="instructions | body-5 | text-gold-light" ref="instructionsRef">
+		<p
+			class="instructions | body-5 | text-gold-light text-shadow"
+			ref="instructionsRef"
+		>
 			{{ $t('experience_step_03.instructions') }}
 		</p>
 

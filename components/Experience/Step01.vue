@@ -1,6 +1,6 @@
 <template>
 	<Container class="pointer-events-none">
-		<header class="header" ref="headerRef">
+		<header class="header | text-shadow" ref="headerRef">
 			<h2
 				class="display-2 | text-gold-light"
 				v-html="$t('experience_step_01.title')"
@@ -189,7 +189,7 @@
 			</div>
 
 			<div
-				class="knob-labels"
+				class="knob-labels | text-shadow"
 				:class="{
 					'text-gold-light': knobStepLiveDrag < 2,
 					'text-gold-dark': knobStepLiveDrag >= 2,
@@ -206,7 +206,7 @@
 			</div>
 		</div>
 
-		<div class="instructions" :data-visible="instructionsVisible">
+		<div class="instructions | text-shadow" :data-visible="instructionsVisible">
 			<p class="instructions-inner pulse-100-60 | body-5 | text-gold">
 				{{ $t('experience_step_01.instructions') }}
 			</p>

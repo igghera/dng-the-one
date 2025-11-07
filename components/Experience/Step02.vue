@@ -1,6 +1,6 @@
 <template>
 	<Container class="pointer-events-none">
-		<header class="header" ref="headerRef">
+		<header class="header | text-shadow" ref="headerRef">
 			<h2
 				class="display-2 | golden-text uppercase"
 				v-html="$t('experience_step_02.title')"
@@ -121,7 +121,7 @@
 			</div>
 		</div>
 
-		<div class="instructions" :data-visible="currentStep === -1">
+		<div class="instructions | text-shadow" :data-visible="currentStep === -1">
 			<p class="instructions-inner pulse-100-60 | body-5 | text-gold-light">
 				{{ $t('experience_step_02.instructions') }}
 			</p>

@@ -1,6 +1,10 @@
 <template>
 	<Container class="pointer-events-none">
-		<header class="header" style="opacity: 0.0001" ref="introHeaderRef">
+		<header
+			class="header | text-shadow"
+			style="opacity: 0.0001"
+			ref="introHeaderRef"
+		>
 			<h2 class="flex flex-col gap-y-2 lg:gap-y-7 text-center items-stretch">
 				<span
 					class="body-8 | text-gold-light whitespace-nowrap"
@@ -46,14 +50,14 @@
 			</svg>
 
 			<span
-				class="text-base leading-none font-medium tracking-[0.03em] text-gold-light"
+				class="text-base leading-none font-medium tracking-[0.03em] text-gold-light | text-shadow"
 				ref="ctaLabelRef"
 				>{{ $t('experience_end.cta') }}</span
 			>
 		</button>
 
 		<Transition name="fade">
-			<div v-if="result" class="result">
+			<div v-if="result" class="result | text-shadow">
 				<span class="body-9 | uppercase text-gold-light">
 					{{ $t('experience_end.title') }}
 				</span>
