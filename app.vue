@@ -7,6 +7,8 @@
 		</VueLenis>
 
 		<SiteFooter class="main-ui" :data-visible="uiStore.isMainUiVisible" />
+
+		<SvgFilters class="fixed top-0 left-0 invisible" />
 	</NuxtLayout>
 </template>
 
