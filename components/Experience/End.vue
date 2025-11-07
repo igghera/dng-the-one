@@ -5,10 +5,12 @@
 				<span
 					class="body-8 | text-gold-light whitespace-nowrap"
 					v-html="$t('experience_end.intro_title[0]')"
+					ref="title01Ref"
 				/>
 				<span
 					class="display-1-alt | golden-text | uppercase font-medium"
 					v-html="$t('experience_end.intro_title[1]')"
+					ref="title02Ref"
 				/>
 			</h2>
 		</header>
@@ -76,6 +78,8 @@ import { progress as maskProgress } from '~/components/Experience/WebGL/material
 // Refs / State
 //
 const introHeaderRef = useTemplateRef('introHeaderRef')
+const title01Ref = useTemplateRef('title01Ref')
+const title02Ref = useTemplateRef('title02Ref')
 const buttonRef = useTemplateRef('buttonRef')
 const backgroundCircleWrapperRef = useTemplateRef('backgroundCircleWrapperRef')
 const fillingCircleWrapperRef = useTemplateRef('fillingCircleWrapperRef')
@@ -95,11 +99,14 @@ let drawTimeline, pointerObserver
 // Lifecycle
 //
 onMounted(async () => {
+	setInitialState()
+
 	await animateInHeader()
 
-	await gsap.delayedCall(2, () => {})
+	await gsap.delayedCall(0.5, () => {})
 
 	animateOutHeader()
+
 	emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
 
 	createButtonTimeline()
@@ -122,6 +129,10 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE, async () => {
 //
 // Methods
 //
+const setInitialState = () => {
+	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
+}
+
 const getResult = () => {
 	const options = Object.values(tm('experience_end.options')).map(option => ({
 		title: rt(option.title),
@@ -205,30 +216,23 @@ const createPointerObserver = () => {
 }
 
 const animateInHeader = () => {
-	const split = SplitText.create(
-		get(introHeaderRef).querySelectorAll('span')[0],
-		{
-			type: 'lines',
-		}
+	const split01 = SplitText.create(get(title01Ref), {
+		type: 'lines,words,chars',
+	})
+
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	tl.fromTo(
+		split01.chars,
+		{ opacity: 0 },
+		{ opacity: 1, duration: 1, stagger: 0.1 },
+		'start'
 	)
 
-	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
+	tl.fromTo(get(title02Ref), { opacity: 0 }, { opacity: 1, duration: 1.5 }, '>')
 
-	const lines = [
-		...split.lines,
-		get(introHeaderRef).querySelectorAll('span')[1],
-	]
-
-	return gsap.fromTo(
-		lines,
-		{ autoAlpha: 0 },
-		{
-			autoAlpha: 1,
-			duration: 1,
-			stagger: 0.1,
-			ease: 'power1.out',
-		}
-	)
+	return tl.play()
 }
 
 const animateOutHeader = () => {
@@ -306,7 +310,7 @@ const animateMask = () => {
 
 	aspect-ratio: 240 / 300;
 	height: 30svh;
-	translate: 0 2svh;
+	translate: 0 7svh;
 	row-gap: toRem(10);
 }
 

@@ -621,6 +621,8 @@ async function createWinDrawingPlane() {
 	experienceEndDrawMaterial.init(textures.get('product_outline'))
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
+	mesh.position.y = 0.3
+
 	scene.add(mesh)
 }
 

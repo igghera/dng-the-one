@@ -60,7 +60,7 @@ export class Debug {
   createIntro(material, visibility) {
     const folder = this.pane.addFolder({
       title: 'Intro',
-      expanded: false,
+      expanded: true,
     })
 
     folder.addBinding(visibility, 'value', { label: 'Visibility', min: 0, max: 1 })
@@ -117,7 +117,7 @@ export class Debug {
   createGodrays(godrays) {
     const godraysFolder = this.pane.addFolder({
       title: 'Godrays',
-      expanded: true,
+      expanded: false,
     })
 
     godraysFolder.addBinding(godrays.position, 'x', { label: 'Position X', min: -3, max: 3 })
@@ -162,7 +162,7 @@ export class Debug {
   createEndDrawPlane(material) {
     const endDrawPlaneFolder = this.pane.addFolder({
       title: 'End Draw Plane',
-      expanded: false,
+      expanded: true,
     })
 
     endDrawPlaneFolder.addBinding(material.progress, 'value', { label: 'Progress', min: 0, max: 1 })
