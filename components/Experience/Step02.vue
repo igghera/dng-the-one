@@ -81,10 +81,10 @@
 								ref="draggerCircleRef"
 							/>
 
-							<g transform="translate(11, 4)" id="dot-wrapper-step-02">
+							<g transform="translate(58, 52)" id="dot-wrapper-step-02">
 								<path
 									class="fill-gold-light"
-									d="M47.16 42.563a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
+									d="M0 -6a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
 								/>
 							</g>
 
@@ -689,6 +689,13 @@ const createDraggable = () => {
 		onThrowUpdate() {
 			update()
 			updateCurrentStep()
+		},
+		onThrowComplete() {
+			const targetGroup = get(draggerRef).querySelector('g')
+
+			if (targetGroup.children.length === 1) {
+				targetGroup.appendChild(document.getElementById('glowing-dot'))
+			}
 		},
 	})
 
