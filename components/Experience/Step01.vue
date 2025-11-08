@@ -37,7 +37,7 @@
 				</g>
 
 				<!-- Background stroke -->
-				<g mask="url(#knob-mask-background)">
+				<g mask="url(#knob-mask-background)" ref="strokeRef">
 					<circle
 						mask="url(#track-mask)"
 						cx="228"
@@ -60,16 +60,18 @@
 					viewBox="0 0 456 456"
 					overflow="visible"
 				>
-					<g filter="url(#dot-glow)">
+					<g
+						style="transform-box: fill-box; transform-origin: center"
+						:data-start-x="dotsCoords[0].x"
+						:data-start-y="dotsCoords[0].x"
+						:data-end-x="dotsCoords[0].x"
+						:data-end-y="dotsCoords[0].y"
+						ref="knobDotWrapperRef"
+					>
 						<circle
-							:cx="dotsCoords[0].x"
-							:cy="dotsCoords[0].x"
-							:data-start-x="dotsCoords[0].x"
-							:data-start-y="dotsCoords[0].x"
-							:data-end-x="dotsCoords[0].x"
-							:data-end-y="dotsCoords[0].y"
 							r="20"
 							fill="#ffffc4"
+							filter="url(#dot-glow)"
 							ref="knobDotRef"
 						/>
 					</g>
@@ -129,6 +131,7 @@
 			size="wide"
 			:data-visible="ctaVisible"
 			@click="handleClick"
+			ref="ctaRef"
 		>
 			{{ $t('select') }}
 		</ButtonGolden>
@@ -147,11 +150,13 @@ const appStore = useAppStore()
 const uiStore = useUiStore()
 
 const { rt, tm } = useI18n()
-const { gsap, Draggable } = useGSAP()
+const { gsap, Draggable, Flip } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
 const dotsRef = useTemplateRef('dotsRef')
+const strokeRef = useTemplateRef('strokeRef')
 const knobTrackBackgroundRef = useTemplateRef('knobTrackBackgroundRef')
+const ctaRef = useTemplateRef('ctaRef')
 
 const instructionsVisible = shallowRef(false)
 const sunIconVisible = shallowRef(false)
@@ -166,8 +171,9 @@ const dotsCoords = [
 ]
 
 const knobRef = useTemplateRef('knobRef')
-const knobMaskWrapperNewRef = useTemplateRef('knobMaskWrapperNewRef')
 const knobMaskNewRef = useTemplateRef('knobMaskNewRef')
+const knobMaskWrapperNewRef = useTemplateRef('knobMaskWrapperNewRef')
+const knobDotWrapperRef = useTemplateRef('knobDotWrapperRef')
 const knobDotRef = useTemplateRef('knobDotRef')
 const knobStep = shallowRef(0)
 const knobStepLiveDrag = shallowRef(0)
@@ -281,6 +287,10 @@ const setInitialStyles = () => {
 		opacity: 0,
 	})
 
+	gsap.set([get(strokeRef), get(ctaRef).$el], {
+		clearProps: 'all',
+	})
+
 	gsap.set(get(knobTrackBackgroundRef), {
 		drawSVG: '0% 0%',
 	})
@@ -348,18 +358,14 @@ const animateIn = () => {
 
 	// Knob position
 	tl.fromTo(
-		get(knobDotRef),
+		get(knobDotWrapperRef),
 		{
-			attr: {
-				cx: () => get(knobDotRef).dataset.startX,
-				cy: () => get(knobDotRef).dataset.startY,
-			},
+			x: () => get(knobDotWrapperRef).dataset.startX,
+			y: () => get(knobDotWrapperRef).dataset.startX,
 		},
 		{
-			attr: {
-				cx: () => get(knobDotRef).dataset.endX,
-				cy: () => get(knobDotRef).dataset.endY,
-			},
+			x: () => get(knobDotWrapperRef).dataset.endX,
+			y: () => get(knobDotWrapperRef).dataset.endY,
 			duration: 1.6,
 			ease: 'power3.inOut',
 		},
@@ -418,10 +424,42 @@ const animateIn = () => {
 	)
 }
 
-const handleClick = () => {
+const animateOut = async () => {
+	return gsap.to(
+		[get(headerRef), get(strokeRef), get(dotsRef), get(ctaRef).$el],
+		{
+			opacity: 0,
+			duration: 1,
+			onStart: () => {
+				set(labelsVisible, false)
+			},
+		}
+	)
+}
+
+const moveDotToNextPosition = async () => {
+	const state = Flip.getState(get(knobDotRef))
+
+	document.getElementById('step-02-dot-0-wrapper').appendChild(get(knobDotRef))
+
+	return Flip.from(state, {
+		duration: 1.6,
+		ease: 'power3.inOut',
+	})
+}
+
+const handleClick = async () => {
+	await animateOut()
+
 	appStore.setStep01Selection(get(knobStep))
-	uiStore.setExperienceStep01Visible(false)
+
 	uiStore.setExperienceStep02Visible(true)
+
+	await nextTick()
+
+	await moveDotToNextPosition()
+
+	uiStore.setExperienceStep01Visible(false)
 }
 </script>
 

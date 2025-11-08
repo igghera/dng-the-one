@@ -1,11 +1,11 @@
 export const useUiStore = defineStore('uiStore', {
   state: () => ({
     mainUiVisible: false,
-    preloaderVisible: true,
+    preloaderVisible: false,
     webglVisible: false,
     experienceStartVisible: false,
     experienceEnterNameVisible: false,
-    experienceStep01Visible: false,
+    experienceStep01Visible: true,
     experienceStep02Visible: false,
     experienceStep03Visible: false,
     experienceEndVisible: false,

@@ -29,79 +29,104 @@
 					overflow="visible"
 					ref="trackRef"
 				>
-					<g mask="url(#dragger-mask)">
-						<rect x="0" y="0" width="116" height="600" fill="transparent" />
-
-						<path
-							class="stroke-gold-light"
-							stroke-dasharray="1.5 18"
-							stroke-width="8"
-							d="M58 0v600"
-						/>
-					</g>
-
-					<g>
-						<circle
-							v-for="(dot, idx) in dotsCoords"
-							:key="idx"
-							class="fill-gold-light"
-							:cx="dot.x"
-							:cy="dot.y"
-							r="10"
-						/>
-					</g>
-
-					<g
-						class="dragger | pointer-events-auto"
-						transform="translate(0, 580)"
-						ref="draggerRef"
-					>
-						<circle
-							class="stroke-gold-light fill-transparent"
-							cx="58"
-							cy="55"
-							r="46"
-							stroke-width="2"
-							ref="draggerCircleRef"
+					<g mask="url(#step-02-content-mask)">
+						<!-- DO NOT DELETE: Filler element to avoid clipping issues -->
+						<rect
+							x="-300"
+							y="-200"
+							width="716"
+							height="1000"
+							fill="transparent"
 						/>
 
-						<g transform="translate(11, 4)">
+						<g mask="url(#dragger-mask)">
+							<rect x="0" y="0" width="116" height="600" fill="transparent" />
+
 							<path
-								class="fill-gold-light"
-								d="M47.16 42.563a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
+								class="stroke-gold-light"
+								stroke-dasharray="1.5 18"
+								stroke-width="8"
+								d="M58 0v600"
 							/>
 						</g>
 
-						<g class="arrows">
+						<g>
 							<g
-								class="dragger-arrow"
-								transform="translate(48, -14)"
-								:data-visible="
-									currentStep >= 0 && currentStep < 3 && !isPressed
-								"
+								v-for="(dot, idx) in dotsCoords"
+								:key="idx"
+								:id="`step-02-dot-${idx}-wrapper`"
+								:transform="`translate(${dot.x}, ${dot.y})`"
 							>
+								<circle
+									class="fill-gold-light"
+									cx="0"
+									cy="0"
+									r="10"
+									ref="dotsRef"
+								/>
+							</g>
+						</g>
+
+						<g
+							class="dragger | pointer-events-auto"
+							transform="translate(0, 580)"
+							ref="draggerRef"
+						>
+							<circle
+								class="stroke-gold-light fill-transparent"
+								cx="58"
+								cy="55"
+								r="46"
+								stroke-width="2"
+								ref="draggerCircleRef"
+							/>
+
+							<g transform="translate(11, 4)" id="dot-wrapper-step-02">
 								<path
 									class="fill-gold-light"
-									d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
+									d="M47.16 42.563a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
 								/>
 							</g>
 
-							<g
-								class="dragger-arrow"
-								transform="translate(48, 124) scale(1, -1)"
-								:data-visible="currentStep > 0 && !isPressed"
-							>
-								<path
-									class="fill-gold-light"
-									d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
-								/>
+							<g class="arrows">
+								<g
+									class="dragger-arrow"
+									transform="translate(48, -14)"
+									:data-visible="
+										currentStep >= 0 && currentStep < 3 && !isPressed
+									"
+								>
+									<path
+										class="fill-gold-light"
+										d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
+									/>
+								</g>
+
+								<g
+									class="dragger-arrow"
+									transform="translate(48, 124) scale(1, -1)"
+									:data-visible="currentStep > 0 && !isPressed"
+								>
+									<path
+										class="fill-gold-light"
+										d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
+									/>
+								</g>
 							</g>
 						</g>
 					</g>
 
 					<defs>
 						<mask id="dragger-mask">
-							<rect x="0" y="-100" width="116" height="700" fill="white" />
+							<rect
+								x="0"
+								y="-100"
+								width="116"
+								height="700"
+								fill="white"
+								fill-opacity="1"
+								ref="draggerMaskRectRef"
+							/>
 
 							<g ref="draggerMaskRef">
 								<circle cx="58" cy="58" r="58" fill="url(#dragger-gradient)" />
@@ -116,12 +141,43 @@
 							<stop offset="50%" stop-color="black" />
 							<stop offset="100%" stop-color="white" />
 						</radialGradient>
+
+						<mask
+							style="transform-box: fill-box; transform-origin: center"
+							id="step-02-content-mask"
+							ref="contentMaskRef"
+						>
+							<rect
+								x="-300"
+								y="-110"
+								width="716"
+								height="1000"
+								fill="url(#step-02-content-gradient)"
+								ref="contentMaskRectRef"
+							/>
+						</mask>
+
+						<linearGradient
+							id="step-02-content-gradient"
+							gradientTransform="rotate(90)"
+						>
+							<stop offset="0%" stop-color="black" />
+							<stop offset="10%" stop-color="black" />
+							<stop offset="25%" stop-color="black" />
+							<stop offset="50%" stop-color="white" />
+							<stop offset="75%" stop-color="white" />
+							<stop offset="90%" stop-color="black" />
+							<stop offset="100%" stop-color="black" />
+						</linearGradient>
 					</defs>
 				</svg>
 			</div>
 		</div>
 
-		<div class="instructions | text-shadow" :data-visible="currentStep === -1">
+		<div
+			class="instructions | text-shadow"
+			:data-visible="instructionsVisible && currentStep === -1"
+		>
 			<p class="instructions-inner pulse-100-60 | body-5 | text-gold-light">
 				{{ $t('experience_step_02.instructions') }}
 			</p>
@@ -166,18 +222,24 @@ const { rt, tm } = useI18n()
 
 const currentStep = shallowRef(-1)
 const isPressed = shallowRef(false)
+const instructionsVisible = shallowRef(false)
 
 const { idle: isIdle, reset: resetIdle, stop: stopIdle } = useIdle(2500)
 
 const { gsap, Draggable } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
-const contentRef = useTemplateRef('contentRef')
 const draggerRef = useTemplateRef('draggerRef')
+const contentMaskRef = useTemplateRef('contentMaskRef')
+const contentMaskRectRef = useTemplateRef('contentMaskRectRef')
 const draggerCircleRef = useTemplateRef('draggerCircleRef')
 const draggerMaskRef = useTemplateRef('draggerMaskRef')
+const draggerMaskRectRef = useTemplateRef('draggerMaskRectRef')
+const dotsRef = useTemplateRef('dotsRef')
 const trackRef = useTemplateRef('trackRef')
 const trackMaskInitialRef = useTemplateRef('trackMaskInitialRef')
+
+const { height: trackHeight } = useElementBounding(trackRef)
 
 const dotsCoords = [
 	{ x: 58, y: 450 },
@@ -210,7 +272,9 @@ onMounted(async () => {
 		yPercent: trackTranslateValues[0],
 	})
 
-	animateIn()
+	await gsap.delayedCall(0.5, () => {})
+
+	await animateIn()
 
 	draggableInstance = Draggable.create(get(draggerRef), {
 		type: 'y',
@@ -219,7 +283,7 @@ onMounted(async () => {
 		bounds: {
 			top: -17 - 48 - 18,
 			left: 0,
-			height: 760,
+			height: 1060,
 			width: 116,
 		},
 		snap: function (value) {
@@ -333,6 +397,7 @@ onMounted(async () => {
 	})
 
 	function update() {
+		console.log('update')
 		gsap.set(get(draggerMaskRef), {
 			y: draggableInstance[0].y,
 		})
@@ -396,14 +461,29 @@ watch(isIdle, idle => {
 // Methods
 //
 const setInitialState = () => {
-	gsap.set([get(headerRef), get(contentRef)], {
-		autoAlpha: 0,
+	gsap.set([get(headerRef), get(dotsRef), get(draggerRef)], {
+		visibility: 'hidden',
 	})
+
+	gsap.set(get(draggerMaskRectRef), {
+		attr: {
+			'fill-opacity': 0,
+		},
+	})
+
+	gsap.set(get(contentMaskRef), {
+		scale: 4,
+	})
+
+	set(instructionsVisible, false)
 }
 
 const animateIn = () => {
-	return gsap.fromTo(
-		[get(headerRef), get(contentRef)],
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	tl.fromTo(
+		[get(headerRef), get(dotsRef), get(draggerRef)],
 		{
 			autoAlpha: 0,
 		},
@@ -412,11 +492,37 @@ const animateIn = () => {
 			duration: 1.2,
 			stagger: 0.2,
 			onComplete: () => {
+				set(instructionsVisible, true)
 				resetIdle()
 			},
-		}
+		},
+		'start'
 	)
+
+	tl.to(
+		get(draggerMaskRectRef),
+		{
+			attr: {
+				'fill-opacity': 1,
+			},
+			duration: 1,
+		},
+		'start+=0.2'
+	)
+
+	tl.to(
+		get(contentMaskRef),
+		{
+			scale: 1,
+			duration: 1.2,
+			ease: 'power1.out',
+		},
+		'start+=0.3'
+	)
+
+	return tl.play()
 }
+
 const handleClick = () => {
 	appStore.setStep02Selection(get(currentStep))
 	uiStore.setExperienceStep02Visible(false)
@@ -572,6 +678,16 @@ const translateTrackToPosition = yPosition => {
 		duration: 1.5,
 		ease: 'expo.out',
 		overwrite: true,
+		onUpdate: () => {
+			const translateYPercent = gsap.getProperty(get(trackRef), 'yPercent')
+			const value = get(trackHeight) * (translateYPercent / 100)
+
+			gsap.set(get(contentMaskRectRef), {
+				attr: {
+					y: () => -200 - value,
+				},
+			})
+		},
 	})
 }
 </script>
@@ -617,30 +733,6 @@ const translateTrackToPosition = yPosition => {
 }
 
 .content {
-	--mask-top-from-position: 80%;
-	--mask-top-to-position: 95%;
-	--mask-top-from-color: black;
-	--mask-top-to-color: transparent;
-	--mask-top: linear-gradient(
-		to top,
-		var(--mask-top-from-color) var(--mask-top-from-position),
-		var(--mask-top-to-color) var(--mask-top-to-position)
-	);
-
-	--mask-bottom-from-position: 80%;
-	--mask-bottom-to-position: 95%;
-	--mask-bottom-from-color: black;
-	--mask-bottom-to-color: transparent;
-	--mask-bottom: linear-gradient(
-		to bottom,
-		var(--mask-bottom-from-color) var(--mask-bottom-from-position),
-		var(--mask-bottom-to-color) var(--mask-bottom-to-position)
-	);
-
-	mask-image: var(--mask-bottom), var(--mask-top);
-	mask-composite: intersect;
-	mask-repeat: no-repeat;
-
 	@apply grid items-center;
 
 	grid-area: b;
