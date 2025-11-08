@@ -266,148 +266,28 @@ const labels = computed(() => {
 onMounted(async () => {
 	setInitialState()
 
-	await nextTick()
+	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async () => {
+		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START')
 
-	gsap.set(get(trackRef), {
-		yPercent: trackTranslateValues[0],
-	})
-
-	await gsap.delayedCall(0.5, () => {})
-
-	await animateIn()
-
-	draggableInstance = Draggable.create(get(draggerRef), {
-		type: 'y',
-		inertia: true,
-		edgeResistance: 1,
-		bounds: {
-			top: -17 - 48 - 18,
-			left: 0,
-			height: 1060,
-			width: 116,
-		},
-		snap: function (value) {
-			let values = null
-
-			switch (get(currentStep)) {
-				case -1:
-					// X ❌
-					// X ❌
-					// X ❌
-					// X ✅
-					// O ❌
-					// console.log('snap() case -1')
-
-					values = [dotsCoords[0].y - 52]
-					break
-				case 0:
-					// X ❌
-					// X ❌
-					// X ✅
-					// O ✅
-					// / ❌
-					// console.log('snap() case 0')
-
-					values = [dotsCoords[1].y - 52, dotsCoords[0].y - 52]
-					break
-				case 1:
-					// X ❌
-					// X ✅
-					// O ✅
-					// X ✅
-					// / ❌
-					// console.log('snap() case 1')
-
-					values = [
-						dotsCoords[2].y - 52,
-						dotsCoords[1].y - 52,
-						dotsCoords[0].y - 52,
-					]
-					break
-				case 2:
-					// X ✅
-					// 0 ✅
-					// X ✅
-					// X ❌
-					// / ❌
-					// console.log('snap() case 2')
-
-					values = [
-						dotsCoords[3].y - 52,
-						dotsCoords[2].y - 52,
-						dotsCoords[1].y - 52,
-					]
-					break
-				case 3:
-					// O ✅
-					// X ✅
-					// X ❌
-					// X ❌
-					// / ❌
-					// console.log('snap() case 3')
-
-					values = [dotsCoords[3].y - 52, dotsCoords[2].y - 52]
-					break
-			}
-
-			// console.log('Snap values:', values)
-
-			return getClosestValue(values, value)
-		},
-		throwResistance: 20000,
-		maxDuration: 0.6,
-		overshootTolerance: 0,
-		edgeResistance: 1,
-		onPress() {
-			set(isPressed, true)
-
-			gsap.to(get(draggerCircleRef), {
-				attr: {
-					r: 54,
-				},
-				duration: 0.5,
-				ease: 'back.out(2)',
-				overwrite: true,
-			})
-		},
-		onRelease() {
-			set(isPressed, false)
-
-			gsap.to(get(draggerCircleRef), {
-				attr: {
-					r: 46,
-				},
-				duration: 0.5,
-				ease: 'back.out(3)',
-				overwrite: true,
-			})
-		},
-		onDrag() {
-			update()
-		},
-		onDragEnd() {
-			gsap.delayedCall(0.1, () => {
-				translateTrackToPosition(draggableInstance[0].endY)
-			})
-		},
-		onThrowUpdate() {
-			update()
-			updateCurrentStep()
-		},
-	})
-
-	function update() {
-		console.log('update')
-		gsap.set(get(draggerMaskRef), {
-			y: draggableInstance[0].y,
+		gsap.set(get(trackRef), {
+			yPercent: trackTranslateValues[0],
 		})
 
-		gsap.set(get(trackMaskInitialRef), {
-			y: () => Math.max(450, draggableInstance[0].y),
-		})
-	}
+		await nextTick()
 
-	update()
+		// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
+		emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
+	})
+
+	emitter.once(EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE, async () => {
+		// console.log(
+		// 	'✅ received: EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE'
+		// )
+
+		await animateIn()
+
+		createDraggable()
+	})
 })
 
 onBeforeUnmount(() => {
@@ -689,6 +569,140 @@ const translateTrackToPosition = yPosition => {
 			})
 		},
 	})
+}
+
+const createDraggable = () => {
+	draggableInstance = Draggable.create(get(draggerRef), {
+		type: 'y',
+		inertia: true,
+		edgeResistance: 1,
+		bounds: {
+			top: -17 - 48 - 18,
+			left: 0,
+			height: 1060,
+			width: 116,
+		},
+		snap: function (value) {
+			let values = null
+
+			switch (get(currentStep)) {
+				case -1:
+					// X ❌
+					// X ❌
+					// X ❌
+					// X ✅
+					// O ❌
+					// console.log('snap() case -1')
+
+					values = [dotsCoords[0].y - 52]
+					break
+				case 0:
+					// X ❌
+					// X ❌
+					// X ✅
+					// O ✅
+					// / ❌
+					// console.log('snap() case 0')
+
+					values = [dotsCoords[1].y - 52, dotsCoords[0].y - 52]
+					break
+				case 1:
+					// X ❌
+					// X ✅
+					// O ✅
+					// X ✅
+					// / ❌
+					// console.log('snap() case 1')
+
+					values = [
+						dotsCoords[2].y - 52,
+						dotsCoords[1].y - 52,
+						dotsCoords[0].y - 52,
+					]
+					break
+				case 2:
+					// X ✅
+					// 0 ✅
+					// X ✅
+					// X ❌
+					// / ❌
+					// console.log('snap() case 2')
+
+					values = [
+						dotsCoords[3].y - 52,
+						dotsCoords[2].y - 52,
+						dotsCoords[1].y - 52,
+					]
+					break
+				case 3:
+					// O ✅
+					// X ✅
+					// X ❌
+					// X ❌
+					// / ❌
+					// console.log('snap() case 3')
+
+					values = [dotsCoords[3].y - 52, dotsCoords[2].y - 52]
+					break
+			}
+
+			// console.log('Snap values:', values)
+
+			return getClosestValue(values, value)
+		},
+		throwResistance: 20000,
+		maxDuration: 0.6,
+		overshootTolerance: 0,
+		edgeResistance: 1,
+		onPress() {
+			set(isPressed, true)
+
+			gsap.to(get(draggerCircleRef), {
+				attr: {
+					r: 54,
+				},
+				duration: 0.5,
+				ease: 'back.out(2)',
+				overwrite: true,
+			})
+		},
+		onRelease() {
+			set(isPressed, false)
+
+			gsap.to(get(draggerCircleRef), {
+				attr: {
+					r: 46,
+				},
+				duration: 0.5,
+				ease: 'back.out(3)',
+				overwrite: true,
+			})
+		},
+		onDrag() {
+			update()
+		},
+		onDragEnd() {
+			gsap.delayedCall(0.1, () => {
+				translateTrackToPosition(draggableInstance[0].endY)
+			})
+		},
+		onThrowUpdate() {
+			update()
+			updateCurrentStep()
+		},
+	})
+
+	function update() {
+		gsap.set(get(draggerMaskRef), {
+			y: draggableInstance[0].y,
+		})
+
+		gsap.set(get(trackMaskInitialRef), {
+			y: () => Math.max(450, draggableInstance[0].y),
+		})
+	}
+
+	update()
 }
 </script>
 

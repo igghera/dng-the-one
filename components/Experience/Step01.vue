@@ -69,6 +69,7 @@
 						ref="knobDotWrapperRef"
 					>
 						<circle
+							id="glowing-dot"
 							r="20"
 							fill="#ffffc4"
 							filter="url(#dot-glow)"
@@ -440,6 +441,11 @@ const animateOut = async () => {
 const moveDotToNextPosition = async () => {
 	const state = Flip.getState(get(knobDotRef))
 
+	gsap.set(get(knobDotRef), {
+		attr: {
+			r: 16,
+		},
+	})
 	document.getElementById('step-02-dot-0-wrapper').appendChild(get(knobDotRef))
 
 	return Flip.from(state, {
@@ -449,6 +455,8 @@ const moveDotToNextPosition = async () => {
 }
 
 const handleClick = async () => {
+	draggableInstance?.[0]?.kill()
+
 	await animateOut()
 
 	appStore.setStep01Selection(get(knobStep))
@@ -457,9 +465,21 @@ const handleClick = async () => {
 
 	await nextTick()
 
-	await moveDotToNextPosition()
+	// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START')
+	emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START)
 
-	uiStore.setExperienceStep01Visible(false)
+	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE, async () => {
+		// console.log(
+		// 	'✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE'
+		// )
+
+		await moveDotToNextPosition()
+
+		// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE')
+		emitter.emit(EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE)
+
+		uiStore.setExperienceStep01Visible(false)
+	})
 }
 </script>
 
