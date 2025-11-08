@@ -448,10 +448,28 @@ const moveDotToNextPosition = async () => {
 	})
 	document.getElementById('step-02-dot-0-wrapper').appendChild(get(knobDotRef))
 
-	return Flip.from(state, {
-		duration: 1.6,
-		ease: 'power3.inOut',
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	tl.add(
+		Flip.from(state, {
+			duration: 1.6,
+			ease: 'power3.inOut',
+		}),
+		'start'
+	)
+
+	tl.to(get(knobDotRef), {
+		attr: {
+			r: 10,
+		},
+		duration: 0.5,
+		repeat: 1,
+		yoyo: true,
+		ease: 'power1.out',
 	})
+
+	return tl.play()
 }
 
 const handleClick = async () => {
