@@ -142,14 +142,11 @@
 							<stop offset="100%" stop-color="white" />
 						</radialGradient>
 
-						<mask
-							style="transform-box: fill-box; transform-origin: center"
-							id="step-02-content-mask"
-							ref="contentMaskRef"
-						>
+						<mask id="step-02-content-mask" ref="contentMaskRef">
 							<rect
+								style="transform-box: fill-box; transform-origin: center"
 								x="-300"
-								y="-110"
+								y="-70"
 								width="716"
 								height="1000"
 								fill="url(#step-02-content-gradient)"
@@ -162,8 +159,8 @@
 							gradientTransform="rotate(90)"
 						>
 							<stop offset="0%" stop-color="black" />
-							<stop offset="10%" stop-color="black" />
 							<stop offset="25%" stop-color="black" />
+							<stop offset="40%" stop-color="white" />
 							<stop offset="50%" stop-color="white" />
 							<stop offset="75%" stop-color="white" />
 							<stop offset="90%" stop-color="black" />
@@ -351,8 +348,8 @@ const setInitialState = () => {
 		},
 	})
 
-	gsap.set(get(contentMaskRef), {
-		scale: 4,
+	gsap.set(get(contentMaskRectRef), {
+		scale: 2,
 	})
 
 	set(instructionsVisible, false)
@@ -391,7 +388,7 @@ const animateIn = () => {
 	)
 
 	tl.to(
-		get(contentMaskRef),
+		get(contentMaskRectRef),
 		{
 			scale: 1,
 			duration: 1.2,
