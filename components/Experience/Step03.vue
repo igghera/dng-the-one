@@ -29,9 +29,12 @@
 					/>
 				</svg>
 
-				<span class="dragger-label | text-shadow" data-dragger-label>{{
-					label
-				}}</span>
+				<span
+					class="dragger-label | text-shadow"
+					data-dragger-label
+					ref="draggersLabelsRef"
+					>{{ label }}</span
+				>
 			</div>
 
 			<svg
@@ -60,6 +63,7 @@
 						class="fill-gold-light"
 						data-dropzone-arrow
 						d="M52.539 28.935a.843.843 0 1 1 1.192 1.192l-4.5 4.5a.844.844 0 0 1-1.192 0l-4.5-4.5a.846.846 0 0 1-.022-1.214.846.846 0 0 1 1.214.022l3.06 3.06V.844a.843.843 0 1 1 1.688 0v31.15z"
+						ref="dropzoneArrowRef"
 					/>
 				</g>
 			</svg>
@@ -91,8 +95,10 @@ const { isPortrait } = useViewport()
 const headerRef = useTemplateRef('headerRef')
 const instructionsRef = useTemplateRef('instructionsRef')
 const draggersRef = useTemplateRef('draggersRef')
+const draggersLabelsRef = useTemplateRef('draggersLabelsRef')
 const dropzoneRef = useTemplateRef('dropzoneRef')
 const dropzoneCircleRef = useTemplateRef('dropzoneCircleRef')
+const dropzoneArrowRef = useTemplateRef('dropzoneArrowRef')
 
 const labels = computed(() => {
 	return Object.values(tm('experience_step_03.labels')).map(label => rt(label))
@@ -103,7 +109,123 @@ let draggableInstance = null
 //
 // Lifecycle
 //
-onMounted(() => {
+onMounted(async () => {
+	setInitialState()
+
+	await animateIn()
+
+	createDraggable()
+})
+
+onBeforeUnmount(() => {
+	draggableInstance?.[0]?.kill()
+})
+
+//
+// Methods
+//
+const setInitialState = () => {
+	gsap.set(
+		[
+			get(draggersRef),
+			get(draggersLabelsRef),
+			get(dropzoneCircleRef),
+			get(dropzoneArrowRef),
+			get(headerRef),
+			get(instructionsRef),
+		],
+		{
+			opacity: 0,
+		}
+	)
+}
+
+const animateIn = () => {
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	// Fade in header
+	tl.to(
+		get(headerRef),
+		{
+			opacity: 1,
+			duration: 1.5,
+		},
+		'start'
+	)
+
+	// Fade in dots
+	tl.to(
+		get(draggersRef),
+		{
+			opacity: 1,
+			duration: 1,
+		},
+		'>-0.4'
+	)
+
+	// Move draggers to final positions
+	tl.add(
+		() => {
+			const state = Flip.getState(get(draggersRef))
+
+			get(draggersRef).forEach(dragger => {
+				dragger.classList.add('is-final-position')
+			})
+
+			Flip.from(state, {
+				duration: 1.3,
+				ease: 'power1.inOut',
+			})
+		},
+		null,
+		'>0.7'
+	)
+
+	// Fade in dropzone circle
+	tl.to(
+		get(dropzoneCircleRef),
+		{
+			opacity: 1,
+			duration: 1.5,
+		},
+		'<'
+	)
+
+	// Fade in dropzone arrow
+	tl.to(
+		get(dropzoneArrowRef),
+		{
+			opacity: 1,
+			duration: 1.2,
+		},
+		'<0.7'
+	)
+
+	// Fade in labels
+	tl.to(
+		get(draggersLabelsRef),
+		{
+			opacity: 1,
+			duration: 1.5,
+		},
+		'>-0.4'
+	)
+
+	// Fade in instructions
+	tl.to(
+		get(instructionsRef),
+		{
+			opacity: 1,
+			duration: 1.5,
+		},
+		'<0.2'
+	)
+
+	return tl.play()
+}
+
+const createDraggable = () => {
 	draggableInstance = Draggable.create(get(draggersRef), {
 		onPress: () => {
 			zoomInDropzoneCircle()
@@ -220,12 +342,7 @@ onMounted(() => {
 			'<0.5'
 		)
 	}
-})
-
-//
-// Methods
-//
-const animateIn = () => {}
+}
 
 const zoomInDropzoneCircle = () => {
 	const defaultRadius = Number(get(dropzoneCircleRef).dataset.defaultRadius)
@@ -307,19 +424,26 @@ const zoomOutDropzoneCircle = () => {
 		1fr;
 	grid-template-columns: 1fr;
 
-	&[data-index='0'] {
-		@apply self-start justify-self-start;
-		@apply landscape:translate-y-full;
+	&:not(.is-final-position) {
+		@apply self-center justify-self-center translate-y-2;
+		@apply landscape:self-end landscape:-translate-y-4;
 	}
 
-	&[data-index='1'] {
-		@apply self-start justify-self-end;
-		@apply landscape:translate-y-full;
-	}
+	&.is-final-position {
+		&[data-index='0'] {
+			@apply self-start justify-self-start;
+			@apply landscape:translate-y-full;
+		}
 
-	&[data-index='2'] {
-		@apply self-end justify-self-center;
-		@apply landscape:self-start;
+		&[data-index='1'] {
+			@apply self-start justify-self-end;
+			@apply landscape:translate-y-full;
+		}
+
+		&[data-index='2'] {
+			@apply self-end justify-self-center;
+			@apply landscape:self-start;
+		}
 	}
 
 	& > * {
