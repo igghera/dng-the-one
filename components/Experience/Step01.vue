@@ -455,15 +455,25 @@ const moveDotToNextPosition = async () => {
 		'start'
 	)
 
-	tl.to(get(knobDotRef), {
-		attr: {
-			r: 10,
+	tl.to(
+		get(knobDotRef),
+		{
+			scale: 0.65,
+			duration: 0.5,
+			ease: 'power1.out',
 		},
-		duration: 0.5,
-		repeat: 1,
-		yoyo: true,
-		ease: 'power1.out',
-	})
+		'>'
+	)
+
+	tl.to(
+		get(knobDotRef),
+		{
+			scale: 0.85,
+			duration: 0.5,
+			ease: 'power1.out',
+		},
+		'>'
+	)
 
 	return tl.play()
 }
