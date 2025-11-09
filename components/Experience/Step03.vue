@@ -299,8 +299,21 @@ const createDraggable = () => {
 
 		const tl = gsap.timeline({
 			onComplete: () => {
-				uiStore.setExperienceStep03Visible(false)
 				uiStore.setExperienceEndVisible(true)
+				startPulseAnimation()
+
+				emitter.once(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, async () => {
+					const img =
+						get(draggersRef)[appStore.getStep03Selection].querySelector('image')
+					gsap.killTweensOf(img)
+
+					await gsap.to(get(draggersRef)[appStore.getStep03Selection], {
+						opacity: 0,
+						duration: 0.5,
+					})
+
+					uiStore.setExperienceStep03Visible(false)
+				})
 			},
 		})
 		tl.addLabel('start')
@@ -357,6 +370,21 @@ const createDraggable = () => {
 			'<0.5'
 		)
 	}
+}
+
+const startPulseAnimation = () => {
+	const img =
+		get(draggersRef)[appStore.getStep03Selection].querySelector('image')
+
+	gsap.set(img, { transformOrigin: 'center center' })
+
+	gsap.to(img, {
+		scale: 0.7,
+		yoyo: true,
+		repeat: -1,
+		duration: 0.5,
+		ease: 'sine.inOut',
+	})
 }
 
 const zoomInDropzoneCircle = () => {
