@@ -82,10 +82,12 @@
 							/>
 
 							<g transform="translate(58, 52)" id="dot-wrapper-step-02">
-								<path
-									class="fill-gold-light"
-									d="M0 -6a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
-								/>
+								<g class="dragger-arrow" :data-visible="arrowsVisible">
+									<path
+										class="fill-gold-light"
+										d="M0 -6a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
+									/>
+								</g>
 							</g>
 
 							<g class="arrows">
@@ -93,7 +95,10 @@
 									class="dragger-arrow"
 									transform="translate(48, -14)"
 									:data-visible="
-										currentStep >= 0 && currentStep < 3 && !isPressed
+										currentStep >= 0 &&
+										currentStep < 3 &&
+										!isPressed &&
+										arrowsVisible
 									"
 								>
 									<path
@@ -105,7 +110,7 @@
 								<g
 									class="dragger-arrow"
 									transform="translate(48, 124) scale(1, -1)"
-									:data-visible="currentStep > 0 && !isPressed"
+									:data-visible="currentStep > 0 && !isPressed && arrowsVisible"
 								>
 									<path
 										class="fill-gold-light"
@@ -129,7 +134,13 @@
 							/>
 
 							<g ref="draggerMaskRef">
-								<circle cx="58" cy="58" r="58" fill="url(#dragger-gradient)" />
+								<circle
+									cx="58"
+									cy="58"
+									r="58"
+									fill="url(#dragger-gradient)"
+									fill-opacity="1"
+								/>
 							</g>
 
 							<g transform="translate(0, 550)" ref="trackMaskInitialRef">
@@ -171,23 +182,25 @@
 			</div>
 		</div>
 
-		<div
-			class="instructions | text-shadow"
-			:data-visible="instructionsVisible && currentStep === -1"
-		>
-			<p class="instructions-inner pulse-100-60 | body-5 | text-gold-light">
-				{{ $t('experience_step_02.instructions') }}
-			</p>
-		</div>
+		<div class="cta-wrapper" ref="ctaWrapperRef">
+			<div
+				class="instructions | text-shadow"
+				:data-visible="instructionsVisible && currentStep === -1"
+			>
+				<p class="instructions-inner pulse-100-60 | body-5 | text-gold-light">
+					{{ $t('experience_step_02.instructions') }}
+				</p>
+			</div>
 
-		<ButtonGolden
-			class="cta"
-			size="wide"
-			:data-visible="currentStep >= 0"
-			@click="handleClick"
-		>
-			{{ $t('select') }}
-		</ButtonGolden>
+			<ButtonGolden
+				class="cta"
+				size="wide"
+				:data-visible="currentStep >= 0"
+				@click.once="handleClick"
+			>
+				{{ $t('select') }}
+			</ButtonGolden>
+		</div>
 	</Container>
 </template>
 
@@ -220,10 +233,11 @@ const { rt, tm } = useI18n()
 const currentStep = shallowRef(-1)
 const isPressed = shallowRef(false)
 const instructionsVisible = shallowRef(false)
+const arrowsVisible = shallowRef(true)
 
 const { idle: isIdle, reset: resetIdle, stop: stopIdle } = useIdle(2500)
 
-const { gsap, Draggable } = useGSAP()
+const { gsap, Draggable, Flip } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
 const draggerRef = useTemplateRef('draggerRef')
@@ -234,6 +248,7 @@ const draggerMaskRectRef = useTemplateRef('draggerMaskRectRef')
 const dotsRef = useTemplateRef('dotsRef')
 const trackRef = useTemplateRef('trackRef')
 const trackMaskInitialRef = useTemplateRef('trackMaskInitialRef')
+const ctaWrapperRef = useTemplateRef('ctaWrapperRef')
 
 const { height: trackHeight } = useElementBounding(trackRef)
 
@@ -400,10 +415,64 @@ const animateIn = () => {
 	return tl.play()
 }
 
-const handleClick = () => {
+const animateOut = async () => {
+	const tl = gsap.timeline({
+		paused: true,
+		onStart: () => {
+			set(arrowsVisible, false)
+		},
+	})
+	tl.addLabel('start')
+
+	tl.to(
+		[get(headerRef), get(dotsRef), get(draggerCircleRef), get(ctaWrapperRef)],
+		{
+			opacity: 0,
+			duration: 1,
+		},
+		'start'
+	)
+
+	tl.to(
+		[get(draggerMaskRectRef), get(draggerMaskRef).querySelector('circle')],
+		{
+			attr: {
+				'fill-opacity': 0,
+			},
+			duration: 1,
+		},
+		'start'
+	)
+
+	return tl.play()
+}
+
+const moveDotToNextPosition = async () => {
+	const dot = document.getElementById('glowing-dot')
+	const state = Flip.getState(dot)
+
+	document.getElementById('dot-wrapper-step-03').appendChild(dot)
+
+	return Flip.from(state, {
+		duration: 1.6,
+		ease: 'power3.inOut',
+	})
+}
+
+const handleClick = async () => {
+	draggableInstance?.[0]?.kill()
+
+	await animateOut()
+
 	appStore.setStep02Selection(get(currentStep))
-	uiStore.setExperienceStep02Visible(false)
+
 	uiStore.setExperienceStep03Visible(true)
+
+	await nextTick()
+
+	await moveDotToNextPosition()
+
+	uiStore.setExperienceStep02Visible(false)
 }
 
 const handleStepChange = (next, prev) => {
@@ -782,12 +851,16 @@ const createDraggable = () => {
 	}
 }
 
-.instructions,
-.cta {
-	@apply self-center;
-	@apply transition-opacity duration-500 ease-out;
+.cta-wrapper {
+	@apply grid items-center justify-center;
 
 	grid-area: c;
+}
+
+.instructions,
+.cta {
+	@apply self-center col-start-1 row-start-1;
+	@apply transition-opacity duration-500 ease-out;
 
 	&[data-visible='false'] {
 		@apply opacity-0;

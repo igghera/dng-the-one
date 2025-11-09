@@ -66,6 +66,12 @@
 						ref="dropzoneArrowRef"
 					/>
 				</g>
+
+				<g
+					id="dot-wrapper-step-03"
+					transform="translate(49, 64)"
+					ref="dotWrapperStep03Ref"
+				></g>
 			</svg>
 		</div>
 
@@ -99,6 +105,7 @@ const draggersLabelsRef = useTemplateRef('draggersLabelsRef')
 const dropzoneRef = useTemplateRef('dropzoneRef')
 const dropzoneCircleRef = useTemplateRef('dropzoneCircleRef')
 const dropzoneArrowRef = useTemplateRef('dropzoneArrowRef')
+const dotWrapperStep03Ref = useTemplateRef('dotWrapperStep03Ref')
 
 const labels = computed(() => {
 	return Object.values(tm('experience_step_03.labels')).map(label => rt(label))
@@ -138,6 +145,8 @@ const setInitialState = () => {
 			opacity: 0,
 		}
 	)
+
+	gsap.set(get(dotWrapperStep03Ref), { clearProps: 'all' })
 }
 
 const animateIn = () => {
@@ -176,6 +185,12 @@ const animateIn = () => {
 			Flip.from(state, {
 				duration: 1.3,
 				ease: 'power1.inOut',
+				onStart: () => {
+					gsap.set(get(dotWrapperStep03Ref), {
+						opacity: 0,
+						duration: 0.4,
+					})
+				},
 			})
 		},
 		null,
