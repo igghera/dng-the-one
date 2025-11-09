@@ -68,12 +68,13 @@
 						:data-end-y="dotsCoords[0].y"
 						ref="knobDotWrapperRef"
 					>
-						<circle
+						<image
 							id="glowing-dot"
-							r="20"
-							fill="#ffffc4"
-							filter="url(#dot-glow)"
+							href="/images/glowing-dot.webp"
+							width="345"
+							height="345"
 							ref="knobDotRef"
+							transform="translate(-172.5, -172.5)"
 						/>
 					</g>
 
@@ -441,11 +442,6 @@ const animateOut = async () => {
 const moveDotToNextPosition = async () => {
 	const state = Flip.getState(get(knobDotRef))
 
-	gsap.set(get(knobDotRef), {
-		attr: {
-			r: 16,
-		},
-	})
 	document.getElementById('step-02-dot-0-wrapper').appendChild(get(knobDotRef))
 
 	const tl = gsap.timeline({ paused: true })

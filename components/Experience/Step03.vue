@@ -21,9 +21,12 @@
 					class="w-6 landscape:w-8 relative z-[1] row-start-1 col-start-1"
 					overflow="visible"
 				>
-					<g filter="url(#dot-glow)">
-						<circle cx="16" cy="16" r="16" class="fill-gold-light" />
-					</g>
+					<image
+						href="/images/glowing-dot.webp"
+						width="240"
+						height="240"
+						transform="translate(-104, -104)"
+					/>
 				</svg>
 
 				<span class="dragger-label | text-shadow" data-dragger-label>{{
