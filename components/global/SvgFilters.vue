@@ -3,10 +3,10 @@
 		<defs>
 			<filter
 				id="dot-glow"
-				width="1000"
-				height="1000"
-				x="-272"
-				y="-272"
+				width="300"
+				height="300"
+				x="-150"
+				y="-150"
 				color-interpolation-filters="sRGB"
 				filterUnits="userSpaceOnUse"
 			>

@@ -227,7 +227,6 @@ const { gsap, Draggable } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
 const draggerRef = useTemplateRef('draggerRef')
-const contentMaskRef = useTemplateRef('contentMaskRef')
 const contentMaskRectRef = useTemplateRef('contentMaskRectRef')
 const draggerCircleRef = useTemplateRef('draggerCircleRef')
 const draggerMaskRef = useTemplateRef('draggerMaskRef')
@@ -245,7 +244,8 @@ const dotsCoords = [
 	{ x: 58, y: -17 },
 ]
 
-const trackTranslateValues = [-15, 11, 37, 62]
+// const trackTranslateValues = [-15, 11, 37, 62]
+const trackTranslateValues = [-35, -4, 22, 47]
 
 let draggableInstance = null
 let idleTween = null
@@ -757,12 +757,16 @@ const createDraggable = () => {
 }
 
 .track-wrapper {
-	@apply flex items-end justify-self-center;
+	@apply grid items-center justify-self-center;
 
 	height: clamp(350px, 440px, 50svh);
 
 	> * {
-		@apply col-start-1 row-start-1;
+		@apply col-start-1 row-start-1 relative z-[1];
+	}
+
+	&::after {
+		@apply relative content-[''] block size-full col-start-1 row-start-1 origin-center scale-150;
 	}
 }
 
