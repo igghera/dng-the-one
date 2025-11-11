@@ -46,6 +46,10 @@ import {
   radius as bloomRadius,
 } from './nodes/bloom'
 
+import {
+  intensity as lutIntensity,
+} from './nodes/lut'
+
 export class Debug {
   constructor(dof, godrays, background, particles, endDrawMaterial, introDrawMaterial, introSceneVisibility) {
     this.pane = new Pane({
@@ -62,6 +66,7 @@ export class Debug {
     this.createEndDrawPlane(endDrawMaterial)
     this.createMask()
     this.createBloom()
+    this.createLUT()
   }
 
   createIntro(material, visibility) {
@@ -200,5 +205,14 @@ export class Debug {
     bloomFolder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 1, max: 2, step: 0.01 })
     bloomFolder.addBinding(bloomStrength, 'value', { label: 'Strength', min: 0, max: 3, step: 0.01 })
     bloomFolder.addBinding(bloomRadius, 'value', { label: 'Radius', min: 0, max: 1.5, step: 0.01 })
+  }
+
+  createLUT() {
+    const lutFolder = this.pane.addFolder({
+      title: 'Postprocess - LUT',
+      expanded: false,
+    })
+
+    lutFolder.addBinding(lutIntensity, 'value', { label: 'Intensity', min: 0, max: 1, step: 0.01 })
   }
 }

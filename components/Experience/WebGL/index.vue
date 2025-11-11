@@ -24,12 +24,14 @@ import {
 	screenUV,
 	mix,
 	time,
+	texture3D,
 } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
+import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
 // import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
-import { ktxLoader, textureLoader } from '~/assets/js/loaders'
+import { ktxLoader, textureLoader, lutCubeLoader } from '~/assets/js/loaders'
 
 import {
 	FloorMaterial,
@@ -69,6 +71,8 @@ import {
 	strength as bloomStrength,
 	radius as bloomRadius,
 } from './nodes/bloom'
+
+import { intensity as lutIntensity } from './nodes/lut'
 
 //
 // Refs / State
@@ -562,6 +566,9 @@ async function loadTextures() {
 	images[0].colorSpace = THREE.SRGBColorSpace
 
 	bgTexture.value = images[0]
+
+	const lutCube = await lutCubeLoader.load('/webgl/lut.CUBE')
+	textures.set('lut_cube', lutCube)
 }
 
 async function createParticles() {
@@ -781,7 +788,14 @@ function createPostprocessing() {
 
 	let compose = inner.add(outer).mul(alpha)
 
-	postProcessing.outputNode = compose
+	const lutPass = lut3D(
+		compose,
+		texture3D(textures.get('lut_cube').texture3D),
+		textures.get('lut_cube').texture3D.image.width
+	)
+	lutPass.intensityNode = lutIntensity
+
+	postProcessing.outputNode = lutPass
 }
 
 function setBackgroundSize() {

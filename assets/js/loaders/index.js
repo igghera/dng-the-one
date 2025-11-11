@@ -1,6 +1,8 @@
 import { LoadingManager } from 'three/webgpu'
 import { KTXLoader } from './KTXLoader'
 import { TextureLoader } from './TextureLoader'
+import { LUTCubeLoader } from './LUTCubeLoader'
+import { LUTImageLoader } from './LUTImageLoader'
 
 /**
  * Loading manager
@@ -22,3 +24,13 @@ export const textureLoader = new TextureLoader(manager)
  * KTX Loader
  */
 export const ktxLoader = new KTXLoader(manager)
+
+/**
+ * LUT Image Loader
+ */
+export const lutImageLoader = new LUTImageLoader(manager)
+
+/**
+ * LUT Cube Loader
+ */
+export const lutCubeLoader = new LUTCubeLoader(manager)
