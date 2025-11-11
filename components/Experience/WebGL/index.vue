@@ -64,7 +64,9 @@ import {
 	maskColorB as maskBorderColorB,
 } from './materials/mask'
 
-import { cart2Polar, noiseTexture, bgTexture } from './nodes'
+import { cart2Polar, noiseTexture } from './nodes'
+
+import { bgTexturePortrait, bgTextureLandscape } from './nodes/textures'
 
 import {
 	threshold as bloomThreshold,
@@ -111,6 +113,7 @@ let scene,
 	introScene,
 	introMesh,
 	introCamera,
+	introBackground,
 	maskScene,
 	maskCamera
 
@@ -297,6 +300,7 @@ watch([componentWidth, componentHeight], value => {
 	}
 
 	setBackgroundSize()
+	setIntroBackgroundSize()
 
 	renderer.setSize(value[0], value[1])
 })
@@ -561,11 +565,16 @@ async function loadTextures() {
 
 	seaNoiseTexture.value = noiseTexture.value
 
-	const images = await textureLoader.load(['/webgl/bg.webp'])
+	const images = await textureLoader.load([
+		'/images/bg-portrait.webp',
+		'/images/bg-landscape.webp',
+	])
 
 	images[0].colorSpace = THREE.SRGBColorSpace
+	images[1].colorSpace = THREE.SRGBColorSpace
 
-	bgTexture.value = images[0]
+	bgTexturePortrait.value = images[0]
+	bgTextureLandscape.value = images[1]
 
 	const lutCube = await lutCubeLoader.load('/webgl/lut.CUBE')
 	textures.set('lut_cube', lutCube)
@@ -722,15 +731,17 @@ async function createIntroScene() {
 
 	setIntroMeshScale()
 
-	const bg = new THREE.Mesh(
-		new THREE.PlaneGeometry(12, 12, 1, 1),
+	introBackground = new THREE.Mesh(
+		new THREE.PlaneGeometry(1, 1),
 		IntroBackgroundMaterial
 	)
 
-	bg.position.set(0, 0, -3)
+	introBackground.position.set(0, 0, -3)
+
+	setIntroBackgroundSize()
 
 	introScene.add(introMesh)
-	introScene.add(bg)
+	introScene.add(introBackground)
 }
 
 function createMaskScene() {
@@ -803,6 +814,15 @@ function setBackgroundSize() {
 
 	if (get(isPortrait)) background.scale.set(10.8, 19.2, 1)
 	else if (get(isLandscape)) background.scale.set(19.2, 10.8, 1)
+}
+
+function setIntroBackgroundSize() {
+	if (!!!introBackground) return
+
+	if (get(isPortrait))
+		introBackground.scale.set(11.79, 25.56, 1).multiplyScalar(0.5)
+	else if (get(isLandscape))
+		introBackground.scale.set(28.8, 20.48, 1).multiplyScalar(0.5)
 }
 
 function setIntroMeshScale() {

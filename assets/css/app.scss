@@ -6,10 +6,16 @@
 @use 'animations';
 
 html {
-  @apply text-white bg-no-repeat bg-cover bg-top bg-fixed bg-gold-light;
+  @apply text-white bg-no-repeat bg-cover bg-center bg-fixed;
+
+  background-color: rgb(35 13 10);
 
   &[data-init] {
-    background-image: url('/images/bg.webp');
+    background-image: url('/images/bg-portrait.webp');
+
+    @screen landscape {
+      background-image: url('/images/bg-landscape.webp');
+    }
   }
 
   /* Hide scrollbar for different browsers */
