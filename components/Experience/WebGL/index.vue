@@ -129,8 +129,8 @@ const mainCameraParams = Object.freeze({
 })
 
 const introMeshParams = Object.freeze({
-	positionStart: new THREE.Vector3(0.5, -0.8, 0),
-	positionEnd: new THREE.Vector3(0, -0.8, 0),
+	positionStart: new THREE.Vector3(0.5, -0.6, 0),
+	positionEnd: new THREE.Vector3(0, -0.6, 0),
 })
 
 const cameraRotationOffset = { value: 0 }
