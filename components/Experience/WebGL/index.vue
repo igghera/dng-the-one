@@ -16,6 +16,7 @@ import * as THREE from 'three/webgpu'
 import {
 	reflector,
 	vec2,
+	vec3,
 	Fn,
 	pass,
 	uniform,
@@ -25,10 +26,11 @@ import {
 	mix,
 	time,
 	texture3D,
+	dot,
 } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
 import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
-// import { OrbitControls } from 'three/addons/controls/OrbitControls'
+import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
 import { ktxLoader, textureLoader, lutCubeLoader } from '~/assets/js/loaders'
@@ -46,7 +48,10 @@ import {
 
 import {
 	getDisplacement,
+	getDisplacedNormal,
 	noiseTexture as seaNoiseTexture,
+	lightColor as floorLightColor,
+	lightIntensity as floorLightIntensity,
 } from './materials/floor'
 
 import {
@@ -165,7 +170,7 @@ onMounted(async () => {
 	createPostprocessing()
 	createMouse()
 
-	// if (isDebug) createControls()
+	if (isDebug) createControls()
 
 	emitter.emit(EVENTS.WEBGL_READY)
 	uiStore.setWebglVisible(true)
@@ -455,11 +460,13 @@ function animateInMainScene() {
 function updateScene(time = 0) {
 	controls?.update()
 
-	camera.lookAt(
-		mainCameraParams.lookAt.x,
-		mainCameraParams.lookAt.y,
-		mainCameraParams.lookAt.z
-	)
+	if (!isDebug) {
+		camera.lookAt(
+			mainCameraParams.lookAt.x,
+			mainCameraParams.lookAt.y,
+			mainCameraParams.lookAt.z
+		)
+	}
 
 	// if (isDebug) return
 	if (mainCameraIsAnimating) return
@@ -654,15 +661,43 @@ function createSea() {
 	scene.add(reflection.target)
 
 	const getReflectivity = Fn(() => {
-		const base = float(0.45)
-		const value = positionWorld.x.length().smoothstep(0.8, 4).oneMinus().pow(2)
+		const base = float(0.1)
+		const layer1 = positionWorld.x
+			.length()
+			.smoothstep(0.65, 3)
+			.oneMinus()
+			.pow(1.1)
+			.max(0.45)
 
-		const x = base.add(value)
+		const layer2 = positionWorld.x
+			.length()
+			.smoothstep(0.2, 2.8)
+			.oneMinus()
+			.pow(0.5)
+			.max(0.45)
 
-		return x
+		return base.add(layer1).add(layer2).max(1)
 	})
 
-	FloorMaterial.emissiveNode = reflection.mul(getReflectivity()).mul(0.85)
+	FloorMaterial.emissiveNode = Fn(() => {
+		const viewDirection = vec3(
+			mainCameraParams.lookAt.x,
+			mainCameraParams.lookAt.y,
+			mainCameraParams.lookAt.z
+		).normalize()
+
+		const lightPosition = vec3(10, 1, 15)
+		const lightDirection = lightPosition.normalize()
+
+		const light = dot(getDisplacedNormal(), lightDirection)
+			.smoothstep(0, 0.45)
+			.oneMinus()
+
+		return reflection
+			.mul(getReflectivity())
+			.add(light.mul(floorLightColor).mul(floorLightIntensity))
+			.mul(dot(getDisplacedNormal(), viewDirection).remap(-1, 1, 0.2, 1))
+	})()
 
 	const geometry = new THREE.PlaneGeometry(20, 10, 250, 150)
 	geometry.rotateX(-Math.PI / 2)

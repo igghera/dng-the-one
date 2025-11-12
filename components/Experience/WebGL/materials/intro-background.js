@@ -11,5 +11,5 @@ IntroBackgroundMaterial.colorNode = Fn(() => {
 })()
 
 IntroBackgroundMaterial.opacityNode = Fn(() => {
-  return uv().mul(2).sub(1).length().smoothstep(0.85, 1).oneMinus().remap(0, 1, 0, 0.65)
+  return uv().mul(2).sub(1).length().smoothstep(0.85, 1).oneMinus().remap(0, 1, 0, 0.45)
 })()

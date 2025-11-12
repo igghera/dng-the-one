@@ -8,7 +8,7 @@
 html {
   @apply text-white bg-no-repeat bg-cover bg-center bg-fixed;
 
-  background-color: rgb(35 13 10);
+  background-color: #1B0B08;
 
   &[data-init] {
     background-image: url('/images/bg-portrait.webp');
@@ -34,4 +34,12 @@ body {
   overscroll-behavior: none;
 
   @apply text-balance font-body select-none;
+}
+
+#profiler-shell {
+  @apply pointer-events-none;
+
+  & > * {
+    @apply pointer-events-auto;
+  }
 }

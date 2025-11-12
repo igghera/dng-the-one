@@ -1,8 +1,16 @@
 import { Pane } from 'tweakpane'
 
 import {
-  timeScale,
-  displacementStrength
+  speed,
+  strength,
+  stretchX,
+  stretchY,
+  scale,
+  normalDerivativeStep as floorNormalDerivativeStep,
+  normalBlend as floorNormalBlend,
+  normalSmoothingRadius as floorNormalSmoothingRadius,
+  lightColor as floorLightColor,
+  lightIntensity as floorLightIntensity,
 } from './materials/floor'
 
 import {
@@ -108,11 +116,25 @@ export class Debug {
   createSea() {
     const sea = this.pane.addFolder({
       title: 'Sea',
-      expanded: false,
+      expanded: true,
     })
 
-    sea.addBinding(displacementStrength, 'value', { label: 'Strength', min: 0, max: 2 })
-    sea.addBinding(timeScale, 'value', { label: 'Speed', min: -0.1, max: 0.1, step: 0.001 })
+    sea.addBinding(strength, 'value', { label: 'Strength', min: 0, max: 2 })
+    sea.addBinding(speed, 'value', { label: 'Speed', min: -0.1, max: 0.1, step: 0.001 })
+    sea.addBinding(scale, 'value', { label: 'Scale', min: 0, max: 5 })
+    sea.addBinding(stretchX, 'value', { label: 'Stretch X', min: 0, max: 5 })
+    sea.addBinding(stretchY, 'value', { label: 'Stretch Y', min: 0, max: 5 })
+
+    sea.addBlade({ view: 'separator' })
+
+    sea.addBinding(floorLightColor, 'value', { label: 'Light Color', color: { type: 'float' } })
+    sea.addBinding(floorLightIntensity, 'value', { label: 'Light Intensity', min: 0, max: 1, step: 0.01 })
+
+    sea.addBlade({ view: 'separator' })
+
+    sea.addBinding(floorNormalDerivativeStep, 'value', { label: 'Derivative Step', min: 0.001, max: 0.1, step: 0.001 })
+    sea.addBinding(floorNormalBlend, 'value', { label: 'Blend', min: 0, max: 1 })
+    sea.addBinding(floorNormalSmoothingRadius, 'value', { label: 'Smoothing Radius', min: 0, max: 0.1, step: 0.001 })
   }
 
   createDof(dof) {
@@ -186,7 +208,7 @@ export class Debug {
   createMask() {
     const maskFolder = this.pane.addFolder({
       title: 'End Mask',
-      expanded: true,
+      expanded: false,
     })
 
     maskFolder.addBinding(maskProgress, 'value', { label: 'Progress', min: 0, max: 1 })
@@ -199,7 +221,7 @@ export class Debug {
   createBloom() {
     const bloomFolder = this.pane.addFolder({
       title: 'Postprocess - Bloom',
-      expanded: true,
+      expanded: false,
     })
 
     bloomFolder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 1, max: 2, step: 0.01 })
