@@ -265,6 +265,13 @@ onBeforeUnmount(() => {
 })
 
 //
+// Events
+//
+emitter.on(EVENTS.RESTART, () => {
+	gsap.killTweensOf(get(knobDotWrapperRef))
+})
+
+//
 // Methods
 //
 const setInitialStyles = () => {

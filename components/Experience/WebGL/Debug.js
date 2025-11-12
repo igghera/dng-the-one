@@ -37,7 +37,7 @@ import {
   opacity as particlesOpacity,
   strength as particlesNoiseStrength,
   speed as particlesSpeed,
-  particleColor as particlesColor,
+  particleColor,
 } from './materials/particles'
 
 import {
@@ -186,7 +186,7 @@ export class Debug {
     })
 
     particlesFolder.addBinding(particlesOpacity, 'value', { label: 'Opacity', min: 0, max: 1 })
-    particlesFolder.addBinding(particlesColor, 'value', { label: 'Color', color: { type: 'float' } })
+    particlesFolder.addBinding(particleColor, 'value', { label: 'Color', color: { type: 'float' } })
     particlesFolder.addBinding(particlesNoiseStrength, 'value', { label: 'Noise Strength', min: 0, max: 1 })
     particlesFolder.addBinding(particlesSpeed, 'value', { label: 'Speed', min: 0, max: 1, step: 0.01 })
     particlesFolder.addBinding(particlesSizeMin, 'value', { label: 'Size Min', min: 0, max: 0.05, step: 0.0005 })

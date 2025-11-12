@@ -308,6 +308,16 @@ onBeforeUnmount(() => {
 })
 
 //
+// Events
+//
+emitter.on(EVENTS.RESTART, () => {
+	draggableInstance?.[0]?.kill()
+	stopIdle()
+
+	gsap.killTweensOf([get(draggerMaskRef), get(trackRef)])
+})
+
+//
 // Watchers
 //
 watch(currentStep, (next, prev) => handleStepChange(next, prev))
@@ -382,7 +392,7 @@ const animateIn = () => {
 		{
 			autoAlpha: 1,
 			duration: 1.2,
-			stagger: 0.2,
+			stagger: 0.15,
 			onComplete: () => {
 				set(instructionsVisible, true)
 				resetIdle()
@@ -766,6 +776,8 @@ const createDraggable = () => {
 	})
 
 	function update() {
+		if (!draggableInstance?.[0]) return
+
 		gsap.set(get(draggerMaskRef), {
 			y: draggableInstance[0].y,
 		})

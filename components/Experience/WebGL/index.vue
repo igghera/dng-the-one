@@ -54,14 +54,30 @@ import {
 	lightIntensity as floorLightIntensity,
 } from './materials/floor'
 
+import { progress as backgroundProgress } from './materials/background'
+
 import {
 	offset as particlesOffset,
 	speed as particlesSpeed,
+	sizeMin as particlesSizeMin,
+	sizeMax as particlesSizeMax,
+	opacity as particlesOpacity,
+	strength as particlesNoiseStrength,
 } from './materials/particles'
 
 import {
 	offset as godraysOffset,
 	timeSpeed as godraysTimeSpeed,
+	scaleBottom as godraysScaleBottom,
+	scaleTop as godraysScaleTop,
+	scaleHeight as godraysScaleHeight,
+	noiseScale as godraysNoiseScale,
+	godraysColor,
+	opacity as godraysOpacity,
+	smoothTop as godraysSmoothTop,
+	smoothBottom as godraysSmoothBottom,
+	fresnelPower as godraysFresnelPower,
+	obstructionScale as godraysObstructionScale,
 } from './materials/godrays'
 
 import {
@@ -80,6 +96,29 @@ import {
 } from './nodes/bloom'
 
 import { intensity as lutIntensity } from './nodes/lut'
+
+const START_PARAMS = Object.freeze({
+	particlesSpeed: particlesSpeed.value,
+	particlesSizeMin: particlesSizeMin.value,
+	particlesSizeMax: particlesSizeMax.value,
+	particlesOpacity: particlesOpacity.value,
+	particlesNoiseStrength: particlesNoiseStrength.value,
+
+	godraysOffset: godraysOffset.value,
+	godraysTimeSpeed: godraysTimeSpeed.value,
+	godraysScaleBottom: godraysScaleBottom.value,
+	godraysScaleTop: godraysScaleTop.value,
+	godraysScaleHeight: godraysScaleHeight.value,
+	godraysNoiseScale: godraysNoiseScale.value,
+	godraysColor: godraysColor.value,
+	godraysOpacity: godraysOpacity.value,
+	godraysSmoothTop: godraysSmoothTop.value,
+	godraysSmoothBottom: godraysSmoothBottom.value,
+	godraysFresnelPower: godraysFresnelPower.value,
+	godraysObstructionScale: godraysObstructionScale.value,
+
+	backgroundProgress: backgroundProgress.value,
+})
 
 //
 // Refs / State
@@ -255,6 +294,29 @@ emitter.on(EVENTS.RESTART, () => {
 	introSceneVisibility.value = 1
 
 	animateInIntroShape()
+
+	console.log(START_PARAMS)
+
+	particlesSpeed.value = START_PARAMS.particlesSpeed
+	particlesSizeMin.value = START_PARAMS.particlesSizeMin
+	particlesSizeMax.value = START_PARAMS.particlesSizeMax
+	particlesOpacity.value = START_PARAMS.particlesOpacity
+	particlesNoiseStrength.value = START_PARAMS.particlesNoiseStrength
+
+	godraysOffset.value = START_PARAMS.godraysOffset
+	godraysTimeSpeed.value = START_PARAMS.godraysTimeSpeed
+	godraysScaleBottom.value = START_PARAMS.godraysScaleBottom
+	godraysScaleTop.value = START_PARAMS.godraysScaleTop
+	godraysScaleHeight.value = START_PARAMS.godraysScaleHeight
+	godraysNoiseScale.value = START_PARAMS.godraysNoiseScale
+	godraysColor.value = START_PARAMS.godraysColor
+	godraysOpacity.value = START_PARAMS.godraysOpacity
+	godraysSmoothTop.value = START_PARAMS.godraysSmoothTop
+	godraysSmoothBottom.value = START_PARAMS.godraysSmoothBottom
+	godraysFresnelPower.value = START_PARAMS.godraysFresnelPower
+	godraysObstructionScale.value = START_PARAMS.godraysObstructionScale
+
+	backgroundProgress.value = START_PARAMS.backgroundProgress
 })
 
 emitter.on(EVENTS.ANIMATE_IN_INTRO, () => {
