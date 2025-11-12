@@ -1,5 +1,5 @@
 <template>
-	<Container class="pointer-events-none">
+	<Container class="pointer-events-none" :data-ready="ready">
 		<header class="header | text-shadow" ref="headerRef">
 			<h2
 				class="display-2 | text-gold-light"
@@ -8,6 +8,25 @@
 		</header>
 
 		<div class="knob-wrapper" ref="knobWrapperRef">
+			<div
+				class="bars-wrapper"
+				:style="{
+					'--current': knobRotationRadians,
+				}"
+				ref="barsWrapperRef"
+			>
+				<span
+					v-for="i in numBars"
+					:key="i"
+					class="bar"
+					:style="{
+						'--angle': ((i - 1) * Math.PI * 2) / numBars - Math.PI / 2,
+					}"
+					ref="barsRef"
+				>
+				</span>
+			</div>
+
 			<svg
 				class="size-full"
 				xmlns="http://www.w3.org/2000/svg"
@@ -33,21 +52,6 @@
 						fill="#ffffc4"
 						transform="translate(0 -107)"
 						d="M227.593 353.509a1.95 1.95 0 0 1 1.939 1.723l.013.229v1.952a1.95 1.95 0 0 1-1.837 1.946 1.95 1.95 0 0 1-2.053-1.718l-.014-.228v-1.952a1.954 1.954 0 0 1 1.952-1.952m12.324-4.08.184.162 1.366 1.366a1.955 1.955 0 0 1 .082 2.669 1.953 1.953 0 0 1-2.659.253l-.183-.162-1.367-1.366a1.951 1.951 0 0 1 2.378-3.059zm-22.071.162a1.953 1.953 0 0 1 .162 2.577l-.162.183-1.366 1.366a1.95 1.95 0 0 1-2.669.082 1.95 1.95 0 0 1-.253-2.658l.162-.184 1.366-1.366a1.953 1.953 0 0 1 2.76 0m-5.87-11.699a1.952 1.952 0 0 1 .229 3.891l-.229.013h-1.952a1.953 1.953 0 0 1-1.495-3.204c.32-.382.773-.627 1.267-.686l.228-.014zm33.187 0a1.95 1.95 0 0 1 1.946 1.838 1.95 1.95 0 0 1-1.718 2.053l-.228.013h-1.953a1.953 1.953 0 0 1-1.946-1.837 1.95 1.95 0 0 1 1.718-2.053l.228-.014zm-28.867-12.083.184.162 1.366 1.367a1.95 1.95 0 0 1-1.197 3.321 1.95 1.95 0 0 1-1.379-.399l-.184-.162-1.366-1.366a1.951 1.951 0 0 1 2.375-3.059zm25.171.162c.336.337.538.784.568 1.258.03.475-.114.944-.406 1.319l-.162.184-1.366 1.366a1.954 1.954 0 0 1-2.923-2.577l.162-.183 1.367-1.367a1.95 1.95 0 0 1 2.76 0m-13.874-5.647a1.95 1.95 0 0 1 1.939 1.724l.013.228v1.952a1.951 1.951 0 0 1-3.89.229l-.014-.229v-1.952a1.953 1.953 0 0 1 1.952-1.952m0 9.76a9.76 9.76 0 1 1-9.751 10.184l-.009-.424.009-.423a9.766 9.766 0 0 1 9.751-9.337"
-					/>
-				</g>
-
-				<!-- Background stroke -->
-				<g mask="url(#knob-mask-background)" ref="strokeRef">
-					<circle
-						mask="url(#track-mask)"
-						cx="228"
-						cy="232.25"
-						r="223.25"
-						stroke="#ffffc4"
-						stroke-dasharray="2 12.6"
-						stroke-width="28"
-						stroke-opacity="0.5"
-						data-stroke-opacity-target="0.5"
 					/>
 				</g>
 			</svg>
@@ -77,30 +81,6 @@
 							transform="translate(-172.5, -172.5)"
 						/>
 					</g>
-
-					<defs>
-						<mask id="track-mask">
-							<g
-								style="transform-box: fill-box; transform-origin: center"
-								ref="knobMaskWrapperNewRef"
-							>
-								<path fill="#fff" :d="pathMaskStart" ref="knobMaskNewRef" />
-							</g>
-						</mask>
-
-						<mask id="knob-mask-background">
-							<g class="origin-center -rotate-90">
-								<circle
-									cx="228"
-									cy="232.25"
-									r="223.25"
-									stroke="white"
-									stroke-width="25"
-									ref="knobTrackBackgroundRef"
-								/>
-							</g>
-						</mask>
-					</defs>
 				</svg>
 			</div>
 
@@ -156,8 +136,6 @@ const { gsap, Draggable, Flip } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
 const dotsRef = useTemplateRef('dotsRef')
-const strokeRef = useTemplateRef('strokeRef')
-const knobTrackBackgroundRef = useTemplateRef('knobTrackBackgroundRef')
 const ctaRef = useTemplateRef('ctaRef')
 
 const instructionsVisible = shallowRef(false)
@@ -173,23 +151,31 @@ const dotsCoords = [
 ]
 
 const knobRef = useTemplateRef('knobRef')
-const knobMaskNewRef = useTemplateRef('knobMaskNewRef')
-const knobMaskWrapperNewRef = useTemplateRef('knobMaskWrapperNewRef')
 const knobDotWrapperRef = useTemplateRef('knobDotWrapperRef')
 const knobDotRef = useTemplateRef('knobDotRef')
 const knobStep = shallowRef(0)
 const knobStepLiveDrag = shallowRef(0)
+const knobRotation = shallowRef(0)
+
+const barsWrapperRef = useTemplateRef('barsWrapperRef')
+const { width: barsWrapperWidth } = useElementBounding(barsWrapperRef)
+const numBars = shallowRef(124)
+const barsRef = useTemplateRef('barsRef')
+
+const ready = shallowRef(false)
 
 const labels = computed(() => {
 	return Object.values(tm('experience_step_01.labels')).map(label => rt(label))
 })
 
-const pathMaskStart =
-	'M468 228c0 132.548-107.452 240-240 240S-12 360.548-12 228C-12 109.255 74.238 10.652 187.5-8.597A241.6 241.6 0 0 1 228-12c13.803 0 27.334 1.165 40.5 3.403C381.762 10.652 468 109.255 468 228'
-const pathMaskEnd =
-	'M447 228c0 120.95-98.05 219-219 219S9 348.95 9 228C9 119.645 88.255 32.71 191.044 12.105 221.5 6 218.5-11 228-11s7.5 18.099 36.956 23.105C368.308 29.67 447 119.645 447 228'
-
 let draggableInstance = null
+
+//
+// Computed
+//
+const knobRotationRadians = computed(() => {
+	return gsap.utils.wrap(0, Math.PI * 2, get(knobRotation) * (Math.PI / 180))
+})
 
 //
 // Lifecycle
@@ -251,14 +237,11 @@ onMounted(async () => {
 	function update() {
 		const { rotation } = draggableInstance[0]
 
-		gsap.set(get(knobMaskWrapperNewRef), {
-			transform: `rotate(${rotation}deg)`,
-		})
-
 		let step = Math.round(rotation / 90) % 4
 		if (Math.sign(step) === -1) step = 4 + step
 
 		set(knobStepLiveDrag, Math.abs(step))
+		set(knobRotation, rotation)
 
 		let bg = rotation % 360
 		if (Math.sign(bg) === -1) bg = 360 + bg
@@ -289,13 +272,7 @@ const setInitialStyles = () => {
 		opacity: 0,
 	})
 
-	gsap.set([get(strokeRef), get(ctaRef).$el], {
-		clearProps: 'all',
-	})
-
-	gsap.set(get(knobTrackBackgroundRef), {
-		drawSVG: '0% 0%',
-	})
+	gsap.set(get(barsRef), { clearProps: 'opacity', visibility: 'hidden' })
 }
 
 const animateIn = () => {
@@ -345,15 +322,14 @@ const animateIn = () => {
 	)
 
 	// Draw background stroke
-	tl.fromTo(
-		get(knobTrackBackgroundRef),
+	tl.set(
+		get(barsRef),
 		{
-			drawSVG: '0% 0%',
-		},
-		{
-			drawSVG: '0% 100%',
-			duration: 3,
-			ease: 'power1.out',
+			visibility: 'visible',
+			stagger: {
+				each: 0.018,
+				ease: 'power1.in',
+			},
 		},
 		'<0.3'
 	)
@@ -374,21 +350,12 @@ const animateIn = () => {
 		'<1.5'
 	)
 
-	tl.fromTo(
-		get(knobMaskNewRef),
-		{
-			morphSVG: {
-				shape: pathMaskStart,
-			},
+	tl.call(
+		() => {
+			set(ready, true)
 		},
-		{
-			morphSVG: {
-				shape: pathMaskEnd,
-				shapeIndex: 0,
-			},
-			duration: 1.5,
-		},
-		'<0.5'
+		null,
+		'>-0.25'
 	)
 
 	// Show sun icon and dots
@@ -427,16 +394,33 @@ const animateIn = () => {
 }
 
 const animateOut = async () => {
-	return gsap.to(
-		[get(headerRef), get(strokeRef), get(dotsRef), get(ctaRef).$el],
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	tl.set(
+		get(barsRef),
+		{
+			opacity: 0,
+			stagger: {
+				amount: 1.6,
+			},
+		},
+		'start'
+	)
+
+	tl.to(
+		[get(headerRef), get(dotsRef), get(ctaRef).$el],
 		{
 			opacity: 0,
 			duration: 1,
 			onStart: () => {
 				set(labelsVisible, false)
 			},
-		}
+		},
+		'start+=0.3'
 	)
+
+	return tl.play()
 }
 
 const moveDotToNextPosition = async () => {
@@ -531,7 +515,7 @@ const handleClick = async () => {
 .knob-wrapper {
 	@apply grid aspect-square self-center;
 
-	width: min(40svh, toRem(275));
+	width: min(40svh, toRem(325));
 
 	@screen landscape {
 		width: min(40svh, toRem(450));
@@ -586,6 +570,39 @@ const handleClick = async () => {
 		&:is(.cta) {
 			@apply pointer-events-auto;
 		}
+	}
+}
+
+.bars-wrapper {
+	@apply grid items-start justify-start size-full pointer-events-none;
+
+	--scale-multiplier: 1;
+
+	[data-ready='true'] & {
+		--scale-multiplier: 0;
+	}
+}
+
+.bar {
+	@apply w-5 h-[2px] bg-gold-light origin-left col-start-1 row-start-1 block;
+
+	--r: calc(v-bind(barsWrapperWidth) * 0.5px);
+	--x: calc(cos(var(--angle, 0)) * (var(--r) - 14px) + var(--r));
+	--y: calc(sin(var(--angle, 0)) * (var(--r) - 14px) + var(--r));
+	--progress: clamp(0, pow((var(--current) - var(--angle)) / 1.5708, 9), 1);
+	--sx: calc(0.4 + min(0.6, (0.6 * var(--progress) + var(--scale-multiplier))));
+
+	opacity: calc(
+		0.5 + min(0.5, 0.5 * var(--progress) + var(--scale-multiplier))
+	);
+	transform: translate(var(--x), var(--y)) rotate(calc(var(--angle) * 1rad))
+		scale(var(--sx), 1);
+
+	[data-ready='true'] & {
+		@apply ease-out;
+
+		transition-property: opacity, transform;
+		transition-duration: 0.2s, 1s;
 	}
 }
 </style>
