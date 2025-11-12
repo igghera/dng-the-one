@@ -134,6 +134,8 @@ onMounted(async () => {
 onBeforeUnmount(() => {
 	drawTimeline?.kill()
 	pointerObserver?.kill()
+
+	emitter.removeListener(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE)
 })
 
 //

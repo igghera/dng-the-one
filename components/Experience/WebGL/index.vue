@@ -287,6 +287,9 @@ emitter.on(EVENTS.RESTART, () => {
 		experienceIntroDrawMaterial.progress,
 		experienceEndDrawMaterial.progress,
 		flashEffectRef,
+		maskProgress,
+		maskBorderWidth,
+		maskRadius,
 	])
 
 	introMesh.position.set(
