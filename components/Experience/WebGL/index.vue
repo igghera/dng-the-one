@@ -83,6 +83,9 @@ import {
 import {
 	maskColorA as maskBorderColorA,
 	maskColorB as maskBorderColorB,
+	progress as maskProgress,
+	borderWidth as maskBorderWidth,
+	radius as maskRadius,
 } from './materials/mask'
 
 import { cart2Polar, noiseTexture } from './nodes'
@@ -118,6 +121,8 @@ const START_PARAMS = Object.freeze({
 	godraysObstructionScale: godraysObstructionScale.value,
 
 	backgroundProgress: backgroundProgress.value,
+
+	maskRadius: maskRadius.value,
 })
 
 //
@@ -295,8 +300,6 @@ emitter.on(EVENTS.RESTART, () => {
 
 	animateInIntroShape()
 
-	console.log(START_PARAMS)
-
 	particlesSpeed.value = START_PARAMS.particlesSpeed
 	particlesSizeMin.value = START_PARAMS.particlesSizeMin
 	particlesSizeMax.value = START_PARAMS.particlesSizeMax
@@ -317,6 +320,12 @@ emitter.on(EVENTS.RESTART, () => {
 	godraysObstructionScale.value = START_PARAMS.godraysObstructionScale
 
 	backgroundProgress.value = START_PARAMS.backgroundProgress
+
+	experienceEndDrawMaterial.progress.value = 0
+
+	maskProgress.value = 0
+	maskBorderWidth.value = 0
+	maskRadius.value = START_PARAMS.maskRadius
 })
 
 emitter.on(EVENTS.ANIMATE_IN_INTRO, () => {

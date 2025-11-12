@@ -299,15 +299,23 @@ const createDraggable = () => {
 
 		const tl = gsap.timeline({
 			onComplete: () => {
+				if (!uiStore.isExperienceStep03Visible) return
+
 				uiStore.setExperienceEndVisible(true)
+
+				if (!uiStore.isExperienceStep03Visible) return
+
 				startPulseAnimation()
 
 				emitter.once(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, async () => {
-					const img =
-						get(draggersRef)[appStore.getStep03Selection].querySelector('image')
+					const target = get(draggersRef)[appStore.getStep03Selection]
+
+					if (!target) return
+
+					const img = target.querySelector('image')
 					gsap.killTweensOf(img)
 
-					await gsap.to(get(draggersRef)[appStore.getStep03Selection], {
+					await gsap.to(target, {
 						opacity: 0,
 						duration: 0.5,
 					})
@@ -373,8 +381,9 @@ const createDraggable = () => {
 }
 
 const startPulseAnimation = () => {
-	const img =
-		get(draggersRef)[appStore.getStep03Selection].querySelector('image')
+	const target = get(draggersRef)[appStore.getStep03Selection]
+
+	const img = target.querySelector('image')
 
 	gsap.set(img, { transformOrigin: 'center center' })
 

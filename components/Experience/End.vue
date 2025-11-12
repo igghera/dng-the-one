@@ -108,6 +108,8 @@ const canInteract = shallowRef(true)
 const { rt, tm } = useI18n()
 const { gsap, Observer, SplitText } = useGSAP()
 
+const uiStore = useUiStore()
+
 const result = shallowRef(null)
 
 let drawTimeline, pointerObserver
@@ -119,6 +121,8 @@ onMounted(async () => {
 	setInitialState()
 
 	await animateInHeader()
+
+	if (!uiStore.isExperienceEndVisible) return
 
 	await gsap.delayedCall(0.5, () => {})
 
