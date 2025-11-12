@@ -92,6 +92,8 @@ import {
 //
 // Refs / State
 //
+const lenis = useLenis()
+
 const introHeaderRef = useTemplateRef('introHeaderRef')
 const title01Ref = useTemplateRef('title01Ref')
 const title02Ref = useTemplateRef('title02Ref')
@@ -307,9 +309,13 @@ const animateMask = () => {
 	)
 
 	tl.call(
-		() => {
+		async () => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
 			set(result, getResult())
+
+			uiStore.setResultsVisible(true)
+			await nextTick()
+			get(lenis).start()
 		},
 		null,
 		'>-0.05'

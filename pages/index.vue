@@ -8,6 +8,7 @@
 
 		<template v-if="uiStore.isResultsVisible">
 			<ExperienceResults />
+
 			<ExperienceTimelineIntro />
 		</template>
 
@@ -20,8 +21,12 @@
 </template>
 
 <script setup>
+import { get } from '@vueuse/core'
+
 const appStore = useAppStore()
 const uiStore = useUiStore()
+
+const lenis = useLenis()
 
 const { gsap } = useGSAP()
 
@@ -39,13 +44,16 @@ onMounted(async () => {
 	}
 })
 
-emitter.on(EVENTS.RESTART, () => {
+emitter.on(EVENTS.RESTART, async () => {
 	emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
 
-	gsap.delayedCall(0.15, () => {
-		uiStore.reset()
-		appStore.reset()
-	})
+	get(lenis).stop()
+	get(lenis).scrollTo(0, { immediate: true, force: true })
+
+	await gsap.delayedCall(0.1, () => {})
+
+	uiStore.reset()
+	appStore.reset()
 })
 </script>
 

@@ -362,7 +362,7 @@ const animateIn = () => {
 			set(ready, true)
 		},
 		null,
-		'>-0.25'
+		'>-0.3'
 	)
 
 	// Show sun icon and dots
