@@ -348,7 +348,8 @@ const animateMask = () => {
 }
 
 .buttons {
-	--offset: calc(900px / 100svh * 60%);
+	--translateY: 55%;
+	--offset: calc(900px / 100svh * var(--translateY));
 
 	@apply col-start-1 row-start-1 flex gap-5 items-center justify-center self-end;
 
@@ -356,6 +357,14 @@ const animateMask = () => {
 
 	:deep(> *) {
 		@apply pointer-events-auto;
+	}
+
+	@media (min-height: 700px) {
+		--translateY: 30%;
+	}
+
+	@media (min-height: 900px) {
+		--translateY: 0%;
 	}
 }
 

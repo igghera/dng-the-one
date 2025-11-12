@@ -119,9 +119,7 @@ let draggableInstance = null
 onMounted(async () => {
 	setInitialState()
 
-	await animateIn()
-
-	createDraggable()
+	animateIn()
 })
 
 onBeforeUnmount(() => {
@@ -204,6 +202,14 @@ const animateIn = () => {
 			opacity: 1,
 			duration: 1.5,
 		},
+		'<'
+	)
+
+	tl.call(
+		() => {
+			createDraggable()
+		},
+		null,
 		'<'
 	)
 
