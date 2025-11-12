@@ -56,31 +56,29 @@
 			>
 		</button>
 
-		<template v-if="result">
-			<Transition name="fade">
-				<div class="result | text-shadow">
-					<span class="body-9 | uppercase text-gold-light">
-						{{ $t('experience_end.title') }}
-					</span>
+		<Transition name="fade">
+			<div v-if="result" class="result | text-shadow">
+				<span class="body-9 | uppercase text-gold-light">
+					{{ $t('experience_end.title') }}
+				</span>
 
-					<span class="display-3 | golden-text | uppercase">
-						{{ result.title }}
-					</span>
+				<span class="display-3 | golden-text | uppercase">
+					{{ result.title }}
+				</span>
 
-					<span class="body-10 | text-gold-light">
-						{{ result.copy }}
-					</span>
-				</div>
-			</Transition>
+				<span class="body-10 | text-gold-light">
+					{{ result.copy }}
+				</span>
+			</div>
+		</Transition>
 
-			<Transition name="fade">
-				<nav class="buttons">
-					<ButtonRestart />
+		<Transition name="fade-long">
+			<nav v-if="result" class="buttons">
+				<ButtonRestart />
 
-					<ButtonGolden>Get your gift</ButtonGolden>
-				</nav>
-			</Transition>
-		</template>
+				<ButtonGolden>Get your gift</ButtonGolden>
+			</nav>
+		</Transition>
 	</Container>
 </template>
 
@@ -348,7 +346,11 @@ const animateMask = () => {
 }
 
 .buttons {
+	--offset: calc(900px / 100svh * 60%);
+
 	@apply col-start-1 row-start-1 flex gap-5 items-center justify-center self-end;
+
+	translate: 0 var(--offset);
 
 	:deep(> *) {
 		@apply pointer-events-auto;
@@ -362,6 +364,16 @@ const animateMask = () => {
 
 .fade-enter-from,
 .fade-leave-to {
+	opacity: 0;
+}
+
+.fade-long-enter-active,
+.fade-long-leave-active {
+	transition: opacity 1s ease 0.5s;
+}
+
+.fade-long-enter-from,
+.fade-long-leave-to {
 	opacity: 0;
 }
 </style>
