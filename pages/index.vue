@@ -20,7 +20,10 @@
 </template>
 
 <script setup>
+const appStore = useAppStore()
 const uiStore = useUiStore()
+
+const { gsap } = useGSAP()
 
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
@@ -34,6 +37,15 @@ onMounted(async () => {
 			tools: ['console'],
 		})
 	}
+})
+
+emitter.on(EVENTS.RESTART, () => {
+	emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+
+	gsap.delayedCall(0.15, () => {
+		uiStore.reset()
+		appStore.reset()
+	})
 })
 </script>
 

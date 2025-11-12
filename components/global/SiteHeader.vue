@@ -1,6 +1,7 @@
 <template>
 	<Container class="site-header" tag="header">
-		<ButtonAudio class="button button-left" />
+		<!-- <ButtonAudio class="button button-left" /> -->
+		<ButtonRestart class="button button-left" />
 
 		<LogoLettering class="logotype" />
 

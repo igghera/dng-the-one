@@ -16,10 +16,10 @@ export const useUiStore = defineStore('uiStore', {
     reset() {
       this.mainUiVisible = true
       this.preloaderVisible = false
-      this.webglVisible = false
+      this.webglVisible = true
       this.experienceStartVisible = true
       this.experienceEnterNameVisible = false
-      this.experienceStap01Visible = false
+      this.experienceStep01Visible = false
       this.experienceStep02Visible = false
       this.experienceStep03Visible = false
       this.experienceEndVisible = false

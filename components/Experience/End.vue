@@ -56,21 +56,31 @@
 			>
 		</button>
 
-		<Transition name="fade">
-			<div v-if="result" class="result | text-shadow">
-				<span class="body-9 | uppercase text-gold-light">
-					{{ $t('experience_end.title') }}
-				</span>
+		<template v-if="result">
+			<Transition name="fade">
+				<div class="result | text-shadow">
+					<span class="body-9 | uppercase text-gold-light">
+						{{ $t('experience_end.title') }}
+					</span>
 
-				<span class="display-3 | golden-text | uppercase">
-					{{ result.title }}
-				</span>
+					<span class="display-3 | golden-text | uppercase">
+						{{ result.title }}
+					</span>
 
-				<span class="body-10 | text-gold-light">
-					{{ result.copy }}
-				</span>
-			</div>
-		</Transition>
+					<span class="body-10 | text-gold-light">
+						{{ result.copy }}
+					</span>
+				</div>
+			</Transition>
+
+			<Transition name="fade">
+				<nav class="buttons">
+					<ButtonRestart />
+
+					<ButtonGolden>Get your gift</ButtonGolden>
+				</nav>
+			</Transition>
+		</template>
 	</Container>
 </template>
 
@@ -331,6 +341,14 @@ const animateMask = () => {
 	height: 30svh;
 	translate: 0 7svh;
 	row-gap: toRem(10);
+}
+
+.buttons {
+	@apply col-start-1 row-start-1 flex gap-5 items-center justify-center self-end;
+
+	:deep(> *) {
+		@apply pointer-events-auto;
+	}
 }
 
 .fade-enter-active,

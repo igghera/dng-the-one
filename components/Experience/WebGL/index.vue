@@ -234,6 +234,29 @@ onMounted(async () => {
 //
 // Events
 //
+emitter.on(EVENTS.RESTART, () => {
+	gsap.killTweensOf([
+		camera,
+		introMesh.position,
+		cameraRotationOffset,
+		cameraPositionOffset,
+		experienceIntroDrawMaterial.progress,
+		experienceEndDrawMaterial.progress,
+		flashEffectRef,
+	])
+
+	introMesh.position.set(
+		introMeshParams.positionStart.x,
+		introMeshParams.positionStart.y,
+		introMeshParams.positionStart.z
+	)
+	experienceIntroDrawMaterial.progress.value = 0
+	experienceIntroDrawMaterial.opacity.value = 1
+	introSceneVisibility.value = 1
+
+	animateInIntroShape()
+})
+
 emitter.on(EVENTS.ANIMATE_IN_INTRO, () => {
 	animateInIntroShape()
 })

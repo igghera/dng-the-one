@@ -1,4 +1,6 @@
 export const EVENTS = {
+  RESTART: 'restart',
+
   WEBGL_READY: 'webglReady',
 
   ANIMATE_IN_INTRO: 'animateInIntro',

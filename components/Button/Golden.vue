@@ -146,7 +146,7 @@ const componentTag = computed(() => {
 }
 
 .text {
-	@apply relative z-[2];
+	@apply relative z-[2] pointer-events-none;
 
 	filter: drop-shadow(0px 3px 10px #764800a6);
 }

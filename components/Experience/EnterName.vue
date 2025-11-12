@@ -15,6 +15,7 @@
 		>
 			<fieldset class="input-wrapper" :disabled="!canSubmit">
 				<input
+					v-model="appStore.username"
 					class="input | body-3"
 					type="text"
 					name="username"
@@ -92,7 +93,7 @@ watch(isVisible, visible => {
 // Methods
 //
 const handleInput = async () => {
-	appStore.setUsername(get(inputRef)?.value)
+	// appStore.setUsername(get(inputRef)?.value)
 
 	setContinueButtonVisible()
 
