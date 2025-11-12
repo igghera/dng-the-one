@@ -52,6 +52,7 @@ import {
 	noiseTexture as seaNoiseTexture,
 	lightColor as floorLightColor,
 	lightIntensity as floorLightIntensity,
+	baseReflectivity as floorBaseReflectivity,
 } from './materials/floor'
 
 import { progress as backgroundProgress } from './materials/background'
@@ -758,7 +759,6 @@ function createSea() {
 	scene.add(reflection.target)
 
 	const getReflectivity = Fn(() => {
-		const base = float(0.1)
 		const layer1 = positionWorld.x
 			.length()
 			.smoothstep(0.65, 3)
@@ -773,8 +773,18 @@ function createSea() {
 			.pow(0.5)
 			.max(0.45)
 
-		return base.add(layer1).add(layer2).max(1)
+		return floorBaseReflectivity.add(layer1).add(layer2).max(1)
 	})
+
+	FloorMaterial.colorNode = Fn(() => {
+		const amount = positionWorld.x
+			.length()
+			.smoothstep(0.1, 2.75)
+			.oneMinus()
+			.mul(1.5)
+
+		return reflection.mul(amount)
+	})()
 
 	FloorMaterial.emissiveNode = Fn(() => {
 		const viewDirection = vec3(

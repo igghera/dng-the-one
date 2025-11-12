@@ -11,6 +11,7 @@ import {
   normalSmoothingRadius as floorNormalSmoothingRadius,
   lightColor as floorLightColor,
   lightIntensity as floorLightIntensity,
+  baseReflectivity as floorBaseReflectivity,
 } from './materials/floor'
 
 import {
@@ -119,6 +120,7 @@ export class Debug {
       expanded: true,
     })
 
+    sea.addBinding(floorBaseReflectivity, 'value', { label: 'Base Reflectivity', min: 0, max: 5 })
     sea.addBinding(strength, 'value', { label: 'Strength', min: 0, max: 2 })
     sea.addBinding(speed, 'value', { label: 'Speed', min: -0.1, max: 0.1, step: 0.001 })
     sea.addBinding(scale, 'value', { label: 'Scale', min: 0, max: 5 })

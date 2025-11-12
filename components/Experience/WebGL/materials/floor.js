@@ -3,6 +3,7 @@ import { uniform, Fn, positionLocal, time, vec2, vec3, texture, uv, transformNor
 
 export const FloorMaterial = new MeshBasicNodeMaterial()
 
+export const baseReflectivity = uniform(0.5)
 export const scale = uniform(5)
 export const stretchX = uniform(1.1)
 export const stretchY = uniform(1.8)
