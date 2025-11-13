@@ -16,7 +16,7 @@ const handleClick = async () => {
 	if (props.to) {
 		await navigateTo(props.to, {
 			open: {
-				target: '_blank',
+				target: '_self',
 			},
 		})
 	} else {
