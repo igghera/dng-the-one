@@ -49,4 +49,9 @@ export default defineNuxtConfig({
     ]
   },
 
+  runtimeConfig: {
+    public: {
+      isAppMode: process.env.APP_MODE === 'true',
+    },
+  },
 })

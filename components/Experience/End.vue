@@ -74,9 +74,40 @@
 
 		<Transition name="fade-long">
 			<nav v-if="result" class="buttons">
-				<ButtonRestart />
+				<div class="buttons-row">
+					<template v-if="config.public.isAppMode">
+						<ButtonGolden
+							v-if="config.public.isAppMode && canPrint"
+							@click="handlePrint"
+							>{{ $t('results.cta_print') }}</ButtonGolden
+						>
 
-				<ButtonGolden>Get your gift</ButtonGolden>
+						<ButtonGolden
+							:size="canPrint ? 'auto' : 'wide'"
+							@click="handleQRCodeButtonClick"
+							>{{ $t('results.cta_download') }}</ButtonGolden
+						>
+					</template>
+
+					<template v-else>
+						<ButtonRestart />
+
+						<ButtonGolden @click="handleDownloadButtonClick">{{
+							$t('results.cta_download')
+						}}</ButtonGolden>
+					</template>
+				</div>
+
+				<div class="buttons-row">
+					<button
+						class="body-3-alt | flex gap-x-2 items-center justify-center text-gold underline"
+						@click="handleRestartButtonClick"
+					>
+						<IconRestart class="size-[0.8rem]" />
+
+						<span>{{ $t('results.cta_restart') }}</span>
+					</button>
+				</div>
 			</nav>
 		</Transition>
 	</Container>
@@ -92,6 +123,8 @@ import {
 //
 // Refs / State
 //
+const config = useRuntimeConfig()
+
 const lenis = useLenis()
 
 const introHeaderRef = useTemplateRef('introHeaderRef')
@@ -104,6 +137,9 @@ const fillingCircleRef = useTemplateRef('fillingCircleRef')
 const ctaLabelRef = useTemplateRef('ctaLabelRef')
 
 const canInteract = shallowRef(true)
+
+// TODO: Set this value in the app store / local storage
+const canPrint = shallowRef(true)
 
 const { rt, tm } = useI18n()
 const { gsap, Observer, SplitText } = useGSAP()
@@ -164,6 +200,22 @@ const getResult = () => {
 
 	// TODO: Implement proper result
 	return options[0]
+}
+
+const handlePrint = () => {
+	alert('TODO: Implement print feature')
+}
+
+const handleQRCodeButtonClick = () => {
+	alert('TODO: Implement QR Code popup')
+}
+
+const handleDownloadButtonClick = () => {
+	alert('TODO: Implement download feature')
+}
+
+const handleRestartButtonClick = () => {
+	emitter.emit(EVENTS.RESTART)
 }
 
 const createButtonTimeline = () => {
@@ -357,7 +409,7 @@ const animateMask = () => {
 	--translateY: 55%;
 	--offset: calc(900px / 100svh * var(--translateY));
 
-	@apply col-start-1 row-start-1 flex gap-5 items-center justify-center self-end;
+	@apply col-start-1 row-start-1 grid grid-cols-1 gap-6 items-center justify-center self-end;
 
 	translate: 0 var(--offset);
 
@@ -366,12 +418,16 @@ const animateMask = () => {
 	}
 
 	@media (min-height: 700px) {
-		--translateY: 30%;
+		--translateY: 50%;
 	}
 
 	@media (min-height: 900px) {
-		--translateY: 0%;
+		--translateY: 40%;
 	}
+}
+
+.buttons-row {
+	@apply flex gap-5 items-center justify-center;
 }
 
 .fade-enter-active,

@@ -76,7 +76,10 @@
   },
 
   "results": {
-    "pre_title": "Your the one aura match with:"
+    "pre_title": "Your the one aura match with:",
+    "cta_print": "Print your aura",
+    "cta_download": "Get your gift",
+    "cta_restart": "Play again"
   },
 
   "timeline_intro": {
