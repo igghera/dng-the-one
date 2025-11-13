@@ -70,7 +70,7 @@ onMounted(async () => {
 })
 
 const handleDownloadButtonClick = () => {
-	alert('TODO: Implement download feature')
+	downloadImage(imageSrc.value, 'the-one-card.png')
 }
 </script>
 

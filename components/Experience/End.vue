@@ -211,7 +211,8 @@ const handleQRCodeButtonClick = () => {
 }
 
 const handleDownloadButtonClick = () => {
-	alert('TODO: Implement download feature')
+	const imageSrc = `/images/mock-download-card.webp`
+	downloadImage(imageSrc, 'the-one-card.png')
 }
 
 const handleRestartButtonClick = () => {
