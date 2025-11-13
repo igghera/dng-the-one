@@ -1,15 +1,31 @@
 <template>
-	<div class="page">
-		<picture class="card">
-			<img
-				v-if="imageSrc"
-				:src="imageSrc"
-				alt="Download Card"
-				loading="lazy"
-				decoding="async"
-				draggable="false"
-			/>
-		</picture>
+	<div v-if="result" class="page">
+		<div class="card">
+			<picture class="size-full col-start-1 row-start-1">
+				<img
+					v-if="imageSrc"
+					:src="imageSrc"
+					alt="Download Card"
+					loading="lazy"
+					decoding="async"
+					draggable="false"
+				/>
+			</picture>
+
+			<div class="card-content | text-shadow">
+				<span class="body-9 | uppercase text-gold-light">
+					{{ $t('results.pre_title') }}
+				</span>
+
+				<span class="display-3 | golden-text | uppercase">
+					{{ result.get('aura').title }}
+				</span>
+
+				<span class="body-10 | text-gold-light">
+					{{ result.get('aura').copy }}
+				</span>
+			</div>
+		</div>
 
 		<nav class="buttons">
 			<ButtonRestart to="/" />
@@ -25,10 +41,10 @@
 
 				<span class="title-text">
 					<span class="body-2 | golden-text | uppercase">{{
-						$t('products.0.title')
+						result.get('product').title
 					}}</span>
 					<span class="text-gold | body-11">{{
-						$t('products.0.sub_title')
+						result.get('product').sub_title
 					}}</span>
 				</span>
 			</h1>
@@ -45,21 +61,57 @@
 		</picture>
 
 		<p class="copy | body-4">
-			{{ $t('products.0.copy') }}
+			{{ result.get('product').copy }}
 		</p>
 	</div>
 </template>
 
 <script setup>
-import { get } from '@vueuse/core'
+import { get, set } from '@vueuse/core'
 
+//
+// Refs / State
+//
 const lenis = useLenis()
 const uiStore = useUiStore()
 
+const { rt, tm } = useI18n()
+
+const urlParams = useUrlSearchParams('history')
+
+const result = shallowRef(null)
+
+const { q1, q2, q3, card } = urlParams
+
+const allAuras = Object.values(tm('experience_end.options')).map(option => ({
+	title: rt(option.title),
+	copy: rt(option.copy),
+}))
+
+const allProducts = Object.values(tm('products')).map(product => ({
+	title: rt(product.title),
+	sub_title: rt(product.sub_title),
+	copy: rt(product.copy),
+}))
+
+const allCards = [
+	'/images/download-cards/mock-download-card-bg-01.webp',
+	'/images/download-cards/mock-download-card-bg-02.webp',
+	'/images/download-cards/mock-download-card-bg-03.webp',
+	'/images/download-cards/mock-download-card-bg-04.webp',
+]
+
+//
+// Computed
+//
 const imageSrc = computed(() => {
-	return `/images/mock-download-card.webp`
+	if (!card) return allCards[0]
+	return allCards[Number(card)]
 })
 
+//
+// Lifecycle
+//
 onMounted(async () => {
 	await nextTick()
 
@@ -67,8 +119,20 @@ onMounted(async () => {
 
 	uiStore.setMainUiVisible(true)
 	document.documentElement.dataset.init = true
+
+	const res = calculateResult(
+		Number(q1),
+		Number(q2),
+		Number(q3),
+		allAuras,
+		allProducts
+	)
+	set(result, res.result)
 })
 
+//
+// Methods
+//
 const handleDownloadButtonClick = () => {
 	downloadImage(imageSrc.value, 'the-one-card.png')
 }
@@ -96,14 +160,21 @@ const handleDownloadButtonClick = () => {
 }
 
 .card {
-	@apply aspect-[538_957];
+	@apply grid aspect-[538/957];
 
 	grid-area: a;
-	width: min(75%, toRem(538));
+	height: min(60svh, toRem(700));
 
 	img {
 		@apply size-full object-contain object-center;
 	}
+}
+
+.card-content {
+	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center justify-self-center;
+
+	row-gap: toRem(10);
+	width: 75%;
 }
 
 .buttons {
