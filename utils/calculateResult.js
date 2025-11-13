@@ -10,6 +10,20 @@ export function calculateResult(q1, q2, q3, allAuras, allProducts) {
 
   let result = new Map()
 
+  // Fallback product - Men
+  if (q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_GOLD_EDPI'))
+    result.set('aura', allAuras[3])
+    result.set('product', allProducts[5])
+  }
+
+  // Fallback product - Women
+  if (q3 === 1 || q3 === 2) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
+    result.set('aura', allAuras[3])
+    result.set('product', allProducts[2])
+  }
+
   if (q1 === 3 && q2 === 2 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
     result.set('aura', allAuras[0])
