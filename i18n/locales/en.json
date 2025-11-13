@@ -56,19 +56,15 @@
         "copy": "Your aura moves before you do, a silent force that draws every gaze"
       },
       {
-        "title": "Option 2",
+        "title": "Warm",
         "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
       },
       {
-        "title": "Option 3",
+        "title": "Discrete",
         "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
       },
       {
-        "title": "Option 4",
-        "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
-      },
-      {
-        "title": "Option 5",
+        "title": "Bold",
         "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
       }
     ],
