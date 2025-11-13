@@ -1,5 +1,24 @@
 <template>
 	<div class="page">
+		<picture class="card">
+			<img
+				v-if="imageSrc"
+				:src="imageSrc"
+				alt="Download Card"
+				loading="lazy"
+				decoding="async"
+				draggable="false"
+			/>
+		</picture>
+
+		<nav class="buttons">
+			<ButtonRestart to="/" />
+
+			<ButtonGolden @click="handleDownloadButtonClick">{{
+				$t('results.cta_download')
+			}}</ButtonGolden>
+		</nav>
+
 		<header class="header">
 			<h1 class="title">
 				<span class="pre-title | body-7">{{ $t('download.pre_title') }}</span>
@@ -32,36 +51,69 @@
 </template>
 
 <script setup>
+import { get } from '@vueuse/core'
+
+const lenis = useLenis()
 const uiStore = useUiStore()
 
-onMounted(() => {
+const imageSrc = computed(() => {
+	return `/images/mock-download-card.webp`
+})
+
+onMounted(async () => {
+	await nextTick()
+
+	get(lenis).start()
+
 	uiStore.setMainUiVisible(true)
 	document.documentElement.dataset.init = true
 })
+
+const handleDownloadButtonClick = () => {
+	alert('TODO: Implement download feature')
+}
 </script>
 
 <style lang="scss" scoped>
 @use '@/assets/css/functions' as *;
 
 .page {
-	@apply grid gap-y-5 justify-items-center items-center min-h-[100svh] text-center;
+	@apply grid gap-y-10 justify-items-center items-center text-center;
 
-	grid-template-areas:
-		'.'
-		'a'
-		'b'
-		'c'
-		'.';
+	grid-template-areas: '.' // Margin
+		'a' // Card
+		'b' // Buttons
+		'c' // Header
+		'd' // Picture
+		'e' // Copy
+		'.'; // Margin
 	grid-template-columns: 1fr;
-	grid-template-rows: toRem(60) repeat(3, auto) toRem(40);
+	grid-template-rows: toRem(60) repeat(5, auto) toRem(40);
 
 	@screen md {
-		grid-template-rows: toRem(90) repeat(3, auto) toRem(60);
+		grid-template-rows: toRem(90) repeat(5, auto) toRem(60);
 	}
 }
 
-.header {
+.card {
+	@apply aspect-[538_957];
+
 	grid-area: a;
+	width: min(75%, toRem(538));
+
+	img {
+		@apply size-full object-contain object-center;
+	}
+}
+
+.buttons {
+	@apply flex items-center justify-center gap-x-5;
+
+	grid-area: b;
+}
+
+.header {
+	grid-area: c;
 }
 
 .title,
@@ -76,19 +128,18 @@ onMounted(() => {
 .pic {
 	@apply aspect-[277_409];
 
-	height: 50svh;
+	grid-area: d;
+	width: min(45%, toRem(444));
 
 	img {
 		@apply w-full h-full object-contain object-center;
 	}
-
-	grid-area: b;
 }
 
 .copy {
 	@apply text-gold;
 
-	grid-area: c;
+	grid-area: e;
 	width: min(80%, toRem(400));
 }
 </style>

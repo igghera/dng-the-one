@@ -5,7 +5,22 @@
 </template>
 
 <script setup>
-const handleClick = () => {
-	emitter.emit(EVENTS.RESTART)
+const props = defineProps({
+	to: {
+		type: String,
+		required: false,
+	},
+})
+
+const handleClick = async () => {
+	if (props.to) {
+		await navigateTo(props.to, {
+			open: {
+				target: '_blank',
+			},
+		})
+	} else {
+		emitter.emit(EVENTS.RESTART)
+	}
 }
 </script>
