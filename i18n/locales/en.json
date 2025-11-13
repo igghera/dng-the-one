@@ -84,13 +84,44 @@
   },
 
   "download": {
-    "pre_title": "Your perfect match is:",
-    "options": [
-      {
-        "title": "The One for Men",
-        "sub_title": "Eau De Parfum",
-        "copy": "A fragrance that stands out for its sophisticated, authentic masculinity. Radiant and intense."
-      }
-    ]
-  }
+    "pre_title": "Your perfect match is:"
+  },
+
+  "products": [
+    {
+      "title": "The One EDP",
+      "sub_title": "[Eau De Parfum]",
+      "copy": "[lorem ipsum dolor sit amet]"
+    },
+    {
+      "title": "The One EDPI",
+      "sub_title": "[Eau De Parfum]",
+      "copy": "[lorem ipsum dolor sit amet]"
+    },
+    {
+      "title": "The One GOLD EDPI",
+      "sub_title": "[Eau De Parfum]",
+      "copy": "[lorem ipsum dolor sit amet]"
+    },
+    {
+      "title": "The One for Men EDP",
+      "sub_title": "Eau De Parfum",
+      "copy": "A fragrance that stands out for its sophisticated, authentic masculinity. Radiant and intense."
+    },
+    {
+      "title": "The One for Men EDT",
+      "sub_title": "[Eau De Parfum]",
+      "copy": "[lorem ipsum dolor sit amet]"
+    },
+    {
+      "title": "The One for Men Gold EDPI",
+      "sub_title": "[Eau De Parfum]",
+      "copy": "[lorem ipsum dolor sit amet]"
+    },
+    {
+      "title": "The One for Men Parfum",
+      "sub_title": "[Eau De Parfum]",
+      "copy": "[lorem ipsum dolor sit amet]"
+    }
+  ]
 }

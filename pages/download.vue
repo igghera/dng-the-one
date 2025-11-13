@@ -20,15 +20,15 @@
 		</nav>
 
 		<header class="header">
-			<h1 class="title">
+			<h1 class="title | gap-y-5">
 				<span class="pre-title | body-7">{{ $t('download.pre_title') }}</span>
 
 				<span class="title-text">
 					<span class="body-2 | golden-text | uppercase">{{
-						$t('download.options.0.title')
+						$t('products.MALE_EDP.title')
 					}}</span>
 					<span class="text-gold | body-11">{{
-						$t('download.options.0.sub_title')
+						$t('products.MALE_EDP.sub_title')
 					}}</span>
 				</span>
 			</h1>
@@ -45,7 +45,7 @@
 		</picture>
 
 		<p class="copy | body-4">
-			{{ $t('download.options.0.copy') }}
+			{{ $t('products.MALE_EDP.copy') }}
 		</p>
 	</div>
 </template>

@@ -7,17 +7,19 @@
 
 			<h2 class="title">
 				<span class="golden-text | body-2 | uppercase">
-					[The One for Men]
+					{{ appStore.getResult.get('product').title }}
 				</span>
 
-				<span class="golden-text | body-1"> [Eau de parfum] </span>
+				<span class="golden-text | body-1">
+					{{ appStore.getResult.get('product').sub_title }}
+				</span>
 			</h2>
 		</header>
 
 		<picture class="pic">
 			<img
-				src="/images/mock-perfume.webp"
-				alt="The One for Men"
+				:src="appStore.getResult.get('imageSrc')"
+				:alt="appStore.getResult.get('product').title"
 				loading="lazy"
 				decoding="async"
 				draggable="false"
@@ -25,11 +27,14 @@
 		</picture>
 
 		<p class="copy | body-3-alt">
-			[A fragrance that stands out for its sophisticated, authentic masculinity.
-			Radiant and intense.]
+			{{ appStore.getResult.get('product').copy }}
 		</p>
 	</Container>
 </template>
+
+<script setup>
+const appStore = useAppStore()
+</script>
 
 <style lang="scss" scoped>
 :deep(.site-grid) {
@@ -45,8 +50,8 @@
 }
 
 .pic {
-	@apply w-48 aspect-[194_286];
-	@apply lg:w-56;
+	@apply w-full aspect-[194_286];
+	// @apply lg:w-56;
 
 	grid-area: b;
 

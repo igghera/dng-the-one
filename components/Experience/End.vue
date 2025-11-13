@@ -57,23 +57,23 @@
 		</button>
 
 		<Transition name="fade">
-			<div v-if="result" class="result | text-shadow">
+			<div v-if="showResult && appStore.getResult" class="result | text-shadow">
 				<span class="body-9 | uppercase text-gold-light">
 					{{ $t('experience_end.title') }}
 				</span>
 
 				<span class="display-3 | golden-text | uppercase">
-					{{ result.title }}
+					{{ appStore.getResult.get('aura').title }}
 				</span>
 
 				<span class="body-10 | text-gold-light">
-					{{ result.copy }}
+					{{ appStore.getResult.get('aura').copy }}
 				</span>
 			</div>
 		</Transition>
 
 		<Transition name="fade-long">
-			<nav v-if="result" class="buttons">
+			<nav v-if="showResult && appStore.getResult" class="buttons">
 				<div class="buttons-row">
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
@@ -98,7 +98,7 @@
 					</template>
 				</div>
 
-				<div class="buttons-row">
+				<div v-if="config.public.isAppMode" class="buttons-row">
 					<button
 						class="body-3-alt | flex gap-x-2 items-center justify-center text-gold underline"
 						@click="handleRestartButtonClick"
@@ -144,9 +144,21 @@ const canPrint = shallowRef(true)
 const { rt, tm } = useI18n()
 const { gsap, Observer, SplitText } = useGSAP()
 
+const appStore = useAppStore()
 const uiStore = useUiStore()
 
-const result = shallowRef(null)
+const showResult = shallowRef(false)
+
+const allAuras = Object.values(tm('experience_end.options')).map(option => ({
+	title: rt(option.title),
+	copy: rt(option.copy),
+}))
+
+const allProducts = Object.values(tm('products')).map(product => ({
+	title: rt(product.title),
+	sub_title: rt(product.sub_title),
+	copy: rt(product.copy),
+}))
 
 let drawTimeline, pointerObserver
 
@@ -157,6 +169,15 @@ onMounted(async () => {
 	setInitialState()
 
 	await animateInHeader()
+
+	const res = calculateResult(
+		appStore.getStep01Selection,
+		appStore.getStep02Selection,
+		appStore.getStep03Selection,
+		allAuras,
+		allProducts
+	)
+	appStore.setResult(res.result)
 
 	if (!uiStore.isExperienceEndVisible) return
 
@@ -190,16 +211,6 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE, async () => {
 //
 const setInitialState = () => {
 	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
-}
-
-const getResult = () => {
-	const options = Object.values(tm('experience_end.options')).map(option => ({
-		title: rt(option.title),
-		copy: rt(option.copy),
-	}))
-
-	// TODO: Implement proper result
-	return options[0]
 }
 
 const handlePrint = () => {
@@ -364,7 +375,7 @@ const animateMask = () => {
 	tl.call(
 		async () => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
-			set(result, getResult())
+			set(showResult, true)
 
 			uiStore.setResultsVisible(true)
 			await nextTick()
