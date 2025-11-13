@@ -12,6 +12,10 @@
 			<ExperienceTimelineIntro />
 		</template>
 
+		<Transition name="fade">
+			<ModalQRCode v-if="uiStore.isQrCodeModalVisible" />
+		</Transition>
+
 		<ClientOnly>
 			<div id="stats-wrapper" v-if="isDebug"></div>
 			<div id="debug-wrapper" v-if="isDebug"></div>

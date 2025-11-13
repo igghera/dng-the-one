@@ -10,6 +10,7 @@ export const useUiStore = defineStore('uiStore', {
     experienceStep03Visible: false,
     experienceEndVisible: false,
     resultsVisible: false,
+    qrCodeModalVisible: true,
   }),
 
   actions: {
@@ -24,6 +25,7 @@ export const useUiStore = defineStore('uiStore', {
       this.experienceStep03Visible = false
       this.experienceEndVisible = false
       this.resultsVisible = false
+      this.qrCodeModalVisible = false
     },
 
     setMainUiVisible(visible) {
@@ -64,7 +66,11 @@ export const useUiStore = defineStore('uiStore', {
 
     setResultsVisible(visible) {
       this.resultsVisible = visible
-    }
+    },
+
+    setQrCodeModalVisible(visible) {
+      this.qrCodeModalVisible = visible
+    },
   },
 
   getters: {
@@ -77,6 +83,7 @@ export const useUiStore = defineStore('uiStore', {
     isExperienceStep02Visible: (state) => state.experienceStep02Visible,
     isExperienceStep03Visible: (state) => state.experienceStep03Visible,
     isExperienceEndVisible: (state) => state.experienceEndVisible,
-    isResultsVisible: (state) => state.resultsVisible
+    isResultsVisible: (state) => state.resultsVisible,
+    isQrCodeModalVisible: (state) => state.qrCodeModalVisible,
   }
 })

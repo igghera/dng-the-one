@@ -123,5 +123,10 @@
       "sub_title": "[Eau De Parfum]",
       "copy": "[lorem ipsum dolor sit amet]"
     }
-  ]
+  ],
+
+  "modal_qr_code": {
+    "title": "Scan to download<br>your The One Aura",
+    "copy": "Share with your friends<br>on your socials"
+  }
 }
