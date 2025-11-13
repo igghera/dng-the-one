@@ -37,6 +37,8 @@ const appStore = useAppStore()
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/css/functions' as *;
+
 :deep(.site-grid) {
 	@apply gap-y-10 justify-items-center;
 	@apply lg:gap-y-20;
@@ -50,13 +52,13 @@ const appStore = useAppStore()
 }
 
 .pic {
-	@apply w-full aspect-[194_286];
-	// @apply lg:w-56;
+	@apply aspect-[194_286];
 
 	grid-area: b;
+	width: min(50%, toRem(400));
 
 	img {
-		@apply w-full h-full object-cover;
+		@apply size-full object-cover;
 	}
 }
 
