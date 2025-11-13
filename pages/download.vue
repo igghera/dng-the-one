@@ -25,10 +25,10 @@
 
 				<span class="title-text">
 					<span class="body-2 | golden-text | uppercase">{{
-						$t('products.MALE_EDP.title')
+						$t('products.0.title')
 					}}</span>
 					<span class="text-gold | body-11">{{
-						$t('products.MALE_EDP.sub_title')
+						$t('products.0.sub_title')
 					}}</span>
 				</span>
 			</h1>
@@ -45,7 +45,7 @@
 		</picture>
 
 		<p class="copy | body-4">
-			{{ $t('products.MALE_EDP.copy') }}
+			{{ $t('products.0.copy') }}
 		</p>
 	</div>
 </template>
