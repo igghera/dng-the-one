@@ -10,7 +10,7 @@ export const useUiStore = defineStore('uiStore', {
     experienceStep03Visible: false,
     experienceEndVisible: false,
     resultsVisible: false,
-    qrCodeModalVisible: true,
+    qrCodeModalVisible: false,
   }),
 
   actions: {

@@ -13,7 +13,9 @@
 		</template>
 
 		<Transition name="fade">
-			<ModalQRCode v-if="uiStore.isQrCodeModalVisible" />
+			<ModalQRCode
+				v-if="uiStore.isQrCodeModalVisible && config.public.isAppMode"
+			/>
 		</Transition>
 
 		<ClientOnly>
@@ -27,6 +29,7 @@
 <script setup>
 import { get } from '@vueuse/core'
 
+const config = useRuntimeConfig()
 const appStore = useAppStore()
 const uiStore = useUiStore()
 

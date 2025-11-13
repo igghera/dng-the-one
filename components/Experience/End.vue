@@ -218,7 +218,7 @@ const handlePrint = () => {
 }
 
 const handleQRCodeButtonClick = () => {
-	alert('TODO: Implement QR Code popup')
+	uiStore.setQrCodeModalVisible(true)
 }
 
 const handleDownloadButtonClick = () => {
