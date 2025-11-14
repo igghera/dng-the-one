@@ -92,10 +92,14 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
     result.set('shape', 'male')
   }
 
-  return {
+  const response = {
     q1,
     q2,
     q3,
     result,
   }
+
+  console.log(response)
+
+  return response
 }
