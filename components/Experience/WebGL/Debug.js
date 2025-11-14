@@ -1,4 +1,7 @@
 import { Pane } from 'tweakpane'
+import * as TweakpaneFileImportPlugin from 'tweakpane-plugin-file-import'
+import { textureLoader } from '~/assets/js/loaders'
+import { RepeatWrapping } from 'three/webgpu'
 
 import {
   speed,
@@ -64,6 +67,8 @@ export class Debug {
       title: 'Debug',
       container: document.getElementById('debug-wrapper'),
     })
+
+    this.pane.registerPlugin(TweakpaneFileImportPlugin)
 
     this.createIntro(introDrawMaterial, introSceneVisibility)
     this.createBackground(background)
@@ -157,6 +162,26 @@ export class Debug {
     folder.addBlade({ view: 'separator' })
 
     folder.addBinding(sea.waterColor, 'value', { label: 'Water Color', view: 'color', color: { type: 'float' } })
+
+    folder.addBlade({ view: 'separator' })
+
+    const normalMapParams = { file: '' }
+    folder.addBinding(normalMapParams, 'file', {
+      label: 'Normal Map',
+      view: 'file-input',
+      lineCount: 3,
+      filetypes: ['.png', '.jpg', '.webp'],
+      invalidFiletypeMessage: "You can only upload PNG, JPG and WebP images"
+    }).on('change', async (event) => {
+      if (!event.value) return
+
+			const fileUrl = URL.createObjectURL(event.value)
+
+      const texture = await textureLoader.load(fileUrl)
+      texture.wrapS = texture.wrapT = RepeatWrapping
+
+			sea.waterNormals.value = texture
+    })
   }
 
   createDof(dof) {
