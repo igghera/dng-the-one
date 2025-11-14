@@ -679,7 +679,7 @@ async function loadTextures() {
 	const images = await textureLoader.load([
 		'/images/bg-portrait.webp',
 		'/images/bg-landscape.webp',
-		'/webgl/water_normals.png',
+		'/webgl/water_normals.webp',
 	])
 
 	images[0].colorSpace = THREE.SRGBColorSpace
