@@ -120,6 +120,8 @@ import {
 	borderWidth as maskBorderWidth,
 } from '~/components/Experience/WebGL/materials/mask'
 
+import { experienceEndDrawMaterial } from '~/components/Experience/WebGL/materials'
+
 //
 // Refs / State
 //
@@ -178,6 +180,9 @@ onMounted(async () => {
 		allProducts
 	)
 	appStore.setResult(res.result)
+
+	experienceEndDrawMaterial.mapIndex.value =
+		res.result.get('shape') === 'male' ? 0 : 1
 
 	if (!uiStore.isExperienceEndVisible) return
 
@@ -413,7 +418,7 @@ const animateMask = () => {
 
 	aspect-ratio: 240 / 300;
 	height: 30svh;
-	translate: 0 7svh;
+	translate: 0 8svh;
 	row-gap: toRem(10);
 }
 

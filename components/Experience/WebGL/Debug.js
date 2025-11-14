@@ -241,15 +241,27 @@ export class Debug {
   }
 
   createEndDrawPlane(material) {
-    const endDrawPlaneFolder = this.pane.addFolder({
+    const folder = this.pane.addFolder({
       title: 'End Draw Plane',
       expanded: false,
     })
 
-    endDrawPlaneFolder.addBinding(material.progress, 'value', { label: 'Progress', min: 0, max: 1 })
-    endDrawPlaneFolder.addBinding(material.smooth, 'value', { label: 'Smooth', min: 0, max: 1 })
-    endDrawPlaneFolder.addBinding(material.colorA, 'value', { label: 'Color A', color: { type: 'float' } })
-    endDrawPlaneFolder.addBinding(material.colorB, 'value', { label: 'Color B', color: { type: 'float' } })
+    folder.addBinding(material.progress, 'value', { label: 'Progress', min: 0, max: 1 })
+    folder.addBinding(material.smooth, 'value', { label: 'Smooth', min: 0, max: 1 })
+    folder.addBinding(material.colorA, 'value', { label: 'Color A', color: { type: 'float' } })
+    folder.addBinding(material.colorB, 'value', { label: 'Color B', color: { type: 'float' } })
+
+    folder.addBlade({
+      view: 'list',
+      label: 'Shape',
+      options: [
+        { text: 'Male', value: 0 },
+        { text: 'Female', value: 1 },
+      ],
+      value: material.mapIndex.value
+    }).on('change', (event) => {
+      material.mapIndex.value = event.value
+    })
   }
 
   createMask() {

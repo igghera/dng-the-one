@@ -649,8 +649,9 @@ async function loadTextures() {
 		'/webgl/backgrounds/03-mobile.ktx2',
 		'/webgl/backgrounds/04-mobile.ktx2',
 		'/webgl/noises/noise.ktx2',
-		'/webgl/draw/product-outline.ktx2',
+		'/webgl/draw/product-outline-male.ktx2',
 		'/webgl/draw/intro-outline.ktx2',
+		'/webgl/draw/product-outline-female.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
@@ -669,10 +670,13 @@ async function loadTextures() {
 	noiseTexture.value = ktx[4]
 
 	ktx[5].colorSpace = THREE.LinearSRGBColorSpace
-	textures.set('product_outline', ktx[5])
+	textures.set('product_outline_male', ktx[5])
 
 	ktx[6].colorSpace = THREE.LinearSRGBColorSpace
 	textures.set('intro_outline', ktx[6])
+
+	ktx[7].colorSpace = THREE.LinearSRGBColorSpace
+	textures.set('product_outline_female', ktx[7])
 
 	seaNoiseTexture.value = noiseTexture.value
 
@@ -747,7 +751,10 @@ function createGodrays() {
 
 async function createWinDrawingPlane() {
 	const geometry = new THREE.PlaneGeometry(0.828, 1.36, 1, 1)
-	experienceEndDrawMaterial.init(textures.get('product_outline'))
+	experienceEndDrawMaterial.init(
+		textures.get('product_outline_male'),
+		textures.get('product_outline_female')
+	)
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
 	mesh.position.y = 0.3
