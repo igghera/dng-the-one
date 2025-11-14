@@ -18,11 +18,11 @@
 				</span>
 
 				<span class="display-3 | golden-text | uppercase">
-					{{ result.get('aura').title }}
+					{{ result.get('auraFull').title }}
 				</span>
 
 				<span class="body-10 | text-gold-light">
-					{{ result.get('aura').copy }}
+					{{ result.get('auraFull')[result.get('shape')].desc }}
 				</span>
 			</div>
 		</div>
@@ -43,10 +43,10 @@
 
 				<span class="title-text">
 					<span class="body-2 | golden-text | uppercase">{{
-						result.get('product').title
+						result.get('auraFull')[result.get('shape')].fragrance.title
 					}}</span>
 					<span class="text-gold | body-11">{{
-						result.get('product').sub_title
+						result.get('auraFull')[result.get('shape')].fragrance.sub_title
 					}}</span>
 				</span>
 			</h1>
@@ -63,7 +63,7 @@
 		</picture>
 
 		<p class="copy | body-4">
-			{{ result.get('product').copy }}
+			{{ result.get('auraFull')[result.get('shape')].fragrance.desc }}
 		</p>
 	</div>
 </template>
@@ -94,6 +94,26 @@ const { q1, q2, q3, card } = urlParams
 const allAuras = Object.values(tm('experience_end.options')).map(option => ({
 	title: rt(option.title),
 	copy: rt(option.copy),
+}))
+
+const allAurasFull = Object.values(tm('auras')).map(aura => ({
+	title: rt(aura.title),
+	male: {
+		desc: rt(aura.male.desc),
+		fragrance: {
+			title: rt(aura.male.fragrance.title),
+			sub_title: rt(aura.male.fragrance.sub_title),
+			desc: rt(aura.male.fragrance.desc),
+		},
+	},
+	female: {
+		desc: rt(aura.female.desc),
+		fragrance: {
+			title: rt(aura.female.fragrance.title),
+			sub_title: rt(aura.female.fragrance.sub_title),
+			desc: rt(aura.female.fragrance.desc),
+		},
+	},
 }))
 
 const allProducts = Object.values(tm('products')).map(product => ({
@@ -133,8 +153,10 @@ onMounted(async () => {
 		Number(q2),
 		Number(q3),
 		allAuras,
-		allProducts
+		allProducts,
+		allAurasFull
 	)
+
 	set(result, res.result)
 })
 

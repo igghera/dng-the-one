@@ -49,7 +49,7 @@
       "Just a moment.<br>We're unveiling your",
       "The One Aura"
     ],
-    "title": "My The One aura is",
+    "title": "Your Perfect Match is:",
     "options": [
       {
         "title": "Elegant",
@@ -122,6 +122,85 @@
       "title": "The One for Men Parfum",
       "sub_title": "[Eau De Parfum]",
       "copy": "[lorem ipsum dolor sit amet]"
+    }
+  ],
+
+  "auras": [
+    {
+      "title": "Elegant",
+      "male": {
+        "desc": "Your aura moves before you do, a silent force that draws every gaze.",
+        "fragrance": {
+          "title": "The One for Men",
+          "sub_title": "Eau De Parfum",
+          "desc": "A timeless icon, reborn. Crafted for the man of distinction, it reveals deeper nuances of elegance, power and allure."
+        }
+      },
+      "female": {
+        "desc": "Your aura radiates quiet elegance and confidence, turning simplicity into uniqueness.",
+        "fragrance": {
+          "title": "The One",
+          "sub_title": "Eau De Parfum",
+          "desc": "A timeless icon, reimagined with radiant depth. Created for the woman of grace, it reveals elegance, confidence, and an allure that endures."
+        }
+      }
+    },
+    {
+      "title": "Warm",
+      "male": {
+        "desc": "Your aura lingers beyond the moment, a quiet depth people will never forget.",
+        "fragrance": {
+          "title": "The One for Men",
+          "sub_title": "Parfum",
+          "desc": "A richer, more intense interpretation of The One. It unveils depth and sophistication, embodying strength and timeless elegance with every encounter."
+        }
+      },
+      "female": {
+        "desc": "Your aura lingers softly. A magnetic mystery that stays long after you’ve gone.",
+        "fragrance": {
+          "title": "The One",
+          "sub_title": "Eau De Parfum Intense",
+          "desc": "A bold yet refined expression of femininity. It captures the essence of a confident woman . Graceful and unforgettable."
+        }
+      }
+    },
+    {
+      "title": "Bold",
+      "male": {
+        "desc": "Your aura commands the room. Unforgettable, leaving the silence charged with presence.",
+        "fragrance": {
+          "title": "The One Gold for Men",
+          "sub_title": "Eau De Parfum Intense",
+          "desc": "A celebration of modern masculinity and magnetic allure. It reflects inner power, elegance, and the unmistakable brilliance of a man who stands apart."
+        }
+      },
+      "female": {
+        "desc": "You’re never afraid to shine. Your fierce aura lights up the room the moment you walk in.",
+        "fragrance": {
+          "title": "The One Gold",
+          "sub_title": "Eau De Parfum Intense",
+          "desc": "A tribute to luminous femininity and inner power. It celebrates the woman who owns her elegance and irresistible charm."
+        }
+      }
+    },
+    {
+      "title": "Bold",
+      "male": {
+        "desc": "You speak only when it matters. Your aura whispers power, drawing others in effortlessly.",
+        "fragrance": {
+          "title": "The One Gold for Men",
+          "sub_title": "Eau De Toilette",
+          "desc": "This fragrance embodies the natural confidence of a man whose charm leaves a lasting, unforgettable impression to people."
+        }
+      },
+      "female": {
+        "desc": "",
+        "fragrance": {
+          "title": "",
+          "sub_title": "",
+          "desc": ""
+        }
+      }
     }
   ],
 
