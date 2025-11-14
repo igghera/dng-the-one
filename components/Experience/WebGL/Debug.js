@@ -3,7 +3,7 @@ import * as TweakpaneFileImportPlugin from 'tweakpane-plugin-file-import'
 import { textureLoader } from '~/assets/js/loaders'
 import { RepeatWrapping } from 'three/webgpu'
 import { snapdom } from '@zumer/snapdom'
-import { cropTransparentPixels } from '~/assets/js/croptransparentPixels'
+import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
 
 import {
   speed,
