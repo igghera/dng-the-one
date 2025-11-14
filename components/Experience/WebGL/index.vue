@@ -21,7 +21,7 @@ import {
 	pass,
 	uniform,
 	positionWorld,
-	float,
+	normalWorld,
 	screenUV,
 	mix,
 	time,
@@ -30,6 +30,7 @@ import {
 } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
 import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
+import { WaterMesh } from 'three/addons/objects/WaterMesh'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
@@ -49,9 +50,8 @@ import {
 import {
 	getDisplacement,
 	getDisplacedNormal,
+	reflectionStrength as floorReflectionStrength,
 	noiseTexture as seaNoiseTexture,
-	lightColor as floorLightColor,
-	lightIntensity as floorLightIntensity,
 	baseReflectivity as floorBaseReflectivity,
 } from './materials/floor'
 
@@ -165,10 +165,12 @@ let scene,
 	introCamera,
 	introBackground,
 	maskScene,
-	maskCamera
+	maskCamera,
+	floorMesh,
+	seaMesh
 
 const mainCameraParams = Object.freeze({
-	positionStart: new THREE.Vector3(0, -0.5, 4),
+	positionStart: new THREE.Vector3(0, -0.35, 4),
 	positionEnd: new THREE.Vector3(0, 0.5, 4),
 	lookAt: new THREE.Vector3(0, 0, -5),
 })
@@ -199,12 +201,14 @@ onMounted(async () => {
 	createCamera()
 
 	await createRenderer()
+
 	await loadTextures()
 
 	createIntroScene()
 	createMaskScene()
 
 	createSea()
+	createSeaNew()
 	createBackground()
 	createGodrays()
 
@@ -227,6 +231,7 @@ onMounted(async () => {
 		godraysOffset.value += godraysTimeSpeed.value * deltaTime * 0.001
 
 		updateScene(time)
+
 		// renderer.renderAsync(scene, camera)
 		// renderer.renderAsync(maskScene, maskCamera)
 		// renderer.renderAsync(introScene, introCamera)
@@ -247,7 +252,8 @@ onMounted(async () => {
 			particles,
 			experienceEndDrawMaterial,
 			experienceIntroDrawMaterial,
-			introSceneVisibility
+			introSceneVisibility,
+			seaMesh
 		)
 
 		const { default: Stats } = await import('stats-gl')
@@ -673,6 +679,7 @@ async function loadTextures() {
 	const images = await textureLoader.load([
 		'/images/bg-portrait.webp',
 		'/images/bg-landscape.webp',
+		'/webgl/water_normals.png',
 	])
 
 	images[0].colorSpace = THREE.SRGBColorSpace
@@ -683,6 +690,9 @@ async function loadTextures() {
 
 	const lutCube = await lutCubeLoader.load('/webgl/lut.CUBE')
 	textures.set('lut_cube', lutCube)
+
+	images[2].wrapS = images[2].wrapT = THREE.RepeatWrapping
+	textures.set('water_normals', images[2])
 }
 
 async function createParticles() {
@@ -719,7 +729,7 @@ function createBackground() {
 	const material = new BackgroundMaterial(textures).material
 	background = new THREE.Mesh(geometry, material)
 
-	background.position.set(0, -1, -5)
+	background.position.set(0, -1, -5.5)
 
 	setBackgroundSize()
 
@@ -746,12 +756,17 @@ async function createWinDrawingPlane() {
 }
 
 function createSea() {
+	// const light = new THREE.DirectionalLight(0xff5512, 0.01)
+	// light.position.set(0, 0.5, -3.5)
+	// light.target.position.set(0, 0, 0)
+	// scene.add(light)
+
 	const reflection = reflector({ resolutionScale: 0.5 })
 	reflection.target.rotateX(-Math.PI / 2)
 	reflection.target.position.y = -1
 
 	const uvDisplacement = Fn(() => {
-		return vec2(getDisplacement().x.mul(0.3), getDisplacement().y.mul(0.3))
+		return getDisplacement().toVec2()
 	})()
 
 	reflection.uvNode = reflection.uvNode.add(uvDisplacement)
@@ -759,12 +774,9 @@ function createSea() {
 	scene.add(reflection.target)
 
 	const getReflectivity = Fn(() => {
-		const layer1 = positionWorld.x
-			.length()
-			.smoothstep(0.65, 3)
-			.oneMinus()
-			.pow(1.1)
-			.max(0.45)
+		const layer1 = positionWorld.x.length().smoothstep(0.65, 3).oneMinus()
+
+		return layer1.mul(floorBaseReflectivity)
 
 		const layer2 = positionWorld.x
 			.length()
@@ -777,40 +789,53 @@ function createSea() {
 	})
 
 	FloorMaterial.colorNode = Fn(() => {
-		const amount = positionWorld.x
-			.length()
-			.smoothstep(0.1, 2.75)
-			.oneMinus()
-			.mul(1.5)
+		const amount = positionWorld.x.length().smoothstep(0, 2.75).mul(1.5)
 
 		return reflection.mul(amount)
 	})()
 
 	FloorMaterial.emissiveNode = Fn(() => {
-		const viewDirection = vec3(
-			mainCameraParams.lookAt.x,
-			mainCameraParams.lookAt.y,
-			mainCameraParams.lookAt.z
-		).normalize()
+		const lightPosition = vec3(2, 1, -3)
+		const lightTarget = vec3(0, 0, 2)
+		const lightDirection = lightPosition.sub(lightTarget).normalize()
 
-		const lightPosition = vec3(10, 1, 15)
-		const lightDirection = lightPosition.normalize()
-
-		const light = dot(getDisplacedNormal(), lightDirection)
-			.smoothstep(0, 0.45)
-			.oneMinus()
+		// Use normalWorld which is automatically transformed from the material's normalNode
+		const light = dot(normalWorld, lightDirection)
 
 		return reflection
+			.mul(light)
+			.mul(floorReflectionStrength)
 			.mul(getReflectivity())
-			.add(light.mul(floorLightColor).mul(floorLightIntensity))
-			.mul(dot(getDisplacedNormal(), viewDirection).remap(-1, 1, 0.2, 1))
 	})()
 
 	const geometry = new THREE.PlaneGeometry(20, 10, 250, 150)
 	geometry.rotateX(-Math.PI / 2)
-	const mesh = new THREE.Mesh(geometry, FloorMaterial)
-	mesh.position.y = -1
-	scene.add(mesh)
+	floorMesh = new THREE.Mesh(geometry, FloorMaterial)
+	floorMesh.position.y = -1
+	scene.add(floorMesh)
+
+	floorMesh.visible = false
+}
+
+function createSeaNew() {
+	const geometry = new THREE.PlaneGeometry(20, 10, 1, 1)
+
+	seaMesh = new WaterMesh(geometry, {
+		waterNormals: textures.get('water_normals'),
+		sunDirection: new THREE.Vector3(),
+		alpha: 0.65,
+		sunColor: 0x000000,
+		waterColor: 0x000000,
+		distortionScale: 0.2,
+		resolutionScale: 0.7,
+		sunDirection: new THREE.Vector3(0, 0, 1),
+		size: 10,
+	})
+
+	seaMesh.rotation.x = -Math.PI / 2
+	seaMesh.position.y = -0.7
+
+	scene.add(seaMesh)
 }
 
 function createMouse() {

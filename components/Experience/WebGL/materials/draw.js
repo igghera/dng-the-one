@@ -11,7 +11,8 @@ export class DrawMaterial {
 
   constructor() {
     this.material = new MeshBasicMaterial({
-      transparent: true
+      transparent: true,
+      depthWrite: false,
     })
   }
 

@@ -9,9 +9,8 @@ import {
   normalDerivativeStep as floorNormalDerivativeStep,
   normalBlend as floorNormalBlend,
   normalSmoothingRadius as floorNormalSmoothingRadius,
-  lightColor as floorLightColor,
-  lightIntensity as floorLightIntensity,
   baseReflectivity as floorBaseReflectivity,
+  reflectionStrength as floorReflectionStrength,
 } from './materials/floor'
 
 import {
@@ -60,7 +59,7 @@ import {
 } from './nodes/lut'
 
 export class Debug {
-  constructor(dof, godrays, background, particles, endDrawMaterial, introDrawMaterial, introSceneVisibility) {
+  constructor(dof, godrays, background, particles, endDrawMaterial, introDrawMaterial, introSceneVisibility, sea) {
     this.pane = new Pane({
       title: 'Debug',
       container: document.getElementById('debug-wrapper'),
@@ -68,7 +67,8 @@ export class Debug {
 
     this.createIntro(introDrawMaterial, introSceneVisibility)
     this.createBackground(background)
-    this.createSea()
+    // this.createSea()
+    this.createSeaNew(sea)
     // this.createDof(dof)
     this.createGodrays(godrays)
     this.createParticles(particles)
@@ -114,29 +114,39 @@ export class Debug {
     backgroundFolder.addBinding(backgroundProgress, 'value', { label: 'Progress', min: 0, max: 1 })
   }
 
+  /**
+   * @deprecated
+   */
   createSea() {
     const sea = this.pane.addFolder({
       title: 'Sea',
-      expanded: true,
+      expanded: false,
     })
 
     sea.addBinding(floorBaseReflectivity, 'value', { label: 'Base Reflectivity', min: 0, max: 5 })
+    sea.addBinding(floorReflectionStrength, 'value', { label: 'Reflection Strength', min: 0, max: 20, step: 0.1 })
     sea.addBinding(strength, 'value', { label: 'Strength', min: 0, max: 2 })
     sea.addBinding(speed, 'value', { label: 'Speed', min: -0.1, max: 0.1, step: 0.001 })
     sea.addBinding(scale, 'value', { label: 'Scale', min: 0, max: 5 })
     sea.addBinding(stretchX, 'value', { label: 'Stretch X', min: 0, max: 5 })
     sea.addBinding(stretchY, 'value', { label: 'Stretch Y', min: 0, max: 5 })
-
-    sea.addBlade({ view: 'separator' })
-
-    sea.addBinding(floorLightColor, 'value', { label: 'Light Color', color: { type: 'float' } })
-    sea.addBinding(floorLightIntensity, 'value', { label: 'Light Intensity', min: 0, max: 1, step: 0.01 })
+    // sea.addBinding(floorMetalness, 'value', { label: 'Metalness', min: 0, max: 1 })
+    // sea.addBinding(floorRoughness, 'value', { label: 'Roughness', min: 0, max: 1 })
 
     sea.addBlade({ view: 'separator' })
 
     sea.addBinding(floorNormalDerivativeStep, 'value', { label: 'Derivative Step', min: 0.001, max: 0.1, step: 0.001 })
     sea.addBinding(floorNormalBlend, 'value', { label: 'Blend', min: 0, max: 1 })
     sea.addBinding(floorNormalSmoothingRadius, 'value', { label: 'Smoothing Radius', min: 0, max: 0.1, step: 0.001 })
+  }
+
+  createSeaNew(sea) {
+    const seaNewFolder = this.pane.addFolder({
+      title: 'Sea New',
+      expanded: true,
+    })
+
+    seaNewFolder.addBinding(sea.size, 'value', { label: 'Size', min: 1, max: 20 })
   }
 
   createDof(dof) {
