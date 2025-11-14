@@ -141,12 +141,22 @@ export class Debug {
   }
 
   createSeaNew(sea) {
-    const seaNewFolder = this.pane.addFolder({
-      title: 'Sea New',
+    const folder = this.pane.addFolder({
+      title: 'Sea (New)',
       expanded: true,
     })
 
-    seaNewFolder.addBinding(sea.size, 'value', { label: 'Size', min: 1, max: 20 })
+    folder.addBinding(sea.alpha, 'value', { label: 'Alpha', min: 0, max: 1 })
+    folder.addBinding(sea.size, 'value', { label: 'Size', min: 1, max: 20 })
+    folder.addBinding(sea.distortionScale, 'value', { label: 'Distortion Scale', min: 0, max: 5 })
+    folder.addBinding(sea.speedX, 'value', { label: 'Speed X', min: -3, max: 3, step: 0.01 })
+    folder.addBinding(sea.speedY, 'value', { label: 'Speed Y', min: -3, max: 3, step: 0.01 })
+    folder.addBinding(sea.stretchX, 'value', { label: 'Stretch X', min: 0.1, max: 5 })
+    folder.addBinding(sea.stretchY, 'value', { label: 'Stretch Y', min: 0.1, max: 5 })
+
+    folder.addBlade({ view: 'separator' })
+
+    folder.addBinding(sea.waterColor, 'value', { label: 'Water Color', view: 'color', color: { type: 'float' } })
   }
 
   createDof(dof) {

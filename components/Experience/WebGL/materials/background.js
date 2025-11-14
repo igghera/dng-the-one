@@ -1,5 +1,5 @@
 import { MeshBasicNodeMaterial } from 'three/webgpu'
-import { Fn, uv, smoothstep, uniform, mix, texture, positionWorld, length, distance } from 'three/tsl'
+import { Fn, uv, smoothstep, uniform, mix, texture, positionWorld, length } from 'three/tsl'
 
 export const progress = uniform(0)
 
@@ -46,6 +46,8 @@ export class BackgroundMaterial {
 
       const alpha = smoothstep(0.25, 0.95, uv().y).oneMinus()
       alpha.mulAssign(distanceFromCenter)
+
+      alpha.mulAssign(smoothstep(-4, -0.5, positionWorld.y))
 
       return alpha
     })()

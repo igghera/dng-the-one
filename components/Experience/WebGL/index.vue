@@ -30,7 +30,7 @@ import {
 } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
 import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
-import { WaterMesh } from 'three/addons/objects/WaterMesh'
+import { WaterMeshCustom } from './WaterMeshCustom'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
 import { get } from '@vueuse/core'
 
@@ -820,15 +820,11 @@ function createSea() {
 function createSeaNew() {
 	const geometry = new THREE.PlaneGeometry(20, 10, 1, 1)
 
-	seaMesh = new WaterMesh(geometry, {
+	seaMesh = new WaterMeshCustom(geometry, {
 		waterNormals: textures.get('water_normals'),
 		sunDirection: new THREE.Vector3(),
-		alpha: 0.65,
-		sunColor: 0x000000,
-		waterColor: 0x000000,
+		alpha: 0.5,
 		distortionScale: 0.2,
-		resolutionScale: 0.7,
-		sunDirection: new THREE.Vector3(0, 0, 1),
 		size: 10,
 	})
 
