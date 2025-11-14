@@ -71,16 +71,22 @@ emitter.on(EVENTS.RESTART, async () => {
 	height: 100svh;
 }
 
+#stats-wrapper,
+#debug-wrapper,
+#eruda-wrapper {
+	@apply fixed z-[9999];
+}
+
 #debug-wrapper {
-	@apply fixed z-[1] right-10 top-20 w-80;
+	@apply right-10 top-20 w-80;
 }
 
 #stats-wrapper {
-	@apply fixed z-[1] left-1 top-20;
+	@apply left-1 top-20;
 }
 
 #eruda-wrapper {
-	@apply fixed z-[1] bottom-0 w-full;
+	@apply bottom-0 w-full;
 }
 
 .fade-enter-active,

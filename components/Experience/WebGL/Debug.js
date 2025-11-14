@@ -92,12 +92,30 @@ export class Debug {
       expanded: true,
     })
 
+    const hideUi = { value: false }
+
+    folder.addBinding(hideUi, 'value', { label: 'Hide UI' }).on('change', (event) => {
+      const targets = document.querySelectorAll('.site-header, .site-footer, .experience > :not(.webgl)')
+
+      if (event.value) {
+        targets.forEach(target => {
+          target.style.visibility = 'hidden'
+          target.style.opacity = 0
+        })
+      } else {
+        targets.forEach(target => {
+          target.style.visibility = null
+          target.style.opacity = null
+        })
+      }
+    })
+
     folder.addButton({ title: 'Take WebGL Screenshot' }).on('click', async () => {
       const el = document.getElementById('experience-canvas')
       const filename = `the-one-screenshot-${Date.now()}`
       const canvas = await snapdom.toCanvas(el)
 
-      cropTransparentPixels(canvas, { padding: 0, inset: 20, filename })
+      cropTransparentPixels(canvas, { padding: 4, inset: 20, filename })
     })
   }
 
