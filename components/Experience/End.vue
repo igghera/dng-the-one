@@ -63,11 +63,14 @@
 				</span>
 
 				<span class="display-3 | golden-text | uppercase">
-					{{ appStore.getResult.get('aura').title }}
+					{{ appStore.getResult.get('auraFull').title }}
 				</span>
 
 				<span class="body-10 | text-gold-light">
-					{{ appStore.getResult.get('aura').copy }}
+					{{
+						appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
+							.desc
+					}}
 				</span>
 			</div>
 		</Transition>
@@ -151,6 +154,26 @@ const uiStore = useUiStore()
 
 const showResult = shallowRef(false)
 
+const allAurasFull = Object.values(tm('auras')).map(aura => ({
+	title: rt(aura.title),
+	male: {
+		desc: rt(aura.male.desc),
+		fragrance: {
+			title: rt(aura.male.fragrance.title),
+			sub_title: rt(aura.male.fragrance.sub_title),
+			desc: rt(aura.male.fragrance.desc),
+		},
+	},
+	female: {
+		desc: rt(aura.female.desc),
+		fragrance: {
+			title: rt(aura.female.fragrance.title),
+			sub_title: rt(aura.female.fragrance.sub_title),
+			desc: rt(aura.female.fragrance.desc),
+		},
+	},
+}))
+
 const allAuras = Object.values(tm('experience_end.options')).map(option => ({
 	title: rt(option.title),
 	copy: rt(option.copy),
@@ -177,7 +200,8 @@ onMounted(async () => {
 		appStore.getStep02Selection,
 		appStore.getStep03Selection,
 		allAuras,
-		allProducts
+		allProducts,
+		allAurasFull
 	)
 	appStore.setResult(res.result)
 

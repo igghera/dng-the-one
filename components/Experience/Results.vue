@@ -7,11 +7,17 @@
 
 			<h2 class="title">
 				<span class="golden-text | body-2 | uppercase">
-					{{ appStore.getResult.get('product').title }}
+					{{
+						appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
+							.fragrance.title
+					}}
 				</span>
 
 				<span class="golden-text | body-1">
-					{{ appStore.getResult.get('product').sub_title }}
+					{{
+						appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
+							.fragrance.sub_title
+					}}
 				</span>
 			</h2>
 		</header>
@@ -19,7 +25,10 @@
 		<picture class="pic">
 			<img
 				:src="appStore.getResult.get('imageSrc')"
-				:alt="appStore.getResult.get('product').title"
+				:alt="
+					appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
+						.fragrance.title
+				"
 				loading="lazy"
 				decoding="async"
 				draggable="false"
@@ -27,7 +36,10 @@
 		</picture>
 
 		<p class="copy | body-3-alt">
-			{{ appStore.getResult.get('product').copy }}
+			{{
+				appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
+					.fragrance.desc
+			}}
 		</p>
 	</Container>
 </template>
