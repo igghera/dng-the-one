@@ -2,6 +2,8 @@ import { Pane } from 'tweakpane'
 import * as TweakpaneFileImportPlugin from 'tweakpane-plugin-file-import'
 import { textureLoader } from '~/assets/js/loaders'
 import { RepeatWrapping } from 'three/webgpu'
+import { snapdom } from '@zumer/snapdom'
+import { cropTransparentPixels } from '~/assets/js/croptransparentPixels'
 
 import {
   speed,
@@ -70,6 +72,7 @@ export class Debug {
 
     this.pane.registerPlugin(TweakpaneFileImportPlugin)
 
+    this.createScreenshot()
     this.createIntro(introDrawMaterial, introSceneVisibility)
     this.createBackground(background)
     // this.createSea()
@@ -81,6 +84,21 @@ export class Debug {
     this.createMask()
     this.createBloom()
     this.createLUT()
+  }
+
+  createScreenshot() {
+    const folder = this.pane.addFolder({
+      title: 'Screenshot',
+      expanded: true,
+    })
+
+    folder.addButton({ title: 'Take WebGL Screenshot' }).on('click', async () => {
+      const el = document.getElementById('experience-canvas')
+      const filename = `the-one-screenshot-${Date.now()}`
+      const canvas = await snapdom.toCanvas(el)
+
+      cropTransparentPixels(canvas, { padding: 0, inset: 20, filename })
+    })
   }
 
   createIntro(material, visibility) {
@@ -148,7 +166,7 @@ export class Debug {
   createSeaNew(sea) {
     const folder = this.pane.addFolder({
       title: 'Sea (New)',
-      expanded: true,
+      expanded: false,
     })
 
     folder.addBinding(sea.alpha, 'value', { label: 'Alpha', min: 0, max: 1 })

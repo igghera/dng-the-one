@@ -1,6 +1,7 @@
 <template>
 	<div class="webgl">
 		<canvas
+			id="experience-canvas"
 			class="canvas"
 			ref="canvasRef"
 			:width="componentWidth"
@@ -868,6 +869,7 @@ function createMouse() {
 
 function createControls() {
 	controls = new OrbitControls(camera, renderer.domElement)
+	controls.target.copy(mainCameraParams.lookAt)
 	controls.enableDamping = true
 	controls.enableZoom = true
 }
