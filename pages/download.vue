@@ -1,6 +1,6 @@
 <template>
 	<div v-if="result" class="page">
-		<div class="card">
+		<div class="card" ref="cardRef">
 			<picture class="size-full col-start-1 row-start-1">
 				<img
 					v-if="imageSrc"
@@ -30,9 +30,11 @@
 		<nav class="buttons">
 			<ButtonRestart to="/" />
 
-			<ButtonGolden @click="handleDownloadButtonClick">{{
-				$t('results.cta_download')
-			}}</ButtonGolden>
+			<ButtonGolden
+				:disabled="isDownloading"
+				@click="handleDownloadButtonClick"
+				>{{ $t('results.cta_download') }}</ButtonGolden
+			>
 		</nav>
 
 		<header class="header">
@@ -68,6 +70,7 @@
 
 <script setup>
 import { get, set } from '@vueuse/core'
+import { snapdom } from '@zumer/snapdom'
 
 //
 // Refs / State
@@ -77,9 +80,14 @@ const uiStore = useUiStore()
 
 const { rt, tm } = useI18n()
 
+const { gsap } = useGSAP()
+
 const urlParams = useUrlSearchParams('history')
 
+const cardRef = useTemplateRef('cardRef')
+
 const result = shallowRef(null)
+const isDownloading = shallowRef(false)
 
 const { q1, q2, q3, card } = urlParams
 
@@ -133,8 +141,33 @@ onMounted(async () => {
 //
 // Methods
 //
-const handleDownloadButtonClick = () => {
-	downloadImage(imageSrc.value, 'the-one-card.png')
+const handleDownloadButtonClick = async event => {
+	set(isDownloading, true)
+
+	const { currentTarget: button } = event
+
+	gsap.to(button, {
+		opacity: 0.5,
+		duration: 0.5,
+		overwrite: true,
+	})
+
+	await snapdom.download(get(cardRef), {
+		format: 'png',
+		filename: `the-one-card-${Date.now()}.png`,
+		scale: 2,
+	})
+
+	gsap.delayedCall(0.8, () => {
+		gsap.to(button, {
+			opacity: 1,
+			duration: 0.8,
+			overwrite: true,
+			onStart: () => {
+				set(isDownloading, false)
+			},
+		})
+	})
 }
 </script>
 

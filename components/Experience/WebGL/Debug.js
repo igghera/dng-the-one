@@ -113,7 +113,7 @@ export class Debug {
     folder.addButton({ title: 'Take WebGL Screenshot' }).on('click', async () => {
       const el = document.getElementById('experience-canvas')
       const filename = `the-one-screenshot-${Date.now()}`
-      const canvas = await snapdom.toCanvas(el)
+      const canvas = await snapdom.toCanvas(el, { scale: 2 })
 
       cropTransparentPixels(canvas, { padding: 4, inset: 20, filename })
     })
