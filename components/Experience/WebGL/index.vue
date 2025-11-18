@@ -734,7 +734,7 @@ function createBackground() {
 	const material = new BackgroundMaterial(textures).material
 	background = new THREE.Mesh(geometry, material)
 
-	background.position.set(0, -1, -5.5)
+	background.position.set(0, -0.5, -5.5)
 
 	setBackgroundSize()
 
@@ -831,7 +831,8 @@ function createSeaNew() {
 	seaMesh = new WaterMeshCustom(geometry, {
 		waterNormals: textures.get('water_normals'),
 		sunDirection: new THREE.Vector3(),
-		alpha: 0.5,
+		sunColor: 0x00ff00,
+		alpha: 1,
 		distortionScale: 0.2,
 		size: 10,
 	})
