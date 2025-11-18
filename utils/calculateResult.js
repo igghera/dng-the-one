@@ -37,7 +37,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One EDP - Women
-  if (q1 === 3 && q2 === 2 && (q3 === 1 || q3 === 2)) {
+  if (q1 === 0 && q2 === 2 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
     result.set('aura', auras[0]) // Elegant
     result.set('auraFull', aurasFull[0]) // Elegant
@@ -46,7 +46,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One EDPI - Women
-  if (q1 === 2 && q2 === 1 && (q3 === 1 || q3 === 2)) {
+  if (q1 === 3 && q2 === 1 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
     result.set('aura', auras[1]) // Warm
     result.set('auraFull', aurasFull[1]) // Warm
@@ -55,7 +55,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One GOLD EDP - Women
-  if (q1 === 1 && q2 === 3 && (q3 === 1 || q3 === 2)) {
+  if (q1 === 2 && q2 === 3 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
     result.set('aura', auras[2]) // Discrete
     result.set('auraFull', aurasFull[2]) // Discrete
@@ -64,7 +64,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One GOLD EDPI - Women
-  if (q1 === 0 && q2 === 0 && (q3 === 1 || q3 === 2)) {
+  if (q1 === 1 && q2 === 0 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
     result.set('aura', auras[3]) // Bold
     result.set('auraFull', aurasFull[3]) // Bold
@@ -73,7 +73,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One EDP - Men
-  if (q1 === 3 && q2 === 2 && q3 === 0) {
+  if (q1 === 0 && q2 === 2 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_EDP'))
     result.set('aura', auras[0]) // Elegant
     result.set('auraFull', aurasFull[0]) // Elegant
@@ -82,7 +82,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One PARFUM - Men
-  if (q1 === 2 && q2 === 1 && q3 === 0) {
+  if (q1 === 3 && q2 === 1 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_PARFUM'))
     result.set('aura', auras[1]) // Warm
     result.set('auraFull', aurasFull[1]) // Warm
@@ -91,7 +91,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One EDT - Men
-  if (q1 === 1 && q2 === 3 && q3 === 0) {
+  if (q1 === 2 && q2 === 3 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_EDT'))
     result.set('aura', auras[2]) // Discrete
     result.set('auraFull', aurasFull[2]) // Discrete
@@ -100,7 +100,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One GOLD EDPI - Men
-  if (q1 === 0 && q2 === 0 && q3 === 0) {
+  if (q1 === 1 && q2 === 0 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_GOLD_EDPI'))
     result.set('aura', auras[3]) // Bold
     result.set('auraFull', aurasFull[3]) // Bold
