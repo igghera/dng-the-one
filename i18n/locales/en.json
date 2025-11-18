@@ -16,15 +16,15 @@
     "title": "What’s the energy<br>you’re known for?",
     "instructions": "Turn to select your preference",
     "labels": [
+      "Your<br>mysterious<br>allure",
       "Your<br>fearless<br>attitude",
       "Your<br>graceful<br>charm",
-      "Your<br>glowing<br>warmth",
-      "Your<br>mysterious<br>allure"
+      "Your<br>glowing<br>warmth"
     ]
   },
 
   "experience_step_02": {
-    "title": "What’s the signature light<br>you bring into the room?",
+    "title": "What kind of light<br>you bring into the room?",
     "instructions": "Swipe up to choose",
     "labels": [
       "Daring and unforgettable",
@@ -49,7 +49,7 @@
       "Just a moment.<br>We're unveiling your",
       "The One Aura"
     ],
-    "title": "Your Perfect Match is:",
+    "title": "Your The One Aura is:",
     "options": [
       {
         "title": "Elegant",
@@ -72,14 +72,14 @@
   },
 
   "results": {
-    "pre_title": "Your the one aura match with:",
+    "pre_title": "Your perfect match is:",
     "cta_print": "Print your aura",
     "cta_download": "Get your gift",
     "cta_restart": "Play again"
   },
 
   "timeline_intro": {
-    "copy": "A 20-years journey of timeless elegance, where intensity and sensuality blend to create an unforgettable fragrance experience.",
+    "copy": "A 20-years journey of elegance, where intensity and sensuality blend to create an unforgettable The One fragrance experience.",
     "cta": "Explore The One collection"
   },
 
