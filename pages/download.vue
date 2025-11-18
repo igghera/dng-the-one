@@ -54,7 +54,7 @@
 
 		<picture class="pic">
 			<img
-				src="/images/mock-perfume.webp"
+				:src="result.get('imageSrc')"
 				alt="The One for Men"
 				loading="lazy"
 				decoding="async"

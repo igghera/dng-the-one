@@ -160,12 +160,31 @@
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum Intense",
-          "desc": "A bold yet refined expression of femininity. It captures the essence of a confident woman . Graceful and unforgettable."
+          "desc": "A bold yet refined expression of femininity. It captures the essence of a confident woman. Graceful and unforgettable."
         }
       }
     },
     {
       "title": "Discrete",
+      "male": {
+        "desc": "You speak only when it matters. Your aura whispers power, drawing others in effortlessly.",
+        "fragrance": {
+          "title": "The One Men",
+          "sub_title": "Eau De Toilette",
+          "desc": "This fragrance embodies the natural confidence of a man whose charm leaves a lasting, unforgettable impression to people."
+        }
+      },
+      "female": {
+        "desc": "",
+        "fragrance": {
+          "title": "",
+          "sub_title": "",
+          "desc": ""
+        }
+      }
+    },
+    {
+      "title": "Bold",
       "male": {
         "desc": "Your aura commands the room. Unforgettable, leaving the silence charged with presence.",
         "fragrance": {
@@ -180,25 +199,6 @@
           "title": "The One Gold",
           "sub_title": "Eau De Parfum Intense",
           "desc": "A tribute to luminous femininity and inner power. It celebrates the woman who owns her elegance and irresistible charm."
-        }
-      }
-    },
-    {
-      "title": "Bold",
-      "male": {
-        "desc": "You speak only when it matters. Your aura whispers power, drawing others in effortlessly.",
-        "fragrance": {
-          "title": "The One Gold for Men",
-          "sub_title": "Eau De Toilette",
-          "desc": "This fragrance embodies the natural confidence of a man whose charm leaves a lasting, unforgettable impression to people."
-        }
-      },
-      "female": {
-        "desc": "",
-        "fragrance": {
-          "title": "",
-          "sub_title": "",
-          "desc": ""
         }
       }
     }
