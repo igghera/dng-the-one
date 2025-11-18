@@ -25,6 +25,27 @@
 					{{ result.get('auraFull')[result.get('shape')].desc }}
 				</span>
 			</div>
+
+			<div class="card-sub-content">
+				<picture class="card-sub-content-image">
+					<img
+						:src="result.get('imageSrc')"
+						alt="The One for Men"
+						loading="lazy"
+						decoding="async"
+						draggable="false"
+					/>
+				</picture>
+
+				<span class="card-sub-content-title | text-gold-light">
+					{{ $t('download.card_subcontent_title') }}
+				</span>
+
+				<span class="card-sub-content-copy | text-gold-light">
+					{{ result.get('auraFull')[result.get('shape')].fragrance.title }}
+					{{ result.get('auraFull')[result.get('shape')].fragrance.sub_title }}
+				</span>
+			</div>
 		</div>
 
 		<nav class="buttons">
@@ -224,6 +245,36 @@ const handleDownloadButtonClick = async event => {
 
 	row-gap: toRem(10);
 	width: 70%;
+}
+
+.card-sub-content {
+	@apply grid gap-x-2 gap-y-1 col-start-1 row-start-1 self-end justify-self-center -translate-y-16 rounded-lg px-4 py-3;
+	@apply bg-white/15 border border-gold-light/15;
+
+	grid-template-areas:
+		'a b'
+		'a c';
+	grid-template-columns: theme('spacing.7') auto;
+	grid-template-rows: repeat(2, auto);
+	width: 70%;
+}
+
+.card-sub-content-image {
+	grid-area: a;
+}
+
+.card-sub-content-title {
+	@apply uppercase text-left tracking-[0.05em] leading-none self-end;
+
+	font-size: toRem(7);
+	grid-area: b;
+}
+
+.card-sub-content-copy {
+	@apply text-left leading-none tracking-[0.05em] self-start;
+
+	font-size: toRem(8);
+	grid-area: c;
 }
 
 .buttons {

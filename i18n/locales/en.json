@@ -84,7 +84,8 @@
   },
 
   "download": {
-    "pre_title": "Your perfect match is:"
+    "pre_title": "Your perfect match is:",
+    "card_subcontent_title": "My Aura's match is:"
   },
 
   "products": [
