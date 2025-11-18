@@ -122,19 +122,13 @@ const allProducts = Object.values(tm('products')).map(product => ({
 	copy: rt(product.copy),
 }))
 
-const allCards = [
-	'/images/download-cards/mock-download-card-bg-01.webp',
-	'/images/download-cards/mock-download-card-bg-02.webp',
-	'/images/download-cards/mock-download-card-bg-03.webp',
-	'/images/download-cards/mock-download-card-bg-04.webp',
-]
-
 //
 // Computed
 //
 const imageSrc = computed(() => {
-	if (!card) return allCards[0]
-	return allCards[Number(card)]
+	if (!get(result)) return null
+
+	return `/images/download-cards/0${card}_${get(result).get('shape')}.webp`
 })
 
 //
@@ -215,10 +209,10 @@ const handleDownloadButtonClick = async event => {
 }
 
 .card {
-	@apply grid aspect-[538/957];
+	@apply grid aspect-[393/852];
 
 	grid-area: a;
-	height: min(60svh, toRem(700));
+	height: min(70svh, toRem(700));
 
 	img {
 		@apply size-full object-contain object-center;
@@ -229,7 +223,7 @@ const handleDownloadButtonClick = async event => {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center justify-self-center;
 
 	row-gap: toRem(10);
-	width: 75%;
+	width: 70%;
 }
 
 .buttons {
