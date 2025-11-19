@@ -154,7 +154,7 @@ let scene,
 const mainCameraParams = Object.freeze({
 	positionStart: new THREE.Vector3(0, -0.35, 4),
 	positionEnd: new THREE.Vector3(0, 0.5, 4),
-	lookAt: new THREE.Vector3(0, 0, -5),
+	lookAt: new THREE.Vector3(0, 0, -0.35),
 })
 
 const introMeshParams = Object.freeze({
@@ -741,7 +741,7 @@ async function createWinDrawingPlane() {
 	)
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
-	mesh.position.y = 0.3
+	mesh.position.y = 0.05
 
 	scene.add(mesh)
 }
