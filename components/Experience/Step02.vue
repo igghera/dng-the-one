@@ -125,13 +125,7 @@
 							/>
 
 							<g ref="draggerMaskRef">
-								<circle
-									cx="58"
-									cy="58"
-									r="58"
-									fill="url(#dragger-gradient)"
-									fill-opacity="1"
-								/>
+								<circle cx="58" cy="58" r="58" fill="black" fill-opacity="1" />
 							</g>
 
 							<g transform="translate(0, 550)" ref="trackMaskInitialRef">
@@ -362,6 +356,10 @@ const setInitialState = () => {
 		attr: {
 			'fill-opacity': 0,
 		},
+	})
+
+	gsap.set(get(draggerMaskRef), {
+		y: 577,
 	})
 
 	gsap.set(get(contentMaskRectRef), {
@@ -764,7 +762,7 @@ const createDraggable = () => {
 		if (!draggableInstance?.[0]) return
 
 		gsap.set(get(draggerMaskRef), {
-			y: draggableInstance[0].y,
+			y: draggableInstance[0].y - 2,
 		})
 
 		gsap.set(get(trackMaskInitialRef), {
