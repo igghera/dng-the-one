@@ -24,7 +24,7 @@
 			/>
 		</Transition>
 
-		<Explore class="fixed inset-0 z-50" />
+		<Explore v-if="false" class="fixed inset-0 z-50" />
 
 		<ClientOnly>
 			<div id="stats-wrapper" v-if="isDebug"></div>
