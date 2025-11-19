@@ -10,7 +10,8 @@
 
 <style lang="scss" scoped>
 .site-header {
-	@apply fixed z-40 top-3 w-full pointer-events-none;
+	@apply fixed z-40 top-[30px] w-full pointer-events-none;
+	@apply lg:landscape:top-3;
 
 	:deep(.site-grid) {
 		@apply items-start;

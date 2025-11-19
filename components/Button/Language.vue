@@ -1,6 +1,8 @@
 <template>
 	<button class="button" aria-label="Toggle language">
-		<span class="relative z-[1]">{{ locale }}</span>
+		<span class="relative z-[1] leading-none -translate-y-[0.15em]">{{
+			locale
+		}}</span>
 	</button>
 </template>
 
