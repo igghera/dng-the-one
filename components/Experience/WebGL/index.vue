@@ -154,7 +154,7 @@ const mainCameraParams = Object.freeze({
 
 const introMeshParams = Object.freeze({
 	positionStart: new THREE.Vector3(0.5, -0.6, 0),
-	positionEnd: new THREE.Vector3(0, -0.6, 0),
+	positionEnd: new THREE.Vector3(0.018, -0.6, 0),
 })
 
 const cameraRotationOffset = { value: 0 }
@@ -184,7 +184,7 @@ onMounted(async () => {
 	createIntroScene()
 	createMaskScene()
 
-	createSeaNew()
+	createSea()
 	createBackground()
 	createGodrays()
 
@@ -736,7 +736,7 @@ async function createWinDrawingPlane() {
 	scene.add(mesh)
 }
 
-function createSeaNew() {
+function createSea() {
 	const geometry = new THREE.PlaneGeometry(20, 10, 1, 1)
 
 	seaMesh = new WaterMeshCustom(geometry, {
