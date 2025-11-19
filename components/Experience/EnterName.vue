@@ -29,7 +29,7 @@
 			</fieldset>
 
 			<ButtonGolden
-				class="button"
+				class="button | !text-gold"
 				size="square"
 				:data-visible="continueButtonVisible"
 				type="submit"

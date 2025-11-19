@@ -109,7 +109,7 @@
 		</div>
 
 		<ButtonGolden
-			class="cta"
+			class="cta | !text-gold"
 			size="wide"
 			:data-visible="ctaVisible"
 			@click="handleClick"

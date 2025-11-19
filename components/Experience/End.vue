@@ -81,12 +81,14 @@
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
 							v-if="config.public.isAppMode && canPrint"
+							class="!text-gold"
 							@click="handlePrint"
 							>{{ $t('results.cta_print') }}</ButtonGolden
 						>
 
 						<ButtonGolden
 							:size="canPrint ? 'auto' : 'wide'"
+							class="!text-gold"
 							@click="handleQRCodeButtonClick"
 							>{{ $t('results.cta_download') }}</ButtonGolden
 						>
@@ -95,9 +97,11 @@
 					<template v-else>
 						<ButtonRestart />
 
-						<ButtonGolden @click="handleDownloadButtonClick">{{
-							$t('results.cta_download')
-						}}</ButtonGolden>
+						<ButtonGolden
+							class="!text-gold"
+							@click="handleDownloadButtonClick"
+							>{{ $t('results.cta_download') }}</ButtonGolden
+						>
 					</template>
 				</div>
 

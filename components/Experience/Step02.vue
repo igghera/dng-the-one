@@ -193,7 +193,7 @@
 			</div>
 
 			<ButtonGolden
-				class="cta"
+				class="cta | !text-gold"
 				size="wide"
 				:data-visible="currentStep >= 0"
 				@click.once="handleClick"
