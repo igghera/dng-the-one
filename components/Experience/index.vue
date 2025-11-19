@@ -32,6 +32,7 @@
 
 		<ExperienceEnd
 			v-if="uiStore.isExperienceEndVisible"
+			id="experience-end"
 			class="relative z-[1]"
 		/>
 	</section>

@@ -122,6 +122,9 @@
 
 <script setup>
 import { get, set } from '@vueuse/core'
+import { snapdom } from '@zumer/snapdom'
+import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
+
 import {
 	progress as maskProgress,
 	borderWidth as maskBorderWidth,
@@ -254,9 +257,43 @@ const handleQRCodeButtonClick = () => {
 	uiStore.setQrCodeModalVisible(true)
 }
 
-const handleDownloadButtonClick = () => {
-	const imageSrc = `/images/mock-download-card.webp`
-	downloadImage(imageSrc, 'the-one-card.png')
+const handleDownloadButtonClick = async () => {
+	const canvasElem = document.getElementById('experience-canvas')
+	const canvas = await snapdom.toCanvas(canvasElem, { scale: 2 })
+
+	const domElem = document.getElementById('experience-end')
+	const dom = await snapdom.toCanvas(domElem, {
+		scale: 2,
+		filter: el => {
+			return el.tagName !== 'BUTTON'
+		},
+	})
+
+	// Create a combined canvas that can accommodate both screenshots
+	const combinedWidth = Math.max(canvas.width, dom.width)
+	const combinedHeight = Math.max(canvas.height, dom.height)
+	const combinedCanvas = document.createElement('canvas')
+	combinedCanvas.width = combinedWidth
+	combinedCanvas.height = combinedHeight
+
+	const ctx = combinedCanvas.getContext('2d')
+
+	// Draw the canvas screenshot first (background)
+	ctx.drawImage(canvas, 0, 0)
+
+	// Draw the DOM screenshot on top (overlay)
+	// Center the DOM canvas if sizes differ, or draw at 0,0 if same size
+	const domX = (combinedWidth - dom.width) / 2
+	const domY = (combinedHeight - dom.height) / 2 + 30
+	ctx.drawImage(dom, domX, domY)
+
+	// Apply cropTransparentPixels to the combined result
+	const filename = `the-one-card-${Date.now()}`
+	cropTransparentPixels(combinedCanvas, {
+		padding: 4,
+		inset: 20,
+		filename,
+	})
 }
 
 const handleRestartButtonClick = () => {
