@@ -433,7 +433,7 @@ const animateOut = async () => {
 const moveDotToNextPosition = async () => {
 	const state = Flip.getState(get(knobDotRef))
 
-	document.getElementById('step-02-dot-0-wrapper').appendChild(get(knobDotRef))
+	document.getElementById('dot-wrapper-step-02').appendChild(get(knobDotRef))
 
 	const tl = gsap.timeline({ paused: true })
 	tl.addLabel('start')

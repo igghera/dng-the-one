@@ -54,7 +54,6 @@
 							<g
 								v-for="(dot, idx) in dotsCoords"
 								:key="idx"
-								:id="`step-02-dot-${idx}-wrapper`"
 								:transform="`translate(${dot.x}, ${dot.y})`"
 							>
 								<circle
@@ -69,7 +68,7 @@
 
 						<g
 							class="dragger | pointer-events-auto"
-							transform="translate(0, 580)"
+							transform="translate(0, 579)"
 							ref="draggerRef"
 						>
 							<circle
@@ -81,25 +80,17 @@
 								ref="draggerCircleRef"
 							/>
 
-							<g transform="translate(58, 52)" id="dot-wrapper-step-02">
-								<g class="dragger-arrow" :data-visible="arrowsVisible">
-									<path
-										class="fill-gold-light"
-										d="M0 -6a1.32 1.32 0 0 1 2.005 0l6.635 7.74c.734.857.126 2.18-1.002 2.18h-13.27c-1.127 0-1.736-1.323-1.002-2.18z"
-									/>
-								</g>
-							</g>
+							<g
+								transform="translate(58, 52)"
+								class="!visible"
+								id="dot-wrapper-step-02"
+							></g>
 
 							<g class="arrows">
 								<g
 									class="dragger-arrow"
 									transform="translate(48, -14)"
-									:data-visible="
-										currentStep >= 0 &&
-										currentStep < 3 &&
-										!isPressed &&
-										arrowsVisible
-									"
+									:data-visible="currentStep < 3 && !isPressed && arrowsVisible"
 								>
 									<path
 										class="fill-gold-light"
@@ -233,7 +224,7 @@ const { rt, tm } = useI18n()
 const currentStep = shallowRef(-1)
 const isPressed = shallowRef(false)
 const instructionsVisible = shallowRef(false)
-const arrowsVisible = shallowRef(true)
+const arrowsVisible = shallowRef(false)
 
 const { idle: isIdle, reset: resetIdle, stop: stopIdle } = useIdle(2500)
 
@@ -363,7 +354,7 @@ watch(isIdle, idle => {
 // Methods
 //
 const setInitialState = () => {
-	gsap.set([get(headerRef), get(dotsRef), get(draggerRef)], {
+	gsap.set([get(headerRef), get(dotsRef), get(draggerCircleRef)], {
 		visibility: 'hidden',
 	})
 
@@ -385,7 +376,7 @@ const animateIn = () => {
 	tl.addLabel('start')
 
 	tl.fromTo(
-		[get(headerRef), get(dotsRef), get(draggerRef)],
+		[get(headerRef), get(dotsRef), get(draggerCircleRef)],
 		{
 			autoAlpha: 0,
 		},
@@ -395,6 +386,7 @@ const animateIn = () => {
 			stagger: 0.15,
 			onComplete: () => {
 				set(instructionsVisible, true)
+				set(arrowsVisible, true)
 				resetIdle()
 			},
 		},
@@ -765,13 +757,6 @@ const createDraggable = () => {
 		onThrowUpdate() {
 			update()
 			updateCurrentStep()
-		},
-		onThrowComplete() {
-			const targetGroup = get(draggerRef).querySelector('g')
-
-			if (targetGroup.children.length === 1) {
-				targetGroup.appendChild(document.getElementById('glowing-dot'))
-			}
 		},
 	})
 
