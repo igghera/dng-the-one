@@ -258,6 +258,10 @@ const handleQRCodeButtonClick = () => {
 }
 
 const handleDownloadButtonClick = async () => {
+	downloadImage('/mock-download-card.png', 'the-one-card.png')
+
+	return
+
 	const canvasElem = document.getElementById('experience-canvas')
 	const canvas = await snapdom.toCanvas(canvasElem, { scale: 2 })
 
