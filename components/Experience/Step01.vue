@@ -591,7 +591,7 @@ const handleClick = async () => {
 }
 
 .bar {
-	@apply w-5 h-[2px] bg-gold-light origin-left col-start-1 row-start-1 block;
+	@apply w-[10px] h-[2px] bg-gold-light origin-left col-start-1 row-start-1 block;
 
 	--r: calc(v-bind(barsWrapperWidth) * 0.5px);
 	--x: calc(cos(var(--angle, 0)) * (var(--r) - 14px) + var(--r));
@@ -600,7 +600,7 @@ const handleClick = async () => {
 	--sx: calc(0.4 + min(0.6, (0.6 * var(--progress) + var(--scale-multiplier))));
 
 	opacity: calc(
-		0.5 + min(0.5, 0.5 * var(--progress) + var(--scale-multiplier))
+		0.56 + min(0.44, 0.44 * var(--progress) + var(--scale-multiplier))
 	);
 	transform: translate(var(--x), var(--y)) rotate(calc(var(--angle) * 1rad))
 		scale(var(--sx), 1);
