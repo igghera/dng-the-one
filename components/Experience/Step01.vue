@@ -522,10 +522,10 @@ const handleClick = async () => {
 .knob-wrapper {
 	@apply grid aspect-square self-center;
 
-	width: min(40svh, toRem(325));
+	width: toRem(275);
 
-	@screen landscape {
-		width: min(40svh, toRem(450));
+	@screen md {
+		width: toRem(450);
 	}
 
 	grid-area: b;
