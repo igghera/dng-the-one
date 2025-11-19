@@ -14,6 +14,7 @@
     "@nuxtjs/i18n": "^10.2.0",
     "@pinia/nuxt": "^0.11.3",
     "@zumer/snapdom": "^1.9.14",
+    "camera-controls": "^3.1.2",
     "eruda": "^3.4.3",
     "eventemitter3": "^5.0.1",
     "gsap": "^3.13.0",
