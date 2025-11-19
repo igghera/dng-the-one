@@ -1,5 +1,4 @@
 import { IntroBackgroundMaterial } from './intro-background'
-import { FloorMaterial } from './floor'
 import { BackgroundMaterial } from './background'
 import { ParticlesMaterial } from './particles'
 import { GodraysMaterial } from './godrays'
@@ -11,7 +10,6 @@ const experienceEndDrawMaterial = new DrawMaterial()
 
 export {
   IntroBackgroundMaterial,
-  FloorMaterial,
   BackgroundMaterial,
   ParticlesMaterial,
   GodraysMaterial,

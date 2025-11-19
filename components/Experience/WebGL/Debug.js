@@ -6,19 +6,6 @@ import { snapdom } from '@zumer/snapdom'
 import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
 
 import {
-  speed,
-  strength,
-  stretchX,
-  stretchY,
-  scale,
-  normalDerivativeStep as floorNormalDerivativeStep,
-  normalBlend as floorNormalBlend,
-  normalSmoothingRadius as floorNormalSmoothingRadius,
-  baseReflectivity as floorBaseReflectivity,
-  reflectionStrength as floorReflectionStrength,
-} from './materials/floor'
-
-import {
   scaleBottom as godraysScaleBottom,
   scaleTop as godraysScaleTop,
   scaleHeight as godraysScaleHeight,
@@ -75,7 +62,6 @@ export class Debug {
     this.createScreenshot()
     this.createIntro(introDrawMaterial, introSceneVisibility)
     this.createBackground(background)
-    // this.createSea()
     this.createSeaNew(sea)
     // this.createDof(dof)
     this.createGodrays(godrays)
@@ -153,32 +139,6 @@ export class Debug {
     backgroundFolder.addBlade({ view: 'separator' })
 
     backgroundFolder.addBinding(backgroundProgress, 'value', { label: 'Progress', min: 0, max: 1 })
-  }
-
-  /**
-   * @deprecated
-   */
-  createSea() {
-    const sea = this.pane.addFolder({
-      title: 'Sea',
-      expanded: false,
-    })
-
-    sea.addBinding(floorBaseReflectivity, 'value', { label: 'Base Reflectivity', min: 0, max: 5 })
-    sea.addBinding(floorReflectionStrength, 'value', { label: 'Reflection Strength', min: 0, max: 20, step: 0.1 })
-    sea.addBinding(strength, 'value', { label: 'Strength', min: 0, max: 2 })
-    sea.addBinding(speed, 'value', { label: 'Speed', min: -0.1, max: 0.1, step: 0.001 })
-    sea.addBinding(scale, 'value', { label: 'Scale', min: 0, max: 5 })
-    sea.addBinding(stretchX, 'value', { label: 'Stretch X', min: 0, max: 5 })
-    sea.addBinding(stretchY, 'value', { label: 'Stretch Y', min: 0, max: 5 })
-    // sea.addBinding(floorMetalness, 'value', { label: 'Metalness', min: 0, max: 1 })
-    // sea.addBinding(floorRoughness, 'value', { label: 'Roughness', min: 0, max: 1 })
-
-    sea.addBlade({ view: 'separator' })
-
-    sea.addBinding(floorNormalDerivativeStep, 'value', { label: 'Derivative Step', min: 0.001, max: 0.1, step: 0.001 })
-    sea.addBinding(floorNormalBlend, 'value', { label: 'Blend', min: 0, max: 1 })
-    sea.addBinding(floorNormalSmoothingRadius, 'value', { label: 'Smoothing Radius', min: 0, max: 0.1, step: 0.001 })
   }
 
   createSeaNew(sea) {

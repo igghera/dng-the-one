@@ -14,21 +14,7 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
-import {
-	reflector,
-	vec2,
-	vec3,
-	Fn,
-	pass,
-	uniform,
-	positionWorld,
-	normalWorld,
-	screenUV,
-	mix,
-	time,
-	texture3D,
-	dot,
-} from 'three/tsl'
+import { vec2, pass, uniform, screenUV, mix, time, texture3D } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
 import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
 import { WaterMeshCustom } from './WaterMeshCustom'
@@ -38,7 +24,6 @@ import { get } from '@vueuse/core'
 import { ktxLoader, textureLoader, lutCubeLoader } from '~/assets/js/loaders'
 
 import {
-	FloorMaterial,
 	BackgroundMaterial,
 	ParticlesMaterial,
 	GodraysMaterial,
@@ -47,14 +32,6 @@ import {
 	MaskMaterial,
 	IntroBackgroundMaterial,
 } from './materials'
-
-import {
-	getDisplacement,
-	getDisplacedNormal,
-	reflectionStrength as floorReflectionStrength,
-	noiseTexture as seaNoiseTexture,
-	baseReflectivity as floorBaseReflectivity,
-} from './materials/floor'
 
 import { progress as backgroundProgress } from './materials/background'
 
@@ -167,7 +144,6 @@ let scene,
 	introBackground,
 	maskScene,
 	maskCamera,
-	floorMesh,
 	seaMesh
 
 const mainCameraParams = Object.freeze({
@@ -208,7 +184,6 @@ onMounted(async () => {
 	createIntroScene()
 	createMaskScene()
 
-	createSea()
 	createSeaNew()
 	createBackground()
 	createGodrays()
@@ -679,8 +654,6 @@ async function loadTextures() {
 	ktx[7].colorSpace = THREE.LinearSRGBColorSpace
 	textures.set('product_outline_female', ktx[7])
 
-	seaNoiseTexture.value = noiseTexture.value
-
 	const images = await textureLoader.load([
 		'/images/bg-portrait.webp',
 		'/images/bg-landscape.webp',
@@ -761,68 +734,6 @@ async function createWinDrawingPlane() {
 	mesh.position.y = 0.3
 
 	scene.add(mesh)
-}
-
-function createSea() {
-	// const light = new THREE.DirectionalLight(0xff5512, 0.01)
-	// light.position.set(0, 0.5, -3.5)
-	// light.target.position.set(0, 0, 0)
-	// scene.add(light)
-
-	const reflection = reflector({ resolutionScale: 0.5 })
-	reflection.target.rotateX(-Math.PI / 2)
-	reflection.target.position.y = -1
-
-	const uvDisplacement = Fn(() => {
-		return getDisplacement().toVec2()
-	})()
-
-	reflection.uvNode = reflection.uvNode.add(uvDisplacement)
-
-	scene.add(reflection.target)
-
-	const getReflectivity = Fn(() => {
-		const layer1 = positionWorld.x.length().smoothstep(0.65, 3).oneMinus()
-
-		return layer1.mul(floorBaseReflectivity)
-
-		const layer2 = positionWorld.x
-			.length()
-			.smoothstep(0.2, 2.8)
-			.oneMinus()
-			.pow(0.5)
-			.max(0.45)
-
-		return floorBaseReflectivity.add(layer1).add(layer2).max(1)
-	})
-
-	FloorMaterial.colorNode = Fn(() => {
-		const amount = positionWorld.x.length().smoothstep(0, 2.75).mul(1.5)
-
-		return reflection.mul(amount)
-	})()
-
-	FloorMaterial.emissiveNode = Fn(() => {
-		const lightPosition = vec3(2, 1, -3)
-		const lightTarget = vec3(0, 0, 2)
-		const lightDirection = lightPosition.sub(lightTarget).normalize()
-
-		// Use normalWorld which is automatically transformed from the material's normalNode
-		const light = dot(normalWorld, lightDirection)
-
-		return reflection
-			.mul(light)
-			.mul(floorReflectionStrength)
-			.mul(getReflectivity())
-	})()
-
-	const geometry = new THREE.PlaneGeometry(20, 10, 250, 150)
-	geometry.rotateX(-Math.PI / 2)
-	floorMesh = new THREE.Mesh(geometry, FloorMaterial)
-	floorMesh.position.y = -1
-	scene.add(floorMesh)
-
-	floorMesh.visible = false
 }
 
 function createSeaNew() {
