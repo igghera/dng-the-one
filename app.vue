@@ -33,6 +33,10 @@ watchEffect(onInvalidate => {
 	// this ensures Lenis's smooth scroll animation updates on each GSAP tick
 	function update(time) {
 		get(lenisRef).lenis.raf(time * 1000)
+
+		uiStore.setResultsScrollDownVisible(
+			get(lenisRef).lenis.animatedScroll < 100
+		)
 	}
 
 	gsap.ticker.add(update)

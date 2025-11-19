@@ -6,6 +6,12 @@
 
 		<Experience />
 
+		<Transition name="fade">
+			<ExperienceScrollDown
+				v-if="uiStore.isResultsVisible && uiStore.isResultsScrollDownVisible"
+			/>
+		</Transition>
+
 		<template v-if="uiStore.isResultsVisible">
 			<ExperienceResults />
 
@@ -49,6 +55,8 @@ onMounted(async () => {
 			tools: ['console'],
 		})
 	}
+
+	console.log(lenis)
 })
 
 emitter.on(EVENTS.RESTART, async () => {

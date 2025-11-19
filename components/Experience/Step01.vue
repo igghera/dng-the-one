@@ -159,7 +159,7 @@ const knobRotation = shallowRef(0)
 
 const barsWrapperRef = useTemplateRef('barsWrapperRef')
 const { width: barsWrapperWidth } = useElementBounding(barsWrapperRef)
-const numBars = shallowRef(124)
+const numBars = shallowRef(150)
 const barsRef = useTemplateRef('barsRef')
 
 const ready = shallowRef(false)

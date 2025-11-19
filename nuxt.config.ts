@@ -14,6 +14,13 @@ export default defineNuxtConfig({
     '~/assets/css/app.scss'
   ],
 
+  postcss: {
+    plugins: {
+      'postcss-easing-gradients': {}
+    }
+  },
+
+
   compatibilityDate: '2024-01-01',
 
   devtools: { enabled: false },

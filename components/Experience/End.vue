@@ -406,16 +406,22 @@ const animateMask = () => {
 	)
 
 	tl.call(
-		async () => {
+		() => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
 			set(showResult, true)
+		},
+		null,
+		'>-0.05'
+	)
 
+	tl.call(
+		async () => {
 			uiStore.setResultsVisible(true)
 			await nextTick()
 			get(lenis).start()
 		},
 		null,
-		'>-0.05'
+		'>0.4'
 	)
 }
 </script>
