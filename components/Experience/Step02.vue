@@ -29,6 +29,32 @@
 					overflow="visible"
 					ref="trackRef"
 				>
+					<g v-if="false" id="step-02-content-mask">
+						<rect x="-300" y="0" width="716" height="2000" fill="black" />
+
+						<rect
+							style="transform-box: fill-box; transform-origin: center"
+							x="-300"
+							y="10"
+							width="716"
+							height="800"
+							fill="url(#step-02-content-gradient-init)"
+							fill-opacity="1"
+							ref="contentMaskRectInitRef"
+						/>
+
+						<rect
+							style="transform-box: fill-box; transform-origin: center"
+							x="-300"
+							y="10"
+							width="716"
+							height="800"
+							fill="url(#step-02-content-gradient-final)"
+							fill-opacity="1"
+							ref="contentMaskRectFinalRef"
+						/>
+					</g>
+
 					<g mask="url(#step-02-content-mask)">
 						<!-- DO NOT DELETE: Filler element to avoid clipping issues -->
 						<rect
@@ -139,27 +165,50 @@
 						</radialGradient>
 
 						<mask id="step-02-content-mask" ref="contentMaskRef">
+							<rect x="-300" y="10" width="716" height="2000" fill="black" />
+
 							<rect
 								style="transform-box: fill-box; transform-origin: center"
 								x="-300"
-								y="-70"
+								y="10"
 								width="716"
-								height="1000"
-								fill="url(#step-02-content-gradient)"
-								ref="contentMaskRectRef"
+								height="800"
+								fill="url(#step-02-content-gradient-init)"
+								fill-opacity="1"
+								ref="contentMaskRectInitRef"
+							/>
+
+							<rect
+								style="transform-box: fill-box; transform-origin: center"
+								x="-300"
+								y="10"
+								width="716"
+								height="800"
+								fill="url(#step-02-content-gradient-final)"
+								fill-opacity="1"
+								ref="contentMaskRectFinalRef"
 							/>
 						</mask>
 
 						<linearGradient
-							id="step-02-content-gradient"
+							id="step-02-content-gradient-init"
 							gradientTransform="rotate(90)"
 						>
 							<stop offset="0%" stop-color="black" />
-							<stop offset="25%" stop-color="black" />
+							<stop offset="28%" stop-color="black" />
 							<stop offset="40%" stop-color="white" />
-							<stop offset="50%" stop-color="white" />
-							<stop offset="75%" stop-color="white" />
-							<stop offset="90%" stop-color="black" />
+							<stop offset="100%" stop-color="white" />
+						</linearGradient>
+
+						<linearGradient
+							id="step-02-content-gradient-final"
+							gradientTransform="rotate(90)"
+						>
+							<stop offset="0%" stop-color="black" />
+							<stop offset="24%" stop-color="black" />
+							<stop offset="36%" stop-color="white" />
+							<stop offset="73%" stop-color="white" />
+							<stop offset="85%" stop-color="black" />
 							<stop offset="100%" stop-color="black" />
 						</linearGradient>
 					</defs>
@@ -226,7 +275,8 @@ const { gsap, Draggable, Flip } = useGSAP()
 
 const headerRef = useTemplateRef('headerRef')
 const draggerRef = useTemplateRef('draggerRef')
-const contentMaskRectRef = useTemplateRef('contentMaskRectRef')
+const contentMaskRectInitRef = useTemplateRef('contentMaskRectInitRef')
+const contentMaskRectFinalRef = useTemplateRef('contentMaskRectFinalRef')
 const draggerCircleRef = useTemplateRef('draggerCircleRef')
 const draggerMaskRef = useTemplateRef('draggerMaskRef')
 const draggerMaskRectRef = useTemplateRef('draggerMaskRectRef')
@@ -352,7 +402,7 @@ const setInitialState = () => {
 		visibility: 'hidden',
 	})
 
-	gsap.set(get(draggerMaskRectRef), {
+	gsap.set([get(draggerMaskRectRef), get(contentMaskRectFinalRef)], {
 		attr: {
 			'fill-opacity': 0,
 		},
@@ -362,9 +412,9 @@ const setInitialState = () => {
 		y: 577,
 	})
 
-	gsap.set(get(contentMaskRectRef), {
-		scale: 2,
-	})
+	// gsap.set(get(contentMaskRectInitRef), {
+	// 	scale: 2,
+	// })
 
 	set(instructionsVisible, false)
 }
@@ -402,15 +452,15 @@ const animateIn = () => {
 		'start+=0.2'
 	)
 
-	tl.to(
-		get(contentMaskRectRef),
-		{
-			scale: 1,
-			duration: 1.2,
-			ease: 'power1.out',
-		},
-		'start+=0.3'
-	)
+	// tl.to(
+	// 	get(contentMaskRectInitRef),
+	// 	{
+	// 		scale: 1,
+	// 		duration: 1.2,
+	// 		ease: 'power1.out',
+	// 	},
+	// 	'start+=0.3'
+	// )
 
 	return tl.play()
 }
@@ -628,7 +678,7 @@ const translateTrackToPosition = yPosition => {
 			const translateYPercent = gsap.getProperty(get(trackRef), 'yPercent')
 			const value = get(trackHeight) * (translateYPercent / 100)
 
-			gsap.set(get(contentMaskRectRef), {
+			gsap.set([get(contentMaskRectInitRef), get(contentMaskRectFinalRef)], {
 				attr: {
 					y: () => -200 - value,
 				},
@@ -755,6 +805,13 @@ const createDraggable = () => {
 		onThrowUpdate() {
 			update()
 			updateCurrentStep()
+		},
+		onThrowComplete() {
+			gsap.set(get(contentMaskRectFinalRef), {
+				attr: {
+					'fill-opacity': 1,
+				},
+			})
 		},
 	})
 
