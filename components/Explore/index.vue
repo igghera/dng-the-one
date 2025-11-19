@@ -129,6 +129,17 @@ function createControls() {
 	CameraControls.install({ THREE: THREE })
 
 	controls = new CameraControls(camera, renderer.domElement)
+
+	controls.mouseButtons.left = CameraControls.ACTION.TRUCK
+	controls.mouseButtons.middle = CameraControls.ACTION.TRUCK
+	controls.mouseButtons.right = CameraControls.ACTION.TRUCK
+	controls.mouseButtons.wheel = CameraControls.ACTION.NONE
+
+	controls.touches.one = CameraControls.ACTION.TRUCK
+	controls.touches.two = CameraControls.ACTION.TRUCK
+	controls.touches.three = CameraControls.ACTION.TRUCK
+
+	console.log(controls)
 }
 
 function updateScene(time = 0) {}
