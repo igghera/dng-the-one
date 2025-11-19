@@ -34,7 +34,7 @@ const { gsap } = useGSAP()
 
 const textures = new Map()
 
-let renderer, scene, camera, controls
+let renderer, scene, camera, controls, bg0, bg1
 
 //
 // Lifecycle
@@ -111,18 +111,18 @@ async function createRenderer() {
 function createBackground() {
 	const geometry = new THREE.PlaneGeometry(3.84, 2.16)
 
-	const mesh0 = new THREE.Mesh(
+	bg0 = new THREE.Mesh(
 		geometry,
 		makeBackgroundMaterial(textures.get('line-copper'))
 	)
-	mesh0.position.set(0, 0, -0.01)
-	scene.add(mesh0)
+	bg0.position.set(0, 0, -0.01)
+	scene.add(bg0)
 
-	const mesh1 = new THREE.Mesh(
+	bg1 = new THREE.Mesh(
 		geometry.clone(),
 		makeBackgroundMaterial(textures.get('line-gold'))
 	)
-	scene.add(mesh1)
+	scene.add(bg1)
 }
 
 function createControls() {
@@ -139,7 +139,7 @@ function createControls() {
 	controls.touches.two = CameraControls.ACTION.TRUCK
 	controls.touches.three = CameraControls.ACTION.TRUCK
 
-	console.log(controls)
+	controls.fitToBox(bg1)
 }
 
 function updateScene(time = 0) {}
