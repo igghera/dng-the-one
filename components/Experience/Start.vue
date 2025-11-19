@@ -21,7 +21,6 @@
 
 		<ButtonGolden
 			class="self-end pointer-events-auto"
-			style="opacity: 0; visibility: hidden"
 			size="wide"
 			@click="handleClick"
 			ref="buttonRef"
@@ -117,6 +116,7 @@ const handleClick = () => {
 	gsap.to([get(titleRef), get(copyRef), get(buttonRef).$el], {
 		opacity: 0,
 		duration: 0.5,
+		overwrite: true,
 	})
 }
 </script>
