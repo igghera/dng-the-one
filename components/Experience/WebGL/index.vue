@@ -75,6 +75,10 @@ import {
 	threshold as bloomThreshold,
 	strength as bloomStrength,
 	radius as bloomRadius,
+	strengthDesktop as bloomStrengthDesktop,
+	radiusDesktop as bloomRadiusDesktop,
+	strengthMobile as bloomStrengthMobile,
+	radiusMobile as bloomRadiusMobile,
 } from './nodes/bloom'
 
 import { intensity as lutIntensity } from './nodes/lut'
@@ -144,7 +148,8 @@ let scene,
 	introBackground,
 	maskScene,
 	maskCamera,
-	seaMesh
+	seaMesh,
+	bloomPass
 
 const mainCameraParams = Object.freeze({
 	positionStart: new THREE.Vector3(0, -0.35, 4),
@@ -392,8 +397,13 @@ watch([componentWidth, componentHeight], value => {
 
 watch(
 	() => [get(isMobile), get(isMedium), get(isDesktop)],
-	() => {
+	value => {
 		setIntroMeshScale()
+
+		bloomPass.strength.value = value[0]
+			? bloomStrengthMobile
+			: bloomStrengthDesktop
+		bloomPass.radius.value = value[0] ? bloomRadiusMobile : bloomRadiusDesktop
 	}
 )
 
@@ -872,10 +882,15 @@ function createPostprocessing() {
 		introSceneVisibility
 	).toVec4()
 
-	const bloomPass = bloom(introToMain)
+	bloomPass = bloom(introToMain)
 	bloomPass.strength = bloomStrength
 	bloomPass.radius = bloomRadius
 	bloomPass.threshold = bloomThreshold
+
+	if (get(isMobile)) {
+		bloomPass.strength.value = bloomStrengthMobile
+		bloomPass.radius.value = bloomRadiusMobile
+	}
 
 	const inner = introToMain.add(bloomPass).mul(maskPass.r).toVec4()
 	const outer = borderColor.mul(maskPass.g).toVec4()

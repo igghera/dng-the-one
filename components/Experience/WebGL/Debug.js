@@ -44,6 +44,8 @@ import {
   threshold as bloomThreshold,
   strength as bloomStrength,
   radius as bloomRadius,
+  strengthMobile as bloomStrengthMobile,
+  radiusMobile as bloomRadiusMobile,
 } from './nodes/bloom'
 
 import {
@@ -274,15 +276,15 @@ export class Debug {
   }
 
   createBloom() {
-    const bloomFolder = this.pane.addFolder({
+    const folder = this.pane.addFolder({
       title: 'Postprocess - Bloom',
       expanded: false,
     })
 
-    bloomFolder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 1, max: 2, step: 0.01 })
-    bloomFolder.addBinding(bloomStrength, 'value', { label: 'Strength', min: 0, max: 3, step: 0.01 })
-    bloomFolder.addBinding(bloomRadius, 'value', { label: 'Radius', min: 0, max: 1.5, step: 0.01 })
-  }
+    folder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 1, max: 2, step: 0.01 })
+    folder.addBinding(bloomStrength, 'value', { label: 'Strength', min: 0, max: 3, step: 0.01 })
+    folder.addBinding(bloomRadius, 'value', { label: 'Radius', min: 0, max: 1.5, step: 0.01 })
+}
 
   createLUT() {
     const lutFolder = this.pane.addFolder({
