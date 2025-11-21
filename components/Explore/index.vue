@@ -7,11 +7,17 @@
 			:width="componentWidth"
 			:height="componentHeight"
 		/>
+
+		<div class="explore-content" ref="css3DContentRef"></div>
 	</div>
 </template>
 
 <script setup>
 import * as THREE from 'three/webgpu'
+import {
+	CSS3DRenderer,
+	CSS3DObject,
+} from 'three/addons/renderers/CSS3DRenderer'
 import CameraControls from 'camera-controls'
 import { get } from '@vueuse/core'
 
@@ -22,8 +28,8 @@ import { makeBackgroundMaterial } from './materials/background'
 // Refs / State
 //
 const el = useCurrentElement()
-
 const canvasRef = useTemplateRef('canvasRef')
+const css3DContentRef = useTemplateRef('css3DContentRef')
 
 const { pixelRatio } = useDevicePixelRatio()
 const isVisible = useElementVisibility(el)
@@ -34,7 +40,7 @@ const { gsap } = useGSAP()
 
 const textures = new Map()
 
-let renderer, scene, camera, controls, bg0, bg1
+let renderer, rendererCSS, scene, camera, controls, bg0, bg1, targetElement
 
 //
 // Lifecycle
@@ -47,8 +53,17 @@ onMounted(async () => {
 	await loadTextures()
 
 	createBackground()
+	createDOM()
 
 	createControls()
+
+	gsap.delayedCall(1, () => {
+		controls.fitToBox(targetElement, true, {
+			cover: false,
+			paddingLeft: 0.04,
+			paddingRight: 0.04,
+		})
+	})
 
 	gsap.ticker.add((time, deltaTime) => {
 		if (!get(isVisible)) return
@@ -58,6 +73,7 @@ onMounted(async () => {
 		updateScene(time)
 
 		renderer.render(scene, camera)
+		rendererCSS.render(scene, camera)
 	})
 })
 
@@ -73,6 +89,7 @@ watch([componentWidth, componentHeight], value => {
 	camera.updateProjectionMatrix()
 
 	renderer.setSize(value[0], value[1])
+	rendererCSS.setSize(value[0], value[1])
 })
 
 //
@@ -94,6 +111,10 @@ function createCamera() {
 }
 
 async function createRenderer() {
+	rendererCSS = new CSS3DRenderer()
+	rendererCSS.setSize(get(componentWidth), get(componentHeight))
+	get(css3DContentRef).appendChild(rendererCSS.domElement)
+
 	renderer = new THREE.WebGPURenderer({
 		canvas: get(canvasRef),
 		alpha: true,
@@ -123,6 +144,17 @@ function createBackground() {
 		makeBackgroundMaterial(textures.get('line-gold'))
 	)
 	scene.add(bg1)
+
+	targetElement = new THREE.Mesh(
+		new THREE.PlaneGeometry(0.5, 0.3),
+		new THREE.MeshBasicMaterial({
+			color: 0x00ff00,
+			transparent: true,
+			opacity: 0.5,
+		})
+	)
+	targetElement.position.set(0, 0.5, 0)
+	scene.add(targetElement)
 }
 
 function createControls() {
@@ -158,4 +190,41 @@ async function loadTextures() {
 	textures.set('line-copper', ktx[0])
 	textures.set('line-gold', ktx[1])
 }
+
+function createDOM() {
+	const el = document.createElement('div')
+	el.className = 'explore-content-item'
+
+	el.textContent = 'Hello HTML'
+
+	Object.assign(el.style, {
+		color: 'white',
+		fontSize: '0.1px',
+		fontWeight: 'bold',
+		textAlign: 'center',
+		backgroundColor: '#ff000050',
+		width: '1px',
+		height: '0.5px',
+		lineHeight: '1',
+		pointerEvents: 'none',
+	})
+
+	const obj = new CSS3DObject(el)
+	obj.position.set(0, 0.3, 0)
+	scene.add(obj)
+}
 </script>
+
+<style lang="scss" scoped>
+.explore {
+	@apply grid;
+
+	> * {
+		@apply col-start-1 row-start-1 size-full;
+	}
+}
+
+.explore-content {
+	@apply pointer-events-none;
+}
+</style>
