@@ -77,7 +77,7 @@ const createDraggable = () => {
 .explore-dummy {
 	@apply h-[100svh] overflow-clip grid items-center justify-center;
 
-	background-color: #5f4a41;
+	background-color: #1b0b08;
 }
 
 .pic {
