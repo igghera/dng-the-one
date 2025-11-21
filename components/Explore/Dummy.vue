@@ -76,10 +76,16 @@ const createDraggable = () => {
 <style lang="scss" scoped>
 .explore-dummy {
 	@apply h-[100svh] overflow-clip grid items-center justify-center;
+
+	background-color: #5f4a41;
 }
 
 .pic {
 	@apply col-start-1 row-start-1 block w-full aspect-[5308/2961];
+
+	.img {
+		@apply max-w-3xl;
+	}
 }
 
 .pic-target {
@@ -87,6 +93,10 @@ const createDraggable = () => {
 
 	:deep(.pic) {
 		@apply h-full;
+	}
+
+	:deep(.img) {
+		@apply max-w-none;
 	}
 }
 
