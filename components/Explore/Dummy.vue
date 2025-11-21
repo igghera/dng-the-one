@@ -1,7 +1,7 @@
 <template>
 	<div class="explore-dummy">
 		<Transition name="fade">
-			<picture v-show="!isLoading" class="pic">
+			<picture v-show="!isLoading" class="pic" ref="picRef">
 				<img
 					class="img"
 					:src="imgUrl"
@@ -9,7 +9,6 @@
 					loading="lazy"
 					decoding="async"
 					draggable="false"
-					ref="imageRef"
 				/>
 			</picture>
 		</Transition>
@@ -17,10 +16,37 @@
 </template>
 
 <script setup>
-import { useImage } from '@vueuse/core'
+import { get, useImage } from '@vueuse/core'
+
+//
+// Refs / State
+//
+const { gsap } = useGSAP()
+
+const picRef = useTemplateRef('picRef')
 
 const imgUrl = '/images/explore-dummy.webp'
 const { isLoading } = useImage({ src: imgUrl })
+
+watchOnce(isLoading, loading => {
+	gsap.delayedCall(1, () => {
+		animateIn()
+	})
+})
+
+const animateIn = () => {
+	gsap.fromTo(
+		get(picRef),
+		{
+			transformOrigin: '1% 95%',
+		},
+		{
+			duration: 2.5,
+			ease: 'expo.inOut',
+			scale: 4,
+		}
+	)
+}
 </script>
 
 <style lang="scss" scoped>
