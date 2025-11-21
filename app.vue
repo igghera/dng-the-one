@@ -34,9 +34,7 @@ watchEffect(onInvalidate => {
 	function update(time) {
 		get(lenisRef).lenis.raf(time * 1000)
 
-		uiStore.setResultsScrollDownVisible(
-			get(lenisRef).lenis.animatedScroll < 100
-		)
+		uiStore.setResultsScrollDownVisible(get(lenisRef).lenis.animatedScroll < 20)
 	}
 
 	gsap.ticker.add(update)
