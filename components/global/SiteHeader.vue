@@ -4,9 +4,19 @@
 
 		<LogoLettering class="logotype" />
 
-		<ButtonLanguage class="button button-right" />
+		<a v-if="isExplorePage" href="/" class="button button-right">
+			<ButtonClose />
+		</a>
+
+		<ButtonLanguage v-else class="button button-right" />
 	</Container>
 </template>
+
+<script setup>
+const route = useRoute()
+
+const isExplorePage = computed(() => route.path === '/explore')
+</script>
 
 <style lang="scss" scoped>
 .site-header {
