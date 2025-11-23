@@ -939,7 +939,7 @@ function setIntroMeshScale() {
 
 <style lang="scss" scoped>
 .webgl {
-	@apply grid overflow-hidden;
+	@apply grid overflow-hidden size-[inherit];
 }
 
 .canvas,

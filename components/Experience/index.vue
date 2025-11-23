@@ -46,7 +46,7 @@ const uiStore = useUiStore()
 @use '@/assets/css/functions' as *;
 
 .experience {
-	@apply grid h-[100svh];
+	@apply grid h-[100svh] overflow-hidden;
 
 	grid-template-areas:
 		'.'
