@@ -13,33 +13,33 @@
   },
 
   "experience_step_01": {
-    "title": "What’s the energy<br>you’re known for?",
+    "title": "How would you<br>describe your Aura?",
     "instructions": "Turn to select your preference",
     "labels": [
-      "Your<br>mysterious<br>allure",
-      "Your<br>fearless<br>attitude",
-      "Your<br>graceful<br>charm",
-      "Your<br>glowing<br>warmth"
+      "Refined<br>and<br>Exclusive",
+      "Bold<br>and<br>Commanding",
+      "Mysterious<br>and<br>Magnetic",
+      "Confident<br>and<br>Sophisticated"
     ]
   },
 
   "experience_step_02": {
-    "title": "What kind of light<br>you bring into the room?",
+    "title": "When you step<br>into the room...",
     "instructions": "Swipe up to choose",
     "labels": [
-      "Daring and unforgettable",
-      "Light-hearted and bright",
-      "Gracefully magnetic",
-      "Smooth and understated"
+      "I'm the spotlight",
+      "I own the room",
+      "All eyes on me",
+      "If you know, you know"
     ]
   },
 
   "experience_step_03": {
-    "title": "What’s the energy<br>you’re known for?",
+    "title": "What vibe do you<br>want to radiate?",
     "instructions": "Drag and drop into the circle",
     "labels": [
-      "Men's",
-      "Women's",
+      "Masculine",
+      "Feminine",
       "I don't care"
     ]
   },
