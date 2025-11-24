@@ -34,7 +34,7 @@
 
 				<div class="product-pictures">
 					<template v-for="(option, pidx) in item.options" :key="pidx">
-						<ExplorePin
+						<button
 							class="pin"
 							:style="{
 								'--x': `${option.pin.x}`,
@@ -42,7 +42,10 @@
 							}"
 							:data-id="`${idx}_${pidx}`"
 							@pointerdown="handlePinPointerdown"
-						/>
+							aria-label="open panel"
+						>
+							<ExplorePin />
+						</button>
 
 						<picture class="pic">
 							<img
@@ -62,6 +65,29 @@
 				<div v-if="item.title" class="title" v-html="item.title" />
 
 				<div v-if="item.copy" class="copy" v-html="item.copy" />
+			</div>
+		</div>
+
+		<div class="panel" :data-open="panelOpen" ref="panelRef">
+			<span class="panel-notch" />
+
+			<div v-if="currentProduct" class="panel-content">
+				<template
+					v-for="(item, idx) in panelsData.get(currentProduct)"
+					:key="idx"
+				>
+					<div
+						v-if="item.component === 'title'"
+						class="panel-content-title"
+						v-html="item.value"
+					/>
+
+					<div
+						v-if="item.component === 'p'"
+						class="panel-content-copy"
+						v-html="item.value"
+					/>
+				</template>
 			</div>
 		</div>
 	</div>
@@ -86,6 +112,7 @@ const el = useCurrentElement()
 const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
+const panelRef = useTemplateRef('panelRef')
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
@@ -97,6 +124,7 @@ const { rt, tm } = useI18n()
 const textures = new Map()
 
 const currentProduct = shallowRef(null)
+const panelOpen = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
 
@@ -303,6 +331,19 @@ const panelsData = computed(() => {
 })
 
 //
+// Misc
+//
+onClickOutside(
+	panelRef,
+	() => {
+		set(panelOpen, false)
+	},
+	{
+		ignore: ['.pin'],
+	}
+)
+
+//
 // Lifecycle
 //
 onMounted(async () => {
@@ -471,6 +512,7 @@ function createCameraTargets() {
 }
 function handlePinPointerdown(event) {
 	set(currentProduct, event.currentTarget.dataset.id)
+	set(panelOpen, true)
 }
 </script>
 
@@ -478,7 +520,7 @@ function handlePinPointerdown(event) {
 @use '@/assets/css/functions' as *;
 
 .explore {
-	@apply grid h-[100svh];
+	@apply grid h-[100svh] overflow-hidden;
 
 	background-color: #1b0b08;
 
@@ -546,7 +588,7 @@ function handlePinPointerdown(event) {
 	}
 
 	.pin {
-		@apply size-12 relative z-[1] cursor-pointer;
+		@apply size-12 relative z-[1] cursor-pointer pointer-events-auto;
 
 		translate: calc(var(--x) * var(--w) - 50%) calc(var(--y) * var(--h) - 50%);
 	}
@@ -612,5 +654,38 @@ function handlePinPointerdown(event) {
 			translate: 0 calc(var(--h) * -0.82);
 		}
 	}
+}
+
+.panel {
+	@apply self-end justify-self-center h-auto relative z-[1];
+	@apply flex flex-col items-stretch gap-y-5 bg-[#513220] text-gold rounded-t-[10px] p-5;
+	@apply border border-solid border-[#75482E];
+	@apply transition-transform duration-500 ease-out;
+
+	&[data-open='false'] {
+		@apply translate-y-full;
+	}
+
+	width: min(100%, toRem(400));
+}
+
+.panel-notch {
+	@apply pointer-events-none w-[100px] h-[5px] bg-current rounded-full self-center;
+}
+
+.panel-content {
+	@apply flex flex-col items-stretch gap-y-4;
+}
+
+.panel-content-title {
+	@apply tracking-[0.05em] leading-none uppercase;
+
+	font-size: toRem(22);
+}
+
+.panel-content-copy {
+	@apply tracking-[0.05em] leading-none;
+
+	font-size: toRem(15);
 }
 </style>
