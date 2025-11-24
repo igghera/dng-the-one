@@ -11,23 +11,23 @@
     "copy:basis": "node scripts/copyBasisLib.js"
   },
   "dependencies": {
-    "@nuxtjs/i18n": "^10.2.0",
+    "@nuxtjs/i18n": "^10.2.1",
     "@pinia/nuxt": "^0.11.3",
-    "@zumer/snapdom": "^1.9.14",
+    "@zumer/snapdom": "^2.0.0",
     "camera-controls": "^3.1.2",
     "eruda": "^3.4.3",
     "eventemitter3": "^5.0.1",
     "gsap": "^3.13.0",
-    "lenis": "^1.3.14",
+    "lenis": "^1.3.15",
     "nuxt": "^3.20.1",
     "pinia": "^3.0.4",
     "postcss-easing-gradients": "^3.0.1",
     "qr-code-styling": "^1.9.2",
-    "stats-gl": "^3.6.0",
-    "three": "^0.181.0",
+    "stats-gl": "^3.7.0",
+    "three": "^0.181.2",
     "tweakpane": "^4.0.5",
     "tweakpane-plugin-file-import": "^1.1.1",
-    "vue": "^3.5.24",
+    "vue": "^3.5.25",
     "vue-router": "^4.6.3"
   },
   "devDependencies": {
@@ -36,6 +36,6 @@
     "@vueuse/core": "^14.0.0",
     "@vueuse/nuxt": "^14.0.0",
     "sass-embedded": "^1.93.3",
-    "vercel": "^48.8.2"
+    "vercel": "^48.10.11"
   }
 }
