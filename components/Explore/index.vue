@@ -1,5 +1,5 @@
 <template>
-	<div class="explore">
+	<div class="explore" :data-text-visible="!panelOpen">
 		<canvas
 			id="explore-canvas"
 			class="canvas"
@@ -337,6 +337,7 @@ onClickOutside(
 	panelRef,
 	() => {
 		set(panelOpen, false)
+		controls.enabled = true
 	},
 	{
 		ignore: ['.pin'],
@@ -511,8 +512,18 @@ function createCameraTargets() {
 	})
 }
 function handlePinPointerdown(event) {
-	set(currentProduct, event.currentTarget.dataset.id)
+	const { id: productId } = event.currentTarget.dataset
+
+	set(currentProduct, productId)
 	set(panelOpen, true)
+
+	controls.enabled = false
+
+	controls.fitToBox(targets[productId.split('_')[0]], true, {
+		cover: false,
+		paddingTop: 0.2,
+		paddingBottom: 0.4,
+	})
 }
 </script>
 
@@ -573,6 +584,11 @@ function handlePinPointerdown(event) {
 
 	:is(.year, .title, .copy) {
 		@apply self-center pointer-events-none;
+		@apply transition-opacity duration-500 opacity-0;
+
+		.explore[data-text-visible='true'] & {
+			@apply opacity-100;
+		}
 	}
 
 	.year {
@@ -658,7 +674,7 @@ function handlePinPointerdown(event) {
 
 .panel {
 	@apply self-end justify-self-center h-auto relative z-[1];
-	@apply flex flex-col items-stretch gap-y-5 bg-[#513220] text-gold rounded-t-[10px] p-5;
+	@apply flex flex-col items-stretch gap-y-5 bg-[#513220] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
 	@apply border border-solid border-[#75482E];
 	@apply transition-transform duration-500 ease-out;
 
