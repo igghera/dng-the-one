@@ -64,7 +64,6 @@ const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
 
-const { pixelRatio } = useDevicePixelRatio()
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
@@ -183,7 +182,7 @@ const targets = itemsData.map(item => {
 		})
 	)
 
-	mesh.position.set(item.position.x, item.position.y, 0.2)
+	mesh.position.copy(item.position)
 
 	return mesh
 })
@@ -229,6 +228,8 @@ onMounted(async () => {
 	gsap.delayedCall(1, async () => {
 		await controls.fitToBox(targets[0], true, {
 			cover: false,
+			paddingTop: 0.35,
+			paddingBottom: 0.35,
 		})
 
 		controls.enabled = true
@@ -249,10 +250,6 @@ onMounted(async () => {
 //
 // Watchers
 //
-watch(pixelRatio, value => {
-	renderer.setPixelRatio(Math.min(1.2, value))
-})
-
 watch([componentWidth, componentHeight], value => {
 	camera.aspect = value[0] / value[1]
 	camera.updateProjectionMatrix()
@@ -293,6 +290,7 @@ async function createRenderer() {
 
 	renderer.toneMapping = THREE.ACESFilmicToneMapping
 	renderer.setSize(get(componentWidth), get(componentHeight))
+	renderer.setPixelRatio(1)
 
 	await renderer.init()
 }
@@ -364,14 +362,10 @@ function createDOM() {
 	get(socketRefs).forEach((item, idx) => {
 		const obj = new CSS3DObject(item)
 
-		obj.position.set(
-			itemsData[idx].position.x,
-			itemsData[idx].position.y,
-			itemsData[idx].position.z
-		)
+		obj.position.copy(itemsData[idx].position)
 
 		// Scale down CSS3D objects to match the scene's coordinate system
-		obj.scale.set(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR)
+		obj.scale.setScalar(SCALE_FACTOR)
 
 		scene.add(obj)
 	})
@@ -398,7 +392,10 @@ function createCameraTargets() {
 }
 
 .explore-content {
-	@apply pointer-events-none;
+	@apply pointer-events-none relative size-full top-0 left-0;
+
+	top: env(safe-area-inset-top, 0);
+	left: env(safe-area-inset-left, 0);
 }
 
 :deep(.socket) {
