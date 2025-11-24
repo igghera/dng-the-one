@@ -265,6 +265,14 @@ const itemsCopy = computed(() => {
 			year: rt(item.year),
 			title: rt(item.title),
 			copy: rt(item.copy),
+			data: item.data.map(data => {
+				return data.map(item => {
+					return {
+						component: rt(item.component),
+						value: rt(item.value),
+					}
+				})
+			}),
 		}
 	})
 })

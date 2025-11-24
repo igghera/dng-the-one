@@ -215,27 +215,86 @@
       {
         "year": "2006",
         "title": "",
-        "copy": "The birth of an icon,<br>bold vision of femininity"
+        "copy": "The birth of an icon,<br>bold vision of femininity",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": "The One for Women"
+            },
+            {
+              "component": "p",
+              "value": "Same signature, now even more long-lasting, even more captivating. It's a timeless icon gets reimagined, with ah enhanced fragrance that reveals new olfactory depths, crafter for a refined men with an elegant, distinctive character. A blend of intense, sophisticated, and instantly recognizable notes."
+            }
+          ]
+        ]
       },
       {
         "year": "2008",
         "title": "The One for Men<br>Eau de Toilette",
-        "copy": "A new code of<br>masculine elegance"
+        "copy": "A new code of<br>masculine elegance",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": "The One for Men"
+            },
+            {
+              "component": "p",
+              "value": "Charming and sensual, like the men who wears it, this fragrance makes an unmistakable impression with its utterly charismatic blend of basil notes, bewitching lavender, and sandalwood accords."
+            }
+          ]
+        ]
       },
       {
         "year": "2015",
         "title": "The One for Men Eau de Parfum",
-        "copy": "A bold revolution<br>of the original<br>eau de toilette"
+        "copy": "A bold revolution<br>of the original<br>eau de toilette",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": "The One for Men"
+            },
+            {
+              "component": "p",
+              "value": "Same signature, now even more long-lasting, even more captivating. It's a timeless icon gets reimagined, with ah enhanced fragrance that reveals new olfactory depths, crafter for a refined men with an elegant, distinctive character. A blend of intense, sophisticated, and instantly recognizable notes."
+            }
+          ]
+        ]
       },
       {
         "year": "2021",
         "title": "The One Gold<br>Eau De Parfum Intense",
-        "copy": "A bold revolution of<br>the original eau de toilette"
+        "copy": "A bold revolution of<br>the original eau de toilette",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": "The One Gold for Men"
+            },
+            {
+              "component": "p",
+              "value": "It is synonymous with style and magnetic charm. This unique masculine essence pays homage to the magnetic allure of its wearer, featuring a captivating blend of woody and spicy notes, including Clary Sage, Bergamot, and Patchouli."
+            }
+          ],
+          [
+            {
+              "component": "title",
+              "value": "The One Gold for Women"
+            },
+            {
+              "component": "p",
+              "value": "The ultimate expression of elegance and femininity. It is a celebration of the independent and captivating women, featuring a luminous and enchanting olfactory blend of Plum, Rose, and Jasmine."
+            }
+          ]
+        ]
       },
       {
         "year": "2026",
         "title": "20 years later.<br>a new chapter of the story unfolds.",
-        "copy": ""
+        "copy": "",
+        "data": []
       }
     ]
   }
