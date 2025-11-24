@@ -32,6 +32,27 @@
 					/>
 				</picture>
 
+				<div class="product-pictures">
+					<template v-for="(option, pidx) in item.options" :key="pidx">
+						<ExplorePin
+							class="pin"
+							:style="{
+								'--x': `${option.pin.x}`,
+								'--y': `${option.pin.y}`,
+							}"
+						/>
+
+						<picture class="pic">
+							<img
+								class="img"
+								:src="option.imageSrc"
+								alt=""
+								draggable="false"
+							/>
+						</picture>
+					</template>
+				</div>
+
 				<div class="year">
 					{{ item.year }}
 				</div>
@@ -88,9 +109,13 @@ const itemsData = [
 			width: 671,
 			height: 652,
 		},
-		hoverImages: [
+		options: [
 			{
-				src: '/images/explore/socket_01/00-light.webp',
+				imageSrc: '/images/explore/socket_01/00-light.webp',
+				pin: {
+					x: 0.5,
+					y: 0.85,
+				},
 			},
 		],
 	},
@@ -106,9 +131,13 @@ const itemsData = [
 			width: 506,
 			height: 429,
 		},
-		hoverImages: [
+		options: [
 			{
-				src: '/images/explore/socket_02/00-light.webp',
+				imageSrc: '/images/explore/socket_02/00-light.webp',
+				pin: {
+					x: 0.53,
+					y: 0.72,
+				},
 			},
 		],
 	},
@@ -124,9 +153,13 @@ const itemsData = [
 			width: 606,
 			height: 667,
 		},
-		hoverImages: [
+		options: [
 			{
-				src: '/images/explore/socket_03/00-light.webp',
+				imageSrc: '/images/explore/socket_03/00-light.webp',
+				pin: {
+					x: 0.53,
+					y: 0.78,
+				},
 			},
 		],
 	},
@@ -142,9 +175,20 @@ const itemsData = [
 			width: 784,
 			height: 486,
 		},
-		hoverImages: [
+		options: [
 			{
-				src: '/images/explore/socket_04/00-light.webp',
+				imageSrc: '/images/explore/socket_04/00-light.webp',
+				pin: {
+					x: 0.38,
+					y: 0.78,
+				},
+			},
+			{
+				imageSrc: '/images/explore/socket_04/01-light.webp',
+				pin: {
+					x: 0.72,
+					y: 0.73,
+				},
 			},
 		],
 	},
@@ -160,9 +204,34 @@ const itemsData = [
 			width: 1277,
 			height: 791,
 		},
-		hoverImages: [
+		options: [
 			{
-				src: '/images/explore/socket_05/00-light.webp',
+				imageSrc: '/images/explore/socket_05/00-light.webp',
+				pin: {
+					x: 0.42,
+					y: 0.89,
+				},
+			},
+			{
+				imageSrc: '/images/explore/socket_05/01-light.webp',
+				pin: {
+					x: 0.55,
+					y: 0.89,
+				},
+			},
+			{
+				imageSrc: '/images/explore/socket_05/02-light.webp',
+				pin: {
+					x: 0.71,
+					y: 0.85,
+				},
+			},
+			{
+				imageSrc: '/images/explore/socket_05/03-light.webp',
+				pin: {
+					x: 0.81,
+					y: 0.8,
+				},
 			},
 		],
 	},
@@ -270,7 +339,7 @@ function createCamera() {
 		40,
 		get(componentWidth) / get(componentHeight),
 		0.1,
-		50
+		6
 	)
 
 	camera.position.set(0, 0, 5)
@@ -417,6 +486,22 @@ function createCameraTargets() {
 		@apply size-full object-contain object-center;
 	}
 
+	.product-pictures {
+		@apply grid;
+
+		> * {
+			@apply col-start-1 row-start-1;
+		}
+
+		.pic {
+			@apply transition-opacity duration-500 opacity-0;
+		}
+
+		.pin:hover + .pic {
+			@apply opacity-100;
+		}
+	}
+
 	:is(.year, .title, .copy) {
 		@apply self-center pointer-events-none;
 	}
@@ -431,6 +516,12 @@ function createCameraTargets() {
 
 	.copy {
 		font-size: toRem(18);
+	}
+
+	.pin {
+		@apply size-12 relative z-[1] cursor-pointer;
+
+		translate: calc(var(--x) * var(--w) - 50%) calc(var(--y) * var(--h) - 50%);
 	}
 
 	&[data-id='0'] {
