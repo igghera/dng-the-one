@@ -40,6 +40,8 @@
 								'--x': `${option.pin.x}`,
 								'--y': `${option.pin.y}`,
 							}"
+							:data-id="`${idx}_${pidx}`"
+							@pointerdown="handlePinPointerdown"
 						/>
 
 						<picture class="pic">
@@ -72,7 +74,7 @@ import {
 	CSS3DObject,
 } from 'three/addons/renderers/CSS3DRenderer'
 import CameraControls from 'camera-controls'
-import { get } from '@vueuse/core'
+import { get, set } from '@vueuse/core'
 
 import { ktxLoader } from '~/assets/js/loaders'
 import { makeBackgroundMaterial } from './materials/background'
@@ -93,6 +95,8 @@ const { gsap } = useGSAP()
 const { rt, tm } = useI18n()
 
 const textures = new Map()
+
+const currentProduct = shallowRef(null)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
 
@@ -286,6 +290,18 @@ const itemsMerged = computed(() => {
 	})
 })
 
+const panelsData = computed(() => {
+	const map = new Map()
+
+	get(itemsMerged).forEach((item, idx) => {
+		item.options.forEach((option, pidx) => {
+			map.set(`${idx}_${pidx}`, item.data[pidx])
+		})
+	})
+
+	return map
+})
+
 //
 // Lifecycle
 //
@@ -452,6 +468,9 @@ function createCameraTargets() {
 	targets.forEach(target => {
 		scene.add(target)
 	})
+}
+function handlePinPointerdown(event) {
+	set(currentProduct, event.currentTarget.dataset.id)
 }
 </script>
 

@@ -271,21 +271,21 @@
           [
             {
               "component": "title",
-              "value": "The One Gold for Men"
-            },
-            {
-              "component": "p",
-              "value": "It is synonymous with style and magnetic charm. This unique masculine essence pays homage to the magnetic allure of its wearer, featuring a captivating blend of woody and spicy notes, including Clary Sage, Bergamot, and Patchouli."
-            }
-          ],
-          [
-            {
-              "component": "title",
               "value": "The One Gold for Women"
             },
             {
               "component": "p",
               "value": "The ultimate expression of elegance and femininity. It is a celebration of the independent and captivating women, featuring a luminous and enchanting olfactory blend of Plum, Rose, and Jasmine."
+            }
+          ],
+          [
+            {
+              "component": "title",
+              "value": "The One Gold for Men"
+            },
+            {
+              "component": "p",
+              "value": "It is synonymous with style and magnetic charm. This unique masculine essence pays homage to the magnetic allure of its wearer, featuring a captivating blend of woody and spicy notes, including Clary Sage, Bergamot, and Patchouli."
             }
           ]
         ]
