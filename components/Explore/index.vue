@@ -10,7 +10,7 @@
 
 		<div class="explore-content" ref="css3DContentRef">
 			<div
-				v-for="(item, idx) in items"
+				v-for="(item, idx) in itemsMerged"
 				:key="idx"
 				class="socket"
 				:style="{
@@ -18,6 +18,7 @@
 					'--h': `${item.mainImage.height * item.scaleFactor}px`,
 					'pointer-events': 'none',
 				}"
+				:data-id="idx"
 				ref="socketRefs"
 			>
 				<picture class="pic">
@@ -30,6 +31,14 @@
 						decoding="async"
 					/>
 				</picture>
+
+				<div class="year">
+					{{ item.year }}
+				</div>
+
+				<div v-if="item.title" class="title" v-html="item.title" />
+
+				<div v-if="item.copy" class="copy" v-html="item.copy" />
 			</div>
 		</div>
 	</div>
@@ -61,12 +70,13 @@ const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
 
 const { gsap } = useGSAP()
+const { rt, tm } = useI18n()
 
 const textures = new Map()
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
 
-const items = [
+const itemsData = [
 	{
 		position: {
 			x: -1.5,
@@ -159,7 +169,7 @@ const items = [
 	},
 ]
 
-const targets = items.map(item => {
+const targets = itemsData.map(item => {
 	const mesh = new THREE.Mesh(
 		new THREE.PlaneGeometry(
 			item.mainImage.width * item.scaleFactor * 0.001,
@@ -176,6 +186,28 @@ const targets = items.map(item => {
 	mesh.position.set(item.position.x, item.position.y, 0.2)
 
 	return mesh
+})
+
+//
+// Computed
+//
+const itemsCopy = computed(() => {
+	return tm('explore.items').map(item => {
+		return {
+			year: rt(item.year),
+			title: rt(item.title),
+			copy: rt(item.copy),
+		}
+	})
+})
+
+const itemsMerged = computed(() => {
+	return get(itemsCopy).map((item, idx) => {
+		return {
+			...item,
+			...itemsData[idx],
+		}
+	})
 })
 
 //
@@ -333,9 +365,9 @@ function createDOM() {
 		const obj = new CSS3DObject(item)
 
 		obj.position.set(
-			items[idx].position.x,
-			items[idx].position.y,
-			items[idx].position.z
+			itemsData[idx].position.x,
+			itemsData[idx].position.y,
+			itemsData[idx].position.z
 		)
 
 		// Scale down CSS3D objects to match the scene's coordinate system
@@ -353,6 +385,8 @@ function createCameraTargets() {
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/css/functions' as *;
+
 .explore {
 	@apply grid h-[100svh];
 
@@ -368,8 +402,14 @@ function createCameraTargets() {
 }
 
 :deep(.socket) {
+	@apply grid text-gold text-center uppercase;
+
 	height: var(--h);
 	width: var(--w);
+
+	> * {
+		@apply col-start-1 row-start-1;
+	}
 
 	.pic {
 		display: block;
@@ -378,6 +418,84 @@ function createCameraTargets() {
 
 	.img {
 		@apply size-full object-contain object-center;
+	}
+
+	:is(.year, .title, .copy) {
+		@apply self-center pointer-events-none;
+	}
+
+	.year {
+		font-size: toRem(60);
+	}
+
+	.title {
+		font-size: toRem(18);
+	}
+
+	.copy {
+		font-size: toRem(18);
+	}
+
+	&[data-id='0'] {
+		.year {
+			translate: 0 calc(var(--h) * -0.75);
+		}
+
+		.copy {
+			translate: 0 calc(var(--h) * 0.75);
+		}
+	}
+
+	&[data-id='1'] {
+		.year {
+			translate: 0 calc(var(--h) * 1.1);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * 1.55);
+		}
+
+		.copy {
+			translate: 0 calc(var(--h) * -0.9);
+		}
+	}
+
+	&[data-id='2'] {
+		.year {
+			translate: 0 calc(var(--h) * -1.1);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * -0.85);
+		}
+
+		.copy {
+			translate: 0 calc(var(--h) * 0.8);
+		}
+	}
+
+	&[data-id='3'] {
+		.year {
+			translate: 0 calc(var(--h) * 0.9);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * 1.3);
+		}
+
+		.copy {
+			translate: 0 calc(var(--h) * -1);
+		}
+	}
+
+	&[data-id='4'] {
+		.year {
+			translate: 0 calc(var(--h) * -1.1);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * -0.82);
+		}
 	}
 }
 </style>

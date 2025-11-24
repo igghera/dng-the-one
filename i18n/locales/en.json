@@ -208,5 +208,35 @@
   "modal_qr_code": {
     "title": "Scan to download<br>your The One Aura",
     "copy": "Share with your friends<br>on your socials"
+  },
+
+  "explore": {
+    "items": [
+      {
+        "year": "2006",
+        "title": "",
+        "copy": "The birth of an icon,<br>bold vision of femininity"
+      },
+      {
+        "year": "2008",
+        "title": "The One for Men<br>Eau de Toilette",
+        "copy": "A new code of<br>masculine elegance"
+      },
+      {
+        "year": "2015",
+        "title": "The One for Men Eau de Parfum",
+        "copy": "A bold revolution<br>of the original<br>eau de toilette"
+      },
+      {
+        "year": "2021",
+        "title": "The One Gold<br>Eau De Parfum Intense",
+        "copy": "A bold revolution of<br>the original eau de toilette"
+      },
+      {
+        "year": "2026",
+        "title": "20 years later.<br>a new chapter of the story unfolds.",
+        "copy": ""
+      }
+    ]
   }
 }
