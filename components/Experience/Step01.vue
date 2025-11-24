@@ -2,7 +2,7 @@
 	<Container class="pointer-events-none" :data-ready="ready">
 		<header class="header | text-shadow" ref="headerRef">
 			<h2
-				class="display-2 | text-gold-light"
+				class="display-2 | golden-text"
 				v-html="$t('experience_step_01.title')"
 			/>
 		</header>
