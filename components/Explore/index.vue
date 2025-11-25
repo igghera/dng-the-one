@@ -97,6 +97,19 @@
 					>
 						{{ $t('shop_now') }}
 					</ButtonGolden>
+
+					<picture
+						v-if="item.component === 'image'"
+						class="panel-content-image"
+					>
+						<img
+							:src="item.value"
+							:alt="item.title"
+							loading="lazy"
+							decoding="async"
+							draggable="false"
+						/>
+					</picture>
 				</template>
 			</div>
 		</div>
@@ -713,5 +726,17 @@ function handlePinPointerdown(event) {
 	@apply tracking-[0.05em] leading-none;
 
 	font-size: toRem(15);
+}
+
+.panel-content-cta {
+	@apply my-7;
+}
+
+.panel-content-image {
+	@apply overflow-hidden w-full;
+
+	:deep(img) {
+		@apply size-full object-contain object-center;
+	}
 }
 </style>

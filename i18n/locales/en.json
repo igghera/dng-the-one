@@ -230,6 +230,10 @@
             {
               "component": "cta",
               "value": "https://www.notino.it/dolce-gabbana/the-one-eau-de-parfum-per-donna/"
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDP.webp"
             }
           ]
         ]
