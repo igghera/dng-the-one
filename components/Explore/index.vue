@@ -1,5 +1,24 @@
 <template>
-	<div class="explore" :data-text-visible="!panelOpen">
+	<div
+		class="explore"
+		:data-visible="init"
+		:data-text-visible="!panelOpen && copyVisible"
+		:data-pins-visible="pinsVisible"
+	>
+		<Logo20Years class="logo | multi-shadow" ref="logoRef" />
+
+		<div class="intro">
+			<p class="intro-text | multi-shadow" ref="introTextRef">
+				{{ $t('explore.intro') }}
+			</p>
+
+			<ButtonPressAndHold
+				class="pointer-events-auto"
+				:on-complete="introButtonOnCompleteCallback"
+				ref="introButtonRef"
+			/>
+		</div>
+
 		<canvas
 			id="explore-canvas"
 			class="canvas"
@@ -132,6 +151,9 @@ import { makeBackgroundMaterial } from './materials/background'
 // Refs / State
 //
 const el = useCurrentElement()
+const logoRef = useTemplateRef('logoRef')
+const introTextRef = useTemplateRef('introTextRef')
+const introButtonRef = useTemplateRef('introButtonRef')
 const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
@@ -146,8 +168,11 @@ const { rt, tm } = useI18n()
 
 const textures = new Map()
 
+const init = shallowRef(false)
 const currentProduct = shallowRef(null)
 const panelOpen = shallowRef(false)
+const copyVisible = shallowRef(false)
+const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
 
@@ -371,6 +396,10 @@ onClickOutside(
 // Lifecycle
 //
 onMounted(async () => {
+	await nextTick()
+
+	setInitialStyles()
+
 	createScene()
 	createCamera()
 
@@ -383,14 +412,10 @@ onMounted(async () => {
 
 	createControls()
 
-	gsap.delayedCall(1, async () => {
-		await controls.fitToBox(targets[0], true, {
-			cover: false,
-			paddingTop: 0.35,
-			paddingBottom: 0.35,
-		})
+	set(init, true)
 
-		controls.enabled = true
+	gsap.delayedCall(0.4, () => {
+		animateInIntro()
 	})
 
 	gsap.ticker.add((time, deltaTime) => {
@@ -409,8 +434,12 @@ onMounted(async () => {
 // Watchers
 //
 watch([componentWidth, componentHeight], value => {
+	if (!camera) return
+
 	camera.aspect = value[0] / value[1]
 	camera.updateProjectionMatrix()
+
+	if (!renderer) return
 
 	renderer.setSize(value[0], value[1])
 	rendererCSS.setSize(value[0], value[1])
@@ -419,6 +448,12 @@ watch([componentWidth, componentHeight], value => {
 //
 // Methods
 //
+function setInitialStyles() {
+	gsap.set([get(logoRef).$el, get(introTextRef), get(introButtonRef).$el], {
+		autoAlpha: 0,
+	})
+}
+
 function createScene() {
 	scene = new THREE.Scene()
 }
@@ -428,7 +463,7 @@ function createCamera() {
 		40,
 		get(componentWidth) / get(componentHeight),
 		0.1,
-		6
+		20
 	)
 
 	camera.position.set(0, 0, 5)
@@ -534,6 +569,7 @@ function createCameraTargets() {
 		scene.add(target)
 	})
 }
+
 function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
@@ -548,6 +584,53 @@ function handlePinPointerdown(event) {
 		paddingBottom: 0.4,
 	})
 }
+
+async function introButtonOnCompleteCallback() {
+	await animateOutIntro()
+
+	await animateToInitialPosition()
+
+	set(copyVisible, true)
+
+	gsap.delayedCall(0.5, () => {
+		set(pinsVisible, true)
+	})
+}
+
+function animateInIntro() {
+	return gsap.to(
+		[get(logoRef).$el, get(introTextRef), get(introButtonRef).$el],
+		{
+			autoAlpha: 1,
+			duration: 1.4,
+			stagger: 0.1,
+		}
+	)
+}
+
+function animateOutIntro() {
+	return gsap.to(
+		[get(logoRef).$el, get(introTextRef), get(introButtonRef).$el],
+		{
+			autoAlpha: 0,
+			duration: 0.75,
+			stagger: -0.2,
+			onStart: () => {
+				gsap.set(get(introButtonRef).$el, { pointerEvents: 'none' })
+			},
+		}
+	)
+}
+
+async function animateToInitialPosition() {
+	await controls.fitToBox(targets[0], true, {
+		cover: false,
+		paddingTop: 0.35,
+		paddingBottom: 0.35,
+	})
+
+	controls.enabled = true
+}
 </script>
 
 <style lang="scss" scoped>
@@ -555,6 +638,11 @@ function handlePinPointerdown(event) {
 
 .explore {
 	@apply grid h-[100svh] overflow-hidden;
+	@apply transition-opacity duration-1000;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
 
 	background-color: #1b0b08;
 
@@ -607,7 +695,7 @@ function handlePinPointerdown(event) {
 
 	:is(.year, .title, .copy) {
 		@apply self-center pointer-events-none;
-		@apply transition-opacity duration-500 opacity-0;
+		@apply transition-opacity duration-700 opacity-0;
 
 		.explore[data-text-visible='true'] & {
 			@apply opacity-100;
@@ -628,6 +716,11 @@ function handlePinPointerdown(event) {
 
 	.pin {
 		@apply size-12 relative z-[1] cursor-pointer pointer-events-auto;
+		@apply transition-opacity duration-700;
+
+		.explore[data-pins-visible='false'] & {
+			@apply opacity-0 pointer-events-none;
+		}
 
 		translate: calc(var(--x) * var(--w) - 50%) calc(var(--y) * var(--h) - 50%);
 	}
@@ -738,5 +831,30 @@ function handlePinPointerdown(event) {
 	:deep(img) {
 		@apply size-full object-contain object-center;
 	}
+}
+
+.logo {
+	@apply text-gold relative z-[1] pointer-events-none justify-self-center self-start h-auto;
+	@apply transition-transform duration-500;
+
+	translate: 0 max(toRem(128), 15svh);
+	width: toRem(150);
+}
+
+.intro {
+	@apply flex flex-col gap-y-20 items-center size-auto self-end justify-self-center text-center relative z-[1] pointer-events-none text-gold;
+
+	translate: 0 min(toRem(-66), -10svh);
+}
+
+.intro-text {
+	@apply text-base leading-none tracking-[0.05em];
+}
+
+.multi-shadow {
+	filter: drop-shadow(0 0 5px #1b0b08) drop-shadow(0 0 12px #1b0b08)
+		drop-shadow(0 0 14px #1b0b08) drop-shadow(0 0 16px #1b0b08)
+		drop-shadow(0 0 18px #1b0b08) drop-shadow(0 0 20px #1b0b08)
+		drop-shadow(0 0 22px #1b0b08);
 }
 </style>

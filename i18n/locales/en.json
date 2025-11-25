@@ -2,6 +2,7 @@
   "start": "Start",
   "select": "Select",
   "shop_now": "Shop now",
+  "press_and_hold": "Press & Hold",
 
   "experience_start": {
     "title": "Find your Aura",
@@ -212,6 +213,7 @@
   },
 
   "explore": {
+    "intro": "Immerse yourself in the alluring scents of The One Collection",
     "items": [
       {
         "year": "2006",
