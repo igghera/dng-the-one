@@ -76,7 +76,14 @@
 		</Transition>
 
 		<Transition name="fade-long">
-			<nav v-if="showResult && appStore.getResult" class="buttons">
+			<nav
+				v-if="
+					showResult &&
+					appStore.getResult &&
+					!uiStore.isResultsScrollDownVisible
+				"
+				class="buttons"
+			>
 				<div class="buttons-row">
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
@@ -427,7 +434,7 @@ const animateMask = () => {
 			value: 0,
 		},
 		{
-			value: 1,
+			value: 0.9,
 			duration: 1.1,
 			ease: 'circ.out',
 		},
@@ -498,23 +505,12 @@ const animateMask = () => {
 }
 
 .buttons {
-	--translateY: 55%;
-	--offset: calc(900px / 100svh * var(--translateY));
-
 	@apply col-start-1 row-start-1 grid grid-cols-1 gap-6 items-center justify-center self-end;
 
-	translate: 0 var(--offset);
+	translate: 0 130%;
 
 	:deep(> *) {
 		@apply pointer-events-auto;
-	}
-
-	@media (min-height: 700px) {
-		--translateY: 50%;
-	}
-
-	@media (min-height: 900px) {
-		--translateY: 40%;
 	}
 }
 
@@ -532,9 +528,12 @@ const animateMask = () => {
 	opacity: 0;
 }
 
-.fade-long-enter-active,
+.fade-long-enter-active {
+	transition: opacity 0.7s ease;
+}
+
 .fade-long-leave-active {
-	transition: opacity 1s ease 0.5s;
+	transition: opacity 0.4s ease;
 }
 
 .fade-long-enter-from,

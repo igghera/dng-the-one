@@ -14,7 +14,7 @@
 			{{ $t('timeline_intro.copy') }}
 		</p>
 
-		<ButtonGolden class="!text-gold">{{
+		<ButtonGolden to="/explore" class="!text-gold">{{
 			$t('timeline_intro.cta')
 		}}</ButtonGolden>
 	</Container>

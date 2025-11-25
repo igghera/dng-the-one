@@ -1,5 +1,5 @@
 <template>
-	<div class="explore">
+	<div class="explore" :data-text-visible="!panelOpen">
 		<canvas
 			id="explore-canvas"
 			class="canvas"
@@ -8,7 +8,88 @@
 			:height="componentHeight"
 		/>
 
-		<div class="explore-content" ref="css3DContentRef"></div>
+		<div class="explore-content" ref="css3DContentRef">
+			<div
+				v-for="(item, idx) in itemsMerged"
+				:key="idx"
+				class="socket"
+				:style="{
+					'--w': `${item.mainImage.width * item.scaleFactor}px`,
+					'--h': `${item.mainImage.height * item.scaleFactor}px`,
+					'pointer-events': 'none',
+				}"
+				:data-id="idx"
+				ref="socketRefs"
+			>
+				<picture class="pic">
+					<img
+						class="img"
+						:src="item.mainImage.src"
+						alt=""
+						draggable="false"
+						loading="lazy"
+						decoding="async"
+					/>
+				</picture>
+
+				<div class="product-pictures">
+					<template v-for="(option, pidx) in item.options" :key="pidx">
+						<button
+							class="pin"
+							:style="{
+								'--x': `${option.pin.x}`,
+								'--y': `${option.pin.y}`,
+							}"
+							:data-id="`${idx}_${pidx}`"
+							@pointerdown="handlePinPointerdown"
+							aria-label="open panel"
+						>
+							<ExplorePin />
+						</button>
+
+						<picture class="pic">
+							<img
+								class="img"
+								:src="option.imageSrc"
+								alt=""
+								draggable="false"
+							/>
+						</picture>
+					</template>
+				</div>
+
+				<div class="year">
+					{{ item.year }}
+				</div>
+
+				<div v-if="item.title" class="title" v-html="item.title" />
+
+				<div v-if="item.copy" class="copy" v-html="item.copy" />
+			</div>
+		</div>
+
+		<div class="panel" :data-open="panelOpen" ref="panelRef">
+			<span class="panel-notch" />
+
+			<div v-if="currentProduct" class="panel-content">
+				<template
+					v-for="(item, idx) in panelsData.get(currentProduct)"
+					:key="idx"
+				>
+					<div
+						v-if="item.component === 'title'"
+						class="panel-content-title"
+						v-html="item.value"
+					/>
+
+					<div
+						v-if="item.component === 'p'"
+						class="panel-content-copy"
+						v-html="item.value"
+					/>
+				</template>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -19,7 +100,7 @@ import {
 	CSS3DObject,
 } from 'three/addons/renderers/CSS3DRenderer'
 import CameraControls from 'camera-controls'
-import { get } from '@vueuse/core'
+import { get, set } from '@vueuse/core'
 
 import { ktxLoader } from '~/assets/js/loaders'
 import { makeBackgroundMaterial } from './materials/background'
@@ -30,17 +111,238 @@ import { makeBackgroundMaterial } from './materials/background'
 const el = useCurrentElement()
 const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
+const socketRefs = useTemplateRef('socketRefs')
+const panelRef = useTemplateRef('panelRef')
 
-const { pixelRatio } = useDevicePixelRatio()
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
 
 const { gsap } = useGSAP()
+const { rt, tm } = useI18n()
 
 const textures = new Map()
 
-let renderer, rendererCSS, scene, camera, controls, bg0, bg1, targetElement
+const currentProduct = shallowRef(null)
+const panelOpen = shallowRef(false)
+
+let renderer, rendererCSS, scene, camera, controls, bg0, bg1
+
+const itemsData = [
+	{
+		position: {
+			x: -1.5,
+			y: -0.58,
+			z: 0,
+		},
+		scaleFactor: 0.4,
+		mainImage: {
+			src: '/images/explore/socket_01/00-dark.webp',
+			width: 671,
+			height: 652,
+		},
+		options: [
+			{
+				imageSrc: '/images/explore/socket_01/00-light.webp',
+				pin: {
+					x: 0.5,
+					y: 0.85,
+				},
+			},
+		],
+	},
+	{
+		position: {
+			x: -1.025,
+			y: -0.355,
+			z: 0,
+		},
+		scaleFactor: 0.37,
+		mainImage: {
+			src: '/images/explore/socket_02/00-dark.webp',
+			width: 506,
+			height: 429,
+		},
+		options: [
+			{
+				imageSrc: '/images/explore/socket_02/00-light.webp',
+				pin: {
+					x: 0.53,
+					y: 0.72,
+				},
+			},
+		],
+	},
+	{
+		position: {
+			x: -0.425,
+			y: -0.109,
+			z: 0,
+		},
+		scaleFactor: 0.43,
+		mainImage: {
+			src: '/images/explore/socket_03/00-dark.webp',
+			width: 606,
+			height: 667,
+		},
+		options: [
+			{
+				imageSrc: '/images/explore/socket_03/00-light.webp',
+				pin: {
+					x: 0.53,
+					y: 0.78,
+				},
+			},
+		],
+	},
+	{
+		position: {
+			x: 0.151,
+			y: -0.3675,
+			z: 0,
+		},
+		scaleFactor: 0.353,
+		mainImage: {
+			src: '/images/explore/socket_04/00-dark.webp',
+			width: 784,
+			height: 486,
+		},
+		options: [
+			{
+				imageSrc: '/images/explore/socket_04/00-light.webp',
+				pin: {
+					x: 0.38,
+					y: 0.78,
+				},
+			},
+			{
+				imageSrc: '/images/explore/socket_04/01-light.webp',
+				pin: {
+					x: 0.72,
+					y: 0.73,
+				},
+			},
+		],
+	},
+	{
+		position: {
+			x: 1.01,
+			y: -0.3,
+			z: 0,
+		},
+		scaleFactor: 0.353,
+		mainImage: {
+			src: '/images/explore/socket_05/00-dark.webp',
+			width: 1277,
+			height: 791,
+		},
+		options: [
+			{
+				imageSrc: '/images/explore/socket_05/00-light.webp',
+				pin: {
+					x: 0.42,
+					y: 0.89,
+				},
+			},
+			{
+				imageSrc: '/images/explore/socket_05/01-light.webp',
+				pin: {
+					x: 0.55,
+					y: 0.89,
+				},
+			},
+			{
+				imageSrc: '/images/explore/socket_05/02-light.webp',
+				pin: {
+					x: 0.71,
+					y: 0.85,
+				},
+			},
+			{
+				imageSrc: '/images/explore/socket_05/03-light.webp',
+				pin: {
+					x: 0.81,
+					y: 0.8,
+				},
+			},
+		],
+	},
+]
+
+const targets = itemsData.map(item => {
+	const mesh = new THREE.Mesh(
+		new THREE.PlaneGeometry(
+			item.mainImage.width * item.scaleFactor * 0.001,
+			item.mainImage.height * item.scaleFactor * 0.001
+		),
+		new THREE.MeshBasicMaterial({
+			transparent: true,
+			opacity: 0.3,
+			color: 0x00ff00,
+			colorWrite: false,
+		})
+	)
+
+	mesh.position.copy(item.position)
+
+	return mesh
+})
+
+//
+// Computed
+//
+const itemsCopy = computed(() => {
+	return tm('explore.items').map(item => {
+		return {
+			year: rt(item.year),
+			title: rt(item.title),
+			copy: rt(item.copy),
+			data: item.data.map(data => {
+				return data.map(item => {
+					return {
+						component: rt(item.component),
+						value: rt(item.value),
+					}
+				})
+			}),
+		}
+	})
+})
+
+const itemsMerged = computed(() => {
+	return get(itemsCopy).map((item, idx) => {
+		return {
+			...item,
+			...itemsData[idx],
+		}
+	})
+})
+
+const panelsData = computed(() => {
+	const map = new Map()
+
+	get(itemsMerged).forEach((item, idx) => {
+		item.options.forEach((option, pidx) => {
+			map.set(`${idx}_${pidx}`, item.data[pidx])
+		})
+	})
+
+	return map
+})
+
+//
+// Misc
+//
+onClickOutside(
+	panelRef,
+	() => {
+		set(panelOpen, false)
+		controls.enabled = true
+	},
+	{
+		ignore: ['.pin'],
+	}
+)
 
 //
 // Lifecycle
@@ -54,21 +356,24 @@ onMounted(async () => {
 
 	createBackground()
 	createDOM()
+	createCameraTargets()
 
 	createControls()
 
-	gsap.delayedCall(1, () => {
-		controls.fitToBox(targetElement, true, {
+	gsap.delayedCall(1, async () => {
+		await controls.fitToBox(targets[0], true, {
 			cover: false,
-			paddingLeft: 0.04,
-			paddingRight: 0.04,
+			paddingTop: 0.35,
+			paddingBottom: 0.35,
 		})
+
+		controls.enabled = true
 	})
 
 	gsap.ticker.add((time, deltaTime) => {
 		if (!get(isVisible)) return
 
-		controls?.update(deltaTime)
+		controls?.update(deltaTime * 0.001)
 
 		updateScene(time)
 
@@ -80,10 +385,6 @@ onMounted(async () => {
 //
 // Watchers
 //
-watch(pixelRatio, value => {
-	renderer.setPixelRatio(Math.min(1.2, value))
-})
-
 watch([componentWidth, componentHeight], value => {
 	camera.aspect = value[0] / value[1]
 	camera.updateProjectionMatrix()
@@ -104,7 +405,7 @@ function createCamera() {
 		40,
 		get(componentWidth) / get(componentHeight),
 		0.1,
-		50
+		6
 	)
 
 	camera.position.set(0, 0, 5)
@@ -122,9 +423,9 @@ async function createRenderer() {
 		powerPreference: 'high-performance',
 	})
 
-	renderer.setClearColor(0x000000, 1)
 	renderer.toneMapping = THREE.ACESFilmicToneMapping
 	renderer.setSize(get(componentWidth), get(componentHeight))
+	renderer.setPixelRatio(1)
 
 	await renderer.init()
 }
@@ -136,7 +437,7 @@ function createBackground() {
 		geometry,
 		makeBackgroundMaterial(textures.get('line-copper'))
 	)
-	bg0.position.set(0, 0, -0.01)
+	bg0.position.set(0.045, 0, -0.01)
 	scene.add(bg0)
 
 	bg1 = new THREE.Mesh(
@@ -144,17 +445,6 @@ function createBackground() {
 		makeBackgroundMaterial(textures.get('line-gold'))
 	)
 	scene.add(bg1)
-
-	targetElement = new THREE.Mesh(
-		new THREE.PlaneGeometry(0.5, 0.3),
-		new THREE.MeshBasicMaterial({
-			color: 0x00ff00,
-			transparent: true,
-			opacity: 0.5,
-		})
-	)
-	targetElement.position.set(0, 0.5, 0)
-	scene.add(targetElement)
 }
 
 function createControls() {
@@ -171,7 +461,15 @@ function createControls() {
 	controls.touches.two = CameraControls.ACTION.TRUCK
 	controls.touches.three = CameraControls.ACTION.TRUCK
 
-	controls.fitToBox(bg1)
+	const bb = new THREE.Box3(
+		new THREE.Vector3(-1.92, -1.08, 0),
+		new THREE.Vector3(1.92, 1.08, 8)
+	)
+	controls.setBoundary(bb)
+
+	controls.fitToBox(bg1, false, { cover: false })
+
+	controls.enabled = false
 }
 
 function updateScene(time = 0) {}
@@ -192,32 +490,50 @@ async function loadTextures() {
 }
 
 function createDOM() {
-	const el = document.createElement('div')
-	el.className = 'explore-content-item'
+	// Scale factor to convert CSS pixels to Three.js world units
+	// Based on camera distance and scene scale, objects should appear ~0.001-0.002 units per pixel
+	const SCALE_FACTOR = 0.001
 
-	el.textContent = 'Hello HTML'
+	get(socketRefs).forEach((item, idx) => {
+		const obj = new CSS3DObject(item)
 
-	Object.assign(el.style, {
-		color: 'white',
-		fontSize: '0.1px',
-		fontWeight: 'bold',
-		textAlign: 'center',
-		backgroundColor: '#ff000050',
-		width: '1px',
-		height: '0.5px',
-		lineHeight: '1',
-		pointerEvents: 'none',
+		obj.position.copy(itemsData[idx].position)
+
+		// Scale down CSS3D objects to match the scene's coordinate system
+		obj.scale.setScalar(SCALE_FACTOR)
+
+		scene.add(obj)
 	})
+}
 
-	const obj = new CSS3DObject(el)
-	obj.position.set(0, 0.3, 0)
-	scene.add(obj)
+function createCameraTargets() {
+	targets.forEach(target => {
+		scene.add(target)
+	})
+}
+function handlePinPointerdown(event) {
+	const { id: productId } = event.currentTarget.dataset
+
+	set(currentProduct, productId)
+	set(panelOpen, true)
+
+	controls.enabled = false
+
+	controls.fitToBox(targets[productId.split('_')[0]], true, {
+		cover: false,
+		paddingTop: 0.2,
+		paddingBottom: 0.4,
+	})
 }
 </script>
 
 <style lang="scss" scoped>
+@use '@/assets/css/functions' as *;
+
 .explore {
-	@apply grid;
+	@apply grid h-[100svh] overflow-hidden;
+
+	background-color: #1b0b08;
 
 	> * {
 		@apply col-start-1 row-start-1 size-full;
@@ -225,6 +541,167 @@ function createDOM() {
 }
 
 .explore-content {
-	@apply pointer-events-none;
+	@apply pointer-events-none relative size-full top-0 left-0;
+
+	top: env(safe-area-inset-top, 0);
+	left: env(safe-area-inset-left, 0);
+}
+
+:deep(.socket) {
+	@apply grid text-gold text-center uppercase;
+
+	height: var(--h);
+	width: var(--w);
+
+	> * {
+		@apply col-start-1 row-start-1;
+	}
+
+	.pic {
+		display: block;
+		overflow: hidden;
+	}
+
+	.img {
+		@apply size-full object-contain object-center;
+	}
+
+	.product-pictures {
+		@apply grid;
+
+		> * {
+			@apply col-start-1 row-start-1;
+		}
+
+		.pic {
+			@apply transition-opacity duration-500 opacity-0;
+		}
+
+		.pin:hover + .pic {
+			@apply opacity-100;
+		}
+	}
+
+	:is(.year, .title, .copy) {
+		@apply self-center pointer-events-none;
+		@apply transition-opacity duration-500 opacity-0;
+
+		.explore[data-text-visible='true'] & {
+			@apply opacity-100;
+		}
+	}
+
+	.year {
+		font-size: toRem(60);
+	}
+
+	.title {
+		font-size: toRem(18);
+	}
+
+	.copy {
+		font-size: toRem(18);
+	}
+
+	.pin {
+		@apply size-12 relative z-[1] cursor-pointer pointer-events-auto;
+
+		translate: calc(var(--x) * var(--w) - 50%) calc(var(--y) * var(--h) - 50%);
+	}
+
+	&[data-id='0'] {
+		.year {
+			translate: 0 calc(var(--h) * -0.75);
+		}
+
+		.copy {
+			translate: 0 calc(var(--h) * 0.75);
+		}
+	}
+
+	&[data-id='1'] {
+		.year {
+			translate: 0 calc(var(--h) * 1.1);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * 1.55);
+		}
+
+		.copy {
+			translate: 0 calc(var(--h) * -0.9);
+		}
+	}
+
+	&[data-id='2'] {
+		.year {
+			translate: 0 calc(var(--h) * -1.1);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * -0.85);
+		}
+
+		.copy {
+			translate: 0 calc(var(--h) * 0.8);
+		}
+	}
+
+	&[data-id='3'] {
+		.year {
+			translate: 0 calc(var(--h) * 0.9);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * 1.3);
+		}
+
+		.copy {
+			translate: 0 calc(var(--h) * -1);
+		}
+	}
+
+	&[data-id='4'] {
+		.year {
+			translate: 0 calc(var(--h) * -1.1);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * -0.82);
+		}
+	}
+}
+
+.panel {
+	@apply self-end justify-self-center h-auto relative z-[1];
+	@apply flex flex-col items-stretch gap-y-5 bg-[#513220] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
+	@apply border border-solid border-[#75482E];
+	@apply transition-transform duration-500 ease-out;
+
+	&[data-open='false'] {
+		@apply translate-y-full;
+	}
+
+	width: min(100%, toRem(400));
+}
+
+.panel-notch {
+	@apply pointer-events-none w-[100px] h-[5px] bg-current rounded-full self-center;
+}
+
+.panel-content {
+	@apply flex flex-col items-stretch gap-y-4;
+}
+
+.panel-content-title {
+	@apply tracking-[0.05em] leading-none uppercase;
+
+	font-size: toRem(22);
+}
+
+.panel-content-copy {
+	@apply tracking-[0.05em] leading-none;
+
+	font-size: toRem(15);
 }
 </style>

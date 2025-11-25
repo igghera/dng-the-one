@@ -451,9 +451,13 @@ const zoomOutDropzoneCircle = () => {
 }
 
 .content {
-	@apply grid aspect-[260/290] self-center;
+	@apply grid w-full self-center;
 
 	grid-area: b;
+
+	@media (min-width: 320px) {
+		@apply aspect-[260/290] w-auto;
+	}
 
 	@screen portrait {
 		@apply h-[70%];
@@ -533,7 +537,7 @@ const zoomOutDropzoneCircle = () => {
 }
 
 .instructions {
-	@apply self-start;
+	@apply self-start text-center;
 	@apply transition-opacity duration-500 ease-out;
 
 	grid-area: c;

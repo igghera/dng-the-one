@@ -12,6 +12,8 @@
 				/>
 			</picture>
 		</Transition>
+
+		<div class="pic-target" ref="picTargetRef"></div>
 	</div>
 </template>
 
@@ -21,41 +23,81 @@ import { get, useImage } from '@vueuse/core'
 //
 // Refs / State
 //
-const { gsap } = useGSAP()
+const { gsap, Flip, Draggable } = useGSAP()
 
+const el = useCurrentElement()
 const picRef = useTemplateRef('picRef')
+const picTargetRef = useTemplateRef('picTargetRef')
 
 const imgUrl = '/images/explore-dummy.webp'
 const { isLoading } = useImage({ src: imgUrl })
 
-watchOnce(isLoading, loading => {
-	gsap.delayedCall(1, () => {
-		animateIn()
+let draggableInstance = null
+
+//
+// Lifecycle
+//
+onBeforeUnmount(() => {
+	draggableInstance?.[0]?.kill()
+})
+
+//
+// Watchers
+//
+watchOnce(isLoading, () => {
+	gsap.delayedCall(1, async () => {
+		await animateIn()
+		createDraggable()
 	})
 })
 
+//
+// Methods
+//
 const animateIn = () => {
-	gsap.fromTo(
-		get(picRef),
-		{
-			transformOrigin: '1% 95%',
-		},
-		{
-			duration: 2.5,
-			ease: 'expo.inOut',
-			scale: 4,
-		}
-	)
+	const state = Flip.getState(get(picRef))
+
+	get(picTargetRef).appendChild(get(picRef))
+
+	return Flip.from(state, {
+		duration: 2.5,
+		ease: 'expo.inOut',
+	})
+}
+
+const createDraggable = () => {
+	draggableInstance = Draggable.create(get(picRef), {
+		bounds: get(el),
+		zIndexBoost: false,
+	})
 }
 </script>
 
 <style lang="scss" scoped>
 .explore-dummy {
 	@apply h-[100svh] overflow-clip grid items-center justify-center;
+
+	background-color: #1b0b08;
 }
 
 .pic {
-	@apply block w-full aspect-[5308/2961];
+	@apply col-start-1 row-start-1 block w-full aspect-[5308/2961];
+
+	.img {
+		@apply max-w-3xl;
+	}
+}
+
+.pic-target {
+	@apply col-start-1 row-start-1 grid items-center justify-start size-full overflow-hidden;
+
+	:deep(.pic) {
+		@apply h-full;
+	}
+
+	:deep(.img) {
+		@apply max-w-none;
+	}
 }
 
 .img {
