@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  ssr: false, // Capacitor requires SPA mode for full functionality
   app: {
     head: {
       title: 'DG - The One',
