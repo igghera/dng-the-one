@@ -8,9 +8,11 @@
 		<Logo20Years class="logo | multi-shadow" ref="logoRef" />
 
 		<div class="intro">
-			<p class="intro-text | multi-shadow" ref="introTextRef">
-				{{ $t('explore.intro') }}
-			</p>
+			<p
+				class="intro-text | multi-shadow"
+				v-html="$t('explore.intro')"
+				ref="introTextRef"
+			/>
 
 			<ButtonPressAndHold
 				class="pointer-events-auto"
@@ -180,7 +182,7 @@ const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
-let instructionsSplit
+let introSplit, instructionsSplit
 
 const itemsData = [
 	{
@@ -455,9 +457,15 @@ watch([componentWidth, componentHeight], value => {
 // Methods
 //
 function setInitialStyles() {
-	gsap.set([get(logoRef).$el, get(introTextRef), get(introButtonRef).$el], {
+	gsap.set([get(logoRef).$el, get(introButtonRef).$el], {
 		autoAlpha: 0,
 	})
+
+	introSplit = SplitText.create(get(introTextRef), {
+		type: 'lines,words,chars',
+		charsClass: 'char',
+	})
+	gsap.set(introSplit.chars, { opacity: 0 })
 
 	instructionsSplit = SplitText.create(get(instructionsRef), {
 		type: 'words,chars',
@@ -609,14 +617,34 @@ async function introButtonOnCompleteCallback() {
 }
 
 function animateInIntro() {
-	return gsap.to(
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	introSplit.lines.forEach(line => {
+		tl.to(
+			line.querySelectorAll('.char'),
+			{
+				opacity: 1,
+				duration: 1,
+				stagger: {
+					amount: 1.8,
+				},
+			},
+			'start'
+		)
+	})
+
+	tl.to(
 		[get(logoRef).$el, get(introTextRef), get(introButtonRef).$el],
 		{
 			autoAlpha: 1,
 			duration: 1.4,
 			stagger: 0.1,
-		}
+		},
+		'>-0.7'
 	)
+
+	return tl.play()
 }
 
 function animateOutIntro() {

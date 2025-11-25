@@ -213,7 +213,7 @@
   },
 
   "explore": {
-    "intro": "Immerse yourself in the alluring scents of The One Collection",
+    "intro": "Immerse yourself in the alluring scents<br>of The One Collection",
     "instructions": "Swipe and tap to explore",
     "items": [
       {
