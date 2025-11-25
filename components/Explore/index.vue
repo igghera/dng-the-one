@@ -93,59 +93,75 @@
 			</div>
 		</div>
 
-		<div class="panel" :data-open="panelOpen" ref="panelRef">
-			<div v-if="currentProduct" class="panel-content">
-				<button
-					class="panel-close-button"
-					@click="closePanel"
-					aria-label="close panel"
-				>
-					<IconClose class="relative z-[1]" />
-				</button>
+		<div
+			class="panel"
+			:data-open="panelOpen"
+			:data-full-open="false"
+			ref="panelRef"
+		>
+			<button
+				class="panel-close-button"
+				@click="closePanel"
+				aria-label="close panel"
+			>
+				<IconClose class="relative z-[1]" />
+			</button>
 
-				<template
-					v-for="(item, idx) in panelsData.get(currentProduct)"
-					:key="idx"
-				>
-					<div
-						v-if="item.component === 'title'"
-						class="panel-content-title"
-						v-html="item.value"
-					/>
-
-					<div
-						v-if="item.component === 'p'"
-						class="panel-content-copy"
-						v-html="item.value"
-					/>
-
-					<ButtonGolden
-						v-if="item.component === 'cta'"
-						:to="item.src"
-						size="wide"
-						target="_blank"
-						class="panel-content-cta"
+			<div
+				class="panel-scroller | no-scrollbar | overflow-y-auto"
+				data-lenis-prevent
+				ref="panelScrollerRef"
+			>
+				<div v-if="currentProduct" class="panel-content">
+					<template
+						v-for="(item, idx) in panelsData.get(currentProduct)"
+						:key="idx"
 					>
-						{{ $t('shop_now') }}
-					</ButtonGolden>
-
-					<picture
-						v-if="item.component === 'image'"
-						class="panel-content-image"
-					>
-						<img
-							:src="item.value"
-							:alt="item.title"
-							loading="lazy"
-							decoding="async"
-							draggable="false"
+						<div
+							v-if="item.component === 'title'"
+							class="panel-content-title"
+							v-html="item.value"
 						/>
-					</picture>
 
-					<div v-if="item.component === 'video'" class="panel-content-video">
-						<video :src="item.value" controls preload="metadata" playsinline />
-					</div>
-				</template>
+						<div
+							v-if="item.component === 'p'"
+							class="panel-content-copy"
+							v-html="item.value"
+						/>
+
+						<ButtonGolden
+							v-if="item.component === 'cta'"
+							:to="item.src"
+							size="wide"
+							target="_blank"
+							class="panel-content-cta"
+						>
+							{{ $t('shop_now') }}
+						</ButtonGolden>
+
+						<picture
+							v-if="item.component === 'image'"
+							class="panel-content-image"
+						>
+							<img
+								:src="item.value"
+								:alt="item.title"
+								loading="lazy"
+								decoding="async"
+								draggable="false"
+							/>
+						</picture>
+
+						<div v-if="item.component === 'video'" class="panel-content-video">
+							<video
+								:src="item.value"
+								controls
+								preload="metadata"
+								playsinline
+							/>
+						</div>
+					</template>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -174,7 +190,8 @@ const instructionsRef = useTemplateRef('instructionsRef')
 const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
-const panelRef = useTemplateRef('panelRef')
+// const panelRef = useTemplateRef('panelRef')
+const panelScrollerRef = useTemplateRef('panelScrollerRef')
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
@@ -599,10 +616,15 @@ function createCameraTargets() {
 	})
 }
 
-function handlePinPointerdown(event) {
+async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
 	set(currentProduct, productId)
+
+	await nextTick()
+
+	get(panelScrollerRef).scrollTo(0, 0)
+
 	set(panelOpen, true)
 
 	controls.enabled = false
@@ -873,20 +895,36 @@ async function animateToInitialPosition() {
 }
 
 .panel {
-	@apply self-end justify-self-center h-auto relative z-[1];
-	@apply flex flex-col items-stretch gap-y-5 bg-[#513220] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
+	@apply self-end justify-self-center relative z-[1];
+	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
 	@apply border border-solid border-[#75482E];
 	@apply transition-transform duration-500 ease-out;
+
+	height: min(calc(100svh - 80px), 500px);
+	width: min(100%, toRem(400));
 
 	&[data-open='false'] {
 		@apply translate-y-full;
 	}
 
-	width: min(100%, toRem(400));
+	&[data-open-full='true'] {
+	}
+
+	&::after {
+		@apply block content-[''] absolute bottom-12 inset-x-0 h-32 pointer-events-none;
+
+		--hdr-gradient: linear-gradient(
+			to top in oklab,
+			oklch(35% 0.05 50) 10%,
+			oklch(90% 0.5 200 / 0%)
+		);
+
+		background: var(--hdr-gradient);
+	}
 }
 
 .panel-close-button {
-	@apply absolute top-0 right-0;
+	@apply absolute top-4 right-4;
 
 	width: toRem(14);
 
@@ -896,7 +934,7 @@ async function animateToInitialPosition() {
 }
 
 .panel-content {
-	@apply flex flex-col gap-y-12 relative;
+	@apply flex flex-col gap-y-12 relative pb-10;
 }
 
 .panel-content-title {
