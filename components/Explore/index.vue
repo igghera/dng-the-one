@@ -96,7 +96,8 @@
 		<div
 			class="panel"
 			:data-open="panelOpen"
-			:data-full-open="false"
+			:data-open-full="panelOpenFull"
+			@pointerdown="panelOpenFull = true"
 			ref="panelRef"
 		>
 			<button
@@ -205,6 +206,7 @@ const textures = new Map()
 const init = shallowRef(false)
 const currentProduct = shallowRef(null)
 const panelOpen = shallowRef(false)
+const panelOpenFull = shallowRef(false)
 const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
@@ -638,6 +640,7 @@ async function handlePinPointerdown(event) {
 
 function closePanel() {
 	set(panelOpen, false)
+	set(panelOpenFull, false)
 	controls.enabled = true
 }
 
@@ -898,9 +901,12 @@ async function animateToInitialPosition() {
 	@apply self-end justify-self-center relative z-[1];
 	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
 	@apply border border-solid border-[#75482E];
-	@apply transition-transform duration-500 ease-out;
 
-	height: min(calc(100svh - 80px), 500px);
+	height: toRem(250);
+	transition-property: transform, height;
+	transition-timing-function: theme('transitionTimingFunction.out'),
+		theme('transitionTimingFunction.out');
+	transition-duration: 700ms, 500ms;
 	width: min(100%, toRem(400));
 
 	&[data-open='false'] {
@@ -908,6 +914,7 @@ async function animateToInitialPosition() {
 	}
 
 	&[data-open-full='true'] {
+		height: calc(100svh - 80px);
 	}
 
 	&::after {
