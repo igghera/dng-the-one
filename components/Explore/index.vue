@@ -19,6 +19,10 @@
 			/>
 		</div>
 
+		<p class="instructions" ref="instructionsRef">
+			{{ $t('explore.instructions') }}
+		</p>
+
 		<canvas
 			id="explore-canvas"
 			class="canvas"
@@ -154,6 +158,7 @@ const el = useCurrentElement()
 const logoRef = useTemplateRef('logoRef')
 const introTextRef = useTemplateRef('introTextRef')
 const introButtonRef = useTemplateRef('introButtonRef')
+const instructionsRef = useTemplateRef('instructionsRef')
 const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
@@ -163,7 +168,7 @@ const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
 
-const { gsap } = useGSAP()
+const { gsap, SplitText } = useGSAP()
 const { rt, tm } = useI18n()
 
 const textures = new Map()
@@ -175,6 +180,7 @@ const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
+let instructionsSplit
 
 const itemsData = [
 	{
@@ -452,6 +458,11 @@ function setInitialStyles() {
 	gsap.set([get(logoRef).$el, get(introTextRef), get(introButtonRef).$el], {
 		autoAlpha: 0,
 	})
+
+	instructionsSplit = SplitText.create(get(instructionsRef), {
+		type: 'words,chars',
+	})
+	gsap.set(instructionsSplit.chars, { opacity: 0 })
 }
 
 function createScene() {
@@ -622,14 +633,44 @@ function animateOutIntro() {
 	)
 }
 
+function animateInInstructions() {
+	gsap.to(instructionsSplit.chars, {
+		opacity: 1,
+		duration: 1,
+		stagger: 0.04,
+	})
+}
+
+function animateOutInstructions() {
+	gsap.to(instructionsSplit.chars, {
+		opacity: 0,
+		duration: 1,
+		stagger: 0.04,
+		overwrite: true,
+	})
+}
+
 async function animateToInitialPosition() {
+	controls.smoothTime = 0.5
+
 	await controls.fitToBox(targets[0], true, {
 		cover: false,
 		paddingTop: 0.35,
 		paddingBottom: 0.35,
 	})
 
+	controls.smoothTime = 0.25
 	controls.enabled = true
+
+	animateInInstructions()
+
+	get(canvasRef).addEventListener(
+		'pointerdown',
+		() => {
+			animateOutInstructions()
+		},
+		{ once: true }
+	)
 }
 </script>
 
@@ -849,6 +890,14 @@ async function animateToInitialPosition() {
 
 .intro-text {
 	@apply text-base leading-none tracking-[0.05em];
+}
+
+.instructions {
+	@apply size-auto self-end justify-self-center pointer-events-none text-gold relative z-[1];
+	@apply leading-none tracking-[0.03em];
+
+	font-size: toRem(15);
+	translate: 0 min(toRem(-100), -15svh);
 }
 
 .multi-shadow {
