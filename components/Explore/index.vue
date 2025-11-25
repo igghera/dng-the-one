@@ -94,9 +94,15 @@
 		</div>
 
 		<div class="panel" :data-open="panelOpen" ref="panelRef">
-			<span class="panel-notch" />
-
 			<div v-if="currentProduct" class="panel-content">
+				<button
+					class="panel-close-button"
+					@click="closePanel"
+					aria-label="close panel"
+				>
+					<IconClose class="relative z-[1]" />
+				</button>
+
 				<template
 					v-for="(item, idx) in panelsData.get(currentProduct)"
 					:key="idx"
@@ -389,16 +395,16 @@ const panelsData = computed(() => {
 //
 // Misc
 //
-onClickOutside(
-	panelRef,
-	() => {
-		set(panelOpen, false)
-		controls.enabled = true
-	},
-	{
-		ignore: ['.pin'],
-	}
-)
+// onClickOutside(
+// 	panelRef,
+// 	() => {
+// 		set(panelOpen, false)
+// 		controls.enabled = true
+// 	},
+// 	{
+// 		ignore: ['.pin'],
+// 	}
+// )
 
 //
 // Lifecycle
@@ -602,6 +608,11 @@ function handlePinPointerdown(event) {
 		paddingTop: 0.2,
 		paddingBottom: 0.4,
 	})
+}
+
+function closePanel() {
+	set(panelOpen, false)
+	controls.enabled = true
 }
 
 async function introButtonOnCompleteCallback() {
@@ -870,18 +881,25 @@ async function animateToInitialPosition() {
 	width: min(100%, toRem(400));
 }
 
-.panel-notch {
-	@apply pointer-events-none w-[100px] h-[5px] bg-current rounded-full self-center;
+.panel-close-button {
+	@apply absolute top-0 right-0;
+
+	width: toRem(14);
+
+	&::after {
+		@apply content-[''] absolute top-1/2 left-1/2 size-10 -translate-x-1/2 -translate-y-1/2 bg-transparent;
+	}
 }
 
 .panel-content {
-	@apply flex flex-col items-center gap-y-4;
+	@apply flex flex-col gap-y-4 relative;
 }
 
 .panel-content-title {
 	@apply tracking-[0.05em] leading-none uppercase;
 
 	font-size: toRem(22);
+	width: calc(100% - toRem(32));
 }
 
 .panel-content-copy {
@@ -891,7 +909,7 @@ async function animateToInitialPosition() {
 }
 
 .panel-content-cta {
-	@apply my-7;
+	@apply my-7 self-center;
 }
 
 .panel-content-image {
