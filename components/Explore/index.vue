@@ -132,7 +132,7 @@
 
 						<ButtonGolden
 							v-if="item.component === 'cta'"
-							:to="item.src"
+							:to="item.value"
 							size="wide"
 							target="_blank"
 							class="panel-content-cta"
