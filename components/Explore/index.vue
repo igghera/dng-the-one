@@ -141,6 +141,10 @@
 							draggable="false"
 						/>
 					</picture>
+
+					<div v-if="item.component === 'video'" class="panel-content-video">
+						<video :src="item.value" controls preload="metadata" playsinline />
+					</div>
 				</template>
 			</div>
 		</div>
@@ -892,7 +896,7 @@ async function animateToInitialPosition() {
 }
 
 .panel-content {
-	@apply flex flex-col gap-y-4 relative;
+	@apply flex flex-col gap-y-12 relative;
 }
 
 .panel-content-title {
@@ -909,7 +913,7 @@ async function animateToInitialPosition() {
 }
 
 .panel-content-cta {
-	@apply my-7 self-center;
+	@apply self-center;
 }
 
 .panel-content-image {

@@ -235,6 +235,10 @@
               "value": "https://www.notino.it/dolce-gabbana/the-one-eau-de-parfum-per-donna/"
             },
             {
+              "component": "video",
+              "value": "/videos/dummy-01.mp4"
+            },
+            {
               "component": "image",
               "value": "/images/products/FEMALE_EDP.webp"
             }
@@ -258,6 +262,10 @@
             {
               "component": "cta",
               "value": "https://www.notino.it/dolce-gabbana/the-one-eau-de-parfum-per-donna/"
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy-02.mp4"
             }
           ]
         ]
@@ -279,6 +287,10 @@
             {
               "component": "cta",
               "value": "https://www.notino.it/dolce-gabbana/the-one-eau-de-parfum-per-donna/"
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy-03.mp4"
             }
           ]
         ]
@@ -298,6 +310,10 @@
               "value": "The ultimate expression of elegance and femininity. It is a celebration of the independent and captivating women, featuring a luminous and enchanting olfactory blend of Plum, Rose, and Jasmine."
             },
             {
+              "component": "video",
+              "value": "/videos/dummy-02.mp4"
+            },
+            {
               "component": "cta",
               "value": "https://www.notino.it/dolce-gabbana/the-one-eau-de-parfum-per-donna/"
             }
@@ -314,6 +330,10 @@
             {
               "component": "cta",
               "value": "https://www.notino.it/dolce-gabbana/the-one-eau-de-parfum-per-donna/"
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy-01.mp4"
             }
           ]
         ]
