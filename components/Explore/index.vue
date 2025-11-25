@@ -87,6 +87,16 @@
 						class="panel-content-copy"
 						v-html="item.value"
 					/>
+
+					<ButtonGolden
+						v-if="item.component === 'cta'"
+						:to="item.src"
+						size="wide"
+						target="_blank"
+						class="panel-content-cta"
+					>
+						{{ $t('shop_now') }}
+					</ButtonGolden>
 				</template>
 			</div>
 		</div>
@@ -690,7 +700,7 @@ function handlePinPointerdown(event) {
 }
 
 .panel-content {
-	@apply flex flex-col items-stretch gap-y-4;
+	@apply flex flex-col items-center gap-y-4;
 }
 
 .panel-content-title {
