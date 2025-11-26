@@ -256,8 +256,37 @@ const setInitialState = () => {
 	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
 }
 
-const handlePrint = () => {
-	alert('TODO: Implement print feature')
+const handlePrint = async () => {
+	const blob = await takeScreenshot(false)
+	const url = URL.createObjectURL(blob)
+
+	const img = document.createElement('img')
+
+	img.addEventListener(
+		'load',
+		() => {
+			// TODO: Print the image
+			alert('TODO: Implement print feature')
+
+			// `img` is the image to print
+
+			// (debug) Adding the image to the DOM
+			// Object.assign(img.style, {
+			// 	position: 'fixed',
+			// 	top: 0,
+			// 	left: 0,
+			// 	width: '30%',
+			// 	height: 'auto',
+			// })
+
+			// document.body.appendChild(img)
+
+			URL.revokeObjectURL(url)
+		},
+		{ once: true }
+	)
+
+	img.src = url
 }
 
 const handleQRCodeButtonClick = () => {
@@ -269,42 +298,7 @@ const handleDownloadButtonClick = async () => {
 
 	return
 
-	const canvasElem = document.getElementById('experience-canvas')
-	const canvas = await snapdom.toCanvas(canvasElem, { scale: 2 })
-
-	const domElem = document.getElementById('experience-end')
-	const dom = await snapdom.toCanvas(domElem, {
-		scale: 2,
-		filter: el => {
-			return el.tagName !== 'BUTTON'
-		},
-	})
-
-	// Create a combined canvas that can accommodate both screenshots
-	const combinedWidth = Math.max(canvas.width, dom.width)
-	const combinedHeight = Math.max(canvas.height, dom.height)
-	const combinedCanvas = document.createElement('canvas')
-	combinedCanvas.width = combinedWidth
-	combinedCanvas.height = combinedHeight
-
-	const ctx = combinedCanvas.getContext('2d')
-
-	// Draw the canvas screenshot first (background)
-	ctx.drawImage(canvas, 0, 0)
-
-	// Draw the DOM screenshot on top (overlay)
-	// Center the DOM canvas if sizes differ, or draw at 0,0 if same size
-	const domX = (combinedWidth - dom.width) / 2
-	const domY = (combinedHeight - dom.height) / 2 + 30
-	ctx.drawImage(dom, domX, domY)
-
-	// Apply cropTransparentPixels to the combined result
-	const filename = `the-one-card-${Date.now()}`
-	cropTransparentPixels(combinedCanvas, {
-		padding: 4,
-		inset: 20,
-		filename,
-	})
+	takeScreenshot(true)
 }
 
 const handleRestartButtonClick = () => {
@@ -424,6 +418,52 @@ const animateInButton = () => {
 	)
 }
 
+const takeScreenshot = async (download = true) => {
+	const canvasElem = document.getElementById('experience-canvas')
+	const canvas = await snapdom.toCanvas(canvasElem, { scale: 2 })
+
+	const domElem = document.getElementById('experience-end')
+	const dom = await snapdom.toCanvas(domElem, {
+		scale: 2,
+		filter: el => {
+			return el.tagName !== 'BUTTON'
+		},
+	})
+
+	// Create a combined canvas that can accommodate both screenshots
+	const combinedWidth = Math.max(canvas.width, dom.width)
+	const combinedHeight = Math.max(canvas.height, dom.height)
+	const combinedCanvas = document.createElement('canvas')
+	combinedCanvas.width = combinedWidth
+	combinedCanvas.height = combinedHeight
+
+	const ctx = combinedCanvas.getContext('2d')
+
+	// Draw the canvas screenshot first (background)
+	ctx.drawImage(canvas, 0, 0)
+
+	// Draw the DOM screenshot on top (overlay)
+	// Center the DOM canvas if sizes differ, or draw at 0,0 if same size
+	const domX = (combinedWidth - dom.width) / 2
+	const domY = (combinedHeight - dom.height) / 2 + 30
+	ctx.drawImage(dom, domX, domY)
+
+	// Apply cropTransparentPixels to the combined result
+	const filename = `the-one-card-${Date.now()}`
+
+	const result = cropTransparentPixels(
+		combinedCanvas,
+		{
+			padding: 4,
+			inset: 20,
+			filename,
+		},
+		download
+	)
+
+	return result
+}
+
 const animateMask = () => {
 	const tl = gsap.timeline()
 	tl.addLabel('start')
@@ -507,7 +547,7 @@ const animateMask = () => {
 .buttons {
 	@apply col-start-1 row-start-1 grid grid-cols-1 gap-6 items-center justify-center self-end;
 
-	translate: 0 130%;
+	translate: 0 toRem(80);
 
 	:deep(> *) {
 		@apply pointer-events-auto;

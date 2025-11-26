@@ -1,5 +1,30 @@
 <template>
-	<div class="explore" :data-text-visible="!panelOpen">
+	<div
+		class="explore"
+		:data-visible="init"
+		:data-text-visible="!panelOpen && copyVisible"
+		:data-pins-visible="pinsVisible"
+	>
+		<Logo20Years class="logo | multi-shadow" ref="logoRef" />
+
+		<div class="intro">
+			<p
+				class="intro-text | multi-shadow"
+				v-html="$t('explore.intro')"
+				ref="introTextRef"
+			/>
+
+			<ButtonPressAndHold
+				class="pointer-events-auto"
+				:on-complete="introButtonOnCompleteCallback"
+				ref="introButtonRef"
+			/>
+		</div>
+
+		<p class="instructions" ref="instructionsRef">
+			{{ $t('explore.instructions') }}
+		</p>
+
 		<canvas
 			id="explore-canvas"
 			class="canvas"
@@ -68,26 +93,76 @@
 			</div>
 		</div>
 
-		<div class="panel" :data-open="panelOpen" ref="panelRef">
-			<span class="panel-notch" />
+		<div
+			class="panel"
+			:data-open="panelOpen"
+			:data-open-full="panelOpenFull"
+			@pointerdown="panelOpenFull = true"
+			ref="panelRef"
+		>
+			<button
+				class="panel-close-button"
+				@click="closePanel"
+				aria-label="close panel"
+			>
+				<IconClose class="relative z-[1]" />
+			</button>
 
-			<div v-if="currentProduct" class="panel-content">
-				<template
-					v-for="(item, idx) in panelsData.get(currentProduct)"
-					:key="idx"
-				>
-					<div
-						v-if="item.component === 'title'"
-						class="panel-content-title"
-						v-html="item.value"
-					/>
+			<div
+				class="panel-scroller | no-scrollbar | overflow-y-auto"
+				data-lenis-prevent
+				ref="panelScrollerRef"
+			>
+				<div v-if="currentProduct" class="panel-content">
+					<template
+						v-for="(item, idx) in panelsData.get(currentProduct)"
+						:key="idx"
+					>
+						<div
+							v-if="item.component === 'title'"
+							class="panel-content-title"
+							v-html="item.value"
+						/>
 
-					<div
-						v-if="item.component === 'p'"
-						class="panel-content-copy"
-						v-html="item.value"
-					/>
-				</template>
+						<div
+							v-if="item.component === 'p'"
+							class="panel-content-copy"
+							v-html="item.value"
+						/>
+
+						<ButtonGolden
+							v-if="item.component === 'cta'"
+							:to="item.value"
+							size="wide"
+							target="_blank"
+							class="panel-content-cta"
+						>
+							{{ $t('shop_now') }}
+						</ButtonGolden>
+
+						<picture
+							v-if="item.component === 'image'"
+							class="panel-content-image"
+						>
+							<img
+								:src="item.value"
+								:alt="item.title"
+								loading="lazy"
+								decoding="async"
+								draggable="false"
+							/>
+						</picture>
+
+						<div v-if="item.component === 'video'" class="panel-content-video">
+							<video
+								:src="item.value"
+								controls
+								preload="metadata"
+								playsinline
+							/>
+						</div>
+					</template>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -109,24 +184,34 @@ import { makeBackgroundMaterial } from './materials/background'
 // Refs / State
 //
 const el = useCurrentElement()
+const logoRef = useTemplateRef('logoRef')
+const introTextRef = useTemplateRef('introTextRef')
+const introButtonRef = useTemplateRef('introButtonRef')
+const instructionsRef = useTemplateRef('instructionsRef')
 const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
-const panelRef = useTemplateRef('panelRef')
+// const panelRef = useTemplateRef('panelRef')
+const panelScrollerRef = useTemplateRef('panelScrollerRef')
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
 
-const { gsap } = useGSAP()
+const { gsap, SplitText } = useGSAP()
 const { rt, tm } = useI18n()
 
 const textures = new Map()
 
+const init = shallowRef(false)
 const currentProduct = shallowRef(null)
 const panelOpen = shallowRef(false)
+const panelOpenFull = shallowRef(false)
+const copyVisible = shallowRef(false)
+const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
+let introSplit, instructionsSplit
 
 const itemsData = [
 	{
@@ -333,21 +418,25 @@ const panelsData = computed(() => {
 //
 // Misc
 //
-onClickOutside(
-	panelRef,
-	() => {
-		set(panelOpen, false)
-		controls.enabled = true
-	},
-	{
-		ignore: ['.pin'],
-	}
-)
+// onClickOutside(
+// 	panelRef,
+// 	() => {
+// 		set(panelOpen, false)
+// 		controls.enabled = true
+// 	},
+// 	{
+// 		ignore: ['.pin'],
+// 	}
+// )
 
 //
 // Lifecycle
 //
 onMounted(async () => {
+	await nextTick()
+
+	setInitialStyles()
+
 	createScene()
 	createCamera()
 
@@ -360,14 +449,10 @@ onMounted(async () => {
 
 	createControls()
 
-	gsap.delayedCall(1, async () => {
-		await controls.fitToBox(targets[0], true, {
-			cover: false,
-			paddingTop: 0.35,
-			paddingBottom: 0.35,
-		})
+	set(init, true)
 
-		controls.enabled = true
+	gsap.delayedCall(0.4, () => {
+		animateInIntro()
 	})
 
 	gsap.ticker.add((time, deltaTime) => {
@@ -386,8 +471,12 @@ onMounted(async () => {
 // Watchers
 //
 watch([componentWidth, componentHeight], value => {
+	if (!camera) return
+
 	camera.aspect = value[0] / value[1]
 	camera.updateProjectionMatrix()
+
+	if (!renderer) return
 
 	renderer.setSize(value[0], value[1])
 	rendererCSS.setSize(value[0], value[1])
@@ -396,6 +485,23 @@ watch([componentWidth, componentHeight], value => {
 //
 // Methods
 //
+function setInitialStyles() {
+	gsap.set([get(logoRef).$el, get(introButtonRef).$el], {
+		autoAlpha: 0,
+	})
+
+	introSplit = SplitText.create(get(introTextRef), {
+		type: 'lines,words,chars',
+		charsClass: 'char',
+	})
+	gsap.set(introSplit.chars, { opacity: 0 })
+
+	instructionsSplit = SplitText.create(get(instructionsRef), {
+		type: 'words,chars',
+	})
+	gsap.set(instructionsSplit.chars, { opacity: 0 })
+}
+
 function createScene() {
 	scene = new THREE.Scene()
 }
@@ -405,7 +511,7 @@ function createCamera() {
 		40,
 		get(componentWidth) / get(componentHeight),
 		0.1,
-		6
+		20
 	)
 
 	camera.position.set(0, 0, 5)
@@ -511,10 +617,16 @@ function createCameraTargets() {
 		scene.add(target)
 	})
 }
-function handlePinPointerdown(event) {
+
+async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
 	set(currentProduct, productId)
+
+	await nextTick()
+
+	get(panelScrollerRef).scrollTo(0, 0)
+
 	set(panelOpen, true)
 
 	controls.enabled = false
@@ -525,6 +637,109 @@ function handlePinPointerdown(event) {
 		paddingBottom: 0.4,
 	})
 }
+
+function closePanel() {
+	set(panelOpen, false)
+	set(panelOpenFull, false)
+	controls.enabled = true
+}
+
+async function introButtonOnCompleteCallback() {
+	await animateOutIntro()
+
+	await animateToInitialPosition()
+
+	set(copyVisible, true)
+
+	gsap.delayedCall(0.5, () => {
+		set(pinsVisible, true)
+	})
+}
+
+function animateInIntro() {
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	introSplit.lines.forEach(line => {
+		tl.to(
+			line.querySelectorAll('.char'),
+			{
+				opacity: 1,
+				duration: 1,
+				stagger: {
+					amount: 1.8,
+				},
+			},
+			'start'
+		)
+	})
+
+	tl.to(
+		[get(logoRef).$el, get(introTextRef), get(introButtonRef).$el],
+		{
+			autoAlpha: 1,
+			duration: 1.4,
+			stagger: 0.1,
+		},
+		'>-0.7'
+	)
+
+	return tl.play()
+}
+
+function animateOutIntro() {
+	return gsap.to(
+		[get(logoRef).$el, get(introTextRef), get(introButtonRef).$el],
+		{
+			autoAlpha: 0,
+			duration: 0.75,
+			stagger: -0.2,
+			onStart: () => {
+				gsap.set(get(introButtonRef).$el, { pointerEvents: 'none' })
+			},
+		}
+	)
+}
+
+function animateInInstructions() {
+	gsap.to(instructionsSplit.chars, {
+		opacity: 1,
+		duration: 1,
+		stagger: 0.04,
+	})
+}
+
+function animateOutInstructions() {
+	gsap.to(instructionsSplit.chars, {
+		opacity: 0,
+		duration: 1,
+		stagger: 0.04,
+		overwrite: true,
+	})
+}
+
+async function animateToInitialPosition() {
+	controls.smoothTime = 0.5
+
+	await controls.fitToBox(targets[0], true, {
+		cover: false,
+		paddingTop: 0.35,
+		paddingBottom: 0.35,
+	})
+
+	controls.smoothTime = 0.25
+	controls.enabled = true
+
+	animateInInstructions()
+
+	get(canvasRef).addEventListener(
+		'pointerdown',
+		() => {
+			animateOutInstructions()
+		},
+		{ once: true }
+	)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -532,6 +747,11 @@ function handlePinPointerdown(event) {
 
 .explore {
 	@apply grid h-[100svh] overflow-hidden;
+	@apply transition-opacity duration-1000;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
 
 	background-color: #1b0b08;
 
@@ -584,7 +804,7 @@ function handlePinPointerdown(event) {
 
 	:is(.year, .title, .copy) {
 		@apply self-center pointer-events-none;
-		@apply transition-opacity duration-500 opacity-0;
+		@apply transition-opacity duration-700 opacity-0;
 
 		.explore[data-text-visible='true'] & {
 			@apply opacity-100;
@@ -605,6 +825,11 @@ function handlePinPointerdown(event) {
 
 	.pin {
 		@apply size-12 relative z-[1] cursor-pointer pointer-events-auto;
+		@apply transition-opacity duration-700;
+
+		.explore[data-pins-visible='false'] & {
+			@apply opacity-0 pointer-events-none;
+		}
 
 		translate: calc(var(--x) * var(--w) - 50%) calc(var(--y) * var(--h) - 50%);
 	}
@@ -673,35 +898,107 @@ function handlePinPointerdown(event) {
 }
 
 .panel {
-	@apply self-end justify-self-center h-auto relative z-[1];
-	@apply flex flex-col items-stretch gap-y-5 bg-[#513220] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
+	@apply self-end justify-self-center relative z-[1];
+	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
 	@apply border border-solid border-[#75482E];
-	@apply transition-transform duration-500 ease-out;
+
+	height: toRem(250);
+	transition-property: transform, height;
+	transition-timing-function: theme('transitionTimingFunction.out'),
+		theme('transitionTimingFunction.out');
+	transition-duration: 700ms, 500ms;
+	width: min(100%, toRem(400));
 
 	&[data-open='false'] {
 		@apply translate-y-full;
 	}
 
-	width: min(100%, toRem(400));
+	&[data-open-full='true'] {
+		height: calc(100svh - 80px);
+	}
+
+	&::after {
+		@apply block content-[''] absolute bottom-12 inset-x-0 h-32 pointer-events-none;
+
+		--hdr-gradient: linear-gradient(
+			to top in oklab,
+			oklch(35% 0.05 50) 10%,
+			oklch(90% 0.5 200 / 0%)
+		);
+
+		background: var(--hdr-gradient);
+	}
 }
 
-.panel-notch {
-	@apply pointer-events-none w-[100px] h-[5px] bg-current rounded-full self-center;
+.panel-close-button {
+	@apply absolute top-4 right-4;
+
+	width: toRem(14);
+
+	&::after {
+		@apply content-[''] absolute top-1/2 left-1/2 size-10 -translate-x-1/2 -translate-y-1/2 bg-transparent;
+	}
 }
 
 .panel-content {
-	@apply flex flex-col items-stretch gap-y-4;
+	@apply flex flex-col gap-y-12 relative pb-10;
 }
 
 .panel-content-title {
 	@apply tracking-[0.05em] leading-none uppercase;
 
 	font-size: toRem(22);
+	width: calc(100% - toRem(32));
 }
 
 .panel-content-copy {
 	@apply tracking-[0.05em] leading-none;
 
 	font-size: toRem(15);
+}
+
+.panel-content-cta {
+	@apply self-center;
+}
+
+.panel-content-image {
+	@apply overflow-hidden w-full;
+
+	:deep(img) {
+		@apply size-full object-contain object-center;
+	}
+}
+
+.logo {
+	@apply text-gold relative z-[1] pointer-events-none justify-self-center self-start h-auto;
+	@apply transition-transform duration-500;
+
+	translate: 0 max(toRem(128), 15svh);
+	width: toRem(150);
+}
+
+.intro {
+	@apply flex flex-col gap-y-20 items-center size-auto self-end justify-self-center text-center relative z-[1] pointer-events-none text-gold;
+
+	translate: 0 min(toRem(-66), -10svh);
+}
+
+.intro-text {
+	@apply text-base leading-none tracking-[0.05em];
+}
+
+.instructions {
+	@apply size-auto self-end justify-self-center pointer-events-none text-gold relative z-[1];
+	@apply leading-none tracking-[0.03em];
+
+	font-size: toRem(15);
+	translate: 0 min(toRem(-100), -15svh);
+}
+
+.multi-shadow {
+	filter: drop-shadow(0 0 5px #1b0b08) drop-shadow(0 0 12px #1b0b08)
+		drop-shadow(0 0 14px #1b0b08) drop-shadow(0 0 16px #1b0b08)
+		drop-shadow(0 0 18px #1b0b08) drop-shadow(0 0 20px #1b0b08)
+		drop-shadow(0 0 22px #1b0b08);
 }
 </style>
