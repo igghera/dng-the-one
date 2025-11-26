@@ -129,6 +129,8 @@
 
 <script setup>
 import { get, set } from '@vueuse/core'
+import { Printer } from '@bcyesil/capacitor-plugin-printer'
+import { PDFDocument } from 'pdf-lib'
 import { snapdom } from '@zumer/snapdom'
 import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
 
@@ -256,37 +258,88 @@ const setInitialState = () => {
 	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
 }
 
-const handlePrint = async () => {
-	const blob = await takeScreenshot(false)
-	const url = URL.createObjectURL(blob)
+const CM_TO_POINTS = 72 / 2.54
+const PHOTO_PAPER = Object.freeze({
+	width: 10.2 * CM_TO_POINTS,
+	height: 15 * CM_TO_POINTS,
+})
 
-	const img = document.createElement('img')
+const blobToDataUrl = blob =>
+	new Promise((resolve, reject) => {
+		if (!blob) {
+			reject(new Error('Screenshot blob is missing'))
+			return
+		}
 
-	img.addEventListener(
-		'load',
-		() => {
-			// TODO: Print the image
-			alert('TODO: Implement print feature')
+		const reader = new FileReader()
+		reader.onerror = err => reject(err)
+		reader.onloadend = () => resolve(String(reader.result))
+		reader.readAsDataURL(blob)
+	})
 
-			// `img` is the image to print
+const dataUrlToBytes = dataUrl => {
+	const match = dataUrl.match(/^data:(.+);base64,(.+)$/)
+	if (!match) throw new Error('Invalid data URL format')
 
-			// (debug) Adding the image to the DOM
-			// Object.assign(img.style, {
-			// 	position: 'fixed',
-			// 	top: 0,
-			// 	left: 0,
-			// 	width: '30%',
-			// 	height: 'auto',
-			// })
+	const [, mime, base64] = match
+	const binary = atob(base64)
+	const bytes = new Uint8Array(binary.length)
 
-			// document.body.appendChild(img)
+	for (let i = 0; i < binary.length; i += 1) {
+		bytes[i] = binary.charCodeAt(i)
+	}
 
-			URL.revokeObjectURL(url)
-		},
-		{ once: true }
+	return { mime, bytes }
+}
+
+const createPhotoPrintPdf = async dataUrl => {
+	const pdfDoc = await PDFDocument.create()
+	const { mime, bytes } = dataUrlToBytes(dataUrl)
+	const embedImage = mime.includes('png')
+		? await pdfDoc.embedPng(bytes)
+		: await pdfDoc.embedJpg(bytes)
+
+	const page = pdfDoc.addPage([PHOTO_PAPER.width, PHOTO_PAPER.height])
+	const scale = Math.min(
+		page.getWidth() / embedImage.width,
+		page.getHeight() / embedImage.height
 	)
 
-	img.src = url
+	const drawWidth = embedImage.width * scale
+	const drawHeight = embedImage.height * scale
+
+	page.drawImage(embedImage, {
+		x: (page.getWidth() - drawWidth) / 2,
+		y: (page.getHeight() - drawHeight) / 2,
+		width: drawWidth,
+		height: drawHeight,
+	})
+
+	const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true })
+
+	return `base64:${pdfDataUri}`
+}
+
+const handlePrint = async () => {
+	const printName = `the-one-card-${Date.now()}`
+
+	try {
+		const blob = await takeScreenshot(false)
+
+		if (!blob) throw new Error('Failed to capture screenshot blob')
+
+		const dataUrl = await blobToDataUrl(blob)
+		const base64Payload = await createPhotoPrintPdf(dataUrl)
+
+		await Printer.print({
+			content: base64Payload,
+			name: printName,
+			orientation: 'portrait',
+		})
+	} catch (error) {
+		console.error('handlePrint failed:', error)
+		alert(rt('experience_end.print_error') ?? 'Unable to start print job')
+	}
 }
 
 const handleQRCodeButtonClick = () => {
