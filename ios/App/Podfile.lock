@@ -1,6 +1,4 @@
 PODS:
-  - BcyesilCapacitorPluginPrinter (0.0.4):
-    - Capacitor
   - Capacitor (7.4.4):
     - CapacitorCordova
   - CapacitorApp (7.1.0):
@@ -22,7 +20,6 @@ PODS:
   - IONFilesystemLib (1.0.1)
 
 DEPENDENCIES:
-  - "BcyesilCapacitorPluginPrinter (from `../../node_modules/@bcyesil/capacitor-plugin-printer`)"
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorApp (from `../../node_modules/@capacitor/app`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
@@ -38,8 +35,6 @@ SPEC REPOS:
     - IONFilesystemLib
 
 EXTERNAL SOURCES:
-  BcyesilCapacitorPluginPrinter:
-    :path: "../../node_modules/@bcyesil/capacitor-plugin-printer"
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorApp:
@@ -60,7 +55,6 @@ EXTERNAL SOURCES:
     :path: "../capacitor-cordova-ios-plugins"
 
 SPEC CHECKSUMS:
-  BcyesilCapacitorPluginPrinter: 9567a9b7817afcfbab51f14564e5b4ed06837047
   Capacitor: 358dd1c3fdd71d969547b17e159fd8a7736cb45f
   CapacitorApp: 26587c2ce485d88ddb39adb21cac64f8e481afe3
   CapacitorCordova: bf648a636f3c153f652d312ae145fb508b6ffced
@@ -72,6 +66,6 @@ SPEC CHECKSUMS:
   CordovaPlugins: 6e96167c48c084613234ec9f8a0a3cbf15e74af1
   IONFilesystemLib: 89258b8e3e85465da93127d25d7ce37f977e8a6f
 
-PODFILE CHECKSUM: 46a06dd7e73a4b05d9276d893c32d4f5274b339c
+PODFILE CHECKSUM: 5847d4cebe17b44cf0f7f0456643ad32a062392f
 
 COCOAPODS: 1.16.2
