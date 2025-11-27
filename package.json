@@ -12,7 +12,6 @@
 		"ios": "npx cap sync && npx cap open ios"
 	},
 	"dependencies": {
-		"@bcyesil/capacitor-plugin-printer": "^0.0.6",
 		"@capacitor/app": "^7.1.0",
 		"@capacitor/core": "^7.4.4",
 		"@capacitor/filesystem": "^7.1.5",
@@ -23,6 +22,8 @@
 		"@pinia/nuxt": "^0.11.3",
 		"@zumer/snapdom": "^2.0.0",
 		"camera-controls": "^3.1.2",
+		"capacitor-zeroconf": "^3.0.0",
+		"cordova-plugin-printer": "https://github.com/jeffchee-asm/cordova-plugin-printer",
 		"eruda": "^3.4.3",
 		"eventemitter3": "^5.0.1",
 		"gsap": "^3.13.0",
@@ -40,8 +41,8 @@
 		"vue-router": "^4.6.3"
 	},
 	"devDependencies": {
-		"@capacitor/cli": "^7.4.4",
-		"@capacitor/ios": "^7.4.4",
+		"@capacitor/cli": "^6.1.2",
+		"@capacitor/ios": "^6.1.2",
 		"@nuxtjs/tailwindcss": "^6.14.0",
 		"@tweakpane/core": "^2.0.5",
 		"@vueuse/core": "^14.0.0",

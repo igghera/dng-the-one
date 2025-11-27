@@ -128,9 +128,11 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { get, set } from '@vueuse/core'
 import { Printer } from '@bcyesil/capacitor-plugin-printer'
 import { PDFDocument } from 'pdf-lib'
+import { ZeroConf } from 'capacitor-zeroconf'
 import { snapdom } from '@zumer/snapdom'
 import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
 
@@ -162,6 +164,10 @@ const canInteract = shallowRef(true)
 // TODO: Set this value in the app store / local storage
 const canPrint = shallowRef(true)
 
+const printers = shallowRef([])
+const printerDiscoveryError = shallowRef(null)
+const isPrinterDiscoveryActive = shallowRef(false)
+
 const { rt, tm } = useI18n()
 const { gsap, Observer, SplitText } = useGSAP()
 
@@ -169,6 +175,31 @@ const appStore = useAppStore()
 const uiStore = useUiStore()
 
 const showResult = shallowRef(false)
+
+const MM_PER_INCH = 25.4
+const PHOTO_WIDTH_MM = 102
+const PHOTO_HEIGHT_MM = 150
+const BASE_DPI = 300
+const CANVAS_DIMENSIONS = Object.freeze({
+	width: Math.round((PHOTO_WIDTH_MM / MM_PER_INCH) * BASE_DPI),
+	height: Math.round((PHOTO_HEIGHT_MM / MM_PER_INCH) * BASE_DPI),
+})
+
+const ZERO_CONF_DOMAIN = 'local.'
+const ZERO_CONF_SERVICE_TYPES = [
+	'_ipp._tcp',
+	'_printer._tcp',
+	'_pdl-datastream._tcp',
+	'_riousbprint._tcp',
+	'_print-caps._tcp',
+]
+
+const watchedServiceTypes = new Set()
+const isClient = typeof window !== 'undefined'
+const desiredPrinterName =
+	config.public.printerName ?? 'none'
+
+const selectedPrinter = computed(() => get(printers)[0] ?? null)
 
 const allAurasFull = Object.values(tm('auras')).map(aura => ({
 	title: rt(aura.title),
@@ -207,6 +238,10 @@ let drawTimeline, pointerObserver
 // Lifecycle
 //
 onMounted(async () => {
+	if (config.public.isAppMode) {
+		startPrinterDiscovery()
+	}
+
 	setInitialState()
 
 	await animateInHeader()
@@ -239,6 +274,8 @@ onBeforeUnmount(() => {
 	drawTimeline?.kill()
 	pointerObserver?.kill()
 
+	stopPrinterDiscovery()
+
 	emitter.removeListener(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE)
 })
 
@@ -264,18 +301,12 @@ const PHOTO_PAPER = Object.freeze({
 	height: 15 * CM_TO_POINTS,
 })
 
-const blobToDataUrl = blob =>
-	new Promise((resolve, reject) => {
-		if (!blob) {
-			reject(new Error('Screenshot blob is missing'))
-			return
-		}
-
-		const reader = new FileReader()
-		reader.onerror = err => reject(err)
-		reader.onloadend = () => resolve(String(reader.result))
-		reader.readAsDataURL(blob)
-	})
+const ZERO_MARGINS = Object.freeze({
+	top: 0,
+	bottom: 0,
+	left: 0,
+	right: 0,
+})
 
 const dataUrlToBytes = dataUrl => {
 	const match = dataUrl.match(/^data:(.+);base64,(.+)$/)
@@ -320,6 +351,192 @@ const createPhotoPrintPdf = async dataUrl => {
 	return `base64:${pdfDataUri}`
 }
 
+const buildPhotoReadyDataUrl = blob =>
+	new Promise((resolve, reject) => {
+		if (!blob) {
+			reject(new Error('Screenshot blob is missing'))
+			return
+		}
+
+		const objectUrl = URL.createObjectURL(blob)
+		const image = new Image()
+
+		image.onload = () => {
+			const canvas = document.createElement('canvas')
+			canvas.width = CANVAS_DIMENSIONS.width
+			canvas.height = CANVAS_DIMENSIONS.height
+
+			const ctx = canvas.getContext('2d')
+			if (!ctx) {
+				URL.revokeObjectURL(objectUrl)
+				reject(new Error('Unable to obtain canvas context'))
+				return
+			}
+
+			ctx.fillStyle = '#ffffff'
+			ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+			const scale = Math.max(
+				canvas.width / image.width,
+				canvas.height / image.height
+			)
+
+			const drawWidth = image.width * scale
+			const drawHeight = image.height * scale
+			const offsetX = (canvas.width - drawWidth) / 2
+			const offsetY = (canvas.height - drawHeight) / 2
+
+			ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
+			URL.revokeObjectURL(objectUrl)
+			resolve(canvas.toDataURL('image/png'))
+		}
+
+		image.onerror = error => {
+			URL.revokeObjectURL(objectUrl)
+			reject(error)
+		}
+
+		image.src = objectUrl
+	})
+
+const buildBase64Payload = dataUrl => {
+	const [, payload] = dataUrl.split(',')
+	if (!payload) throw new Error('Invalid photo data URL')
+	return `base64://${payload}`
+}
+
+const upsertPrinterFromService = service => {
+	if (!service?.name) return
+
+	const printerName = service.name
+	if (
+		desiredPrinterName &&
+		!printerName.toLowerCase().includes(desiredPrinterName.toLowerCase())
+	)
+		return
+
+	const deviceAddress =
+		service.ipv4Addresses?.[0] ??
+		service.ipv6Addresses?.[0] ??
+		service.hostname ??
+		''
+
+	if (!deviceAddress) return
+
+	const port = service.port || 631
+	const nextPrinter = {
+		name: printerName,
+		ip: deviceAddress,
+		ippUrl: `ipp://${deviceAddress}:${port}/ipp/print`,
+	}
+
+	const currentPrinters = get(printers)
+	const exists = currentPrinters.some(
+		printer =>
+			printer.ip === nextPrinter.ip && printer.name === nextPrinter.name
+	)
+
+	if (!exists) {
+		set(printers, [...currentPrinters, nextPrinter])
+	}
+}
+
+const formatZeroConfError = (type, error) => {
+	const code = error?.code ?? error?.message
+
+	if (code === -72008) {
+		return 'Network permission denied for printer discovery'
+	}
+
+	return `ZeroConf watch error (${type}): ${error?.message ?? error}`
+}
+
+const startPrinterDiscovery = async () => {
+	if (!isClient || !config.public.isAppMode || get(isPrinterDiscoveryActive)) {
+		return false
+	}
+
+	set(printerDiscoveryError, null)
+
+	let hasActiveWatchers = false
+	await Promise.all(
+		ZERO_CONF_SERVICE_TYPES.map(async type => {
+			try {
+				await ZeroConf.watch(
+					{ type, domain: ZERO_CONF_DOMAIN },
+					result => {
+						if (result?.service) {
+							console.log('Discovered printer service:', result.service)
+							
+							upsertPrinterFromService(result.service)
+						}
+					}
+				)
+				watchedServiceTypes.add(type)
+				hasActiveWatchers = true
+			} catch (error) {
+				console.error(`[ZeroConf] Failed to watch ${type}`, error)
+				set(printerDiscoveryError, formatZeroConfError(type, error))
+			}
+		})
+	)
+
+	set(isPrinterDiscoveryActive, hasActiveWatchers)
+	return hasActiveWatchers
+}
+
+const stopPrinterDiscovery = async () => {
+	if (!watchedServiceTypes.size) return
+
+	await Promise.all(
+		Array.from(watchedServiceTypes).map(async type => {
+			try {
+				await ZeroConf.unwatch({ type, domain: ZERO_CONF_DOMAIN })
+			} catch (error) {
+				console.warn(`[ZeroConf] Failed to unwatch ${type}`, error)
+			}
+		})
+	)
+
+	watchedServiceTypes.clear()
+	set(isPrinterDiscoveryActive, false)
+}
+
+const tryDirectPrinterJob = async payload => {
+	if (!isClient) return false
+
+	const printerPlugin = window?.cordova?.plugins?.printer
+	const printerTarget = get(selectedPrinter)
+
+	if (!printerPlugin || !printerTarget) {
+		return false
+	}
+
+	return new Promise((resolve, reject) => {
+		let resolved = false
+		const complete = success => {
+			if (resolved) return
+			resolved = true
+			resolve(success)
+		}
+
+		try {
+			printerPlugin.print(
+				payload,
+				{
+					printer: printerTarget.ippUrl,
+					margin: ZERO_MARGINS,
+				},
+				() => complete(true)
+			)
+
+			setTimeout(() => complete(true), 300)
+		} catch (error) {
+			reject(error)
+		}
+	})
+}
+
 const handlePrint = async () => {
 	const printName = `the-one-card-${Date.now()}`
 
@@ -328,14 +545,56 @@ const handlePrint = async () => {
 
 		if (!blob) throw new Error('Failed to capture screenshot blob')
 
-		const dataUrl = await blobToDataUrl(blob)
-		const base64Payload = await createPhotoPrintPdf(dataUrl)
+		const dataUrl = await buildPhotoReadyDataUrl(blob)
+		console.log('Screenshot captured, dataUrl prefix:', dataUrl.substring(0, 50))
 
-		await Printer.print({
-			content: base64Payload,
-			name: printName,
-			orientation: 'portrait',
-		})
+		const base64ImagePayload = buildBase64Payload(dataUrl)
+		console.log('Base64 Payload prefix:', base64ImagePayload.substring(0, 50))
+
+		let printedDirectly = false
+
+		try {
+			console.log('Attempting direct print...')
+			if (!isClient) throw new Error('Not client side')
+
+			// Use cordova.plugins.printer directly if available (bypass capacitor wrapper)
+			const printerPlugin = window?.cordova?.plugins?.printer
+			const printerTarget = get(selectedPrinter)
+			
+			if (!printerPlugin) throw new Error('Cordova printer plugin not found')
+			if (!printerTarget) throw new Error('No printer selected')
+
+			console.log('Printing to target:', printerTarget.ippUrl)
+			
+			printedDirectly = await new Promise((resolve, reject) => {
+				let resolved = false
+				const complete = success => {
+					if (resolved) return
+					resolved = true
+					resolve(success)
+				}
+
+				try {
+					printerPlugin.print(
+						base64ImagePayload,
+						{
+							printer: printerTarget.ippUrl,
+							margin: ZERO_MARGINS,
+						},
+						() => complete(true)
+					)
+
+					setTimeout(() => complete(true), 1000) // Increased timeout
+				} catch (error) {
+					reject(error)
+				}
+			})
+			
+			console.log('Direct print result:', printedDirectly)
+		} catch (directError) {
+			console.error('Direct network print failed:', directError)
+			alert(rt('experience_end.print_error') ?? 'Unable to print directly to ' + (get(selectedPrinter)?.name || 'printer'))
+		}
 	} catch (error) {
 		console.error('handlePrint failed:', error)
 		alert(rt('experience_end.print_error') ?? 'Unable to start print job')
