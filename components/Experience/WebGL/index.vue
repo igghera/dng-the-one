@@ -717,7 +717,7 @@ function createBackground() {
 	const material = new BackgroundMaterial(textures).material
 	background = new THREE.Mesh(geometry, material)
 
-	background.position.set(0, -0.5, -5.5)
+	background.position.set(0, -1.1, -5.5)
 
 	setBackgroundSize()
 

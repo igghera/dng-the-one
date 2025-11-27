@@ -39,7 +39,11 @@ export class DrawMaterial {
 
     this.material.opacityNode = Fn(() => {
       const progress = this.progress.oneMinus()
-      const alpha = smoothstep(progress, progress.add(this.smooth), map.r.mul(this.smooth.oneMinus()).add(this.smooth))
+      const alpha = smoothstep(
+        progress,
+        progress.add(this.smooth),
+        map.r.mul(this.smooth.oneMinus()).add(this.smooth)
+      )
       return alpha.mul(getNoise()).mul(this.opacity)
     })()
   }

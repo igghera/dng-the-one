@@ -1,5 +1,5 @@
 import { MeshBasicNodeMaterial } from 'three/webgpu'
-import { Fn, uv, smoothstep, uniform, mix, texture, positionWorld, length } from 'three/tsl'
+import { Fn, vec2, uv, smoothstep, uniform, mix, texture, positionWorld, length } from 'three/tsl'
 
 export const progress = uniform(0)
 
@@ -19,10 +19,12 @@ export class BackgroundMaterial {
     })
 
     this.material.colorNode = Fn(() => {
-      const colA = texture(textures.get('bg_01_mobile'))
-      const colB = texture(textures.get('bg_02_mobile'))
-      const colC = texture(textures.get('bg_03_mobile'))
-      const colD = texture(textures.get('bg_04_mobile'))
+      const textureUV = vec2(uv().x, uv().y.oneMinus())
+
+      const colA = texture(textures.get('bg_01_mobile'), textureUV)
+      const colB = texture(textures.get('bg_02_mobile'), textureUV)
+      const colC = texture(textures.get('bg_03_mobile'), textureUV)
+      const colD = texture(textures.get('bg_04_mobile'), textureUV)
 
       const progressDegrees = progress.mul(360)
 
@@ -44,8 +46,10 @@ export class BackgroundMaterial {
       const distanceFromCenter = length(centerUV.x)
       distanceFromCenter.assign(smoothstep(0.05, 0.25, distanceFromCenter.oneMinus()))
 
-      const alpha = smoothstep(0.25, 0.95, uv().y).oneMinus()
-      alpha.mulAssign(distanceFromCenter)
+      // const alpha = smoothstep(0.25, 0.95, uv().y).oneMinus()
+      // alpha.mulAssign(distanceFromCenter)
+
+      const alpha = distanceFromCenter
 
       alpha.mulAssign(smoothstep(-4, -0.5, positionWorld.y))
 

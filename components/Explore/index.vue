@@ -97,7 +97,6 @@
 			class="panel"
 			:data-open="panelOpen"
 			:data-open-full="panelOpenFull"
-			@pointerdown="panelOpenFull = true"
 			ref="panelRef"
 		>
 			<button
@@ -110,7 +109,6 @@
 
 			<div
 				class="panel-scroller | no-scrollbar | overflow-y-auto"
-				data-lenis-prevent
 				ref="panelScrollerRef"
 			>
 				<div v-if="currentProduct" class="panel-content">
@@ -178,7 +176,7 @@ import CameraControls from 'camera-controls'
 import { get, set } from '@vueuse/core'
 
 import { ktxLoader } from '~/assets/js/loaders'
-import { makeBackgroundMaterial } from './materials/background'
+import { backgroundCopper, backgroundGold } from './materials/background'
 
 //
 // Refs / State
@@ -191,14 +189,14 @@ const instructionsRef = useTemplateRef('instructionsRef')
 const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
-// const panelRef = useTemplateRef('panelRef')
+const panelRef = useTemplateRef('panelRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
 
-const { gsap, SplitText } = useGSAP()
+const { gsap, SplitText, Observer } = useGSAP()
 const { rt, tm } = useI18n()
 
 const textures = new Map()
@@ -211,7 +209,11 @@ const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
-let introSplit, instructionsSplit
+let introSplit, instructionsSplit, panelPointerObserver
+let debugPanel
+
+const urlParams = useUrlSearchParams('history')
+const isDebug = Object.hasOwn(urlParams, 'debug')
 
 const itemsData = [
 	{
@@ -448,11 +450,16 @@ onMounted(async () => {
 	createCameraTargets()
 
 	createControls()
+	createPanelPointerObserver()
 
 	set(init, true)
 
 	gsap.delayedCall(0.4, () => {
-		animateInIntro()
+		animateInBackground()
+
+		gsap.delayedCall(1.5, () => {
+			animateInIntro()
+		})
 	})
 
 	gsap.ticker.add((time, deltaTime) => {
@@ -464,7 +471,14 @@ onMounted(async () => {
 
 		renderer.render(scene, camera)
 		rendererCSS.render(scene, camera)
+
+		debugPanel?.pane?.refresh()
 	})
+
+	if (isDebug) {
+		const { ExploreDebug } = await import('./Debug')
+		debugPanel = new ExploreDebug()
+	}
 })
 
 //
@@ -539,17 +553,17 @@ async function createRenderer() {
 function createBackground() {
 	const geometry = new THREE.PlaneGeometry(3.84, 2.16)
 
-	bg0 = new THREE.Mesh(
-		geometry,
-		makeBackgroundMaterial(textures.get('line-copper'))
-	)
+	backgroundCopper.name = 'Copper'
+	backgroundCopper.map.value = textures.get('line-copper-desktop')
+	backgroundCopper.mask.value = textures.get('line-copper-desktop-mask')
+	bg0 = new THREE.Mesh(geometry, backgroundCopper.material)
 	bg0.position.set(0.045, 0, -0.01)
 	scene.add(bg0)
 
-	bg1 = new THREE.Mesh(
-		geometry.clone(),
-		makeBackgroundMaterial(textures.get('line-gold'))
-	)
+	backgroundGold.name = 'Gold'
+	backgroundGold.map.value = textures.get('line-gold-desktop')
+	backgroundGold.mask.value = textures.get('line-gold-desktop-mask')
+	bg1 = new THREE.Mesh(geometry.clone(), backgroundGold.material)
 	scene.add(bg1)
 }
 
@@ -584,15 +598,36 @@ async function loadTextures() {
 	ktxLoader.detectSupport(renderer)
 
 	const ktx = await ktxLoader.load([
-		'/webgl/draw/line-copper.ktx2',
-		'/webgl/draw/line-gold.ktx2',
+		'/webgl/draw/line-copper-desktop.ktx2',
+		'/webgl/draw/line-gold-desktop.ktx2',
+		'/webgl/draw/line-copper-mobile.ktx2',
+		'/webgl/draw/line-gold-mobile.ktx2',
+		'/webgl/draw/explore-mask.ktx2',
+		'/webgl/draw/line-copper-desktop-mask.ktx2',
+		'/webgl/draw/line-gold-desktop-mask.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
 	ktx[1].colorSpace = THREE.SRGBColorSpace
+	ktx[2].colorSpace = THREE.SRGBColorSpace
+	ktx[3].colorSpace = THREE.SRGBColorSpace
 
-	textures.set('line-copper', ktx[0])
-	textures.set('line-gold', ktx[1])
+	ktx[4].colorSpace = THREE.NoColorSpace
+	ktx[4].wrapS = ktx[4].wrapT = THREE.NoWrapping
+
+	ktx[5].colorSpace = THREE.NoColorSpace
+	ktx[5].wrapS = ktx[5].wrapT = THREE.NoWrapping
+
+	ktx[6].colorSpace = THREE.NoColorSpace
+	ktx[6].wrapS = ktx[6].wrapT = THREE.NoWrapping
+
+	textures.set('line-copper-desktop', ktx[0])
+	textures.set('line-gold-desktop', ktx[1])
+	textures.set('line-copper-mobile', ktx[2])
+	textures.set('line-gold-mobile', ktx[3])
+	textures.set('mask', ktx[4])
+	textures.set('line-copper-desktop-mask', ktx[5])
+	textures.set('line-gold-desktop-mask', ktx[6])
 }
 
 function createDOM() {
@@ -618,6 +653,37 @@ function createCameraTargets() {
 	})
 }
 
+function createPanelPointerObserver() {
+	//
+	// Create an observer to handle the swipe up gesture on the panel.
+	// When the user swipes up on the panel, we want to open it full.
+	//
+	panelPointerObserver = Observer.create({
+		type: 'pointer,touch',
+		target: get(panelRef),
+		onChangeY: value => {
+			if (value.target.dataset.openFull === 'true') return
+
+			const curr = gsap.getProperty(get(panelRef), '--drag-pan-y')
+			const newVal = Math.abs(curr) - value.deltaY
+			gsap.set(get(panelRef), { '--drag-pan-y': newVal })
+		},
+		onRelease: () => {
+			// Prevent if the panel is not open.
+			if (!get(panelOpen)) return
+
+			// Prevent if the panel is fully opened.
+			if (get(panelOpenFull)) return
+
+			const curr = gsap.getProperty(get(panelRef), '--drag-pan-y')
+
+			gsap.set(get(panelRef), { '--drag-pan-y': 0 })
+
+			curr > 80 && openPanelFull()
+		},
+	})
+}
+
 async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
@@ -625,9 +691,7 @@ async function handlePinPointerdown(event) {
 
 	await nextTick()
 
-	get(panelScrollerRef).scrollTo(0, 0)
-
-	set(panelOpen, true)
+	openPanel()
 
 	controls.enabled = false
 
@@ -638,10 +702,30 @@ async function handlePinPointerdown(event) {
 	})
 }
 
+function openPanel() {
+	set(panelOpen, true)
+
+	get(panelScrollerRef).scrollTo(0, 0)
+	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+}
+
 function closePanel() {
 	set(panelOpen, false)
 	set(panelOpenFull, false)
+
 	controls.enabled = true
+}
+
+function openPanelFull() {
+	get(panelScrollerRef).dataset.lenisPrevent = ''
+
+	set(panelOpenFull, true)
+}
+
+function closePanelFull() {
+	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+
+	set(panelOpenFull, false)
 }
 
 async function introButtonOnCompleteCallback() {
@@ -654,6 +738,29 @@ async function introButtonOnCompleteCallback() {
 	gsap.delayedCall(0.5, () => {
 		set(pinsVisible, true)
 	})
+}
+
+function animateInBackground() {
+	const tl = gsap.timeline()
+	tl.addLabel('start')
+
+	tl.to(
+		backgroundCopper.drawProgress,
+		{
+			value: 1,
+			duration: 5,
+		},
+		'start'
+	)
+
+	tl.to(
+		backgroundGold.drawProgress,
+		{
+			value: 1,
+			duration: 5,
+		},
+		'start'
+	)
 }
 
 function animateInIntro() {
@@ -898,11 +1005,14 @@ async function animateToInitialPosition() {
 }
 
 .panel {
+	--drag-pan-y: 0;
+	--height-on-open: 250;
+
 	@apply self-end justify-self-center relative z-[1];
 	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
 	@apply border border-solid border-[#75482E];
 
-	height: toRem(250);
+	height: calc(var(--height-on-open) * 1px);
 	transition-property: transform, height;
 	transition-timing-function: theme('transitionTimingFunction.out'),
 		theme('transitionTimingFunction.out');
@@ -911,6 +1021,10 @@ async function animateToInitialPosition() {
 
 	&[data-open='false'] {
 		@apply translate-y-full;
+	}
+
+	&[data-open='true'][data-open-full='false'] {
+		height: calc((var(--height-on-open) + var(--drag-pan-y)) * 1px);
 	}
 
 	&[data-open-full='true'] {
