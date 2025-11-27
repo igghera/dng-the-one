@@ -539,11 +539,13 @@ function createBackground() {
 	const geometry = new THREE.PlaneGeometry(3.84, 2.16)
 
 	backgroundCopper.map.value = textures.get('line-copper-desktop')
+	backgroundCopper.mask.value = textures.get('line-copper-desktop-mask')
 	bg0 = new THREE.Mesh(geometry, backgroundCopper.material)
 	bg0.position.set(0.045, 0, -0.01)
 	scene.add(bg0)
 
 	backgroundGold.map.value = textures.get('line-gold-desktop')
+	backgroundGold.mask.value = textures.get('line-gold-desktop-mask')
 	bg1 = new THREE.Mesh(geometry.clone(), backgroundGold.material)
 	scene.add(bg1)
 }
@@ -584,6 +586,8 @@ async function loadTextures() {
 		'/webgl/draw/line-copper-mobile.ktx2',
 		'/webgl/draw/line-gold-mobile.ktx2',
 		'/webgl/draw/explore-mask.ktx2',
+		'/webgl/draw/line-copper-desktop-mask.ktx2',
+		'/webgl/draw/line-gold-desktop-mask.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
@@ -594,11 +598,19 @@ async function loadTextures() {
 	ktx[4].colorSpace = THREE.NoColorSpace
 	ktx[4].wrapS = ktx[4].wrapT = THREE.NoWrapping
 
+	ktx[5].colorSpace = THREE.NoColorSpace
+	ktx[5].wrapS = ktx[5].wrapT = THREE.NoWrapping
+
+	ktx[6].colorSpace = THREE.NoColorSpace
+	ktx[6].wrapS = ktx[6].wrapT = THREE.NoWrapping
+
 	textures.set('line-copper-desktop', ktx[0])
 	textures.set('line-gold-desktop', ktx[1])
 	textures.set('line-copper-mobile', ktx[2])
 	textures.set('line-gold-mobile', ktx[3])
 	textures.set('mask', ktx[4])
+	textures.set('line-copper-desktop-mask', ktx[5])
+	textures.set('line-gold-desktop-mask', ktx[6])
 }
 
 function createDOM() {

@@ -9,6 +9,7 @@ dummyTexture.needsUpdate = true
 
 class BackgroundMaterial {
   drawColor = uniform(color(0.7, 0.2, 0.06))
+  drawProgress = uniform(0.5)
 
   constructor() {
     this.material = new MeshBasicNodeMaterial({
@@ -29,14 +30,33 @@ class BackgroundMaterial {
       }
     }
 
-    this.updateColorNode()
+    let maskValue = dummyTexture
+    this.mask = {
+      get value() {
+        return maskValue
+      },
+      set value(newValue) {
+        maskValue = newValue
+        self.updateColorNode()
+      }
+    }
+
+    this.updateOpacityNode()
   }
 
   updateColorNode() {
     const textureUV = vec2(uv().x, uv().y.oneMinus())
 
     this.material.colorNode = Fn(() => {
-      return texture(this.map.value, textureUV).toVec4()
+      return texture(this.map.value, textureUV).toVec3()
+    })()
+  }
+
+  updateOpacityNode() {
+    const textureUV = vec2(uv().x, uv().y.oneMinus())
+
+    this.material.opacityNode = Fn(() => {
+      return texture(this.mask.value, textureUV).a
     })()
   }
 }
