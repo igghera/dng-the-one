@@ -97,7 +97,6 @@
 			class="panel"
 			:data-open="panelOpen"
 			:data-open-full="panelOpenFull"
-			@pointerdown="panelOpenFull = true"
 			ref="panelRef"
 		>
 			<button
@@ -110,7 +109,6 @@
 
 			<div
 				class="panel-scroller | no-scrollbar | overflow-y-auto"
-				data-lenis-prevent
 				ref="panelScrollerRef"
 			>
 				<div v-if="currentProduct" class="panel-content">
@@ -191,14 +189,14 @@ const instructionsRef = useTemplateRef('instructionsRef')
 const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
-// const panelRef = useTemplateRef('panelRef')
+const panelRef = useTemplateRef('panelRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
 
-const { gsap, SplitText } = useGSAP()
+const { gsap, SplitText, Observer } = useGSAP()
 const { rt, tm } = useI18n()
 
 const textures = new Map()
@@ -211,7 +209,7 @@ const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
-let introSplit, instructionsSplit
+let introSplit, instructionsSplit, panelPointerObserver
 
 const itemsData = [
 	{
@@ -448,6 +446,7 @@ onMounted(async () => {
 	createCameraTargets()
 
 	createControls()
+	createPanelPointerObserver()
 
 	set(init, true)
 
@@ -618,6 +617,37 @@ function createCameraTargets() {
 	})
 }
 
+function createPanelPointerObserver() {
+	//
+	// Create an observer to handle the swipe up gesture on the panel.
+	// When the user swipes up on the panel, we want to open it full.
+	//
+	panelPointerObserver = Observer.create({
+		type: 'pointer,touch',
+		target: get(panelRef),
+		onChangeY: value => {
+			if (value.target.dataset.openFull === 'true') return
+
+			const curr = gsap.getProperty(get(panelRef), '--drag-pan-y')
+			const newVal = Math.abs(curr) - value.deltaY
+			gsap.set(get(panelRef), { '--drag-pan-y': newVal })
+		},
+		onRelease: () => {
+			// Prevent if the panel is not open.
+			if (!get(panelOpen)) return
+
+			// Prevent if the panel is fully opened.
+			if (get(panelOpenFull)) return
+
+			const curr = gsap.getProperty(get(panelRef), '--drag-pan-y')
+
+			gsap.set(get(panelRef), { '--drag-pan-y': 0 })
+
+			curr > 80 && openPanelFull()
+		},
+	})
+}
+
 async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
@@ -625,9 +655,7 @@ async function handlePinPointerdown(event) {
 
 	await nextTick()
 
-	get(panelScrollerRef).scrollTo(0, 0)
-
-	set(panelOpen, true)
+	openPanel()
 
 	controls.enabled = false
 
@@ -638,10 +666,30 @@ async function handlePinPointerdown(event) {
 	})
 }
 
+function openPanel() {
+	set(panelOpen, true)
+
+	get(panelScrollerRef).scrollTo(0, 0)
+	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+}
+
 function closePanel() {
 	set(panelOpen, false)
 	set(panelOpenFull, false)
+
 	controls.enabled = true
+}
+
+function openPanelFull() {
+	get(panelScrollerRef).dataset.lenisPrevent = ''
+
+	set(panelOpenFull, true)
+}
+
+function closePanelFull() {
+	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+
+	set(panelOpenFull, false)
 }
 
 async function introButtonOnCompleteCallback() {
@@ -898,11 +946,14 @@ async function animateToInitialPosition() {
 }
 
 .panel {
+	--drag-pan-y: 0;
+	--height-on-open: 250;
+
 	@apply self-end justify-self-center relative z-[1];
 	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
 	@apply border border-solid border-[#75482E];
 
-	height: toRem(250);
+	height: calc(var(--height-on-open) * 1px);
 	transition-property: transform, height;
 	transition-timing-function: theme('transitionTimingFunction.out'),
 		theme('transitionTimingFunction.out');
@@ -911,6 +962,10 @@ async function animateToInitialPosition() {
 
 	&[data-open='false'] {
 		@apply translate-y-full;
+	}
+
+	&[data-open='true'][data-open-full='false'] {
+		height: calc((var(--height-on-open) + var(--drag-pan-y)) * 1px);
 	}
 
 	&[data-open-full='true'] {
