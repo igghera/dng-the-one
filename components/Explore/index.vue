@@ -455,7 +455,11 @@ onMounted(async () => {
 	set(init, true)
 
 	gsap.delayedCall(0.4, () => {
-		animateInIntro()
+		animateInBackground()
+
+		gsap.delayedCall(1.5, () => {
+			animateInIntro()
+		})
 	})
 
 	gsap.ticker.add((time, deltaTime) => {
@@ -734,6 +738,29 @@ async function introButtonOnCompleteCallback() {
 	gsap.delayedCall(0.5, () => {
 		set(pinsVisible, true)
 	})
+}
+
+function animateInBackground() {
+	const tl = gsap.timeline()
+	tl.addLabel('start')
+
+	tl.to(
+		backgroundCopper.drawProgress,
+		{
+			value: 1,
+			duration: 5,
+		},
+		'start'
+	)
+
+	tl.to(
+		backgroundGold.drawProgress,
+		{
+			value: 1,
+			duration: 5,
+		},
+		'start'
+	)
 }
 
 function animateInIntro() {

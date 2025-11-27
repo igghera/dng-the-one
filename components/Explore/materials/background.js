@@ -10,7 +10,7 @@ dummyTexture.needsUpdate = true
 class BackgroundMaterial {
   name = 'Background'
   drawColor = uniform(color(0.7, 0.2, 0.06))
-  drawProgress = uniform(0.5)
+  drawProgress = uniform(0)
   drawSmooth = uniform(0.28)
 
   constructor() {
@@ -58,7 +58,7 @@ class BackgroundMaterial {
     const textureUV = vec2(uv().x, uv().y.oneMinus())
 
     this.material.opacityNode = Fn(() => {
-      const progress = this.drawProgress.toVar()
+      const progress = this.drawProgress.oneMinus()
       const maskSample = texture(this.mask.value, textureUV)
       const drawAlpha = smoothstep(
         progress,
