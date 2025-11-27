@@ -308,6 +308,14 @@ const ZERO_MARGINS = Object.freeze({
 	right: 0,
 })
 
+const BORDERLESS_OPTIONS = {
+	printType: 'photo',
+	ui: {
+		hidePaperFormat: true, // Potentially hide paper format selection
+		hideBorder: true, // Specifically request borderless
+	},
+}
+
 const dataUrlToBytes = dataUrl => {
 	const match = dataUrl.match(/^data:(.+);base64,(.+)$/)
 	if (!match) throw new Error('Invalid data URL format')
@@ -580,6 +588,7 @@ const handlePrint = async () => {
 						{
 							printer: printerTarget.ippUrl,
 							margin: ZERO_MARGINS,
+							...BORDERLESS_OPTIONS,
 						},
 						() => complete(true)
 					)
