@@ -210,6 +210,10 @@ const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1
 let introSplit, instructionsSplit, panelPointerObserver
+let debugPanel
+
+const urlParams = useUrlSearchParams('history')
+const isDebug = Object.hasOwn(urlParams, 'debug')
 
 const itemsData = [
 	{
@@ -463,7 +467,14 @@ onMounted(async () => {
 
 		renderer.render(scene, camera)
 		rendererCSS.render(scene, camera)
+
+		debugPanel?.pane?.refresh()
 	})
+
+	if (isDebug) {
+		const { ExploreDebug } = await import('./Debug')
+		debugPanel = new ExploreDebug()
+	}
 })
 
 //
@@ -538,12 +549,14 @@ async function createRenderer() {
 function createBackground() {
 	const geometry = new THREE.PlaneGeometry(3.84, 2.16)
 
+	backgroundCopper.name = 'Copper'
 	backgroundCopper.map.value = textures.get('line-copper-desktop')
 	backgroundCopper.mask.value = textures.get('line-copper-desktop-mask')
 	bg0 = new THREE.Mesh(geometry, backgroundCopper.material)
 	bg0.position.set(0.045, 0, -0.01)
 	scene.add(bg0)
 
+	backgroundGold.name = 'Gold'
 	backgroundGold.map.value = textures.get('line-gold-desktop')
 	backgroundGold.mask.value = textures.get('line-gold-desktop-mask')
 	bg1 = new THREE.Mesh(geometry.clone(), backgroundGold.material)
