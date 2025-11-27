@@ -540,14 +540,14 @@ function createBackground() {
 
 	bg0 = new THREE.Mesh(
 		geometry,
-		makeBackgroundMaterial(textures.get('line-copper'))
+		makeBackgroundMaterial(textures.get('line-copper-desktop'))
 	)
 	bg0.position.set(0.045, 0, -0.01)
 	scene.add(bg0)
 
 	bg1 = new THREE.Mesh(
 		geometry.clone(),
-		makeBackgroundMaterial(textures.get('line-gold'))
+		makeBackgroundMaterial(textures.get('line-gold-desktop'))
 	)
 	scene.add(bg1)
 }
@@ -583,15 +583,19 @@ async function loadTextures() {
 	ktxLoader.detectSupport(renderer)
 
 	const ktx = await ktxLoader.load([
-		'/webgl/draw/line-copper.ktx2',
-		'/webgl/draw/line-gold.ktx2',
+		'/webgl/draw/line-copper-desktop.ktx2',
+		'/webgl/draw/line-gold-desktop.ktx2',
+		'/webgl/draw/line-copper-mobile.ktx2',
+		'/webgl/draw/line-gold-mobile.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
 	ktx[1].colorSpace = THREE.SRGBColorSpace
 
-	textures.set('line-copper', ktx[0])
-	textures.set('line-gold', ktx[1])
+	textures.set('line-copper-desktop', ktx[0])
+	textures.set('line-gold-desktop', ktx[1])
+	textures.set('line-copper-mobile', ktx[2])
+	textures.set('line-gold-mobile', ktx[3])
 }
 
 function createDOM() {
