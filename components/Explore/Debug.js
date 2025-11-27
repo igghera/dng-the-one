@@ -21,6 +21,7 @@ export class ExploreDebug {
 
       folder.addBinding(background.drawProgress, 'value', { label: 'Draw Progress', min: 0, max: 1 })
       folder.addBinding(background.drawSmooth, 'value', { label: 'Draw Smooth', min: 0, max: 1 })
+      folder.addBinding(background.drawColor, 'value', { label: 'Draw Color', color: { type: 'float' } })
     })
   }
 }
