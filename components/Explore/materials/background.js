@@ -1,16 +1,47 @@
-import { MeshBasicNodeMaterial } from 'three/webgpu'
-import { Fn, texture, uv, vec2 } from 'three/tsl'
+import { MeshBasicNodeMaterial, DataTexture } from 'three/webgpu'
+import { Fn, texture, uv, vec2, uniform, color } from 'three/tsl'
 
-export function makeBackgroundMaterial(map) {
-  const material = new MeshBasicNodeMaterial({
-    transparent: true,
-  })
+const dummyTexture = new DataTexture(
+  new Uint8Array([0, 0, 0, 0]),
+  1, 1
+)
+dummyTexture.needsUpdate = true
 
-  const textureUV = vec2(uv().x, uv().y.oneMinus())
+class BackgroundMaterial {
+  drawColor = uniform(color(0.7, 0.2, 0.06))
 
-  material.colorNode = Fn(() => {
-    return texture(map, textureUV).toVec4()
-  })()
+  constructor() {
+    this.material = new MeshBasicNodeMaterial({
+      transparent: true,
+    })
 
-  return material
+    // Create a reactive map object that updates the material when value changes
+    const self = this
+
+    let mapValue = dummyTexture
+    this.map = {
+      get value() {
+        return mapValue
+      },
+      set value(newValue) {
+        mapValue = newValue
+        self.updateColorNode()
+      }
+    }
+
+    this.updateColorNode()
+  }
+
+  updateColorNode() {
+    const textureUV = vec2(uv().x, uv().y.oneMinus())
+
+    this.material.colorNode = Fn(() => {
+      return texture(this.map.value, textureUV).toVec4()
+    })()
+  }
 }
+
+export const backgroundCopper = new BackgroundMaterial()
+export const backgroundGold = new BackgroundMaterial()
+
+

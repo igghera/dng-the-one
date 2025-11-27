@@ -176,7 +176,7 @@ import CameraControls from 'camera-controls'
 import { get, set } from '@vueuse/core'
 
 import { ktxLoader } from '~/assets/js/loaders'
-import { makeBackgroundMaterial } from './materials/background'
+import { backgroundCopper, backgroundGold } from './materials/background'
 
 //
 // Refs / State
@@ -538,17 +538,13 @@ async function createRenderer() {
 function createBackground() {
 	const geometry = new THREE.PlaneGeometry(3.84, 2.16)
 
-	bg0 = new THREE.Mesh(
-		geometry,
-		makeBackgroundMaterial(textures.get('line-copper-desktop'))
-	)
+	backgroundCopper.map.value = textures.get('line-copper-desktop')
+	bg0 = new THREE.Mesh(geometry, backgroundCopper.material)
 	bg0.position.set(0.045, 0, -0.01)
 	scene.add(bg0)
 
-	bg1 = new THREE.Mesh(
-		geometry.clone(),
-		makeBackgroundMaterial(textures.get('line-gold-desktop'))
-	)
+	backgroundGold.map.value = textures.get('line-gold-desktop')
+	bg1 = new THREE.Mesh(geometry.clone(), backgroundGold.material)
 	scene.add(bg1)
 }
 
@@ -587,15 +583,22 @@ async function loadTextures() {
 		'/webgl/draw/line-gold-desktop.ktx2',
 		'/webgl/draw/line-copper-mobile.ktx2',
 		'/webgl/draw/line-gold-mobile.ktx2',
+		'/webgl/draw/explore-mask.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
 	ktx[1].colorSpace = THREE.SRGBColorSpace
+	ktx[2].colorSpace = THREE.SRGBColorSpace
+	ktx[3].colorSpace = THREE.SRGBColorSpace
+
+	ktx[4].colorSpace = THREE.NoColorSpace
+	ktx[4].wrapS = ktx[4].wrapT = THREE.NoWrapping
 
 	textures.set('line-copper-desktop', ktx[0])
 	textures.set('line-gold-desktop', ktx[1])
 	textures.set('line-copper-mobile', ktx[2])
 	textures.set('line-gold-mobile', ktx[3])
+	textures.set('mask', ktx[4])
 }
 
 function createDOM() {
