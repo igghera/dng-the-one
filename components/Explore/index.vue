@@ -1164,7 +1164,7 @@ async function animateToInitialPosition() {
 	}
 
 	&[data-open-full='true'] {
-		height: calc(100svh - 80px);
+		height: min(toRem(500), calc(100svh - 80px));
 	}
 
 	&::after {
