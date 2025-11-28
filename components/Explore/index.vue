@@ -230,7 +230,7 @@ const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1, postProcessing
 let introSplit, instructionsSplit, panelPointerObserver
-let debugPanel
+let debugPanel, statsPanel
 
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
@@ -496,12 +496,39 @@ onMounted(async () => {
 		postProcessing.render()
 		rendererCSS.render(scene, camera)
 
+		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
+
+		statsPanel?.update()
 		debugPanel?.pane?.refresh()
 	})
 
 	if (isDebug) {
 		const { ExploreDebug } = await import('./Debug')
 		debugPanel = new ExploreDebug()
+
+		const { default: Stats } = await import('stats-gl')
+		statsPanel = new Stats({
+			trackGPU: true,
+			trackHz: true,
+			trackCPT: false,
+			logsPerSecond: 4,
+			graphsPerSecond: 30,
+			samplesLog: 40,
+			samplesGraph: 10,
+			precision: 2,
+			horizontal: false,
+			minimal: false,
+			mode: 0,
+		})
+
+		statsPanel.init(renderer)
+
+		statsPanel.dom.style.position = null
+		statsPanel.dom.style.top = null
+		statsPanel.dom.style.left = null
+		statsPanel.dom.style.zIndex = null
+
+		document.getElementById('stats-wrapper').appendChild(statsPanel.dom)
 	}
 })
 
