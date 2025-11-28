@@ -173,7 +173,7 @@
 <script setup>
 import * as THREE from 'three/webgpu'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
-import { pass, mrt, output } from 'three/tsl'
+import { pass } from 'three/tsl'
 import {
 	CSS3DRenderer,
 	CSS3DObject,
@@ -825,6 +825,26 @@ function animateInBackground() {
 	)
 
 	tl.to(
+		[get(logoRef).$el, get(introTextRef)],
+		{
+			'--color-shadow-start-influence': '0%',
+			duration: 2,
+			ease: 'power2.out',
+		},
+		'<'
+	)
+
+	tl.to(
+		[get(logoRef).$el, get(introTextRef)],
+		{
+			'--color-shadow-end-influence': '100%',
+			duration: 2,
+			ease: 'power2.out',
+		},
+		'<0.4'
+	)
+
+	tl.to(
 		[backgroundCopper.thickness, backgroundGold.thickness],
 		{
 			value: 1,
@@ -1186,9 +1206,21 @@ async function animateToInitialPosition() {
 }
 
 .multi-shadow {
-	filter: drop-shadow(0 0 5px #1b0b08) drop-shadow(0 0 12px #1b0b08)
-		drop-shadow(0 0 14px #1b0b08) drop-shadow(0 0 16px #1b0b08)
-		drop-shadow(0 0 18px #1b0b08) drop-shadow(0 0 20px #1b0b08)
-		drop-shadow(0 0 22px #1b0b08);
+	--color-shadow-start: #000000;
+	--color-shadow-start-influence: 100%;
+	--color-shadow-end: #1b0b08;
+	--color-shadow-end-influence: 0%;
+
+	--color-shadow: color-mix(
+		in oklab,
+		var(--color-shadow-start) var(--color-shadow-start-influence),
+		var(--color-shadow-end) var(--color-shadow-end-influence)
+	);
+
+	filter: drop-shadow(0 0 5px var(--color-shadow))
+		drop-shadow(0 0 12px var(--color-shadow))
+		drop-shadow(0 0 14px var(--color-shadow))
+		drop-shadow(0 0 18px var(--color-shadow))
+		drop-shadow(0 0 22px var(--color-shadow));
 }
 </style>
