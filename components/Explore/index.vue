@@ -761,6 +761,15 @@ function animateInBackground() {
 		},
 		'start'
 	)
+
+	tl.to(
+		[backgroundCopper.mapVisibility, backgroundGold.mapVisibility],
+		{
+			value: 1,
+			duration: 1.2,
+		},
+		'>-2'
+	)
 }
 
 function animateInIntro() {

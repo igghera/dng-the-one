@@ -1,5 +1,5 @@
 import { MeshBasicNodeMaterial, DataTexture } from 'three/webgpu'
-import { Fn, texture, uv, vec2, uniform, color, smoothstep } from 'three/tsl'
+import { Fn, texture, uv, vec2, uniform, color, smoothstep, mix } from 'three/tsl'
 
 const dummyTexture = new DataTexture(
   new Uint8Array([0, 0, 0, 0]),
@@ -12,6 +12,7 @@ class BackgroundMaterial {
   drawColor = uniform(color(0, 0, 0))
   drawProgress = uniform(0)
   drawSmooth = uniform(0.28)
+  mapVisibility = uniform(0)
 
   constructor(drawColor) {
     this.material = new MeshBasicNodeMaterial({
@@ -54,8 +55,10 @@ class BackgroundMaterial {
     const textureUV = vec2(uv().x, uv().y.oneMinus())
 
     this.material.colorNode = Fn(() => {
-      return this.drawColor.toVec3()
-      return texture(this.map.value, textureUV).toVec3()
+      const drawColor = this.drawColor
+      const map = texture(this.map.value, textureUV).toVec3()
+
+      return mix(drawColor, map, this.mapVisibility)
     })()
   }
 
@@ -77,6 +80,6 @@ class BackgroundMaterial {
 }
 
 export const backgroundCopper = new BackgroundMaterial([0.22, 0.09, 0.04])
-export const backgroundGold = new BackgroundMaterial([0.89, 0.65, 0.15])
+export const backgroundGold = new BackgroundMaterial([0.81, 0.67, 0.35])
 
 
