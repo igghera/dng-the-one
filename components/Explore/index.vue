@@ -33,7 +33,11 @@
 			:height="componentHeight"
 		/>
 
-		<div class="explore-content" ref="css3DContentRef">
+		<div
+			class="explore-content"
+			:data-visible="css3DContentVisible"
+			ref="css3DContentRef"
+		>
 			<div
 				v-for="(item, idx) in itemsMerged"
 				:key="idx"
@@ -203,6 +207,7 @@ const textures = new Map()
 
 const init = shallowRef(false)
 const currentProduct = shallowRef(null)
+const css3DContentVisible = shallowRef(false)
 const panelOpen = shallowRef(false)
 const panelOpenFull = shallowRef(false)
 const copyVisible = shallowRef(false)
@@ -731,6 +736,8 @@ function closePanelFull() {
 async function introButtonOnCompleteCallback() {
 	await animateOutIntro()
 
+	set(css3DContentVisible, true)
+
 	await animateToInitialPosition()
 
 	set(copyVisible, true)
@@ -878,6 +885,11 @@ async function animateToInitialPosition() {
 
 .explore-content {
 	@apply pointer-events-none relative size-full top-0 left-0;
+	@apply transition-opacity duration-1000;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
 
 	top: env(safe-area-inset-top, 0);
 	left: env(safe-area-inset-left, 0);
