@@ -1,6 +1,6 @@
 import { Pane } from 'tweakpane'
-
 import { backgroundCopper, backgroundGold } from './materials/background'
+import { threshold as bloomThreshold, strength as bloomStrength, radius as bloomRadius } from './nodes/bloom'
 
 export class ExploreDebug {
   constructor() {
@@ -9,7 +9,19 @@ export class ExploreDebug {
       container: document.getElementById('debug-wrapper'),
     })
 
+    this.createPostprocessing()
     this.createBackground()
+  }
+
+  createPostprocessing() {
+    const folder = this.pane.addFolder({
+      title: 'Postprocessing',
+      expanded: true,
+    })
+
+    folder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 0, max: 1, step: 0.01 })
+    folder.addBinding(bloomStrength, 'value', { label: 'Strength', min: 0, max: 3, step: 0.01 })
+    folder.addBinding(bloomRadius, 'value', { label: 'Radius', min: 0, max: 1.5, step: 0.01 })
   }
 
   createBackground() {

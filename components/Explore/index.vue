@@ -172,6 +172,8 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
+import { bloom } from 'three/addons/tsl/display/BloomNode'
+import { pass, mrt, output } from 'three/tsl'
 import {
 	CSS3DRenderer,
 	CSS3DObject,
@@ -181,6 +183,11 @@ import { get, set } from '@vueuse/core'
 
 import { ktxLoader } from '~/assets/js/loaders'
 import { backgroundCopper, backgroundGold } from './materials/background'
+import {
+	threshold as bloomThreshold,
+	strength as bloomStrength,
+	radius as bloomRadius,
+} from './nodes/bloom'
 
 //
 // Refs / State
@@ -213,7 +220,7 @@ const panelOpenFull = shallowRef(false)
 const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
-let renderer, rendererCSS, scene, camera, controls, bg0, bg1
+let renderer, rendererCSS, scene, camera, controls, bg0, bg1, postProcessing
 let introSplit, instructionsSplit, panelPointerObserver
 let debugPanel
 
@@ -457,6 +464,8 @@ onMounted(async () => {
 	createControls()
 	createPanelPointerObserver()
 
+	createPostprocessing()
+
 	set(init, true)
 
 	gsap.delayedCall(0.4, () => {
@@ -474,7 +483,8 @@ onMounted(async () => {
 
 		updateScene(time)
 
-		renderer.render(scene, camera)
+		// renderer.render(scene, camera)
+		postProcessing.render()
 		rendererCSS.render(scene, camera)
 
 		debugPanel?.pane?.refresh()
@@ -674,6 +684,22 @@ function createCameraTargets() {
 	})
 }
 
+function createPostprocessing() {
+	postProcessing = new THREE.PostProcessing(renderer)
+
+	const scenePass = pass(scene, camera)
+	const scenePassColor = scenePass.getTextureNode()
+
+	const bloomPass = bloom(scenePassColor)
+	bloomPass.strength = bloomStrength
+	bloomPass.radius = bloomRadius
+	bloomPass.threshold = bloomThreshold
+
+	const compose = scenePassColor.add(bloomPass.mul(5))
+
+	postProcessing.outputNode = compose
+}
+
 function createPanelPointerObserver() {
 	//
 	// Create an observer to handle the swipe up gesture on the panel.
@@ -780,21 +806,31 @@ function animateInBackground() {
 	)
 
 	tl.to(
+		bloomStrength,
+		{
+			value: 0,
+			duration: 2,
+			ease: 'power2.out',
+		},
+		'>-1'
+	)
+
+	tl.to(
 		[backgroundCopper.mapVisibility, backgroundGold.mapVisibility],
 		{
 			value: 1,
 			duration: 1.2,
 		},
-		'>-2'
+		'<'
 	)
 
 	tl.to(
 		[backgroundCopper.thickness, backgroundGold.thickness],
 		{
 			value: 1,
-			duration: 0.8,
+			duration: 2,
 		},
-		'<0.5'
+		'<'
 	)
 }
 
