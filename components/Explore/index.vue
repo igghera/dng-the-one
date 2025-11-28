@@ -560,14 +560,20 @@ function createBackground() {
 
 	backgroundCopper.name = 'Copper'
 	backgroundCopper.map.value = textures.get('line-copper-desktop')
-	backgroundCopper.mask.value = textures.get('line-copper-desktop-mask')
+	backgroundCopper.drawMask.value = textures.get(
+		'line-copper-desktop-mask-draw'
+	)
+	backgroundCopper.beamMask.value = textures.get(
+		'line-copper-desktop-mask-beam'
+	)
 	bg0 = new THREE.Mesh(geometry, backgroundCopper.material)
 	bg0.position.set(0.045, 0, -0.01)
 	scene.add(bg0)
 
 	backgroundGold.name = 'Gold'
 	backgroundGold.map.value = textures.get('line-gold-desktop')
-	backgroundGold.mask.value = textures.get('line-gold-desktop-mask')
+	backgroundGold.drawMask.value = textures.get('line-gold-desktop-mask-draw')
+	backgroundGold.beamMask.value = textures.get('line-gold-desktop-mask-beam')
 	bg1 = new THREE.Mesh(geometry.clone(), backgroundGold.material)
 	scene.add(bg1)
 }
@@ -608,8 +614,10 @@ async function loadTextures() {
 		'/webgl/draw/line-copper-mobile.ktx2',
 		'/webgl/draw/line-gold-mobile.ktx2',
 		'/webgl/draw/explore-mask.ktx2',
-		'/webgl/draw/line-copper-desktop-mask.ktx2',
-		'/webgl/draw/line-gold-desktop-mask.ktx2',
+		'/webgl/draw/line-copper-desktop-mask-draw.ktx2',
+		'/webgl/draw/line-gold-desktop-mask-draw.ktx2',
+		'/webgl/draw/line-copper-desktop-mask-beam.ktx2',
+		'/webgl/draw/line-gold-desktop-mask-beam.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
@@ -626,13 +634,21 @@ async function loadTextures() {
 	ktx[6].colorSpace = THREE.NoColorSpace
 	ktx[6].wrapS = ktx[6].wrapT = THREE.NoWrapping
 
+	ktx[7].colorSpace = THREE.NoColorSpace
+	ktx[7].wrapS = ktx[7].wrapT = THREE.NoWrapping
+
+	ktx[8].colorSpace = THREE.NoColorSpace
+	ktx[8].wrapS = ktx[8].wrapT = THREE.NoWrapping
+
 	textures.set('line-copper-desktop', ktx[0])
 	textures.set('line-gold-desktop', ktx[1])
 	textures.set('line-copper-mobile', ktx[2])
 	textures.set('line-gold-mobile', ktx[3])
 	textures.set('mask', ktx[4])
-	textures.set('line-copper-desktop-mask', ktx[5])
-	textures.set('line-gold-desktop-mask', ktx[6])
+	textures.set('line-copper-desktop-mask-draw', ktx[5])
+	textures.set('line-gold-desktop-mask-draw', ktx[6])
+	textures.set('line-copper-desktop-mask-beam', ktx[7])
+	textures.set('line-gold-desktop-mask-beam', ktx[8])
 }
 
 function createDOM() {
@@ -727,12 +743,6 @@ function openPanelFull() {
 	set(panelOpenFull, true)
 }
 
-function closePanelFull() {
-	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
-
-	set(panelOpenFull, false)
-}
-
 async function introButtonOnCompleteCallback() {
 	await animateOutIntro()
 
@@ -776,6 +786,15 @@ function animateInBackground() {
 			duration: 1.2,
 		},
 		'>-2'
+	)
+
+	tl.to(
+		[backgroundCopper.thickness, backgroundGold.thickness],
+		{
+			value: 1,
+			duration: 0.8,
+		},
+		'<0.5'
 	)
 }
 

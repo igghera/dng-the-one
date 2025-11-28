@@ -26,6 +26,7 @@ export class ExploreDebug {
       folder.addBlade({ view: 'separator' })
 
       folder.addBinding(background.mapVisibility, 'value', { label: 'Map Visibility', min: 0, max: 1 })
+      folder.addBinding(background.thickness, 'value', { label: 'Thickness', min: 0, max: 1 })
     })
   }
 }
