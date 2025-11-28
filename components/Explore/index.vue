@@ -43,8 +43,16 @@
 				:key="idx"
 				class="socket"
 				:style="{
-					'--w': `${item.mainImage.width * item.scaleFactor}px`,
-					'--h': `${item.mainImage.height * item.scaleFactor}px`,
+					'--w': `${
+						Math.floor(item.mainImage.width * item.scaleFactor) % 2 === 0
+							? Math.floor(item.mainImage.width * item.scaleFactor)
+							: Math.floor(item.mainImage.width * item.scaleFactor) - 1
+					}px`,
+					'--h': `${
+						Math.floor(item.mainImage.height * item.scaleFactor) % 2 === 0
+							? Math.floor(item.mainImage.height * item.scaleFactor)
+							: Math.floor(item.mainImage.height * item.scaleFactor) - 1
+					}px`,
 					'pointer-events': 'none',
 				}"
 				:data-id="idx"
@@ -382,6 +390,7 @@ const targets = itemsData.map(item => {
 		})
 	)
 
+	// mesh.scale.set(1.1, 1.1, 1)
 	mesh.position.copy(item.position)
 
 	return mesh
@@ -508,7 +517,11 @@ watch([componentWidth, componentHeight], value => {
 	if (!renderer) return
 
 	renderer.setSize(value[0], value[1])
-	rendererCSS.setSize(value[0], value[1])
+
+	rendererCSS.setSize(
+		value[0] % 2 === 0 ? value[0] : value[0] - 1,
+		value[1] % 2 === 0 ? value[1] : value[1] - 1
+	)
 })
 
 //
