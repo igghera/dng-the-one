@@ -9,14 +9,18 @@ dummyTexture.needsUpdate = true
 
 class BackgroundMaterial {
   name = 'Background'
-  drawColor = uniform(color(0.7, 0.2, 0.06))
+  drawColor = uniform(color(0, 0, 0))
   drawProgress = uniform(0)
   drawSmooth = uniform(0.28)
 
-  constructor() {
+  constructor(drawColor) {
     this.material = new MeshBasicNodeMaterial({
       transparent: true,
     })
+
+    this.drawColor.value.r = drawColor[0]
+    this.drawColor.value.g = drawColor[1]
+    this.drawColor.value.b = drawColor[2]
 
     // Create a reactive map object that updates the material when value changes
     const self = this
@@ -50,6 +54,7 @@ class BackgroundMaterial {
     const textureUV = vec2(uv().x, uv().y.oneMinus())
 
     this.material.colorNode = Fn(() => {
+      return this.drawColor.toVec3()
       return texture(this.map.value, textureUV).toVec3()
     })()
   }
@@ -71,7 +76,7 @@ class BackgroundMaterial {
   }
 }
 
-export const backgroundCopper = new BackgroundMaterial()
-export const backgroundGold = new BackgroundMaterial()
+export const backgroundCopper = new BackgroundMaterial([0.22, 0.09, 0.04])
+export const backgroundGold = new BackgroundMaterial([0.89, 0.65, 0.15])
 
 
