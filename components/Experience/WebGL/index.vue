@@ -14,7 +14,16 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
-import { vec2, pass, uniform, screenUV, mix, time, texture3D } from 'three/tsl'
+import {
+	vec2,
+	pass,
+	uniform,
+	screenUV,
+	mix,
+	time,
+	texture3D,
+	blendColor,
+} from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
 import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
 import { WaterMeshCustom } from './WaterMeshCustom'
@@ -66,6 +75,12 @@ import {
 	borderWidth as maskBorderWidth,
 	radius as maskRadius,
 } from './materials/mask'
+
+import {
+	map as starsMap,
+	layer as starsLayer,
+	opacity as starsOpacity,
+} from './materials/stars'
 
 import { cart2Polar, noiseTexture } from './nodes'
 
@@ -317,6 +332,8 @@ emitter.on(EVENTS.RESTART, () => {
 	maskProgress.value = 0
 	maskBorderWidth.value = 0
 	maskRadius.value = START_PARAMS.maskRadius
+
+	starsOpacity.value = 0
 })
 
 emitter.on(EVENTS.ANIMATE_IN_INTRO, () => {
@@ -668,6 +685,7 @@ async function loadTextures() {
 		'/images/bg-portrait.webp',
 		'/images/bg-landscape.webp',
 		'/webgl/water_normals.webp',
+		'/webgl/star.png',
 	])
 
 	images[0].colorSpace = THREE.SRGBColorSpace
@@ -681,6 +699,10 @@ async function loadTextures() {
 
 	images[2].wrapS = images[2].wrapT = THREE.RepeatWrapping
 	textures.set('water_normals', images[2])
+
+	images[3].colorSpace = THREE.SRGBColorSpace
+	textures.set('star', images[3])
+	starsMap.value = images[3]
 }
 
 async function createParticles() {
@@ -905,8 +927,7 @@ function createPostprocessing() {
 	)
 	lutPass.intensityNode = lutIntensity
 
-	postProcessing.outputNode = lutPass
-	// postProcessing.outputNode = maskPass
+	postProcessing.outputNode = blendColor(lutPass, starsLayer.mul(alpha))
 }
 
 function setBackgroundSize() {
