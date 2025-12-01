@@ -5,6 +5,12 @@
 		:data-text-visible="!panelOpen && copyVisible"
 		:data-pins-visible="pinsVisible"
 	>
+		<div
+			class="top-gradient"
+			:data-visible="css3DContentVisible"
+			aria-hidden="true"
+		/>
+
 		<Logo20Years class="logo | multi-shadow" ref="logoRef" />
 
 		<div class="intro">
@@ -995,6 +1001,22 @@ async function animateToInitialPosition() {
 
 	> * {
 		@apply col-start-1 row-start-1 size-full;
+	}
+}
+
+.top-gradient {
+	@apply relative z-[1] pointer-events-none;
+	@apply transition-opacity duration-1000;
+
+	background: linear-gradient(
+		to bottom in oklch,
+		oklch(17.3% 0.029 31.97 / 100%) 30%,
+		oklch(17.3% 0.029 31.97 / 0%)
+	);
+	height: toRem(150);
+
+	&[data-visible='false'] {
+		@apply opacity-0;
 	}
 }
 
