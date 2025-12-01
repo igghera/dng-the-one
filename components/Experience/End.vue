@@ -538,10 +538,12 @@ const animateMask = () => {
 .result {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
 
-	aspect-ratio: 240 / 300;
-	height: 30svh;
-	translate: 0 8svh;
 	row-gap: toRem(10);
+	width: toRem(160);
+
+	@screen md {
+		width: toRem(220);
+	}
 }
 
 .buttons {
