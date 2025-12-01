@@ -187,6 +187,8 @@ onMounted(async () => {
 
 	animateIn()
 
+	let rotationOnPress = 0
+
 	draggableInstance = Draggable.create(get(knobRef), {
 		type: 'rotation',
 		inertia: true,
@@ -204,13 +206,41 @@ onMounted(async () => {
 				ease: 'back.out(2)',
 				overwrite: true,
 			})
+
+			rotationOnPress = draggableInstance[0].rotation
 		},
-		onRelease() {
+		onRelease(a, b, c) {
 			gsap.to(get(knobDotRef), {
 				scale: 1,
 				duration: 0.5,
 				ease: 'back.out(3)',
 				overwrite: true,
+			})
+
+			const { rotation: rotationOnRelease } = draggableInstance[0]
+			const deltaRotation = Math.abs(rotationOnRelease - rotationOnPress)
+
+			// Return if the angle difference is less than 5 degrees,
+			// meaning the user clicked instead of dragging
+			if (deltaRotation > 5) return
+
+			const { pointerX, pointerY, rotationOrigin } = draggableInstance[0]
+
+			const angle =
+				Math.atan2(pointerY - rotationOrigin.y, pointerX - rotationOrigin.x) *
+					(180 / Math.PI) +
+				90
+			const snappedAngle = Math.round(angle / 90) * 90
+
+			gsap.to(get(knobRef), {
+				rotation: snappedAngle,
+				duration: 0.7,
+				ease: 'power2.out',
+				overwrite: true,
+				onUpdate: () => {
+					draggableInstance[0].update()
+					update()
+				},
 			})
 		},
 		onDrag() {
