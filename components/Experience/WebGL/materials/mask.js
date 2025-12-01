@@ -2,7 +2,7 @@ import { MeshBasicNodeMaterial } from 'three/webgpu'
 import { If, Fn, uniform, vec2, vec4, uv, step, screenSize, abs, length, max, min, remap, color, float, div } from 'three/tsl'
 
 export const progress = uniform(0)
-export const radius = uniform(0.1)
+export const radius = uniform(0.28)
 export const borderWidth = uniform(0)
 export const maskColorA = uniform(color(0.58, 0.41, 0.05))
 export const maskColorB = uniform(color(0.47, 0.21, 0.06))
