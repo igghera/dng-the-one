@@ -97,44 +97,50 @@
 							transform="translate(0, 579)"
 							ref="draggerRef"
 						>
-							<circle
-								class="stroke-gold-light fill-transparent"
-								cx="58"
-								cy="55"
-								r="46"
-								stroke-width="2"
-								ref="draggerCircleRef"
-							/>
+							<g ref="draggerCircleWrapperRef">
+								<circle
+									class="stroke-gold-light fill-transparent"
+									cx="58"
+									cy="55"
+									r="46"
+									stroke-width="2"
+									ref="draggerCircleRef"
+								/>
+
+								<g class="arrows">
+									<g
+										class="dragger-arrow"
+										transform="translate(48, -14)"
+										:data-visible="
+											currentStep < 3 && !isPressed && arrowsVisible
+										"
+									>
+										<path
+											class="fill-gold-light"
+											d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
+										/>
+									</g>
+
+									<g
+										class="dragger-arrow"
+										transform="translate(48, 124) scale(1, -1)"
+										:data-visible="
+											currentStep > 0 && !isPressed && arrowsVisible
+										"
+									>
+										<path
+											class="fill-gold-light"
+											d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
+										/>
+									</g>
+								</g>
+							</g>
 
 							<g
 								transform="translate(58, 52)"
 								class="!visible"
 								id="dot-wrapper-step-02"
 							></g>
-
-							<g class="arrows">
-								<g
-									class="dragger-arrow"
-									transform="translate(48, -14)"
-									:data-visible="currentStep < 3 && !isPressed && arrowsVisible"
-								>
-									<path
-										class="fill-gold-light"
-										d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
-									/>
-								</g>
-
-								<g
-									class="dragger-arrow"
-									transform="translate(48, 124) scale(1, -1)"
-									:data-visible="currentStep > 0 && !isPressed && arrowsVisible"
-								>
-									<path
-										class="fill-gold-light"
-										d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
-									/>
-								</g>
-							</g>
 						</g>
 					</g>
 
@@ -277,6 +283,7 @@ const headerRef = useTemplateRef('headerRef')
 const draggerRef = useTemplateRef('draggerRef')
 const contentMaskRectInitRef = useTemplateRef('contentMaskRectInitRef')
 const contentMaskRectFinalRef = useTemplateRef('contentMaskRectFinalRef')
+const draggerCircleWrapperRef = useTemplateRef('draggerCircleWrapperRef')
 const draggerCircleRef = useTemplateRef('draggerCircleRef')
 const draggerMaskRef = useTemplateRef('draggerMaskRef')
 const draggerMaskRectRef = useTemplateRef('draggerMaskRectRef')
@@ -359,16 +366,36 @@ watch(currentStep, (next, prev) => handleStepChange(next, prev))
 
 watch(isIdle, idle => {
 	if (idle) {
-		gsap.killTweensOf(get(draggerCircleRef))
+		gsap.killTweensOf(get(draggerCircleWrapperRef))
 
 		const tl = gsap.timeline({ paused: true })
 		tl.addLabel('start')
 
-		tl.to(get(draggerCircleRef), { y: -3, duration: 0.35, ease: 'power1.out' })
-		tl.to(get(draggerCircleRef), { y: 3, duration: 0.5, ease: 'power1.out' })
-		tl.to(get(draggerCircleRef), { y: -3, duration: 0.5, ease: 'power1.out' })
-		tl.to(get(draggerCircleRef), { y: 3, duration: 0.5, ease: 'power1.out' })
-		tl.to(get(draggerCircleRef), { y: 0, duration: 0.35, ease: 'power1.inOut' })
+		tl.to(get(draggerCircleWrapperRef), {
+			y: -3,
+			duration: 0.35,
+			ease: 'power1.out',
+		})
+		tl.to(get(draggerCircleWrapperRef), {
+			y: 3,
+			duration: 0.5,
+			ease: 'power1.out',
+		})
+		tl.to(get(draggerCircleWrapperRef), {
+			y: -3,
+			duration: 0.5,
+			ease: 'power1.out',
+		})
+		tl.to(get(draggerCircleWrapperRef), {
+			y: 3,
+			duration: 0.5,
+			ease: 'power1.out',
+		})
+		tl.to(get(draggerCircleWrapperRef), {
+			y: 0,
+			duration: 0.35,
+			ease: 'power1.inOut',
+		})
 
 		idleTween = gsap.fromTo(
 			tl,
@@ -385,7 +412,7 @@ watch(isIdle, idle => {
 		idleTween?.kill()
 		idleTween = null
 
-		gsap.to(get(draggerCircleRef), {
+		gsap.to(get(draggerCircleWrapperRef), {
 			y: 0,
 			duration: 0.35,
 			ease: 'sine.out',
