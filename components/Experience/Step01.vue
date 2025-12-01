@@ -197,11 +197,9 @@ onMounted(async () => {
 		snap(value) {
 			return Math.round(value / 90) * 90
 		},
-		onPressInit() {
+		onPress() {
 			gsap.to(get(knobDotRef), {
-				attr: {
-					r: 26,
-				},
+				scale: 1.15,
 				duration: 0.5,
 				ease: 'back.out(2)',
 				overwrite: true,
@@ -209,9 +207,7 @@ onMounted(async () => {
 		},
 		onRelease() {
 			gsap.to(get(knobDotRef), {
-				attr: {
-					r: 20,
-				},
+				scale: 1,
 				duration: 0.5,
 				ease: 'back.out(3)',
 				overwrite: true,
