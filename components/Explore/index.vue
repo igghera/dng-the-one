@@ -2,7 +2,7 @@
 	<div
 		class="explore"
 		:data-visible="init"
-		:data-text-visible="!panelOpen && copyVisible"
+		:data-text-visible="copyVisible"
 		:data-pins-visible="pinsVisible"
 	>
 		<div
@@ -90,7 +90,10 @@
 							<ExplorePin />
 						</button>
 
-						<picture class="pic">
+						<picture
+							class="pic"
+							:data-current="currentProduct === `${idx}_${pidx}`"
+						>
 							<img
 								class="img"
 								:src="option.imageSrc"
@@ -119,7 +122,7 @@
 		>
 			<button
 				class="panel-close-button"
-				@click="closePanel"
+				@click="handleClosePanel"
 				aria-label="close panel"
 			>
 				<IconClose class="relative z-[1]" />
@@ -129,11 +132,8 @@
 				class="panel-scroller | no-scrollbar | overflow-y-auto"
 				ref="panelScrollerRef"
 			>
-				<div v-if="currentProduct" class="panel-content">
-					<template
-						v-for="(item, idx) in panelsData.get(currentProduct)"
-						:key="idx"
-					>
+				<div v-if="currentProductData" class="panel-content">
+					<template v-for="(item, idx) in currentProductData" :key="idx">
 						<div
 							v-if="item.component === 'title'"
 							class="panel-content-title"
@@ -228,6 +228,7 @@ const textures = new Map()
 
 const init = shallowRef(false)
 const currentProduct = shallowRef(null)
+const currentProductData = shallowRef(null)
 const css3DContentVisible = shallowRef(false)
 const panelOpen = shallowRef(false)
 const panelOpenFull = shallowRef(false)
@@ -780,19 +781,47 @@ function createPanelPointerObserver() {
 async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
-	set(currentProduct, productId)
-
-	await nextTick()
-
-	openPanel()
-
 	controls.enabled = false
 
-	controls.fitToBox(targets[productId.split('_')[0]], true, {
-		cover: false,
-		paddingTop: 0.2,
-		paddingBottom: 0.4,
-	})
+	if (!!get(currentProduct)) {
+		closePanel()
+		set(currentProduct, null)
+
+		await gsap.delayedCall(0.4, () => {})
+
+		set(currentProduct, productId)
+		set(currentProductData, get(panelsData).get(productId))
+
+		await nextTick()
+
+		set(copyVisible, false)
+		openPanel()
+
+		controls.fitToBox(targets[productId.split('_')[0]], true, {
+			cover: false,
+			paddingTop: 0.2,
+			paddingBottom: 0.4,
+		})
+	} else {
+		set(currentProduct, productId)
+		set(currentProductData, get(panelsData).get(productId))
+
+		await nextTick()
+
+		set(copyVisible, false)
+		openPanel()
+
+		controls.fitToBox(targets[productId.split('_')[0]], true, {
+			cover: false,
+			paddingTop: 0.2,
+			paddingBottom: 0.4,
+		})
+	}
+}
+
+function handleClosePanel() {
+	set(copyVisible, true)
+	closePanel()
 }
 
 function openPanel() {
@@ -805,6 +834,7 @@ function openPanel() {
 function closePanel() {
 	set(panelOpen, false)
 	set(panelOpenFull, false)
+	set(currentProduct, null)
 
 	controls.enabled = true
 }
@@ -954,12 +984,14 @@ function animateInInstructions() {
 }
 
 function animateOutInstructions() {
-	gsap.to(instructionsSplit.chars, {
-		opacity: 0,
-		duration: 1,
-		stagger: 0.04,
-		overwrite: true,
-	})
+	gsap
+		.to(instructionsSplit.chars, {
+			opacity: 0,
+			duration: 1,
+			stagger: 0.04,
+			overwrite: true,
+		})
+		.timeScale(1.5)
 }
 
 async function animateToInitialPosition() {
@@ -1062,8 +1094,13 @@ async function animateToInitialPosition() {
 			@apply transition-opacity duration-500 opacity-0;
 		}
 
-		.pin:hover + .pic {
+		&:not(:has([data-current='true'])) .pin:hover + .pic,
+		.pic[data-current='true'] {
 			@apply opacity-100;
+		}
+
+		.pic[data-current='false'] {
+			@apply delay-75;
 		}
 	}
 
@@ -1179,6 +1216,8 @@ async function animateToInitialPosition() {
 
 	&[data-open='false'] {
 		@apply translate-y-full;
+
+		transition-duration: 400ms;
 	}
 
 	&[data-open='true'][data-open-full='false'] {
