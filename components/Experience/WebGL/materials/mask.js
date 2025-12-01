@@ -4,12 +4,10 @@ import { If, Fn, uniform, vec2, vec4, uv, step, screenSize, abs, length, max, mi
 export const progress = uniform(0)
 export const radius = uniform(0.28)
 export const borderWidth = uniform(0)
-export const maskColorA = uniform(color(0.58, 0.41, 0.05))
-export const maskColorB = uniform(color(0.47, 0.21, 0.06))
+export const maskColorA = uniform(color(2, 0.79, 0.11))
+export const maskColorB = uniform(color(0, 0, 0))
 
-export const MaskMaterial = new MeshBasicNodeMaterial({
-  color: 0xffffff
-})
+export const MaskMaterial = new MeshBasicNodeMaterial()
 
 const sdfRoundedRect = Fn(( [p, size, r] ) => {
   const q = abs(p).sub(size).add( r )
@@ -40,8 +38,11 @@ MaskMaterial.colorNode = Fn(() => {
   const scale = remap(progress, 0, 1, 1, 0.5)
   const rad = remap(progress, 0, 1, 0, radius.mul(0.25))
 
-  const colorMask = sdfRoundedRect(p, vec2(width.sub(borderWidth), height.sub(borderWidth)).mul(scale), rad)
-  const borderMask = sdfRoundedRect(p, vec2(width, height).mul(scale), rad).sub(colorMask)
+  const colorMask = sdfRoundedRect(p, vec2(width, height).mul(scale), rad)
+
+  const borderMaskInner = sdfRoundedRect(p, vec2(width, height).sub(borderWidth).mul(scale), rad)
+  const borderMaskOuter = sdfRoundedRect(p, vec2(width, height).mul(scale), rad)
+  const borderMask = borderMaskOuter.sub(borderMaskInner)
 
   return vec4(
     colorMask,

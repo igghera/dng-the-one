@@ -867,13 +867,13 @@ function createPostprocessing() {
 	const angleOffset = (Math.PI / 180) * 70
 
 	const borderMix = angle
-		.add(time)
+		.add(time.mul(0.25))
 		.add(angleOffset)
 		.mul(2)
 		.sin()
 		.mul(0.5)
 		.add(0.5)
-		.smoothstep(0, 1)
+		.smoothstep(0.17, 0.83)
 	const borderColor = mix(maskBorderColorA, maskBorderColorB, borderMix)
 
 	const introToMain = mix(
@@ -906,6 +906,7 @@ function createPostprocessing() {
 	lutPass.intensityNode = lutIntensity
 
 	postProcessing.outputNode = lutPass
+	// postProcessing.outputNode = maskPass
 }
 
 function setBackgroundSize() {

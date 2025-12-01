@@ -487,7 +487,7 @@ const animateMask = () => {
 			value: 0,
 		},
 		{
-			value: 0.012,
+			value: 0.01,
 			duration: 0.8,
 		},
 		'<0.3'
