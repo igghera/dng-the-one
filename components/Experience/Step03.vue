@@ -248,19 +248,24 @@ const animateIn = () => {
 
 const createDraggable = () => {
 	draggableInstance = Draggable.create(get(draggersRef), {
-		onPress: () => {
+		onPress: self => {
+			const idx = Number(self.target.dataset.index)
+
+			fadeOutLabels(idx)
+
 			zoomInDropzoneCircle()
 		},
-		onRelease: () => {
+		onRelease: self => {
 			zoomOutDropzoneCircle()
-		},
-		onDragEnd: self => {
+
 			const inDropzone = Draggable.hitTest(self.target, get(dropzoneRef), '1%')
+			const idx = Number(self.target.dataset.index)
 
 			if (inDropzone) {
 				moveToFinalPosition(self.target)
-				appStore.setStep03Selection(Number(self.target.dataset.index))
+				appStore.setStep03Selection(idx)
 			} else {
+				fadeInLabels(idx)
 				moveToInitialPosition(self.target)
 			}
 		},
@@ -383,6 +388,25 @@ const createDraggable = () => {
 			},
 			'<0.5'
 		)
+	}
+
+	function fadeOutLabels(idx) {
+		const targetLabels = get(draggersLabelsRef).filter(
+			(label, index) => index !== idx
+		)
+		gsap.to(targetLabels, {
+			autoAlpha: 0,
+			duration: 0.5,
+			overwrite: true,
+		})
+	}
+
+	function fadeInLabels(idx) {
+		gsap.to(get(draggersLabelsRef), {
+			autoAlpha: 1,
+			duration: 0.5,
+			overwrite: true,
+		})
 	}
 }
 
