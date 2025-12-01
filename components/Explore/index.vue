@@ -1229,7 +1229,7 @@ async function animateToInitialPosition() {
 	}
 
 	&::after {
-		@apply block content-[''] absolute bottom-12 inset-x-0 h-32 pointer-events-none;
+		@apply block content-[''] absolute bottom-12 inset-x-0 h-16 pointer-events-none;
 
 		--hdr-gradient: linear-gradient(
 			to top in oklab,

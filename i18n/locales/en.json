@@ -232,7 +232,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy-01.mp4"
+              "value": "/videos/dummy.mp4"
             },
             {
               "component": "image",
@@ -257,7 +257,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy-02.mp4"
+              "value": "/videos/dummy.mp4"
             }
           ]
         ]
@@ -278,7 +278,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy-03.mp4"
+              "value": "/videos/dummy.mp4"
             }
           ]
         ]
@@ -299,7 +299,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy-02.mp4"
+              "value": "/videos/dummy.mp4"
             }
           ],
           [
@@ -313,7 +313,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy-01.mp4"
+              "value": "/videos/dummy.mp4"
             }
           ]
         ]
