@@ -1,5 +1,5 @@
 import { MeshBasicNodeMaterial, DataTexture } from 'three/webgpu'
-import { Fn, texture, uv, vec2, uniform, color, smoothstep } from 'three/tsl'
+import { Fn, texture, uv, vec2, uniform, color, smoothstep, mix, step, remap } from 'three/tsl'
 
 const dummyTexture = new DataTexture(
   new Uint8Array([0, 0, 0, 0]),
@@ -9,14 +9,20 @@ dummyTexture.needsUpdate = true
 
 class BackgroundMaterial {
   name = 'Background'
-  drawColor = uniform(color(0.7, 0.2, 0.06))
+  drawColor = uniform(color(0, 0, 0))
   drawProgress = uniform(0)
   drawSmooth = uniform(0.28)
+  mapVisibility = uniform(0)
+  thickness = uniform(0.5)
 
-  constructor() {
+  constructor(drawColor) {
     this.material = new MeshBasicNodeMaterial({
       transparent: true,
     })
+
+    this.drawColor.value.r = drawColor[0]
+    this.drawColor.value.g = drawColor[1]
+    this.drawColor.value.b = drawColor[2]
 
     // Create a reactive map object that updates the material when value changes
     const self = this
@@ -32,13 +38,24 @@ class BackgroundMaterial {
       }
     }
 
-    let maskValue = dummyTexture
-    this.mask = {
+    let drawMaskValue = dummyTexture
+    this.drawMask = {
       get value() {
-        return maskValue
+        return drawMaskValue
       },
       set value(newValue) {
-        maskValue = newValue
+        drawMaskValue = newValue
+        self.updateOpacityNode()
+      }
+    }
+
+    let beamMaskValue = dummyTexture
+    this.beamMask = {
+      get value() {
+        return beamMaskValue
+      },
+      set value(newValue) {
+        beamMaskValue = newValue
         self.updateOpacityNode()
       }
     }
@@ -50,7 +67,13 @@ class BackgroundMaterial {
     const textureUV = vec2(uv().x, uv().y.oneMinus())
 
     this.material.colorNode = Fn(() => {
-      return texture(this.map.value, textureUV).toVec3()
+      // const sample = texture(this.beamMask.value, textureUV).r
+      // return smoothstep(0.6, 1, sample).toVec3()
+
+      const drawColor = this.drawColor
+      const map = texture(this.map.value, textureUV).toVec3()
+
+      return mix(drawColor, map, this.mapVisibility)
     })()
   }
 
@@ -59,19 +82,26 @@ class BackgroundMaterial {
 
     this.material.opacityNode = Fn(() => {
       const progress = this.drawProgress.oneMinus()
-      const maskSample = texture(this.mask.value, textureUV)
+
+      const drawMaskSample = texture(this.drawMask.value, textureUV)
+      const beamMaskSample = texture(this.beamMask.value, textureUV)
+
       const drawAlpha = smoothstep(
         progress,
         progress.add(this.drawSmooth),
-        maskSample.r.mul(this.drawSmooth.oneMinus()).add(this.drawSmooth)
-      )
+        drawMaskSample.r.mul(this.drawSmooth.oneMinus()).add(this.drawSmooth)
+      ).mul(drawMaskSample.a)
 
-      return drawAlpha.mul(maskSample.a)
+      const beamMin = this.thickness.oneMinus()
+      const beamMax = beamMin.add(0.4)
+      const beamAlpha = smoothstep(beamMin, beamMax, beamMaskSample.r)
+
+      return beamAlpha.mul(drawAlpha)
     })()
   }
 }
 
-export const backgroundCopper = new BackgroundMaterial()
-export const backgroundGold = new BackgroundMaterial()
+export const backgroundCopper = new BackgroundMaterial([0.22, 0.09, 0.04])
+export const backgroundGold = new BackgroundMaterial([0.81, 0.67, 0.35])
 
 

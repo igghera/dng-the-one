@@ -52,6 +52,13 @@ import {
   intensity as lutIntensity,
 } from './nodes/lut'
 
+import {
+  opacity as starsOpacity,
+  scale as starsScale,
+  offsetX as starsOffsetX,
+  offsetY as starsOffsetY,
+} from './materials/stars'
+
 export class Debug {
   constructor(dof, godrays, background, particles, endDrawMaterial, introDrawMaterial, introSceneVisibility, sea) {
     this.pane = new Pane({
@@ -70,6 +77,7 @@ export class Debug {
     this.createParticles(particles)
     this.createEndDrawPlane(endDrawMaterial)
     this.createMask()
+    this.createStars()
     this.createBloom()
     this.createLUT()
   }
@@ -273,6 +281,18 @@ export class Debug {
     maskFolder.addBinding(maskBorderWidth, 'value', { label: 'Border Width', min: 0, max: 0.3, step: 0.001 })
     maskFolder.addBinding(maskBorderColorA, 'value', { label: 'Border Color A', color: { type: 'float' } })
     maskFolder.addBinding(maskBorderColorB, 'value', { label: 'Border Color B', color: { type: 'float' } })
+  }
+
+  createStars() {
+    const folder = this.pane.addFolder({
+      title: 'Stars',
+      expanded: true,
+    })
+
+    folder.addBinding(starsOpacity, 'value', { label: 'Opacity', min: 0, max: 1 })
+    folder.addBinding(starsScale, 'value', { label: 'Scale', min: 0, max: 1, step: 0.01 })
+    folder.addBinding(starsOffsetX, 'value', { label: 'Offset X', min: 0, max: 1, step: 0.01 })
+    folder.addBinding(starsOffsetY, 'value', { label: 'Offset Y', min: 0, max: 1, step: 0.01 })
   }
 
   createBloom() {

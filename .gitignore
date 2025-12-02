@@ -26,4 +26,4 @@ logs
 public/basis/
 .vercel
 *.mmcr
-*.af~lock
+*.af~lock~

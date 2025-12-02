@@ -141,6 +141,8 @@ import {
 	borderWidth as maskBorderWidth,
 } from '~/components/Experience/WebGL/materials/mask'
 
+import { opacity as starsOpacity } from '~/components/Experience/WebGL/materials/stars'
+
 import { experienceEndDrawMaterial } from '~/components/Experience/WebGL/materials'
 
 //
@@ -808,8 +810,20 @@ const animateMask = () => {
 			value: 0,
 		},
 		{
-			value: 0.02,
+			value: 0.01,
 			duration: 0.8,
+		},
+		'<0.3'
+	)
+
+	tl.fromTo(
+		starsOpacity,
+		{
+			value: 0,
+		},
+		{
+			value: 1,
+			duration: 0.7,
 		},
 		'<0.3'
 	)
@@ -859,10 +873,12 @@ const animateMask = () => {
 .result {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
 
-	aspect-ratio: 240 / 300;
-	height: 30svh;
-	translate: 0 8svh;
 	row-gap: toRem(10);
+	width: toRem(160);
+
+	@screen md {
+		width: toRem(220);
+	}
 }
 
 .buttons {

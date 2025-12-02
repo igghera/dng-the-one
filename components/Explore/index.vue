@@ -2,9 +2,15 @@
 	<div
 		class="explore"
 		:data-visible="init"
-		:data-text-visible="!panelOpen && copyVisible"
+		:data-text-visible="copyVisible"
 		:data-pins-visible="pinsVisible"
 	>
+		<div
+			class="top-gradient"
+			:data-visible="css3DContentVisible"
+			aria-hidden="true"
+		/>
+
 		<Logo20Years class="logo | multi-shadow" ref="logoRef" />
 
 		<div class="intro">
@@ -33,14 +39,26 @@
 			:height="componentHeight"
 		/>
 
-		<div class="explore-content" ref="css3DContentRef">
+		<div
+			class="explore-content"
+			:data-visible="css3DContentVisible"
+			ref="css3DContentRef"
+		>
 			<div
 				v-for="(item, idx) in itemsMerged"
 				:key="idx"
 				class="socket"
 				:style="{
-					'--w': `${item.mainImage.width * item.scaleFactor}px`,
-					'--h': `${item.mainImage.height * item.scaleFactor}px`,
+					'--w': `${
+						Math.floor(item.mainImage.width * item.scaleFactor) % 2 === 0
+							? Math.floor(item.mainImage.width * item.scaleFactor)
+							: Math.floor(item.mainImage.width * item.scaleFactor) - 1
+					}px`,
+					'--h': `${
+						Math.floor(item.mainImage.height * item.scaleFactor) % 2 === 0
+							? Math.floor(item.mainImage.height * item.scaleFactor)
+							: Math.floor(item.mainImage.height * item.scaleFactor) - 1
+					}px`,
 					'pointer-events': 'none',
 				}"
 				:data-id="idx"
@@ -72,7 +90,10 @@
 							<ExplorePin />
 						</button>
 
-						<picture class="pic">
+						<picture
+							class="pic"
+							:data-current="currentProduct === `${idx}_${pidx}`"
+						>
 							<img
 								class="img"
 								:src="option.imageSrc"
@@ -101,7 +122,7 @@
 		>
 			<button
 				class="panel-close-button"
-				@click="closePanel"
+				@click="handleClosePanel"
 				aria-label="close panel"
 			>
 				<IconClose class="relative z-[1]" />
@@ -111,11 +132,8 @@
 				class="panel-scroller | no-scrollbar | overflow-y-auto"
 				ref="panelScrollerRef"
 			>
-				<div v-if="currentProduct" class="panel-content">
-					<template
-						v-for="(item, idx) in panelsData.get(currentProduct)"
-						:key="idx"
-					>
+				<div v-if="currentProductData" class="panel-content">
+					<template v-for="(item, idx) in currentProductData" :key="idx">
 						<div
 							v-if="item.component === 'title'"
 							class="panel-content-title"
@@ -168,6 +186,8 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
+import { bloom } from 'three/addons/tsl/display/BloomNode'
+import { pass } from 'three/tsl'
 import {
 	CSS3DRenderer,
 	CSS3DObject,
@@ -177,6 +197,11 @@ import { get, set } from '@vueuse/core'
 
 import { ktxLoader } from '~/assets/js/loaders'
 import { backgroundCopper, backgroundGold } from './materials/background'
+import {
+	threshold as bloomThreshold,
+	strength as bloomStrength,
+	radius as bloomRadius,
+} from './nodes/bloom'
 
 //
 // Refs / State
@@ -203,14 +228,16 @@ const textures = new Map()
 
 const init = shallowRef(false)
 const currentProduct = shallowRef(null)
+const currentProductData = shallowRef(null)
+const css3DContentVisible = shallowRef(false)
 const panelOpen = shallowRef(false)
 const panelOpenFull = shallowRef(false)
 const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
-let renderer, rendererCSS, scene, camera, controls, bg0, bg1
+let renderer, rendererCSS, scene, camera, controls, bg0, bg1, postProcessing
 let introSplit, instructionsSplit, panelPointerObserver
-let debugPanel
+let debugPanel, statsPanel
 
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
@@ -370,6 +397,7 @@ const targets = itemsData.map(item => {
 		})
 	)
 
+	// mesh.scale.set(1.1, 1.1, 1)
 	mesh.position.copy(item.position)
 
 	return mesh
@@ -452,6 +480,8 @@ onMounted(async () => {
 	createControls()
 	createPanelPointerObserver()
 
+	createPostprocessing()
+
 	set(init, true)
 
 	gsap.delayedCall(0.4, () => {
@@ -469,15 +499,43 @@ onMounted(async () => {
 
 		updateScene(time)
 
-		renderer.render(scene, camera)
+		// renderer.render(scene, camera)
+		postProcessing.render()
 		rendererCSS.render(scene, camera)
 
+		renderer.resolveTimestampsAsync(THREE.TimestampQuery.RENDER)
+
+		statsPanel?.update()
 		debugPanel?.pane?.refresh()
 	})
 
 	if (isDebug) {
 		const { ExploreDebug } = await import('./Debug')
 		debugPanel = new ExploreDebug()
+
+		const { default: Stats } = await import('stats-gl')
+		statsPanel = new Stats({
+			trackGPU: true,
+			trackHz: true,
+			trackCPT: false,
+			logsPerSecond: 4,
+			graphsPerSecond: 30,
+			samplesLog: 40,
+			samplesGraph: 10,
+			precision: 2,
+			horizontal: false,
+			minimal: false,
+			mode: 0,
+		})
+
+		statsPanel.init(renderer)
+
+		statsPanel.dom.style.position = null
+		statsPanel.dom.style.top = null
+		statsPanel.dom.style.left = null
+		statsPanel.dom.style.zIndex = null
+
+		document.getElementById('stats-wrapper').appendChild(statsPanel.dom)
 	}
 })
 
@@ -493,7 +551,11 @@ watch([componentWidth, componentHeight], value => {
 	if (!renderer) return
 
 	renderer.setSize(value[0], value[1])
-	rendererCSS.setSize(value[0], value[1])
+
+	rendererCSS.setSize(
+		value[0] % 2 === 0 ? value[0] : value[0] - 1,
+		value[1] % 2 === 0 ? value[1] : value[1] - 1
+	)
 })
 
 //
@@ -555,14 +617,20 @@ function createBackground() {
 
 	backgroundCopper.name = 'Copper'
 	backgroundCopper.map.value = textures.get('line-copper-desktop')
-	backgroundCopper.mask.value = textures.get('line-copper-desktop-mask')
+	backgroundCopper.drawMask.value = textures.get(
+		'line-copper-desktop-mask-draw'
+	)
+	backgroundCopper.beamMask.value = textures.get(
+		'line-copper-desktop-mask-beam'
+	)
 	bg0 = new THREE.Mesh(geometry, backgroundCopper.material)
 	bg0.position.set(0.045, 0, -0.01)
 	scene.add(bg0)
 
 	backgroundGold.name = 'Gold'
 	backgroundGold.map.value = textures.get('line-gold-desktop')
-	backgroundGold.mask.value = textures.get('line-gold-desktop-mask')
+	backgroundGold.drawMask.value = textures.get('line-gold-desktop-mask-draw')
+	backgroundGold.beamMask.value = textures.get('line-gold-desktop-mask-beam')
 	bg1 = new THREE.Mesh(geometry.clone(), backgroundGold.material)
 	scene.add(bg1)
 }
@@ -603,8 +671,10 @@ async function loadTextures() {
 		'/webgl/draw/line-copper-mobile.ktx2',
 		'/webgl/draw/line-gold-mobile.ktx2',
 		'/webgl/draw/explore-mask.ktx2',
-		'/webgl/draw/line-copper-desktop-mask.ktx2',
-		'/webgl/draw/line-gold-desktop-mask.ktx2',
+		'/webgl/draw/line-copper-desktop-mask-draw.ktx2',
+		'/webgl/draw/line-gold-desktop-mask-draw.ktx2',
+		'/webgl/draw/line-copper-desktop-mask-beam.ktx2',
+		'/webgl/draw/line-gold-desktop-mask-beam.ktx2',
 	])
 
 	ktx[0].colorSpace = THREE.SRGBColorSpace
@@ -621,13 +691,21 @@ async function loadTextures() {
 	ktx[6].colorSpace = THREE.NoColorSpace
 	ktx[6].wrapS = ktx[6].wrapT = THREE.NoWrapping
 
+	ktx[7].colorSpace = THREE.NoColorSpace
+	ktx[7].wrapS = ktx[7].wrapT = THREE.NoWrapping
+
+	ktx[8].colorSpace = THREE.NoColorSpace
+	ktx[8].wrapS = ktx[8].wrapT = THREE.NoWrapping
+
 	textures.set('line-copper-desktop', ktx[0])
 	textures.set('line-gold-desktop', ktx[1])
 	textures.set('line-copper-mobile', ktx[2])
 	textures.set('line-gold-mobile', ktx[3])
 	textures.set('mask', ktx[4])
-	textures.set('line-copper-desktop-mask', ktx[5])
-	textures.set('line-gold-desktop-mask', ktx[6])
+	textures.set('line-copper-desktop-mask-draw', ktx[5])
+	textures.set('line-gold-desktop-mask-draw', ktx[6])
+	textures.set('line-copper-desktop-mask-beam', ktx[7])
+	textures.set('line-gold-desktop-mask-beam', ktx[8])
 }
 
 function createDOM() {
@@ -651,6 +729,22 @@ function createCameraTargets() {
 	targets.forEach(target => {
 		scene.add(target)
 	})
+}
+
+function createPostprocessing() {
+	postProcessing = new THREE.PostProcessing(renderer)
+
+	const scenePass = pass(scene, camera)
+	const scenePassColor = scenePass.getTextureNode()
+
+	const bloomPass = bloom(scenePassColor)
+	bloomPass.strength = bloomStrength
+	bloomPass.radius = bloomRadius
+	bloomPass.threshold = bloomThreshold
+
+	const compose = scenePassColor.add(bloomPass.mul(5))
+
+	postProcessing.outputNode = compose
 }
 
 function createPanelPointerObserver() {
@@ -687,19 +781,47 @@ function createPanelPointerObserver() {
 async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
-	set(currentProduct, productId)
-
-	await nextTick()
-
-	openPanel()
-
 	controls.enabled = false
 
-	controls.fitToBox(targets[productId.split('_')[0]], true, {
-		cover: false,
-		paddingTop: 0.2,
-		paddingBottom: 0.4,
-	})
+	if (!!get(currentProduct)) {
+		closePanel()
+		set(currentProduct, null)
+
+		await gsap.delayedCall(0.4, () => {})
+
+		set(currentProduct, productId)
+		set(currentProductData, get(panelsData).get(productId))
+
+		await nextTick()
+
+		set(copyVisible, false)
+		openPanel()
+
+		controls.fitToBox(targets[productId.split('_')[0]], true, {
+			cover: false,
+			paddingTop: 0.2,
+			paddingBottom: 0.4,
+		})
+	} else {
+		set(currentProduct, productId)
+		set(currentProductData, get(panelsData).get(productId))
+
+		await nextTick()
+
+		set(copyVisible, false)
+		openPanel()
+
+		controls.fitToBox(targets[productId.split('_')[0]], true, {
+			cover: false,
+			paddingTop: 0.2,
+			paddingBottom: 0.4,
+		})
+	}
+}
+
+function handleClosePanel() {
+	set(copyVisible, true)
+	closePanel()
 }
 
 function openPanel() {
@@ -712,6 +834,7 @@ function openPanel() {
 function closePanel() {
 	set(panelOpen, false)
 	set(panelOpenFull, false)
+	set(currentProduct, null)
 
 	controls.enabled = true
 }
@@ -722,14 +845,10 @@ function openPanelFull() {
 	set(panelOpenFull, true)
 }
 
-function closePanelFull() {
-	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
-
-	set(panelOpenFull, false)
-}
-
 async function introButtonOnCompleteCallback() {
 	await animateOutIntro()
+
+	set(css3DContentVisible, true)
 
 	await animateToInitialPosition()
 
@@ -760,6 +879,54 @@ function animateInBackground() {
 			duration: 5,
 		},
 		'start'
+	)
+
+	tl.to(
+		bloomStrength,
+		{
+			value: 0,
+			duration: 2,
+			ease: 'power2.out',
+		},
+		'>-1'
+	)
+
+	tl.to(
+		[backgroundCopper.mapVisibility, backgroundGold.mapVisibility],
+		{
+			value: 1,
+			duration: 1.2,
+		},
+		'<'
+	)
+
+	tl.to(
+		[get(logoRef).$el, get(introTextRef)],
+		{
+			'--color-shadow-start-influence': '0%',
+			duration: 2,
+			ease: 'power2.out',
+		},
+		'<'
+	)
+
+	tl.to(
+		[get(logoRef).$el, get(introTextRef)],
+		{
+			'--color-shadow-end-influence': '100%',
+			duration: 2,
+			ease: 'power2.out',
+		},
+		'<0.4'
+	)
+
+	tl.to(
+		[backgroundCopper.thickness, backgroundGold.thickness],
+		{
+			value: 1,
+			duration: 2,
+		},
+		'<'
 	)
 }
 
@@ -817,12 +984,14 @@ function animateInInstructions() {
 }
 
 function animateOutInstructions() {
-	gsap.to(instructionsSplit.chars, {
-		opacity: 0,
-		duration: 1,
-		stagger: 0.04,
-		overwrite: true,
-	})
+	gsap
+		.to(instructionsSplit.chars, {
+			opacity: 0,
+			duration: 1,
+			stagger: 0.04,
+			overwrite: true,
+		})
+		.timeScale(1.5)
 }
 
 async function animateToInitialPosition() {
@@ -867,8 +1036,29 @@ async function animateToInitialPosition() {
 	}
 }
 
+.top-gradient {
+	@apply relative z-[1] pointer-events-none;
+	@apply transition-opacity duration-1000;
+
+	background: linear-gradient(
+		to bottom in oklch,
+		oklch(17.3% 0.029 31.97 / 100%) 30%,
+		oklch(17.3% 0.029 31.97 / 0%)
+	);
+	height: toRem(150);
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
+}
+
 .explore-content {
 	@apply pointer-events-none relative size-full top-0 left-0;
+	@apply transition-opacity duration-1000;
+
+	&[data-visible='false'] {
+		@apply opacity-0;
+	}
 
 	top: env(safe-area-inset-top, 0);
 	left: env(safe-area-inset-left, 0);
@@ -904,8 +1094,13 @@ async function animateToInitialPosition() {
 			@apply transition-opacity duration-500 opacity-0;
 		}
 
-		.pin:hover + .pic {
+		&:not(:has([data-current='true'])) .pin:hover + .pic,
+		.pic[data-current='true'] {
 			@apply opacity-100;
+		}
+
+		.pic[data-current='false'] {
+			@apply delay-75;
 		}
 	}
 
@@ -1021,6 +1216,8 @@ async function animateToInitialPosition() {
 
 	&[data-open='false'] {
 		@apply translate-y-full;
+
+		transition-duration: 400ms;
 	}
 
 	&[data-open='true'][data-open-full='false'] {
@@ -1028,11 +1225,11 @@ async function animateToInitialPosition() {
 	}
 
 	&[data-open-full='true'] {
-		height: calc(100svh - 80px);
+		height: min(toRem(500), calc(100svh - 80px));
 	}
 
 	&::after {
-		@apply block content-[''] absolute bottom-12 inset-x-0 h-32 pointer-events-none;
+		@apply block content-[''] absolute bottom-12 inset-x-0 h-16 pointer-events-none;
 
 		--hdr-gradient: linear-gradient(
 			to top in oklab,
@@ -1110,9 +1307,21 @@ async function animateToInitialPosition() {
 }
 
 .multi-shadow {
-	filter: drop-shadow(0 0 5px #1b0b08) drop-shadow(0 0 12px #1b0b08)
-		drop-shadow(0 0 14px #1b0b08) drop-shadow(0 0 16px #1b0b08)
-		drop-shadow(0 0 18px #1b0b08) drop-shadow(0 0 20px #1b0b08)
-		drop-shadow(0 0 22px #1b0b08);
+	--color-shadow-start: #000000;
+	--color-shadow-start-influence: 100%;
+	--color-shadow-end: #1b0b08;
+	--color-shadow-end-influence: 0%;
+
+	--color-shadow: color-mix(
+		in oklab,
+		var(--color-shadow-start) var(--color-shadow-start-influence),
+		var(--color-shadow-end) var(--color-shadow-end-influence)
+	);
+
+	filter: drop-shadow(0 0 5px var(--color-shadow))
+		drop-shadow(0 0 12px var(--color-shadow))
+		drop-shadow(0 0 14px var(--color-shadow))
+		drop-shadow(0 0 18px var(--color-shadow))
+		drop-shadow(0 0 22px var(--color-shadow));
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<ClientOnly>
-			<Explore v-if="isDebug" />
+			<Explore v-if="true" />
 			<ExploreDummy v-else />
 
 			<div id="stats-wrapper" v-if="isDebug"></div>
