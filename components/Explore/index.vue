@@ -5,6 +5,8 @@
 		:data-text-visible="copyVisible"
 		:data-pins-visible="pinsVisible"
 	>
+		<div class="!w-5 !h-5 bg-[#f00] invisible" ref="draggableDummyRef" />
+
 		<div
 			class="top-gradient"
 			:data-visible="css3DContentVisible"
@@ -216,12 +218,13 @@ const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
 const panelRef = useTemplateRef('panelRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
+const draggableDummyRef = useTemplateRef('draggableDummyRef')
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
 
-const { gsap, SplitText, Observer } = useGSAP()
+const { gsap, SplitText, Observer, Draggable } = useGSAP()
 const { rt, tm } = useI18n()
 
 const textures = new Map()
@@ -236,8 +239,14 @@ const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1, postProcessing
+let cameraZ = 5
 let introSplit, instructionsSplit, panelPointerObserver
 let debugPanel, statsPanel
+let curve = null,
+	dragProgress = { value: 0 },
+	draggableInstance = null
+
+const controlsPositionMemo = new THREE.Vector3()
 
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
@@ -479,6 +488,7 @@ onMounted(async () => {
 
 	createControls()
 	createPanelPointerObserver()
+	createDrag()
 
 	createPostprocessing()
 
@@ -590,7 +600,7 @@ function createCamera() {
 		20
 	)
 
-	camera.position.set(0, 0, 5)
+	camera.position.set(0, 0, cameraZ)
 }
 
 async function createRenderer() {
@@ -725,6 +735,55 @@ function createDOM() {
 	})
 }
 
+function createDrag() {
+	const points = itemsData.map(item => new THREE.Vector3().copy(item.position))
+	curve = new THREE.CatmullRomCurve3(points, false, 'catmullrom', 0.6)
+
+	draggableInstance = Draggable.create(get(draggableDummyRef), {
+		trigger: get(el),
+		type: 'x',
+		inertia: true,
+		edgeResistance: 1,
+		dragResistance: 0.85,
+		bounds: {
+			left: 0,
+			width: 1000,
+		},
+		zIndexBoost: false,
+		onDrag: () => {
+			update(draggableInstance[0].x)
+		},
+		onThrowUpdate: () => {
+			update(draggableInstance[0].x)
+		},
+	})
+
+	gsap.set(get(draggableDummyRef), {
+		x: 980,
+	})
+	draggableInstance?.[0]?.update()
+	draggableInstance?.[0]?.disable()
+
+	let progressVector = new THREE.Vector3()
+
+	function update(value) {
+		dragProgress.value = value
+
+		const normalizedValue = gsap.utils.mapRange(0, 980, 1, 0, value)
+		const point = curve.getPoint(normalizedValue, progressVector)
+
+		controls.setLookAt(
+			point.x,
+			point.y,
+			cameraZ,
+			point.x,
+			point.y,
+			point.z,
+			false
+		)
+	}
+}
+
 function createCameraTargets() {
 	targets.forEach(target => {
 		scene.add(target)
@@ -781,7 +840,8 @@ function createPanelPointerObserver() {
 async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
-	controls.enabled = false
+	// controls.enabled = false
+	draggableInstance?.[0]?.disable()
 
 	if (!!get(currentProduct)) {
 		closePanel()
@@ -829,6 +889,8 @@ function openPanel() {
 
 	get(panelScrollerRef).scrollTo(0, 0)
 	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+
+	controls.getPosition(controlsPositionMemo)
 }
 
 function closePanel() {
@@ -836,7 +898,21 @@ function closePanel() {
 	set(panelOpenFull, false)
 	set(currentProduct, null)
 
-	controls.enabled = true
+	const currentPos = new THREE.Vector3()
+	controls.getPosition(currentPos)
+
+	controls.setLookAt(
+		controlsPositionMemo.x,
+		controlsPositionMemo.y,
+		controlsPositionMemo.z,
+		controlsPositionMemo.x,
+		controlsPositionMemo.y,
+		controlsPositionMemo.z - 1,
+		true
+	)
+
+	// draggableInstance?.[0]?.update()
+	draggableInstance?.[0]?.enable()
 }
 
 function openPanelFull() {
@@ -1003,8 +1079,12 @@ async function animateToInitialPosition() {
 		paddingBottom: 0.35,
 	})
 
+	const currentPos = new THREE.Vector3()
+	controls.getPosition(currentPos)
+	cameraZ = currentPos.z
+
 	controls.smoothTime = 0.25
-	controls.enabled = true
+	draggableInstance?.[0]?.enable()
 
 	animateInInstructions()
 
