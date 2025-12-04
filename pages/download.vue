@@ -38,7 +38,7 @@
 				</picture>
 
 				<span class="card-sub-content-title | text-gold-light">
-					{{ $t('download.card_subcontent_title') }}
+					{{ $t('download_card.subcontent_title') }}
 				</span>
 
 				<span class="card-sub-content-copy | text-gold-light">
@@ -60,7 +60,9 @@
 
 		<header class="header">
 			<h1 class="title | gap-y-5">
-				<span class="pre-title | body-7">{{ $t('download.pre_title') }}</span>
+				<span class="pre-title | body-7">{{
+					$t('download_card.pre_title')
+				}}</span>
 
 				<span class="title-text">
 					<span class="body-2 | golden-text | uppercase">{{
