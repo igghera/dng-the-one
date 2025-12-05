@@ -13,8 +13,7 @@
 					class="button button-right"
 				>
 					<span class="ui-2 | uppercase inline-block -translate-y-[0.7em]"
-						><span class="md-down:hidden">
-							{{ $t('start_experience') }} </span
+						><span class="md-down:hidden"> {{ $t('start_experience') }} </span
 						><span class="md:hidden">
 							{{ $t('start') }}
 						</span></span
@@ -27,6 +26,11 @@
 					class="button button-right"
 					:href="engagementPageLink"
 				>
+					<ButtonClose tag="div" />
+				</a>
+
+				<!-- If coming from main experience - Show Close button -->
+				<a class="button button-right" href="/?ref=explore">
 					<ButtonClose tag="div" />
 				</a>
 			</template>

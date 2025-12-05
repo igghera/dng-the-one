@@ -123,6 +123,17 @@ const START_PARAMS = Object.freeze({
 	maskRadius: maskRadius.value,
 })
 
+const END_PARANS = Object.freeze({
+	introSceneVisibility: 0,
+
+	maskProgress: 0.9,
+	maskBorderWidth: 0.01,
+
+	starsOpacity: 1,
+
+	endDrawProgress: 1,
+})
+
 //
 // Refs / State
 //
@@ -140,6 +151,7 @@ const { pixelRatio } = useDevicePixelRatio()
 const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
+const isFromExplore = urlParams.ref === 'explore'
 
 const { isPortrait, isLandscape, isMobile, isMedium, isDesktop } = useViewport()
 
@@ -194,6 +206,17 @@ const introSceneVisibility = uniform(1)
 // Lifecycle
 //
 onMounted(async () => {
+	if (isFromExplore) {
+		introSceneVisibility.value = END_PARANS.introSceneVisibility
+
+		maskProgress.value = END_PARANS.maskProgress
+		maskBorderWidth.value = END_PARANS.maskBorderWidth
+
+		starsOpacity.value = END_PARANS.starsOpacity
+
+		experienceEndDrawMaterial.progress.value = END_PARANS.endDrawProgress
+	}
+
 	createScene()
 	createCamera()
 
@@ -329,8 +352,8 @@ emitter.on(EVENTS.RESTART, () => {
 
 	experienceEndDrawMaterial.progress.value = 0
 
-	maskProgress.value = 0
-	maskBorderWidth.value = 0
+	maskProgress.value = START_PARAMS.maskProgress
+	maskBorderWidth.value = START_PARAMS.maskBorderWidth
 	maskRadius.value = START_PARAMS.maskRadius
 
 	starsOpacity.value = 0
@@ -538,7 +561,7 @@ function animateInMainScene() {
 	tl.fromTo(
 		introSceneVisibility,
 		{ value: 1 },
-		{ value: 0, duration: 0.1 },
+		{ value: END_PARANS.introSceneVisibility, duration: 0.1 },
 		'start'
 	)
 
@@ -612,7 +635,9 @@ function createCamera() {
 
 	camera.position.set(
 		mainCameraParams.positionStart.x,
-		mainCameraParams.positionStart.y,
+		isFromExplore
+			? mainCameraParams.positionEnd.y
+			: mainCameraParams.positionStart.y,
 		mainCameraParams.positionStart.z
 	)
 

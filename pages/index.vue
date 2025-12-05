@@ -45,6 +45,15 @@ const { gsap } = useGSAP()
 
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
+const isFromExplore = urlParams.ref === 'explore'
+
+if (isFromExplore) {
+	uiStore.setMainUiVisible(true)
+	uiStore.setPreloaderVisible(false)
+	uiStore.setExperienceStartVisible(false)
+
+	document.documentElement.dataset.init = true
+}
 
 onMounted(async () => {
 	if (isDebug) {
