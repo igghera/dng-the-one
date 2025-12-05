@@ -6,14 +6,22 @@
 
 		<ClientOnly>
 			<template v-if="isExplorePage">
+				<!-- If first view - Show "Start experience" -->
 				<a
 					v-if="isFirstView && !isFromEngagement"
 					href="/"
 					class="button button-right"
 				>
-					<ButtonClose tag="div" />
+					<span class="ui-2 | uppercase inline-block -translate-y-[0.7em]"
+						><span class="md-down:hidden">
+							{{ $t('start_experience') }} </span
+						><span class="md:hidden">
+							{{ $t('start') }}
+						</span></span
+					>
 				</a>
 
+				<!-- If coming from engagement page - Show Close button -->
 				<a
 					v-else-if="!isFirstView && isFromEngagement"
 					class="button button-right"
