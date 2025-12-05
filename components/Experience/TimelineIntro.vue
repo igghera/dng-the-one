@@ -14,11 +14,20 @@
 			{{ $t('timeline_intro.copy') }}
 		</p>
 
-		<ButtonGolden to="/explore" class="!text-gold">{{
+		<ButtonGolden :to="ctaLink" class="!text-gold">{{
 			$t('timeline_intro.cta')
 		}}</ButtonGolden>
 	</Container>
 </template>
+
+<script setup>
+defineProps({
+	ctaLink: {
+		type: String,
+		required: true,
+	},
+})
+</script>
 
 <style lang="scss" scoped>
 @use '@/assets/css/functions' as *;

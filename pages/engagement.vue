@@ -56,13 +56,15 @@
 			</ClientOnly>
 		</div>
 
-		<ExperienceTimelineIntro class="explore" />
+		<ExperienceTimelineIntro
+			class="explore"
+			cta-link="/explore?ref=engagement"
+		/>
 	</div>
 </template>
 
 <script setup>
 import { get, set } from '@vueuse/core'
-import { snapdom } from '@zumer/snapdom'
 
 //
 // Refs / State
@@ -75,8 +77,6 @@ const { rt, tm } = useI18n()
 const { gsap } = useGSAP()
 
 const urlParams = useUrlSearchParams('history')
-
-const cardRef = useTemplateRef('cardRef')
 
 const isDownloading = shallowRef(false)
 
@@ -132,6 +132,7 @@ const selectedProducts = computed(() => {
 onMounted(async () => {
 	await nextTick()
 
+	get(lenis).scrollTo(0, { immediate: true, force: true })
 	get(lenis).start()
 
 	uiStore.setMainUiVisible(true)

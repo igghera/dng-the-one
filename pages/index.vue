@@ -15,7 +15,7 @@
 		<template v-if="uiStore.isResultsVisible">
 			<ExperienceResults />
 
-			<ExperienceTimelineIntro />
+			<ExperienceTimelineIntro cta-link="/explore" />
 		</template>
 
 		<Transition name="fade">

@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { get } from '@vueuse/core'
+import { get, useStorage } from '@vueuse/core'
 
 const uiStore = useUiStore()
 
@@ -22,6 +22,11 @@ const lenisOptions = {
 	autoRaf: false,
 	prevent: node => node.id === 'profiler-shell',
 }
+
+onMounted(() => {
+	const state = useStorage('isFirstView', true)
+	state.value = true
+})
 
 watchEffect(onInvalidate => {
 	if (!get(lenisRef)?.lenis) return

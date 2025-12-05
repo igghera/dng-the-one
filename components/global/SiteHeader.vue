@@ -4,18 +4,57 @@
 
 		<LogoLettering class="logotype" />
 
-		<a v-if="isExplorePage" href="/" class="button button-right">
-			<ButtonClose />
-		</a>
+		<ClientOnly>
+			<template v-if="isExplorePage">
+				<a
+					v-if="isFirstView && !isFromEngagement"
+					href="/"
+					class="button button-right"
+				>
+					<ButtonClose tag="div" />
+				</a>
 
-		<ButtonLanguage v-else class="button button-right" />
+				<a
+					v-else-if="!isFirstView && isFromEngagement"
+					class="button button-right"
+					:href="engagementPageLink"
+				>
+					<ButtonClose tag="div" />
+				</a>
+			</template>
+
+			<ButtonLanguage v-else class="button button-right" />
+		</ClientOnly>
 	</Container>
 </template>
 
 <script setup>
+import { useStorage, set } from '@vueuse/core'
+
+//
+// Refs / State
+//
 const route = useRoute()
 
+const isFromEngagement = shallowRef(false)
+const engagementPageLink = shallowRef('/engagement')
+
+//
+// Computed
+//
 const isExplorePage = computed(() => route.path === '/explore')
+
+const isFirstView = computed(() => {
+	const state = useStorage('isFirstView', false)
+	return state.value
+})
+
+watchEffect(() => {
+	if (import.meta.server) return
+
+	set(isFromEngagement, route.query.ref === 'engagement')
+	set(engagementPageLink, window.history.state.back)
+})
 </script>
 
 <style lang="scss" scoped>
