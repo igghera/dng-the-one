@@ -556,7 +556,7 @@ const animateMask = () => {
 	width: toRem(160);
 
 	@screen md {
-		width: toRem(220);
+		width: toRem(210);
 	}
 }
 
