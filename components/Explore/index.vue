@@ -5,7 +5,10 @@
 		:data-text-visible="copyVisible"
 		:data-pins-visible="pinsVisible"
 	>
-		<div class="!w-5 !h-5 bg-[#f00] invisible" ref="draggableDummyRef" />
+		<div
+			class="!w-5 !h-5 bg-[#f00] relative z-[2] invisible"
+			ref="draggableDummyRef"
+		/>
 
 		<div
 			class="top-gradient"
@@ -393,11 +396,10 @@ const itemsData = [
 ]
 
 const targets = itemsData.map(item => {
+	const size = 650 * 0.4 * 0.001
+
 	const mesh = new THREE.Mesh(
-		new THREE.PlaneGeometry(
-			item.mainImage.width * item.scaleFactor * 0.001,
-			item.mainImage.height * item.scaleFactor * 0.001
-		),
+		new THREE.PlaneGeometry(size, size),
 		new THREE.MeshBasicMaterial({
 			transparent: true,
 			opacity: 0.3,
@@ -406,7 +408,6 @@ const targets = itemsData.map(item => {
 		})
 	)
 
-	// mesh.scale.set(1.1, 1.1, 1)
 	mesh.position.copy(item.position)
 
 	return mesh
@@ -770,18 +771,41 @@ function createDrag() {
 		dragProgress.value = value
 
 		const normalizedValue = gsap.utils.mapRange(0, 980, 1, 0, value)
-		const point = curve.getPoint(normalizedValue, progressVector)
+		curve.getPoint(normalizedValue, progressVector)
 
 		controls.setLookAt(
-			point.x,
-			point.y,
+			progressVector.x,
+			progressVector.y,
 			cameraZ,
-			point.x,
-			point.y,
-			point.z,
+			progressVector.x,
+			progressVector.y,
+			progressVector.z,
 			false
 		)
 	}
+}
+
+function getProgressOnCurveAtIndex(index) {
+	const dummyPoints = []
+
+	let i
+	for (i = 0; i <= index; i++) {
+		dummyPoints.push(new THREE.Vector3().copy(itemsData[i].position))
+	}
+
+	if (dummyPoints.length < 2) return 0
+
+	const dummyCurve = new THREE.CatmullRomCurve3(
+		dummyPoints,
+		false,
+		'catmullrom',
+		0.6
+	)
+
+	const originalCurveLength = curve.getLength()
+	const dummyCurveLength = dummyCurve.getLength()
+
+	return dummyCurveLength / originalCurveLength
 }
 
 function createCameraTargets() {
@@ -840,43 +864,36 @@ function createPanelPointerObserver() {
 async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
-	// controls.enabled = false
 	draggableInstance?.[0]?.disable()
 
-	if (!!get(currentProduct)) {
-		closePanel()
-		set(currentProduct, null)
-
-		await gsap.delayedCall(0.4, () => {})
-
-		set(currentProduct, productId)
-		set(currentProductData, get(panelsData).get(productId))
-
-		await nextTick()
-
-		set(copyVisible, false)
-		openPanel()
-
-		controls.fitToBox(targets[productId.split('_')[0]], true, {
-			cover: false,
-			paddingTop: 0.2,
-			paddingBottom: 0.4,
-		})
-	} else {
-		set(currentProduct, productId)
-		set(currentProductData, get(panelsData).get(productId))
-
-		await nextTick()
-
-		set(copyVisible, false)
-		openPanel()
-
-		controls.fitToBox(targets[productId.split('_')[0]], true, {
-			cover: false,
-			paddingTop: 0.2,
-			paddingBottom: 0.4,
-		})
+	const nicheIndex = productId.split('_')[0]
+	const params = {
+		cover: false,
+		paddingTop: 0.15,
+		paddingBottom: 0.25,
 	}
+
+	set(currentProduct, productId)
+	set(currentProductData, get(panelsData).get(productId))
+
+	await nextTick()
+
+	set(copyVisible, false)
+	openPanel()
+
+	controls.getPosition(controlsPositionMemo)
+
+	await controls.fitToBox(targets[nicheIndex], true, params)
+
+	// const progress = getProgressOnCurveAtIndex(nicheIndex)
+	// gsap.set(get(draggableDummyRef), {
+	// 	x: () => 980 - progress * 980,
+	// })
+	// draggableInstance?.[0]?.update()
+
+	// const pointAtProgress = curve.getPointAt(progress)
+	// controlsPositionMemo.x = pointAtProgress.x
+	// controlsPositionMemo.y = pointAtProgress.y
 }
 
 function handleClosePanel() {
@@ -886,14 +903,15 @@ function handleClosePanel() {
 
 function openPanel() {
 	set(panelOpen, true)
+	set(pinsVisible, false)
 
 	get(panelScrollerRef).scrollTo(0, 0)
 	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
-
-	controls.getPosition(controlsPositionMemo)
 }
 
-function closePanel() {
+async function closePanel() {
+	const currentNicheIndex = Number(get(currentProduct).split('_')[0])
+
 	set(panelOpen, false)
 	set(panelOpenFull, false)
 	set(currentProduct, null)
@@ -901,7 +919,7 @@ function closePanel() {
 	const currentPos = new THREE.Vector3()
 	controls.getPosition(currentPos)
 
-	controls.setLookAt(
+	await controls.setLookAt(
 		controlsPositionMemo.x,
 		controlsPositionMemo.y,
 		controlsPositionMemo.z,
@@ -911,8 +929,8 @@ function closePanel() {
 		true
 	)
 
-	// draggableInstance?.[0]?.update()
 	draggableInstance?.[0]?.enable()
+	set(pinsVisible, true)
 }
 
 function openPanelFull() {
@@ -1075,8 +1093,8 @@ async function animateToInitialPosition() {
 
 	await controls.fitToBox(targets[0], true, {
 		cover: false,
-		paddingTop: 0.35,
-		paddingBottom: 0.35,
+		paddingTop: 0.25,
+		paddingBottom: 0.25,
 	})
 
 	const currentPos = new THREE.Vector3()
