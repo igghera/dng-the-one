@@ -97,7 +97,7 @@
 							:size="canPrint ? 'auto' : 'wide'"
 							class="!text-gold"
 							@click="handleQRCodeButtonClick"
-							>{{ $t('results.cta_download') }}</ButtonGolden
+							>{{ $t('download') }}</ButtonGolden
 						>
 					</template>
 
