@@ -128,7 +128,7 @@
 </template>
 
 <script setup>
-import { get, set } from '@vueuse/core'
+import { get, set, useStorage } from '@vueuse/core'
 import { snapdom } from '@zumer/snapdom'
 import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
 
@@ -167,6 +167,10 @@ const { gsap, Observer, SplitText } = useGSAP()
 
 const appStore = useAppStore()
 const uiStore = useUiStore()
+
+const urlParams = useUrlSearchParams('history')
+const isFromExplore = urlParams.ref === 'explore'
+const storage = useStorage('experience-answers', {})
 
 const showResult = shallowRef(false)
 
@@ -209,7 +213,13 @@ let drawTimeline, pointerObserver
 onMounted(async () => {
 	setInitialState()
 
-	await animateInHeader()
+	if (isFromExplore) {
+		appStore.setStep01Selection(get(storage).q1)
+		appStore.setStep02Selection(get(storage).q2)
+		appStore.setStep03Selection(get(storage).q3)
+	} else {
+		await animateInHeader()
+	}
 
 	const res = calculateResult(
 		appStore.getStep01Selection,
@@ -219,7 +229,13 @@ onMounted(async () => {
 		allProducts,
 		allAurasFull
 	)
+
 	appStore.setResult(res.result)
+
+	if (isFromExplore) {
+		uiStore.setResultsVisible(true)
+		set(showResult, true)
+	}
 
 	experienceEndDrawMaterial.mapIndex.value =
 		res.result.get('shape') === 'male' ? 0 : 1
@@ -228,11 +244,16 @@ onMounted(async () => {
 
 	await gsap.delayedCall(0.5, () => {})
 
-	animateOutHeader()
+	if (isFromExplore) {
+		// Do Nothing
+		experienceEndDrawMaterial.progress.value = 1
+	} else {
+		animateOutHeader()
 
-	emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
+		emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
 
-	createButtonTimeline()
+		createButtonTimeline()
+	}
 })
 
 onBeforeUnmount(() => {
@@ -255,7 +276,7 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE, async () => {
 // Methods
 //
 const setInitialState = () => {
-	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
+	gsap.set(get(introHeaderRef), { autoAlpha: 0 })
 }
 
 const handlePrint = async () => {
@@ -303,8 +324,13 @@ const handleDownloadButtonClick = async () => {
 	takeScreenshot(true)
 }
 
-const handleRestartButtonClick = () => {
-	emitter.emit(EVENTS.RESTART)
+const handleRestartButtonClick = async () => {
+	if (isFromExplore) {
+		await navigateTo('/')
+		emitter.emit(EVENTS.RESTART)
+	} else {
+		emitter.emit(EVENTS.RESTART)
+	}
 }
 
 const createButtonTimeline = () => {
@@ -383,6 +409,8 @@ const animateInHeader = () => {
 	const split01 = SplitText.create(get(title01Ref), {
 		type: 'lines,words,chars',
 	})
+
+	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
 
 	const tl = gsap.timeline({ paused: true })
 	tl.addLabel('start')

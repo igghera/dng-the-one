@@ -14,9 +14,12 @@
 import { get, useStorage } from '@vueuse/core'
 
 const uiStore = useUiStore()
+const urlParams = useUrlSearchParams('history')
 
 const lenisRef = shallowRef()
 const { gsap } = useGSAP()
+
+const isFromExplore = urlParams.ref === 'explore'
 
 const lenisOptions = {
 	autoRaf: false,
@@ -44,8 +47,12 @@ watchEffect(onInvalidate => {
 
 	gsap.ticker.add(update)
 
-	get(lenisRef).lenis.stop()
-	get(lenisRef).lenis.scrollTo(0, { immediate: true, force: true })
+	if (isFromExplore) {
+		// Do nothing
+	} else {
+		get(lenisRef).lenis.stop()
+		get(lenisRef).lenis.scrollTo(0, { immediate: true, force: true })
+	}
 
 	// disable lag smoothing in GSAP to prevent any delay in scroll animations
 	gsap.ticker.lagSmoothing(0)

@@ -52,11 +52,9 @@ onMounted(async () => {
 		uiStore.setMainUiVisible(true)
 		uiStore.setPreloaderVisible(false)
 		uiStore.setExperienceStartVisible(false)
-		// uiStore.setResultsVisible(true)
+		uiStore.setExperienceEndVisible(true)
 
 		document.documentElement.dataset.init = true
-
-		get(lenis).start()
 	}
 
 	if (isDebug) {
