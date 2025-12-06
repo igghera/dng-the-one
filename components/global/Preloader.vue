@@ -8,7 +8,12 @@
 const { gsap } = useGSAP()
 const uiStore = useUiStore()
 
+const urlParams = useUrlSearchParams('history')
+const isFromExplore = urlParams.ref === 'explore'
+
 emitter.on(EVENTS.WEBGL_READY, () => {
+	if (isFromExplore) return
+
 	gsap.delayedCall(1, () => {
 		uiStore.setPreloaderVisible(false)
 		emitter.emit(EVENTS.ANIMATE_IN_INTRO)

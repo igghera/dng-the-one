@@ -85,13 +85,15 @@
 </template>
 
 <script setup>
-import { get } from '@vueuse/core'
+import { get, useStorage } from '@vueuse/core'
 
 //
 // Refs / State
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+
+const storage = useStorage('experience-answers', {})
 
 const { rt, tm } = useI18n()
 const { gsap, Draggable, Flip } = useGSAP()
@@ -264,6 +266,7 @@ const createDraggable = () => {
 			if (inDropzone) {
 				moveToFinalPosition(self.target)
 				appStore.setStep03Selection(idx)
+				storage.value.q3 = idx
 			} else {
 				fadeInLabels(idx)
 				moveToInitialPosition(self.target)

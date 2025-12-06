@@ -121,7 +121,7 @@
 </template>
 
 <script setup>
-import { get, set } from '@vueuse/core'
+import { get, set, useStorage } from '@vueuse/core'
 
 import { progress as backgroundProgress } from './WebGL/materials/background'
 
@@ -142,6 +142,8 @@ const instructionsVisible = shallowRef(false)
 const sunIconVisible = shallowRef(false)
 const ctaVisible = shallowRef(false)
 const labelsVisible = shallowRef(false)
+
+const storage = useStorage('experience-answers', {})
 
 const dotsCoords = [
 	{ x: 228.86, y: 64.097 },
@@ -501,6 +503,7 @@ const handleClick = async () => {
 	await animateOut()
 
 	appStore.setStep01Selection(get(knobStep))
+	storage.value.q1 = get(knobStep)
 
 	uiStore.setExperienceStep02Visible(true)
 

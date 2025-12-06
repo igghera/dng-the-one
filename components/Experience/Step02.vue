@@ -245,7 +245,7 @@
 </template>
 
 <script setup>
-import { get, set } from '@vueuse/core'
+import { get, set, useStorage } from '@vueuse/core'
 import {
 	opacity as particlesOpacity,
 	strength as particlesStrength,
@@ -274,6 +274,8 @@ const currentStep = shallowRef(-1)
 const isPressed = shallowRef(false)
 const instructionsVisible = shallowRef(false)
 const arrowsVisible = shallowRef(false)
+
+const storage = useStorage('experience-answers', {})
 
 const { idle: isIdle, reset: resetIdle, stop: stopIdle } = useIdle(2500)
 
@@ -542,6 +544,7 @@ const handleClick = async () => {
 	await animateOut()
 
 	appStore.setStep02Selection(get(currentStep))
+	storage.value.q2 = get(currentStep)
 
 	uiStore.setExperienceStep03Visible(true)
 
