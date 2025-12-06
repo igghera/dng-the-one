@@ -2,7 +2,9 @@
 	<Container class="site-header" tag="header">
 		<ButtonAudio class="button button-left" />
 
-		<LogoLettering class="logotype" />
+		<button class="logotype" ref="logoButtonRef" @contextmenu.prevent>
+			<LogoLettering />
+		</button>
 
 		<ClientOnly>
 			<template v-if="isExplorePage">
@@ -41,12 +43,16 @@
 </template>
 
 <script setup>
-import { useStorage, set } from '@vueuse/core'
+import { useStorage, get, set } from '@vueuse/core'
 
 //
 // Refs / State
 //
+const { gsap, Observer } = useGSAP()
+
 const route = useRoute()
+
+const logoButtonRef = useTemplateRef('logoButtonRef')
 
 const isFromEngagement = shallowRef(false)
 const engagementPageLink = shallowRef('/engagement')
@@ -61,6 +67,42 @@ const isFirstView = computed(() => {
 	return state.value
 })
 
+//
+// Lifecycle
+//
+onMounted(() => {
+	let longPress = false
+	let longPressTween = null
+
+	Observer.create({
+		target: get(logoButtonRef),
+		type: 'pointer,touch',
+		onPress: () => {
+			longPressTween = gsap.delayedCall(1, () => {
+				longPress = true
+
+				// TODO: Add configuration panel
+				console.log('TODO: Add configuration panel')
+			})
+		},
+		onRelease: () => {
+			if (route.fullPath !== '/') return
+
+			if (longPress) {
+				// Do nothing
+			} else {
+				emitter.emit(EVENTS.RESTART)
+			}
+
+			longPressTween?.kill()
+			longPress = false
+		},
+	})
+})
+
+//
+// Watchers
+//
 watchEffect(() => {
 	if (import.meta.server) return
 
@@ -92,10 +134,12 @@ watchEffect(() => {
 }
 
 .logotype {
-	@apply w-[150px] justify-self-center;
+	@apply w-[150px] justify-self-center pointer-events-auto;
 	@apply md:w-64;
 
 	grid-area: b;
+	user-select: none;
+	-webkit-touch-callout: none;
 }
 
 .button-right {
