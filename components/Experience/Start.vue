@@ -1,8 +1,6 @@
 <template>
 	<Container class="pointer-events-none">
-		<header
-			class="flex flex-col gap-y-2 items-center justify-center text-center self-start | text-shadow"
-		>
+		<header class="header | text-shadow">
 			<h1
 				class="display-1 | golden-text uppercase"
 				ref="titleRef"
@@ -126,5 +124,10 @@ const handleClick = () => {
 	--cols: 1;
 
 	@apply justify-items-center;
+}
+
+.header {
+	@apply flex flex-col gap-y-5 items-center justify-center text-center self-start;
+	@apply md:portrait:translate-y-14;
 }
 </style>
