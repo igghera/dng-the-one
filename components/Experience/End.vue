@@ -102,7 +102,7 @@
 					</template>
 
 					<template v-else>
-						<ButtonRestart />
+						<ButtonRestart class="!text-gold" />
 
 						<ButtonGolden
 							class="!text-gold"
