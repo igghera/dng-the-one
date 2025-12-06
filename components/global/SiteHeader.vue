@@ -71,6 +71,7 @@ const isFirstView = computed(() => {
 // Lifecycle
 //
 onMounted(() => {
+	let click = false
 	let longPress = false
 	let longPressTween = null
 
@@ -78,6 +79,8 @@ onMounted(() => {
 		target: get(logoButtonRef),
 		type: 'pointer,touch',
 		onPress: () => {
+			click = true
+
 			longPressTween = gsap.delayedCall(1, () => {
 				longPress = true
 
@@ -87,6 +90,7 @@ onMounted(() => {
 		},
 		onRelease: () => {
 			if (route.fullPath !== '/') return
+			if (!click) return
 
 			if (longPress) {
 				// Do nothing
@@ -96,6 +100,7 @@ onMounted(() => {
 
 			longPressTween?.kill()
 			longPress = false
+			click = false
 		},
 	})
 })
