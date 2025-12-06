@@ -32,7 +32,7 @@
 				</a>
 
 				<!-- If coming from main experience - Show Close button -->
-				<a class="button button-right" href="/?ref=explore">
+				<a v-else class="button button-right" href="/?ref=explore">
 					<ButtonClose tag="div" />
 				</a>
 			</template>
