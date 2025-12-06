@@ -788,6 +788,7 @@ async function createWinDrawingPlane() {
 	)
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
+	mesh.scale.set(1.2, 1.2, 1)
 	mesh.position.y = 0.05
 
 	scene.add(mesh)

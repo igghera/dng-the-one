@@ -57,16 +57,16 @@
 		</button>
 
 		<Transition name="fade">
-			<div v-if="showResult && appStore.getResult" class="result | text-shadow">
-				<span class="body-9 | uppercase text-gold-light">
+			<div v-if="showResult && appStore.getResult" class="result">
+				<span class="result-pre-title">
 					{{ $t('experience_end.title') }}
 				</span>
 
-				<span class="display-3 | golden-text | uppercase">
+				<span class="result-title | golden-text">
 					{{ appStore.getResult.get('auraFull').title }}
 				</span>
 
-				<span class="body-10 | text-gold-light">
+				<span class="result-copy">
 					{{
 						appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
 							.desc
@@ -580,12 +580,30 @@ const animateMask = () => {
 .result {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
 
-	row-gap: toRem(10);
-	width: toRem(160);
+	row-gap: toRem(11);
+	width: toRem(170);
 
 	@screen md {
-		width: toRem(210);
+		width: toRem(230);
 	}
+}
+
+.result-pre-title {
+	@apply uppercase font-normal leading-[1.7] tracking-[0.13em] text-gold-light;
+
+	font-size: toRem(17);
+}
+
+.result-title {
+	@apply font-normal uppercase leading-none;
+
+	font-size: toRem(36);
+}
+
+.result-copy {
+	@apply font-normal leading-[1.5] tracking-[0.04em] text-gold-light;
+
+	font-size: toRem(10);
 }
 
 .buttons {
