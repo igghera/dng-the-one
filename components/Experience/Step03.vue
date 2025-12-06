@@ -253,7 +253,7 @@ const createDraggable = () => {
 		onPress: self => {
 			const idx = Number(self.target.dataset.index)
 
-			fadeOutLabels(idx)
+			fadeOutDraggers(idx)
 
 			zoomInDropzoneCircle()
 		},
@@ -268,7 +268,7 @@ const createDraggable = () => {
 				appStore.setStep03Selection(idx)
 				storage.value.q3 = idx
 			} else {
-				fadeInLabels(idx)
+				fadeInDraggers(idx)
 				moveToInitialPosition(self.target)
 			}
 		},
@@ -393,19 +393,20 @@ const createDraggable = () => {
 		)
 	}
 
-	function fadeOutLabels(idx) {
-		const targetLabels = get(draggersLabelsRef).filter(
-			(label, index) => index !== idx
+	function fadeOutDraggers(idx) {
+		const targetDraggers = get(draggersRef).filter(
+			(item, index) => index !== idx
 		)
-		gsap.to(targetLabels, {
+		gsap.to(targetDraggers, {
 			autoAlpha: 0,
 			duration: 0.5,
 			overwrite: true,
+			stagger: 0.1,
 		})
 	}
 
-	function fadeInLabels(idx) {
-		gsap.to(get(draggersLabelsRef), {
+	function fadeInDraggers() {
+		gsap.to(get(draggersRef), {
 			autoAlpha: 1,
 			duration: 0.5,
 			overwrite: true,
