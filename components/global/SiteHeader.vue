@@ -119,7 +119,8 @@ watchEffect(() => {
 <style lang="scss" scoped>
 .site-header {
 	@apply fixed z-40 top-[30px] w-full pointer-events-none;
-	@apply lg:landscape:top-3;
+	@apply md:top-12;
+	@apply lg:top-9;
 
 	:deep(.site-grid) {
 		@apply items-start;

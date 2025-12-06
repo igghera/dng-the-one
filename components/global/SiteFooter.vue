@@ -19,6 +19,8 @@
 <style lang="scss" scoped>
 .site-footer {
 	@apply fixed z-[40] bottom-3 w-full text-gold py-[5px] pointer-events-none;
+	@apply md:bottom-14;
+	@apply lg:bottom-11;
 
 	:deep(.site-grid) {
 		--cols: 2;

@@ -18,7 +18,7 @@
 		</header>
 
 		<ButtonGolden
-			class="self-end pointer-events-auto"
+			class="self-end pointer-events-auto md:portrait:-translate-y-1/2"
 			size="wide"
 			@click="handleClick"
 			ref="buttonRef"
