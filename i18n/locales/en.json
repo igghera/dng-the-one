@@ -238,7 +238,7 @@
             {
               "component": "title",
               "value": [
-                "The One",
+                "The One for Women",
                 "Eau De Parfum"
               ]
             },
@@ -268,6 +268,10 @@
               "value": ["The One for Men", "Eau de Toilette"]
             },
             {
+              "component": "image",
+              "value": "/images/products/MALE_EDT.webp"
+            },
+            {
               "component": "p",
               "value": "Charming and sensual, like the men who wears it, this fragrance makes an unmistakable impression with its utterly charismatic blend of basil notes, bewitching lavender, and sandalwood accords."
             },
@@ -286,7 +290,11 @@
           [
             {
               "component": "title",
-              "value": ["The One for Men"]
+              "value": ["The One for Men", "Eau De Parfum"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_EDP.webp"
             },
             {
               "component": "p",
@@ -307,7 +315,11 @@
           [
             {
               "component": "title",
-              "value": ["The One Gold for Women"]
+              "value": ["The One Gold for Women", "Eau De Parfum Intense"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_GOLD_EDPI.webp"
             },
             {
               "component": "p",
@@ -321,7 +333,7 @@
           [
             {
               "component": "title",
-              "value": ["The One Gold for Men"]
+              "value": ["The One for Men", "Gold Eau De Parfum Intense"]
             },
             {
               "component": "p",
@@ -338,7 +350,46 @@
         "year": "2026",
         "title": "20 years later<br>a new chapter of the story unfolds.",
         "copy": "",
-        "data": []
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": ["The One for Women", "Eau De Parfum Intense"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDPI.webp"
+            },
+            {
+              "component": "p",
+              "value": "It embodies bold femininity. Its olfactory signature plays with refined contrasts, blending the power of intense and radiant notes with the softness of gentler accents, creating a sophisticated and elegant composition that leaves a lasting impression. It is a tribute to the modern women: confident, captivating and irresistibly charming."
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy.mp4"
+            }
+          ],
+          [],
+          [
+            {
+              "component": "title",
+              "value": ["The One for Men", "Parfum"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_PARFUM.webp"
+            },
+            {
+              "component": "p",
+              "value": "It reinterprets the Eau de Parfum with a deeper, more sensual signature. A warm, spicy composition that envelops the senses and embodies contemporary masculine sophistication. It unveils a new intensity where refined sensuality meets masculine strength. Warm, enveloping amber notes leave a deep, irresistibly charismatic trail."
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy.mp4"
+            }
+          ],
+          []
+        ]
       }
     ]
   }

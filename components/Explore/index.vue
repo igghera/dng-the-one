@@ -1306,7 +1306,7 @@ async function animateToInitialPosition() {
 	--drag-pan-y: 0;
 	--height-on-open: 250;
 
-	@apply self-end justify-self-center relative z-[1];
+	@apply self-end justify-self-center relative z-[1] select-none;
 	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
 	@apply border border-solid border-[#75482E];
 
