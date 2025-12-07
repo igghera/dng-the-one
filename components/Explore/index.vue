@@ -1237,7 +1237,11 @@ async function animateToInitialPosition() {
 
 	&[data-id='0'] {
 		.year {
-			translate: 0 calc(var(--h) * -0.75);
+			translate: 0 calc(var(--h) * -1.05);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * -0.8);
 		}
 
 		.copy {
