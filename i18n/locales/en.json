@@ -226,18 +226,25 @@
   },
 
   "explore": {
-    "intro": "Immerse yourself in the alluring scents<br>of The One Collection",
+    "intro": "Immerse yourself in the alluring scents of<br>The One Collection",
     "instructions": "Swipe and tap to explore",
     "items": [
       {
         "year": "2006",
         "title": "",
-        "copy": "The birth of an icon,<br>bold vision of femininity",
+        "copy": "The birth of an icon.<br>A bold vision of femininity.",
         "data": [
           [
             {
               "component": "title",
-              "value": "The One for Women"
+              "value": [
+                "The One",
+                "Eau De Parfum"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDP.webp"
             },
             {
               "component": "p",
@@ -246,10 +253,6 @@
             {
               "component": "video",
               "value": "/videos/dummy.mp4"
-            },
-            {
-              "component": "image",
-              "value": "/images/products/FEMALE_EDP.webp"
             }
           ]
         ]
@@ -257,12 +260,12 @@
       {
         "year": "2008",
         "title": "The One for Men<br>Eau de Toilette",
-        "copy": "A new code of<br>masculine elegance",
+        "copy": "A new code<br>of masculine elegance",
         "data": [
           [
             {
               "component": "title",
-              "value": "The One for Men"
+              "value": ["The One for Men", "Eau de Toilette"]
             },
             {
               "component": "p",
@@ -277,13 +280,13 @@
       },
       {
         "year": "2015",
-        "title": "The One for Men Eau de Parfum",
-        "copy": "A bold revolution<br>of the original<br>eau de toilette",
+        "title": "The One for Men<br>Eau de Parfum",
+        "copy": "A bold revolution of<br>the original eau de toilette",
         "data": [
           [
             {
               "component": "title",
-              "value": "The One for Men"
+              "value": ["The One for Men"]
             },
             {
               "component": "p",
@@ -299,12 +302,12 @@
       {
         "year": "2021",
         "title": "The One Gold<br>Eau De Parfum Intense",
-        "copy": "A bold revolution of<br>the original eau de toilette",
+        "copy": "A new gold duo radiating brillance<br>and magnetic allure",
         "data": [
           [
             {
               "component": "title",
-              "value": "The One Gold for Women"
+              "value": ["The One Gold for Women"]
             },
             {
               "component": "p",
@@ -318,7 +321,7 @@
           [
             {
               "component": "title",
-              "value": "The One Gold for Men"
+              "value": ["The One Gold for Men"]
             },
             {
               "component": "p",
@@ -333,7 +336,7 @@
       },
       {
         "year": "2026",
-        "title": "20 years later.<br>a new chapter of the story unfolds.",
+        "title": "20 years later<br>a new chapter of the story unfolds.",
         "copy": "",
         "data": []
       }

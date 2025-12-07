@@ -139,11 +139,10 @@
 			>
 				<div v-if="currentProductData" class="panel-content">
 					<template v-for="(item, idx) in currentProductData" :key="idx">
-						<div
-							v-if="item.component === 'title'"
-							class="panel-content-title"
-							v-html="item.value"
-						/>
+						<div v-if="item.component === 'title'" class="panel-content-header">
+							<span class="panel-content-title">{{ item.value[0] }}</span>
+							<span class="panel-content-subtitle">{{ item.value?.[1] }}</span>
+						</div>
 
 						<div
 							v-if="item.component === 'p'"
@@ -323,7 +322,7 @@ const itemsData = [
 	},
 	{
 		position: {
-			x: 0.151,
+			x: 0.1,
 			y: -0.3675,
 			z: 0,
 		},
@@ -426,7 +425,9 @@ const itemsCopy = computed(() => {
 				return data.map(item => {
 					return {
 						component: rt(item.component),
-						value: rt(item.value),
+						value: Array.isArray(item.value)
+							? item.value.map(v => rt(v))
+							: rt(item.value),
 					}
 				})
 			}),
@@ -1203,7 +1204,7 @@ async function animateToInitialPosition() {
 	}
 
 	:is(.year, .title, .copy) {
-		@apply self-center pointer-events-none;
+		@apply self-center pointer-events-none whitespace-nowrap;
 		@apply transition-opacity duration-700 opacity-0;
 
 		.explore[data-text-visible='true'] & {
@@ -1350,18 +1351,22 @@ async function animateToInitialPosition() {
 }
 
 .panel-content {
-	@apply flex flex-col gap-y-12 relative pb-10;
+	@apply flex flex-col gap-y-7 relative pb-10;
 }
 
-.panel-content-title {
-	@apply tracking-[0.05em] leading-none uppercase;
+.panel-content-header {
+	@apply tracking-[0.05em] font-medium leading-none flex flex-col items-start;
 
-	font-size: toRem(22);
+	font-size: toRem(20);
 	width: calc(100% - toRem(32));
 }
 
+.panel-content-title {
+	@apply uppercase;
+}
+
 .panel-content-copy {
-	@apply tracking-[0.05em] leading-none;
+	@apply tracking-[0.05em] font-medium leading-[1.3333];
 
 	font-size: toRem(15);
 }
@@ -1371,9 +1376,17 @@ async function animateToInitialPosition() {
 }
 
 .panel-content-image {
-	@apply overflow-hidden w-full;
+	@apply overflow-hidden w-40 self-center;
 
 	:deep(img) {
+		@apply size-full object-contain object-center;
+	}
+}
+
+.panel-content-video {
+	@apply overflow-hidden w-full rounded-[20px];
+
+	:deep(video) {
 		@apply size-full object-contain object-center;
 	}
 }
@@ -1393,7 +1406,7 @@ async function animateToInitialPosition() {
 }
 
 .intro-text {
-	@apply text-base leading-none tracking-[0.05em];
+	@apply text-base leading-tight tracking-[0.05em];
 }
 
 .instructions {
