@@ -1,5 +1,5 @@
 <template>
-	<div class="scroll-down">
+	<div class="scroll-down" aria-hidden="true">
 		<svg
 			class="w-5 md:w-7 animate-bounce"
 			xmlns="http://www.w3.org/2000/svg"
@@ -14,11 +14,7 @@
 	</div>
 </template>
 
-<script setup></script>
-
 <style lang="scss" scoped>
-@use '@/assets/css/functions' as *;
-
 .scroll-down {
 	@apply flex items-center justify-center fixed bottom-0 inset-x-0 h-20 z-30 text-center text-gold pointer-events-none;
 

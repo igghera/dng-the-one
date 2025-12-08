@@ -7,6 +7,10 @@
 		<Experience />
 
 		<Transition name="fade">
+			<ExperienceTopGradient v-if="uiStore.isTopGradientVisible" />
+		</Transition>
+
+		<Transition name="fade">
 			<ExperienceScrollDown
 				v-if="uiStore.isResultsVisible && uiStore.isResultsScrollDownVisible"
 			/>
