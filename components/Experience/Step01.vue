@@ -192,8 +192,27 @@ onMounted(async () => {
 		dragResistance: 0,
 		edgeResistance: 1,
 		maxDuration: 0.8,
-		snap(value) {
-			return Math.round(value / 90) * 90
+		minimumMovement: 4,
+		snap: snapTo90,
+		onClick: evt => {
+			const { rotation } = draggableInstance[0]
+			const currentRotation = rotation % 360
+			const clickAngle = getClickAngle(evt, get(knobRef)) + 90
+
+			const targetRotation = snapTo90(clickAngle)
+			const deltaRotation = shortestAngleDelta(currentRotation, targetRotation)
+
+			// Update draggable's rotation target
+			gsap.to(get(knobRef), {
+				rotation: draggableInstance[0].rotation + deltaRotation,
+				onUpdate: () => {
+					draggableInstance[0].update()
+					update()
+				},
+				duration: 0.4,
+				ease: 'power2.out',
+				overwrite: true,
+			})
 		},
 		onPress() {
 			gsap.to(get(knobDotRef), {
@@ -204,40 +223,6 @@ onMounted(async () => {
 			})
 
 			rotationOnPress = draggableInstance[0].rotation
-		},
-		onRelease(a, b, c) {
-			gsap.to(get(knobDotRef), {
-				scale: 1,
-				duration: 0.5,
-				ease: 'back.out(3)',
-				overwrite: true,
-			})
-
-			const { rotation: rotationOnRelease } = draggableInstance[0]
-			const deltaRotation = Math.abs(rotationOnRelease - rotationOnPress)
-
-			// Return if the angle difference is less than 5 degrees,
-			// meaning the user clicked instead of dragging
-			if (deltaRotation > 5) return
-
-			const { pointerX, pointerY, rotationOrigin } = draggableInstance[0]
-
-			const angle =
-				Math.atan2(pointerY - rotationOrigin.y, pointerX - rotationOrigin.x) *
-					(180 / Math.PI) +
-				90
-			const snappedAngle = Math.round(angle / 90) * 90
-
-			gsap.to(get(knobRef), {
-				rotation: snappedAngle,
-				duration: 0.7,
-				ease: 'power2.out',
-				overwrite: true,
-				onUpdate: () => {
-					draggableInstance[0].update()
-					update()
-				},
-			})
 		},
 		onDrag() {
 			set(instructionsVisible, false)
@@ -263,6 +248,29 @@ onMounted(async () => {
 		let bg = rotation % 360
 		if (Math.sign(bg) === -1) bg = 360 + bg
 		backgroundProgress.value = bg / 360
+	}
+
+	function shortestAngleDelta(current, target) {
+		let delta = (target - current) % 360
+		if (delta > 180) delta -= 360
+		if (delta < -180) delta += 360
+
+		return delta
+	}
+
+	function snapTo90(value) {
+		return Math.round(value / 90) * 90
+	}
+
+	function getClickAngle(evt, element) {
+		const rect = element.getBoundingClientRect()
+		const cx = rect.left + rect.width / 2
+		const cy = rect.top + rect.height / 2
+
+		const dx = evt.clientX - cx
+		const dy = evt.clientY - cy
+
+		return Math.atan2(dy, dx) * (180 / Math.PI)
 	}
 
 	update()
