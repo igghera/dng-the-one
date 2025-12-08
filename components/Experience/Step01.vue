@@ -575,11 +575,16 @@ const handleClick = async () => {
 }
 
 .knob-label {
-	@apply text-center;
+	@apply text-center font-medium text-base leading-snug tracking-[0.05em];
 	@apply transition-opacity duration-500 ease-out;
 
 	&[data-visible='false'] {
 		@apply opacity-0;
+	}
+
+	@screen md {
+		font-size: toRem(21);
+		line-height: 1;
 	}
 }
 
