@@ -760,11 +760,11 @@ async function createParticles() {
 }
 
 function createBackground() {
-	const geometry = new THREE.PlaneGeometry(1, 1, 1, 1)
+	const geometry = new THREE.PlaneGeometry(1, 1)
 	const material = new BackgroundMaterial(textures).material
 	background = new THREE.Mesh(geometry, material)
 
-	background.position.set(0, -1.1, -5.5)
+	background.position.set(0, -1.3, -5.5)
 
 	setBackgroundSize()
 
@@ -959,8 +959,27 @@ function createPostprocessing() {
 function setBackgroundSize() {
 	if (!!!background) return
 
-	if (get(isPortrait)) background.scale.set(10.8, 19.2, 1)
-	else if (get(isLandscape)) background.scale.set(19.2, 10.8, 1)
+	const ratio = 1920 / 1080
+
+	const { fov, aspect } = camera
+	const distance = camera.position.z - background.position.z
+
+	// Calculate the viewport dimensions at the background's distance
+	const viewportHeight = 2 * distance * Math.tan((fov * Math.PI) / 360)
+	const viewportWidth = viewportHeight * aspect
+
+	// Calculate scale to cover the entire viewport while maintaining the ratio
+	// The mesh has a 1x1 base geometry, so we scale it maintaining the ratio
+	// We need to ensure both width and height cover the viewport
+	const scaleByWidth = viewportWidth
+	const scaleByHeight = viewportHeight / ratio
+	const scale = Math.max(scaleByWidth, scaleByHeight)
+
+	// Scale the mesh maintaining the aspect ratio
+	const width = scale
+	const height = scale * ratio
+
+	background.scale.set(width * 1.05, height * 1.05, 1)
 }
 
 function setIntroBackgroundSize() {
