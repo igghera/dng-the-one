@@ -76,14 +76,7 @@
 		</Transition>
 
 		<Transition name="fade-long">
-			<nav
-				v-if="
-					showResult &&
-					appStore.getResult &&
-					!uiStore.isResultsScrollDownVisible
-				"
-				class="buttons"
-			>
+			<nav v-if="shouldShowButtons" class="buttons">
 				<div class="buttons-row">
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
@@ -168,6 +161,8 @@ const { gsap, Observer, SplitText } = useGSAP()
 const appStore = useAppStore()
 const uiStore = useUiStore()
 
+const { height: windowHeight } = useWindowSize()
+
 const urlParams = useUrlSearchParams('history')
 const isFromExplore = urlParams.ref === 'explore'
 const storage = useStorage('experience-answers', {})
@@ -206,6 +201,21 @@ const allProducts = Object.values(tm('products')).map(product => ({
 }))
 
 let drawTimeline, pointerObserver
+
+//
+// Computed
+//
+const shouldShowButtons = computed(() => {
+	if (get(windowHeight) > 1000) {
+		return get(showResult) && appStore.getResult
+	} else {
+		return (
+			get(showResult) &&
+			appStore.getResult &&
+			!uiStore.isResultsScrollDownVisible
+		)
+	}
+})
 
 //
 // Lifecycle
