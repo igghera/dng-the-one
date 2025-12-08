@@ -21,7 +21,8 @@
 }
 
 .display-2 {
-  @apply leading-none tracking-[0.05em];
+  @apply leading-snug tracking-[0.05em];
+  @apply md:leading-none;
 
   font-size: toRem(18);
 
@@ -175,7 +176,7 @@
 }
 
 .text-shadow {
-  text-shadow: 0px 0.4em 0.4em hsla(0, 0%, 0%, 0.15);
+  text-shadow: 0px 2px 2px hsla(0, 0%, 0%, 0.15);
 
 }
 

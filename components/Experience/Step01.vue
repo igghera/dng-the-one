@@ -1,10 +1,22 @@
 <template>
 	<Container class="pointer-events-none" :data-ready="ready">
-		<header class="header | text-shadow" ref="headerRef">
+		<header class="header" ref="headerRef">
 			<h2
-				class="display-2 | golden-text"
+				class="display-2 | golden-text text-shadow | uppercase"
 				v-html="$t('experience_step_01.title')"
 			/>
+
+			<div class="labels">
+				<span
+					v-for="(label, idx) in labels"
+					:key="idx"
+					class="label"
+					:data-index="idx"
+					:data-visible="idx === knobStep && labelsVisible"
+				>
+					{{ label }}
+				</span>
+			</div>
 		</header>
 
 		<div class="knob-wrapper" ref="knobWrapperRef">
@@ -83,23 +95,6 @@
 					</g>
 				</svg>
 			</div>
-
-			<div
-				class="knob-labels | text-shadow"
-				:class="{
-					'text-gold-light': knobStepLiveDrag < 2,
-					'text-gold-dark': knobStepLiveDrag >= 2,
-				}"
-			>
-				<span
-					v-for="(label, idx) in labels"
-					:key="idx"
-					class="knob-label"
-					:data-index="idx"
-					:data-visible="idx === knobStep && labelsVisible"
-					v-html="label"
-				/>
-			</div>
 		</div>
 
 		<div class="instructions | text-shadow" :data-visible="instructionsVisible">
@@ -156,7 +151,6 @@ const knobRef = useTemplateRef('knobRef')
 const knobDotWrapperRef = useTemplateRef('knobDotWrapperRef')
 const knobDotRef = useTemplateRef('knobDotRef')
 const knobStep = shallowRef(0)
-const knobStepLiveDrag = shallowRef(0)
 const knobRotation = shallowRef(0)
 
 const barsWrapperRef = useTemplateRef('barsWrapperRef')
@@ -247,16 +241,11 @@ onMounted(async () => {
 		},
 		onDrag() {
 			set(instructionsVisible, false)
-			set(sunIconVisible, false)
-			set(labelsVisible, true)
 			set(ctaVisible, true)
 			update()
 		},
 		onThrowUpdate() {
 			update()
-		},
-		onThrowComplete() {
-			updateKnobSteponThrowComplete()
 		},
 	})
 
@@ -268,21 +257,12 @@ onMounted(async () => {
 		let step = Math.round(rotation / 90) % 4
 		if (Math.sign(step) === -1) step = 4 + step
 
-		set(knobStepLiveDrag, Math.abs(step))
+		set(knobStep, Math.abs(step))
 		set(knobRotation, rotation)
 
 		let bg = rotation % 360
 		if (Math.sign(bg) === -1) bg = 360 + bg
 		backgroundProgress.value = bg / 360
-	}
-
-	function updateKnobSteponThrowComplete() {
-		const { rotation } = draggableInstance[0]
-
-		let step = Math.floor(rotation / 90) % 4
-		if (Math.sign(step) === -1) step = 4 + step
-
-		set(knobStep, Math.abs(step))
 	}
 
 	update()
@@ -362,8 +342,7 @@ const animateIn = () => {
 		{
 			visibility: 'visible',
 			stagger: {
-				each: 0.018,
-				ease: 'power1.in',
+				amount: 3,
 			},
 		},
 		'<0.3'
@@ -380,7 +359,7 @@ const animateIn = () => {
 			x: () => get(knobDotWrapperRef).dataset.endX,
 			y: () => get(knobDotWrapperRef).dataset.endY,
 			duration: 1.6,
-			ease: 'power3.inOut',
+			ease: 'power2.inOut',
 		},
 		'<1.5'
 	)
@@ -390,7 +369,7 @@ const animateIn = () => {
 			set(ready, true)
 		},
 		null,
-		'>-0.3'
+		'>-0.1'
 	)
 
 	// Show sun icon and dots
@@ -412,6 +391,7 @@ const animateIn = () => {
 	tl.call(
 		() => {
 			draggableInstance?.[0]?.enable()
+			set(labelsVisible, true)
 			set(sunIconVisible, true)
 		},
 		null,
@@ -450,6 +430,7 @@ const animateOut = async () => {
 			duration: 1,
 			onStart: () => {
 				set(labelsVisible, false)
+				set(sunIconVisible, false)
 			},
 		},
 		'start+=0.3'
@@ -537,13 +518,22 @@ const handleClick = async () => {
 
 	grid-template-areas:
 		'a'
+		'.'
 		'b'
+		'.'
 		'c';
-	grid-template-rows: auto 1fr auto;
+	grid-template-rows:
+		auto
+		theme('spacing.8')
+		1fr
+		theme('spacing.10')
+		auto;
 }
 
 .header {
-	@apply text-center uppercase;
+	@apply text-center flex flex-col gap-y-5;
+	@apply md:portrait:gap-y-9;
+	@apply md:landscape:gap-y-6;
 
 	grid-area: a;
 }
@@ -551,12 +541,7 @@ const handleClick = async () => {
 .knob-wrapper {
 	@apply grid aspect-square self-center;
 
-	width: toRem(275);
-
-	@screen md {
-		width: toRem(450);
-	}
-
+	height: min(100%, toRem(450));
 	grid-area: b;
 
 	> * {
@@ -564,8 +549,8 @@ const handleClick = async () => {
 	}
 }
 
-.knob-labels {
-	@apply grid;
+.labels {
+	@apply grid text-gold-light;
 	@apply transition-colors duration-500 ease-out;
 	@apply justify-self-center self-center;
 
@@ -574,7 +559,7 @@ const handleClick = async () => {
 	}
 }
 
-.knob-label {
+.label {
 	@apply text-center font-medium text-base leading-snug tracking-[0.05em];
 	@apply transition-opacity duration-500 ease-out;
 
@@ -626,6 +611,7 @@ const handleClick = async () => {
 
 .bar {
 	@apply w-[10px] h-[2px] bg-gold-light origin-left col-start-1 row-start-1 block;
+	@apply md:w-[18px];
 
 	--r: calc(v-bind(barsWrapperWidth) * 0.5px);
 	--x: calc(cos(var(--angle, 0)) * (var(--r) - 14px) + var(--r));
