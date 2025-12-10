@@ -130,8 +130,6 @@ import {
 	borderWidth as maskBorderWidth,
 } from '~/components/Experience/WebGL/materials/mask'
 
-import { opacity as starsOpacity } from '~/components/Experience/WebGL/materials/stars'
-
 import { experienceEndDrawMaterial } from '~/components/Experience/WebGL/materials'
 
 //
@@ -529,18 +527,6 @@ const animateMask = () => {
 		{
 			value: 0.01,
 			duration: 0.8,
-		},
-		'<0.3'
-	)
-
-	tl.fromTo(
-		starsOpacity,
-		{
-			value: 0,
-		},
-		{
-			value: 1,
-			duration: 0.7,
 		},
 		'<0.3'
 	)

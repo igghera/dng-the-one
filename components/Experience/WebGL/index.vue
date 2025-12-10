@@ -76,12 +76,6 @@ import {
 	radius as maskRadius,
 } from './materials/mask'
 
-import {
-	map as starsMap,
-	layer as starsLayer,
-	opacity as starsOpacity,
-} from './materials/stars'
-
 import { cart2Polar, noiseTexture } from './nodes'
 
 import { bgTexturePortrait, bgTextureLandscape } from './nodes/textures'
@@ -128,8 +122,6 @@ const END_PARANS = Object.freeze({
 
 	maskProgress: 0.9,
 	maskBorderWidth: 0.01,
-
-	starsOpacity: 1,
 
 	endDrawProgress: 1,
 })
@@ -211,8 +203,6 @@ onMounted(async () => {
 
 		maskProgress.value = END_PARANS.maskProgress
 		maskBorderWidth.value = END_PARANS.maskBorderWidth
-
-		starsOpacity.value = END_PARANS.starsOpacity
 
 		experienceEndDrawMaterial.progress.value = END_PARANS.endDrawProgress
 	}
@@ -355,8 +345,6 @@ emitter.on(EVENTS.RESTART, () => {
 	maskProgress.value = START_PARAMS.maskProgress
 	maskBorderWidth.value = START_PARAMS.maskBorderWidth
 	maskRadius.value = START_PARAMS.maskRadius
-
-	starsOpacity.value = 0
 })
 
 emitter.on(EVENTS.ANIMATE_IN_INTRO, () => {
@@ -710,7 +698,6 @@ async function loadTextures() {
 		'/images/bg-portrait.webp',
 		'/images/bg-landscape.webp',
 		'/webgl/water_normals.webp',
-		'/webgl/star.png',
 	])
 
 	images[0].colorSpace = THREE.SRGBColorSpace
@@ -724,10 +711,6 @@ async function loadTextures() {
 
 	images[2].wrapS = images[2].wrapT = THREE.RepeatWrapping
 	textures.set('water_normals', images[2])
-
-	images[3].colorSpace = THREE.SRGBColorSpace
-	textures.set('star', images[3])
-	starsMap.value = images[3]
 }
 
 async function createParticles() {
@@ -953,7 +936,7 @@ function createPostprocessing() {
 	)
 	lutPass.intensityNode = lutIntensity
 
-	postProcessing.outputNode = blendColor(lutPass, starsLayer.mul(alpha))
+	postProcessing.outputNode = lutPass
 }
 
 function setBackgroundSize() {
