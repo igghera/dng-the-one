@@ -7,6 +7,10 @@
 		<Experience />
 
 		<Transition name="fade">
+			<ExperienceTopGradient v-if="uiStore.isTopGradientVisible" />
+		</Transition>
+
+		<Transition name="fade">
 			<ExperienceScrollDown
 				v-if="uiStore.isResultsVisible && uiStore.isResultsScrollDownVisible"
 			/>
@@ -15,7 +19,7 @@
 		<template v-if="uiStore.isResultsVisible">
 			<ExperienceResults />
 
-			<ExperienceTimelineIntro />
+			<ExperienceTimelineIntro cta-link="/explore" />
 		</template>
 
 		<Transition name="fade">
@@ -45,8 +49,18 @@ const { gsap } = useGSAP()
 
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
+const isFromExplore = urlParams.ref === 'explore'
 
 onMounted(async () => {
+	if (isFromExplore) {
+		uiStore.setMainUiVisible(true)
+		uiStore.setPreloaderVisible(false)
+		uiStore.setExperienceStartVisible(false)
+		uiStore.setExperienceEndVisible(true)
+
+		document.documentElement.dataset.init = true
+	}
+
 	if (isDebug) {
 		const { default: eruda } = await import('eruda')
 

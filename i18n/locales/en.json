@@ -1,8 +1,10 @@
 {
   "start": "Start",
+  "start_experience": "Start Experience",
   "select": "Select",
   "shop_now": "Shop now",
   "press_and_hold": "Press & Hold",
+  "download": "Download",
 
   "experience_start": {
     "title": "Find your Aura",
@@ -18,10 +20,10 @@
     "title": "How would you<br>describe your Aura?",
     "instructions": "Turn to select your preference",
     "labels": [
-      "Refined<br>and<br>Exclusive",
-      "Bold<br>and<br>Commanding",
-      "Mysterious<br>and<br>Magnetic",
-      "Confident<br>and<br>Sophisticated"
+      "Refined and exclusive",
+      "Bold and commanding",
+      "Mysterious and magnetic",
+      "Confident and sophisticated"
     ]
   },
 
@@ -29,10 +31,10 @@
     "title": "When you step<br>into the room...",
     "instructions": "Swipe up to choose",
     "labels": [
-      "I'm the spotlight",
-      "I own the room",
+      "If you know, you know",
       "All eyes on me",
-      "If you know, you know"
+      "I own the room",
+      "I'm the spotlight"
     ]
   },
 
@@ -48,10 +50,10 @@
 
   "experience_end": {
     "intro_title": [
-      "Just a moment.<br>We're unveiling",
-      "your Aura"
+      "Just a moment.<br>We're unveiling your",
+      "Aura"
     ],
-    "title": "Your Aura is:",
+    "title": "Your Aura is",
     "options": [
       {
         "title": "Elegant",
@@ -85,46 +87,57 @@
     "cta": "Explore The One collection"
   },
 
-  "download": {
+  "download_card": {
     "pre_title": "Your perfect match is:",
-    "card_subcontent_title": "My Aura's match is:"
+    "subcontent_title": "My Aura's match is:"
+  },
+
+  "engagement": {
+    "pre_title": "Your Aura matches are:"
   },
 
   "products": [
     {
-      "title": "The One EDP",
-      "sub_title": "[Eau De Parfum]",
-      "copy": "[lorem ipsum dolor sit amet]"
-    },
-    {
-      "title": "The One EDPI",
-      "sub_title": "[Eau De Parfum]",
-      "copy": "[lorem ipsum dolor sit amet]"
-    },
-    {
-      "title": "The One GOLD EDPI",
-      "sub_title": "[Eau De Parfum]",
-      "copy": "[lorem ipsum dolor sit amet]"
-    },
-    {
-      "title": "The One for Men EDP",
+      "title": "The One",
       "sub_title": "Eau De Parfum",
-      "copy": "A fragrance that stands out for its sophisticated, authentic masculinity. Radiant and intense."
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/FEMALE_EDP.webp"
     },
     {
-      "title": "The One for Men EDT",
-      "sub_title": "[Eau De Parfum]",
-      "copy": "[lorem ipsum dolor sit amet]"
+      "title": "The One",
+      "sub_title": "Eau De Parfum Intense",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/FEMALE_EDPI.webp"
     },
     {
-      "title": "The One for Men Gold EDPI",
-      "sub_title": "[Eau De Parfum]",
-      "copy": "[lorem ipsum dolor sit amet]"
+      "title": "The One Gold",
+      "sub_title": "Eau De Parfum Intense",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/FEMALE_GOLD_EDPI.webp"
     },
     {
-      "title": "The One for Men Parfum",
-      "sub_title": "[Eau De Parfum]",
-      "copy": "[lorem ipsum dolor sit amet]"
+      "title": "The One for Men",
+      "sub_title": "Eau De Parfum",
+      "copy": "A fragrance that stands out for its sophisticated, authentic masculinity. Radiant and intense.",
+      "image": "/images/products/MALE_EDP.webp"
+    },
+    {
+      "title": "The One for Men",
+      "sub_title": "Eau De Toilette",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/MALE_EDT.webp"
+    },
+    {
+      "title": "The One for Men Gold",
+      "sub_title": "Eau De Parfum Intense",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/MALE_GOLD_EDPI.webp"
+    },
+    {
+      "title": "The One for Men",
+      "sub_title": "Parfum",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/MALE_PARFUM.webp"
     }
   ],
 
@@ -213,18 +226,25 @@
   },
 
   "explore": {
-    "intro": "Immerse yourself in the alluring scents<br>of The One Collection",
+    "intro": "Immerse yourself in the alluring scents of<br>The One Collection",
     "instructions": "Swipe and tap to explore",
     "items": [
       {
         "year": "2006",
-        "title": "",
-        "copy": "The birth of an icon,<br>bold vision of femininity",
+        "title": "The One Eau De Parfum",
+        "copy": "The birth of an icon.<br>A bold vision of femininity.",
         "data": [
           [
             {
               "component": "title",
-              "value": "The One for Women"
+              "value": [
+                "The One for Women",
+                "Eau De Parfum"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDP.webp"
             },
             {
               "component": "p",
@@ -233,10 +253,6 @@
             {
               "component": "video",
               "value": "/videos/dummy.mp4"
-            },
-            {
-              "component": "image",
-              "value": "/images/products/FEMALE_EDP.webp"
             }
           ]
         ]
@@ -244,12 +260,16 @@
       {
         "year": "2008",
         "title": "The One for Men<br>Eau de Toilette",
-        "copy": "A new code of<br>masculine elegance",
+        "copy": "A new code<br>of masculine elegance",
         "data": [
           [
             {
               "component": "title",
-              "value": "The One for Men"
+              "value": ["The One for Men", "Eau de Toilette"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_EDT.webp"
             },
             {
               "component": "p",
@@ -264,13 +284,17 @@
       },
       {
         "year": "2015",
-        "title": "The One for Men Eau de Parfum",
-        "copy": "A bold revolution<br>of the original<br>eau de toilette",
+        "title": "The One for Men<br>Eau de Parfum",
+        "copy": "A bold revolution of<br>the original eau de toilette",
         "data": [
           [
             {
               "component": "title",
-              "value": "The One for Men"
+              "value": ["The One for Men", "Eau De Parfum"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_EDP.webp"
             },
             {
               "component": "p",
@@ -286,12 +310,16 @@
       {
         "year": "2021",
         "title": "The One Gold<br>Eau De Parfum Intense",
-        "copy": "A bold revolution of<br>the original eau de toilette",
+        "copy": "A new gold duo radiating brillance<br>and magnetic allure",
         "data": [
           [
             {
               "component": "title",
-              "value": "The One Gold for Women"
+              "value": ["The One Gold for Women", "Eau De Parfum Intense"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_GOLD_EDPI.webp"
             },
             {
               "component": "p",
@@ -305,7 +333,7 @@
           [
             {
               "component": "title",
-              "value": "The One Gold for Men"
+              "value": ["The One for Men", "Gold Eau De Parfum Intense"]
             },
             {
               "component": "p",
@@ -320,9 +348,48 @@
       },
       {
         "year": "2026",
-        "title": "20 years later.<br>a new chapter of the story unfolds.",
+        "title": "20 years later<br>a new chapter of the story unfolds.",
         "copy": "",
-        "data": []
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": ["The One for Women", "Eau De Parfum Intense"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDPI.webp"
+            },
+            {
+              "component": "p",
+              "value": "It embodies bold femininity. Its olfactory signature plays with refined contrasts, blending the power of intense and radiant notes with the softness of gentler accents, creating a sophisticated and elegant composition that leaves a lasting impression. It is a tribute to the modern women: confident, captivating and irresistibly charming."
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy.mp4"
+            }
+          ],
+          [],
+          [
+            {
+              "component": "title",
+              "value": ["The One for Men", "Parfum"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_PARFUM.webp"
+            },
+            {
+              "component": "p",
+              "value": "It reinterprets the Eau de Parfum with a deeper, more sensual signature. A warm, spicy composition that envelops the senses and embodies contemporary masculine sophistication. It unveils a new intensity where refined sensuality meets masculine strength. Warm, enveloping amber notes leave a deep, irresistibly charismatic trail."
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy.mp4"
+            }
+          ],
+          []
+        ]
       }
     ]
   }

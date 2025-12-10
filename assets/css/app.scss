@@ -36,6 +36,14 @@ body {
   @apply text-balance font-body select-none;
 }
 
+button {
+  transition: opacity 0.35s ease-in-out;
+
+  &[disabled] {
+    opacity: 0.7;
+  }
+}
+
 #profiler-shell {
   @apply pointer-events-none;
 

@@ -11,17 +11,25 @@
 </template>
 
 <script setup>
-import { get } from '@vueuse/core'
+import { get, useStorage } from '@vueuse/core'
 
 const uiStore = useUiStore()
+const urlParams = useUrlSearchParams('history')
 
 const lenisRef = shallowRef()
 const { gsap } = useGSAP()
+
+const isFromExplore = urlParams.ref === 'explore'
 
 const lenisOptions = {
 	autoRaf: false,
 	prevent: node => node.id === 'profiler-shell',
 }
+
+onMounted(() => {
+	const state = useStorage('isFirstView', true)
+	state.value = true
+})
 
 watchEffect(onInvalidate => {
 	if (!get(lenisRef)?.lenis) return
@@ -35,12 +43,17 @@ watchEffect(onInvalidate => {
 		get(lenisRef).lenis.raf(time * 1000)
 
 		uiStore.setResultsScrollDownVisible(get(lenisRef).lenis.animatedScroll < 20)
+		uiStore.setTopGradientVisible(get(lenisRef).lenis.animatedScroll > 20)
 	}
 
 	gsap.ticker.add(update)
 
-	get(lenisRef).lenis.stop()
-	get(lenisRef).lenis.scrollTo(0, { immediate: true, force: true })
+	if (isFromExplore) {
+		// Do nothing
+	} else {
+		get(lenisRef).lenis.stop()
+		get(lenisRef).lenis.scrollTo(0, { immediate: true, force: true })
+	}
 
 	// disable lag smoothing in GSAP to prevent any delay in scroll animations
 	gsap.ticker.lagSmoothing(0)

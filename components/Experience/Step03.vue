@@ -85,13 +85,15 @@
 </template>
 
 <script setup>
-import { get } from '@vueuse/core'
+import { get, useStorage } from '@vueuse/core'
 
 //
 // Refs / State
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+
+const storage = useStorage('experience-answers', {})
 
 const { rt, tm } = useI18n()
 const { gsap, Draggable, Flip } = useGSAP()
@@ -251,7 +253,7 @@ const createDraggable = () => {
 		onPress: self => {
 			const idx = Number(self.target.dataset.index)
 
-			fadeOutLabels(idx)
+			fadeOutDraggers(idx)
 
 			zoomInDropzoneCircle()
 		},
@@ -264,8 +266,9 @@ const createDraggable = () => {
 			if (inDropzone) {
 				moveToFinalPosition(self.target)
 				appStore.setStep03Selection(idx)
+				storage.value.q3 = idx
 			} else {
-				fadeInLabels(idx)
+				fadeInDraggers(idx)
 				moveToInitialPosition(self.target)
 			}
 		},
@@ -390,19 +393,20 @@ const createDraggable = () => {
 		)
 	}
 
-	function fadeOutLabels(idx) {
-		const targetLabels = get(draggersLabelsRef).filter(
-			(label, index) => index !== idx
+	function fadeOutDraggers(idx) {
+		const targetDraggers = get(draggersRef).filter(
+			(item, index) => index !== idx
 		)
-		gsap.to(targetLabels, {
+		gsap.to(targetDraggers, {
 			autoAlpha: 0,
 			duration: 0.5,
 			overwrite: true,
+			stagger: 0.1,
 		})
 	}
 
-	function fadeInLabels(idx) {
-		gsap.to(get(draggersLabelsRef), {
+	function fadeInDraggers() {
+		gsap.to(get(draggersRef), {
 			autoAlpha: 1,
 			duration: 0.5,
 			overwrite: true,
@@ -479,7 +483,7 @@ const zoomOutDropzoneCircle = () => {
 
 	grid-area: b;
 
-	@media (min-width: 320px) {
+	@media (min-width: 450px) {
 		@apply aspect-[260/290] w-auto;
 	}
 

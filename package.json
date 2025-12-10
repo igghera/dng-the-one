@@ -20,7 +20,7 @@
 		"@capacitor/status-bar": "^7.0.3",
 		"@nuxtjs/i18n": "^10.2.1",
 		"@pinia/nuxt": "^0.11.3",
-		"@zumer/snapdom": "^2.0.0",
+		"@zumer/snapdom": "^2.0.1",
 		"camera-controls": "^3.1.2",
 		"capacitor-zeroconf": "^3.0.0",
 		"cordova-plugin-printer": "https://github.com/jeffchee-asm/cordova-plugin-printer",
@@ -33,7 +33,7 @@
 		"pinia": "^3.0.4",
 		"postcss-easing-gradients": "^3.0.1",
 		"qr-code-styling": "^1.9.2",
-		"stats-gl": "^3.7.0",
+		"stats-gl": "^3.8.0",
 		"three": "^0.181.2",
 		"tweakpane": "^4.0.5",
 		"tweakpane-plugin-file-import": "^1.1.1",
@@ -45,9 +45,9 @@
 		"@capacitor/ios": "^6.1.2",
 		"@nuxtjs/tailwindcss": "^6.14.0",
 		"@tweakpane/core": "^2.0.5",
-		"@vueuse/core": "^14.0.0",
-		"@vueuse/nuxt": "^14.0.0",
+		"@vueuse/core": "^14.1.0",
+		"@vueuse/nuxt": "^14.1.0",
 		"sass-embedded": "^1.93.3",
-		"vercel": "^48.10.11"
+		"vercel": "^48.12.1"
 	}
 }

@@ -1,10 +1,22 @@
 <template>
 	<Container class="pointer-events-none" :data-ready="ready">
-		<header class="header | text-shadow" ref="headerRef">
+		<header class="header" ref="headerRef">
 			<h2
-				class="display-2 | golden-text"
+				class="display-2 | golden-text text-shadow | uppercase"
 				v-html="$t('experience_step_01.title')"
 			/>
+
+			<div class="labels">
+				<span
+					v-for="(label, idx) in labels"
+					:key="idx"
+					class="label"
+					:data-index="idx"
+					:data-visible="idx === knobStep && labelsVisible"
+				>
+					{{ label }}
+				</span>
+			</div>
 		</header>
 
 		<div class="knob-wrapper" ref="knobWrapperRef">
@@ -83,23 +95,6 @@
 					</g>
 				</svg>
 			</div>
-
-			<div
-				class="knob-labels | text-shadow"
-				:class="{
-					'text-gold-light': knobStepLiveDrag < 2,
-					'text-gold-dark': knobStepLiveDrag >= 2,
-				}"
-			>
-				<span
-					v-for="(label, idx) in labels"
-					:key="idx"
-					class="knob-label"
-					:data-index="idx"
-					:data-visible="idx === knobStep && labelsVisible"
-					v-html="label"
-				/>
-			</div>
 		</div>
 
 		<div class="instructions | text-shadow" :data-visible="instructionsVisible">
@@ -121,7 +116,7 @@
 </template>
 
 <script setup>
-import { get, set } from '@vueuse/core'
+import { get, set, useStorage } from '@vueuse/core'
 
 import { progress as backgroundProgress } from './WebGL/materials/background'
 
@@ -143,6 +138,8 @@ const sunIconVisible = shallowRef(false)
 const ctaVisible = shallowRef(false)
 const labelsVisible = shallowRef(false)
 
+const storage = useStorage('experience-answers', {})
+
 const dotsCoords = [
 	{ x: 228.86, y: 64.097 },
 	{ x: 396.634, y: 225.365 },
@@ -154,7 +151,6 @@ const knobRef = useTemplateRef('knobRef')
 const knobDotWrapperRef = useTemplateRef('knobDotWrapperRef')
 const knobDotRef = useTemplateRef('knobDotRef')
 const knobStep = shallowRef(0)
-const knobStepLiveDrag = shallowRef(0)
 const knobRotation = shallowRef(0)
 
 const barsWrapperRef = useTemplateRef('barsWrapperRef')
@@ -196,8 +192,27 @@ onMounted(async () => {
 		dragResistance: 0,
 		edgeResistance: 1,
 		maxDuration: 0.8,
-		snap(value) {
-			return Math.round(value / 90) * 90
+		minimumMovement: 4,
+		snap: snapTo90,
+		onClick: evt => {
+			const { rotation } = draggableInstance[0]
+			const currentRotation = rotation % 360
+			const clickAngle = getClickAngle(evt, get(knobRef)) + 90
+
+			const targetRotation = snapTo90(clickAngle)
+			const deltaRotation = shortestAngleDelta(currentRotation, targetRotation)
+
+			// Update draggable's rotation target
+			gsap.to(get(knobRef), {
+				rotation: draggableInstance[0].rotation + deltaRotation,
+				onUpdate: () => {
+					draggableInstance[0].update()
+					update()
+				},
+				duration: 0.4,
+				ease: 'power2.out',
+				overwrite: true,
+			})
 		},
 		onPress() {
 			gsap.to(get(knobDotRef), {
@@ -209,52 +224,13 @@ onMounted(async () => {
 
 			rotationOnPress = draggableInstance[0].rotation
 		},
-		onRelease(a, b, c) {
-			gsap.to(get(knobDotRef), {
-				scale: 1,
-				duration: 0.5,
-				ease: 'back.out(3)',
-				overwrite: true,
-			})
-
-			const { rotation: rotationOnRelease } = draggableInstance[0]
-			const deltaRotation = Math.abs(rotationOnRelease - rotationOnPress)
-
-			// Return if the angle difference is less than 5 degrees,
-			// meaning the user clicked instead of dragging
-			if (deltaRotation > 5) return
-
-			const { pointerX, pointerY, rotationOrigin } = draggableInstance[0]
-
-			const angle =
-				Math.atan2(pointerY - rotationOrigin.y, pointerX - rotationOrigin.x) *
-					(180 / Math.PI) +
-				90
-			const snappedAngle = Math.round(angle / 90) * 90
-
-			gsap.to(get(knobRef), {
-				rotation: snappedAngle,
-				duration: 0.7,
-				ease: 'power2.out',
-				overwrite: true,
-				onUpdate: () => {
-					draggableInstance[0].update()
-					update()
-				},
-			})
-		},
 		onDrag() {
 			set(instructionsVisible, false)
-			set(sunIconVisible, false)
-			set(labelsVisible, true)
 			set(ctaVisible, true)
 			update()
 		},
 		onThrowUpdate() {
 			update()
-		},
-		onThrowComplete() {
-			updateKnobSteponThrowComplete()
 		},
 	})
 
@@ -266,7 +242,7 @@ onMounted(async () => {
 		let step = Math.round(rotation / 90) % 4
 		if (Math.sign(step) === -1) step = 4 + step
 
-		set(knobStepLiveDrag, Math.abs(step))
+		set(knobStep, Math.abs(step))
 		set(knobRotation, rotation)
 
 		let bg = rotation % 360
@@ -274,13 +250,27 @@ onMounted(async () => {
 		backgroundProgress.value = bg / 360
 	}
 
-	function updateKnobSteponThrowComplete() {
-		const { rotation } = draggableInstance[0]
+	function shortestAngleDelta(current, target) {
+		let delta = (target - current) % 360
+		if (delta > 180) delta -= 360
+		if (delta < -180) delta += 360
 
-		let step = Math.floor(rotation / 90) % 4
-		if (Math.sign(step) === -1) step = 4 + step
+		return delta
+	}
 
-		set(knobStep, Math.abs(step))
+	function snapTo90(value) {
+		return Math.round(value / 90) * 90
+	}
+
+	function getClickAngle(evt, element) {
+		const rect = element.getBoundingClientRect()
+		const cx = rect.left + rect.width / 2
+		const cy = rect.top + rect.height / 2
+
+		const dx = evt.clientX - cx
+		const dy = evt.clientY - cy
+
+		return Math.atan2(dy, dx) * (180 / Math.PI)
 	}
 
 	update()
@@ -360,8 +350,7 @@ const animateIn = () => {
 		{
 			visibility: 'visible',
 			stagger: {
-				each: 0.018,
-				ease: 'power1.in',
+				amount: 3,
 			},
 		},
 		'<0.3'
@@ -378,7 +367,7 @@ const animateIn = () => {
 			x: () => get(knobDotWrapperRef).dataset.endX,
 			y: () => get(knobDotWrapperRef).dataset.endY,
 			duration: 1.6,
-			ease: 'power3.inOut',
+			ease: 'power2.inOut',
 		},
 		'<1.5'
 	)
@@ -388,7 +377,7 @@ const animateIn = () => {
 			set(ready, true)
 		},
 		null,
-		'>-0.3'
+		'>-0.1'
 	)
 
 	// Show sun icon and dots
@@ -410,6 +399,7 @@ const animateIn = () => {
 	tl.call(
 		() => {
 			draggableInstance?.[0]?.enable()
+			set(labelsVisible, true)
 			set(sunIconVisible, true)
 		},
 		null,
@@ -448,6 +438,7 @@ const animateOut = async () => {
 			duration: 1,
 			onStart: () => {
 				set(labelsVisible, false)
+				set(sunIconVisible, false)
 			},
 		},
 		'start+=0.3'
@@ -501,6 +492,7 @@ const handleClick = async () => {
 	await animateOut()
 
 	appStore.setStep01Selection(get(knobStep))
+	storage.value.q1 = get(knobStep)
 
 	uiStore.setExperienceStep02Visible(true)
 
@@ -534,13 +526,22 @@ const handleClick = async () => {
 
 	grid-template-areas:
 		'a'
+		'.'
 		'b'
+		'.'
 		'c';
-	grid-template-rows: auto 1fr auto;
+	grid-template-rows:
+		auto
+		theme('spacing.8')
+		1fr
+		theme('spacing.10')
+		auto;
 }
 
 .header {
-	@apply text-center uppercase;
+	@apply text-center flex flex-col gap-y-5;
+	@apply md:portrait:gap-y-9;
+	@apply md:landscape:gap-y-6;
 
 	grid-area: a;
 }
@@ -548,12 +549,7 @@ const handleClick = async () => {
 .knob-wrapper {
 	@apply grid aspect-square self-center;
 
-	width: toRem(275);
-
-	@screen md {
-		width: toRem(450);
-	}
-
+	height: min(100%, toRem(450));
 	grid-area: b;
 
 	> * {
@@ -561,8 +557,8 @@ const handleClick = async () => {
 	}
 }
 
-.knob-labels {
-	@apply grid;
+.labels {
+	@apply grid text-gold-light;
 	@apply transition-colors duration-500 ease-out;
 	@apply justify-self-center self-center;
 
@@ -571,12 +567,17 @@ const handleClick = async () => {
 	}
 }
 
-.knob-label {
-	@apply text-center;
+.label {
+	@apply text-center font-medium text-base leading-snug tracking-[0.05em];
 	@apply transition-opacity duration-500 ease-out;
 
 	&[data-visible='false'] {
 		@apply opacity-0;
+	}
+
+	@screen md {
+		font-size: toRem(21);
+		line-height: 1;
 	}
 }
 
@@ -618,6 +619,7 @@ const handleClick = async () => {
 
 .bar {
 	@apply w-[10px] h-[2px] bg-gold-light origin-left col-start-1 row-start-1 block;
+	@apply md:w-[18px];
 
 	--r: calc(v-bind(barsWrapperWidth) * 0.5px);
 	--x: calc(cos(var(--angle, 0)) * (var(--r) - 14px) + var(--r));

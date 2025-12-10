@@ -1,5 +1,5 @@
 <template>
-	<component :is="tag" class="site-container | flex px-5">
+	<component :is="tag" class="site-container | flex px-5 md:px-[50px]">
 		<div class="site-grid | w-full max-w-[1440px] mx-auto">
 			<slot />
 		</div>

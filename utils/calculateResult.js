@@ -37,7 +37,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One EDP - Women
-  if (q1 === 0 && q2 === 2 && (q3 === 1 || q3 === 2)) {
+  if (q1 === 0 && q2 === 1 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
     result.set('aura', auras[0]) // Elegant
     result.set('auraFull', aurasFull[0]) // Elegant
@@ -46,7 +46,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One EDPI - Women
-  if (q1 === 3 && q2 === 1 && (q3 === 1 || q3 === 2)) {
+  if (q1 === 3 && q2 === 2 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
     result.set('aura', auras[1]) // Warm
     result.set('auraFull', aurasFull[1]) // Warm
@@ -55,7 +55,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One GOLD EDP - Women
-  if (q1 === 2 && q2 === 3 && (q3 === 1 || q3 === 2)) {
+  if (q1 === 2 && q2 === 0 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
     result.set('aura', auras[2]) // Discrete
     result.set('auraFull', aurasFull[2]) // Discrete
@@ -64,7 +64,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One GOLD EDPI - Women
-  if (q1 === 1 && q2 === 0 && (q3 === 1 || q3 === 2)) {
+  if (q1 === 1 && q2 === 3 && (q3 === 1 || q3 === 2)) {
     result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
     result.set('aura', auras[3]) // Bold
     result.set('auraFull', aurasFull[3]) // Bold
@@ -73,255 +73,6 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
   }
 
   // The One EDP - Men
-  if (q1 === 0 && q2 === 2 && q3 === 0) {
-    result.set('imageSrc', productImagesPaths.get('MALE_EDP'))
-    result.set('aura', auras[0]) // Elegant
-    result.set('auraFull', aurasFull[0]) // Elegant
-    result.set('product', products[3])
-    result.set('shape', 'male')
-  }
-
-  // The One PARFUM - Men
-  if (q1 === 3 && q2 === 1 && q3 === 0) {
-    result.set('imageSrc', productImagesPaths.get('MALE_PARFUM'))
-    result.set('aura', auras[1]) // Warm
-    result.set('auraFull', aurasFull[1]) // Warm
-    result.set('product', products[6])
-    result.set('shape', 'male')
-  }
-
-  // The One EDT - Men
-  if (q1 === 2 && q2 === 3 && q3 === 0) {
-    result.set('imageSrc', productImagesPaths.get('MALE_EDT'))
-    result.set('aura', auras[2]) // Discrete
-    result.set('auraFull', aurasFull[2]) // Discrete
-    result.set('product', products[4])
-    result.set('shape', 'male')
-  }
-
-  // The One GOLD EDPI - Men
-  if (q1 === 1 && q2 === 0 && q3 === 0) {
-    result.set('imageSrc', productImagesPaths.get('MALE_GOLD_EDPI'))
-    result.set('aura', auras[3]) // Bold
-    result.set('auraFull', aurasFull[3]) // Bold
-    result.set('product', products[5])
-    result.set('shape', 'male')
-  }
-
-  // ===== MISSING CONDITIONS START (EQUALLY DISTRIBUTED) =====
-  // Original conditions already cover specific combinations
-  // Distributing remaining combinations equally across all products/auras
-  // Note: q2 has 3 possible values (0, 1, 2), but original code uses q2 === 3 which we keep as-is
-
-  // === WOMEN PRODUCTS - Remaining combinations (excluding already covered) ===
-
-  // The One EDP - Women (Elegant) - Additional combinations
-  if (q1 === 0 && q2 === 0 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[0]) // Elegant
-    result.set('auraFull', aurasFull[0]) // Elegant
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 0 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[0]) // Elegant
-    result.set('auraFull', aurasFull[0]) // Elegant
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 1 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[0]) // Elegant
-    result.set('auraFull', aurasFull[0]) // Elegant
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 1 && q2 === 2 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[0]) // Elegant
-    result.set('auraFull', aurasFull[0]) // Elegant
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 2 && q2 === 0 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[0]) // Elegant
-    result.set('auraFull', aurasFull[0]) // Elegant
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 2 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[0]) // Elegant
-    result.set('auraFull', aurasFull[0]) // Elegant
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  // The One EDPI - Women (Warm) - Additional combinations
-  if (q1 === 2 && q2 === 2 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
-    result.set('aura', auras[1]) // Warm
-    result.set('auraFull', aurasFull[1]) // Warm
-    result.set('product', products[1])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 3 && q2 === 0 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
-    result.set('aura', auras[1]) // Warm
-    result.set('auraFull', aurasFull[1]) // Warm
-    result.set('product', products[1])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 3 && q2 === 2 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
-    result.set('aura', auras[1]) // Warm
-    result.set('auraFull', aurasFull[1]) // Warm
-    result.set('product', products[1])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 0 && q2 === 0 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
-    result.set('aura', auras[1]) // Warm
-    result.set('auraFull', aurasFull[1]) // Warm
-    result.set('product', products[1])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 0 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
-    result.set('aura', auras[1]) // Warm
-    result.set('auraFull', aurasFull[1]) // Warm
-    result.set('product', products[1])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 1 && q2 === 0 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
-    result.set('aura', auras[1]) // Warm
-    result.set('auraFull', aurasFull[1]) // Warm
-    result.set('product', products[1])
-    result.set('shape', 'female')
-  }
-
-  // The One EDP - Women (Discrete) - Additional combinations
-  if (q1 === 0 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[2]) // Discrete
-    result.set('auraFull', aurasFull[2]) // Discrete
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 1 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[2]) // Discrete
-    result.set('auraFull', aurasFull[2]) // Discrete
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 1 && q2 === 2 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[2]) // Discrete
-    result.set('auraFull', aurasFull[2]) // Discrete
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 2 && q2 === 0 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[2]) // Discrete
-    result.set('auraFull', aurasFull[2]) // Discrete
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 2 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[2]) // Discrete
-    result.set('auraFull', aurasFull[2]) // Discrete
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 2 && q2 === 2 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
-    result.set('aura', auras[2]) // Discrete
-    result.set('auraFull', aurasFull[2]) // Discrete
-    result.set('product', products[0])
-    result.set('shape', 'female')
-  }
-
-  // The One GOLD EDPI - Women (Bold) - Additional combinations
-  if (q1 === 0 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
-    result.set('aura', auras[3]) // Bold
-    result.set('auraFull', aurasFull[3]) // Bold
-    result.set('product', products[2])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 1 && q2 === 1 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
-    result.set('aura', auras[3]) // Bold
-    result.set('auraFull', aurasFull[3]) // Bold
-    result.set('product', products[2])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 1 && q2 === 2 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
-    result.set('aura', auras[3]) // Bold
-    result.set('auraFull', aurasFull[3]) // Bold
-    result.set('product', products[2])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 2 && q2 === 0 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
-    result.set('aura', auras[3]) // Bold
-    result.set('auraFull', aurasFull[3]) // Bold
-    result.set('product', products[2])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 3 && q2 === 0 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
-    result.set('aura', auras[3]) // Bold
-    result.set('auraFull', aurasFull[3]) // Bold
-    result.set('product', products[2])
-    result.set('shape', 'female')
-  }
-
-  if (q1 === 3 && q2 === 2 && (q3 === 1 || q3 === 2)) {
-    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
-    result.set('aura', auras[3]) // Bold
-    result.set('auraFull', aurasFull[3]) // Bold
-    result.set('product', products[2])
-    result.set('shape', 'female')
-  }
-
-  // === MEN PRODUCTS - Remaining combinations ===
-
-  // The One EDP - Men (Elegant) - Additional combinations
-  if (q1 === 0 && q2 === 0 && q3 === 0) {
-    result.set('imageSrc', productImagesPaths.get('MALE_EDP'))
-    result.set('aura', auras[0]) // Elegant
-    result.set('auraFull', aurasFull[0]) // Elegant
-    result.set('product', products[3])
-    result.set('shape', 'male')
-  }
-
   if (q1 === 0 && q2 === 1 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_EDP'))
     result.set('aura', auras[0]) // Elegant
@@ -330,8 +81,8 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
     result.set('shape', 'male')
   }
 
-  // The One PARFUM - Men (Warm) - Additional combinations
-  if (q1 === 1 && q2 === 1 && q3 === 0) {
+  // The One PARFUM - Men
+  if (q1 === 3 && q2 === 2 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_PARFUM'))
     result.set('aura', auras[1]) // Warm
     result.set('auraFull', aurasFull[1]) // Warm
@@ -339,15 +90,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
     result.set('shape', 'male')
   }
 
-  if (q1 === 1 && q2 === 2 && q3 === 0) {
-    result.set('imageSrc', productImagesPaths.get('MALE_PARFUM'))
-    result.set('aura', auras[1]) // Warm
-    result.set('auraFull', aurasFull[1]) // Warm
-    result.set('product', products[6])
-    result.set('shape', 'male')
-  }
-
-  // The One EDT - Men (Discrete) - Additional combinations
+  // The One EDT - Men
   if (q1 === 2 && q2 === 0 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_EDT'))
     result.set('aura', auras[2]) // Discrete
@@ -356,6 +99,71 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
     result.set('shape', 'male')
   }
 
+  // The One GOLD EDPI - Men
+  if (q1 === 1 && q2 === 3 && q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_GOLD_EDPI'))
+    result.set('aura', auras[3]) // Bold
+    result.set('auraFull', aurasFull[3]) // Bold
+    result.set('product', products[5])
+    result.set('shape', 'male')
+  }
+
+  // ============================================
+  // ADDITIONAL CONDITIONS - Added to fill gaps
+  // ============================================
+
+  // --- MALE CONDITIONS (q3 === 0) ---
+  // Additional MALE_EDP (Elegant) combinations
+  if (q1 === 0 && q2 === 0 && q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_EDP'))
+    result.set('aura', auras[0]) // Elegant
+    result.set('auraFull', aurasFull[0]) // Elegant
+    result.set('product', products[3])
+    result.set('shape', 'male')
+  }
+
+  if (q1 === 0 && q2 === 2 && q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_EDP'))
+    result.set('aura', auras[0]) // Elegant
+    result.set('auraFull', aurasFull[0]) // Elegant
+    result.set('product', products[3])
+    result.set('shape', 'male')
+  }
+
+  if (q1 === 0 && q2 === 3 && q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_EDP'))
+    result.set('aura', auras[0]) // Elegant
+    result.set('auraFull', aurasFull[0]) // Elegant
+    result.set('product', products[3])
+    result.set('shape', 'male')
+  }
+
+  // Additional MALE_PARFUM (Warm) combinations
+  if (q1 === 3 && q2 === 0 && q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_PARFUM'))
+    result.set('aura', auras[1]) // Warm
+    result.set('auraFull', aurasFull[1]) // Warm
+    result.set('product', products[6])
+    result.set('shape', 'male')
+  }
+
+  if (q1 === 3 && q2 === 1 && q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_PARFUM'))
+    result.set('aura', auras[1]) // Warm
+    result.set('auraFull', aurasFull[1]) // Warm
+    result.set('product', products[6])
+    result.set('shape', 'male')
+  }
+
+  if (q1 === 3 && q2 === 3 && q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_PARFUM'))
+    result.set('aura', auras[1]) // Warm
+    result.set('auraFull', aurasFull[1]) // Warm
+    result.set('product', products[6])
+    result.set('shape', 'male')
+  }
+
+  // Additional MALE_EDT (Discrete) combinations
   if (q1 === 2 && q2 === 1 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_EDT'))
     result.set('aura', auras[2]) // Discrete
@@ -372,8 +180,16 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
     result.set('shape', 'male')
   }
 
-  // The One GOLD EDPI - Men (Bold) - Additional combinations
-  if (q1 === 3 && q2 === 0 && q3 === 0) {
+  if (q1 === 2 && q2 === 3 && q3 === 0) {
+    result.set('imageSrc', productImagesPaths.get('MALE_EDT'))
+    result.set('aura', auras[2]) // Discrete
+    result.set('auraFull', aurasFull[2]) // Discrete
+    result.set('product', products[4])
+    result.set('shape', 'male')
+  }
+
+  // Additional MALE_GOLD_EDPI (Bold) combinations
+  if (q1 === 1 && q2 === 0 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_GOLD_EDPI'))
     result.set('aura', auras[3]) // Bold
     result.set('auraFull', aurasFull[3]) // Bold
@@ -381,7 +197,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
     result.set('shape', 'male')
   }
 
-  if (q1 === 3 && q2 === 1 && q3 === 0) {
+  if (q1 === 1 && q2 === 1 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_GOLD_EDPI'))
     result.set('aura', auras[3]) // Bold
     result.set('auraFull', aurasFull[3]) // Bold
@@ -389,7 +205,7 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
     result.set('shape', 'male')
   }
 
-  if (q1 === 3 && q2 === 2 && q3 === 0) {
+  if (q1 === 1 && q2 === 2 && q3 === 0) {
     result.set('imageSrc', productImagesPaths.get('MALE_GOLD_EDPI'))
     result.set('aura', auras[3]) // Bold
     result.set('auraFull', aurasFull[3]) // Bold
@@ -397,7 +213,107 @@ export function calculateResult(q1, q2, q3, auras, products, aurasFull) {
     result.set('shape', 'male')
   }
 
-  // ===== MISSING CONDITIONS END =====
+  // --- FEMALE CONDITIONS (q3 === 1 || q3 === 2) ---
+  // Additional FEMALE_EDP (Elegant) combinations - 5 total (including original q1=0,q2=1 and q1=2,q2=0)
+  if (q1 === 0 && q2 === 0 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
+    result.set('aura', auras[0]) // Elegant
+    result.set('auraFull', aurasFull[0]) // Elegant
+    result.set('product', products[0])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 0 && q2 === 2 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
+    result.set('aura', auras[0]) // Elegant
+    result.set('auraFull', aurasFull[0]) // Elegant
+    result.set('product', products[0])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 0 && q2 === 3 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_EDP'))
+    result.set('aura', auras[0]) // Elegant
+    result.set('auraFull', aurasFull[0]) // Elegant
+    result.set('product', products[0])
+    result.set('shape', 'female')
+  }
+
+  // Additional FEMALE_EDPI (Warm) combinations - 5 total (including original q1=3,q2=2)
+  if (q1 === 3 && q2 === 0 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
+    result.set('aura', auras[1]) // Warm
+    result.set('auraFull', aurasFull[1]) // Warm
+    result.set('product', products[1])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 3 && q2 === 1 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
+    result.set('aura', auras[1]) // Warm
+    result.set('auraFull', aurasFull[1]) // Warm
+    result.set('product', products[1])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 3 && q2 === 3 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
+    result.set('aura', auras[1]) // Warm
+    result.set('auraFull', aurasFull[1]) // Warm
+    result.set('product', products[1])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 2 && q2 === 2 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_EDPI'))
+    result.set('aura', auras[1]) // Warm
+    result.set('auraFull', aurasFull[1]) // Warm
+    result.set('product', products[1])
+    result.set('shape', 'female')
+  }
+
+  // Additional FEMALE_GOLD_EDPI (Bold) combinations - 6 total (including original q1=1,q2=3)
+  if (q1 === 1 && q2 === 0 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
+    result.set('aura', auras[3]) // Bold
+    result.set('auraFull', aurasFull[3]) // Bold
+    result.set('product', products[2])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 1 && q2 === 1 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
+    result.set('aura', auras[3]) // Bold
+    result.set('auraFull', aurasFull[3]) // Bold
+    result.set('product', products[2])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 1 && q2 === 2 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
+    result.set('aura', auras[3]) // Bold
+    result.set('auraFull', aurasFull[3]) // Bold
+    result.set('product', products[2])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 2 && q2 === 1 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
+    result.set('aura', auras[3]) // Bold
+    result.set('auraFull', aurasFull[3]) // Bold
+    result.set('product', products[2])
+    result.set('shape', 'female')
+  }
+
+  if (q1 === 2 && q2 === 3 && (q3 === 1 || q3 === 2)) {
+    result.set('imageSrc', productImagesPaths.get('FEMALE_GOLD_EDPI'))
+    result.set('aura', auras[3]) // Bold
+    result.set('auraFull', aurasFull[3]) // Bold
+    result.set('product', products[2])
+    result.set('shape', 'female')
+  }
+
+
 
   const response = {
     q1,

@@ -1,8 +1,22 @@
 <template>
-	<button class="button" aria-label="Close">
+	<component
+		:is="tag"
+		class="button"
+		:aria-label="tag === 'button' ? 'Close' : null"
+	>
 		<IconClose class="size-4" />
-	</button>
+	</component>
 </template>
+
+<script setup>
+const props = defineProps({
+	tag: {
+		type: String,
+		default: 'button',
+		validator: value => ['button', 'div'].includes(value),
+	},
+})
+</script>
 
 <style lang="scss" scoped>
 .button {

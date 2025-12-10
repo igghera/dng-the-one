@@ -6,6 +6,11 @@
 		:data-pins-visible="pinsVisible"
 	>
 		<div
+			class="!w-5 !h-5 bg-[#f00] relative z-[2] invisible"
+			ref="draggableDummyRef"
+		/>
+
+		<div
 			class="top-gradient"
 			:data-visible="css3DContentVisible"
 			aria-hidden="true"
@@ -134,11 +139,10 @@
 			>
 				<div v-if="currentProductData" class="panel-content">
 					<template v-for="(item, idx) in currentProductData" :key="idx">
-						<div
-							v-if="item.component === 'title'"
-							class="panel-content-title"
-							v-html="item.value"
-						/>
+						<div v-if="item.component === 'title'" class="panel-content-header">
+							<span class="panel-content-title">{{ item.value[0] }}</span>
+							<span class="panel-content-subtitle">{{ item.value?.[1] }}</span>
+						</div>
 
 						<div
 							v-if="item.component === 'p'"
@@ -216,12 +220,13 @@ const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
 const panelRef = useTemplateRef('panelRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
+const draggableDummyRef = useTemplateRef('draggableDummyRef')
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
 
-const { gsap, SplitText, Observer } = useGSAP()
+const { gsap, SplitText, Observer, Draggable } = useGSAP()
 const { rt, tm } = useI18n()
 
 const textures = new Map()
@@ -236,8 +241,14 @@ const copyVisible = shallowRef(false)
 const pinsVisible = shallowRef(false)
 
 let renderer, rendererCSS, scene, camera, controls, bg0, bg1, postProcessing
+let cameraZ = 5
 let introSplit, instructionsSplit, panelPointerObserver
 let debugPanel, statsPanel
+let curve = null,
+	dragProgress = { value: 0 },
+	draggableInstance = null
+
+const controlsPositionMemo = new THREE.Vector3()
 
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
@@ -311,7 +322,7 @@ const itemsData = [
 	},
 	{
 		position: {
-			x: 0.151,
+			x: 0.1,
 			y: -0.3675,
 			z: 0,
 		},
@@ -384,11 +395,10 @@ const itemsData = [
 ]
 
 const targets = itemsData.map(item => {
+	const size = 650 * 0.4 * 0.001
+
 	const mesh = new THREE.Mesh(
-		new THREE.PlaneGeometry(
-			item.mainImage.width * item.scaleFactor * 0.001,
-			item.mainImage.height * item.scaleFactor * 0.001
-		),
+		new THREE.PlaneGeometry(size, size),
 		new THREE.MeshBasicMaterial({
 			transparent: true,
 			opacity: 0.3,
@@ -397,7 +407,6 @@ const targets = itemsData.map(item => {
 		})
 	)
 
-	// mesh.scale.set(1.1, 1.1, 1)
 	mesh.position.copy(item.position)
 
 	return mesh
@@ -416,7 +425,9 @@ const itemsCopy = computed(() => {
 				return data.map(item => {
 					return {
 						component: rt(item.component),
-						value: rt(item.value),
+						value: Array.isArray(item.value)
+							? item.value.map(v => rt(v))
+							: rt(item.value),
 					}
 				})
 			}),
@@ -479,6 +490,7 @@ onMounted(async () => {
 
 	createControls()
 	createPanelPointerObserver()
+	createDrag()
 
 	createPostprocessing()
 
@@ -590,7 +602,7 @@ function createCamera() {
 		20
 	)
 
-	camera.position.set(0, 0, 5)
+	camera.position.set(0, 0, cameraZ)
 }
 
 async function createRenderer() {
@@ -725,6 +737,78 @@ function createDOM() {
 	})
 }
 
+function createDrag() {
+	const points = itemsData.map(item => new THREE.Vector3().copy(item.position))
+	curve = new THREE.CatmullRomCurve3(points, false, 'catmullrom', 0.6)
+
+	draggableInstance = Draggable.create(get(draggableDummyRef), {
+		trigger: get(el),
+		type: 'x',
+		inertia: true,
+		edgeResistance: 1,
+		dragResistance: 0.85,
+		bounds: {
+			left: 0,
+			width: 1000,
+		},
+		zIndexBoost: false,
+		onDrag: () => {
+			update(draggableInstance[0].x)
+		},
+		onThrowUpdate: () => {
+			update(draggableInstance[0].x)
+		},
+	})
+
+	gsap.set(get(draggableDummyRef), {
+		x: 980,
+	})
+	draggableInstance?.[0]?.update()
+	draggableInstance?.[0]?.disable()
+
+	let progressVector = new THREE.Vector3()
+
+	function update(value) {
+		dragProgress.value = value
+
+		const normalizedValue = gsap.utils.mapRange(0, 980, 1, 0, value)
+		curve.getPoint(normalizedValue, progressVector)
+
+		controls.setLookAt(
+			progressVector.x,
+			progressVector.y,
+			cameraZ,
+			progressVector.x,
+			progressVector.y,
+			progressVector.z,
+			false
+		)
+	}
+}
+
+function getProgressOnCurveAtIndex(index) {
+	const dummyPoints = []
+
+	let i
+	for (i = 0; i <= index; i++) {
+		dummyPoints.push(new THREE.Vector3().copy(itemsData[i].position))
+	}
+
+	if (dummyPoints.length < 2) return 0
+
+	const dummyCurve = new THREE.CatmullRomCurve3(
+		dummyPoints,
+		false,
+		'catmullrom',
+		0.6
+	)
+
+	const originalCurveLength = curve.getLength()
+	const dummyCurveLength = dummyCurve.getLength()
+
+	return dummyCurveLength / originalCurveLength
+}
+
 function createCameraTargets() {
 	targets.forEach(target => {
 		scene.add(target)
@@ -781,42 +865,36 @@ function createPanelPointerObserver() {
 async function handlePinPointerdown(event) {
 	const { id: productId } = event.currentTarget.dataset
 
-	controls.enabled = false
+	draggableInstance?.[0]?.disable()
 
-	if (!!get(currentProduct)) {
-		closePanel()
-		set(currentProduct, null)
-
-		await gsap.delayedCall(0.4, () => {})
-
-		set(currentProduct, productId)
-		set(currentProductData, get(panelsData).get(productId))
-
-		await nextTick()
-
-		set(copyVisible, false)
-		openPanel()
-
-		controls.fitToBox(targets[productId.split('_')[0]], true, {
-			cover: false,
-			paddingTop: 0.2,
-			paddingBottom: 0.4,
-		})
-	} else {
-		set(currentProduct, productId)
-		set(currentProductData, get(panelsData).get(productId))
-
-		await nextTick()
-
-		set(copyVisible, false)
-		openPanel()
-
-		controls.fitToBox(targets[productId.split('_')[0]], true, {
-			cover: false,
-			paddingTop: 0.2,
-			paddingBottom: 0.4,
-		})
+	const nicheIndex = productId.split('_')[0]
+	const params = {
+		cover: false,
+		paddingTop: 0.15,
+		paddingBottom: 0.25,
 	}
+
+	set(currentProduct, productId)
+	set(currentProductData, get(panelsData).get(productId))
+
+	await nextTick()
+
+	set(copyVisible, false)
+	openPanel()
+
+	controls.getPosition(controlsPositionMemo)
+
+	await controls.fitToBox(targets[nicheIndex], true, params)
+
+	// const progress = getProgressOnCurveAtIndex(nicheIndex)
+	// gsap.set(get(draggableDummyRef), {
+	// 	x: () => 980 - progress * 980,
+	// })
+	// draggableInstance?.[0]?.update()
+
+	// const pointAtProgress = curve.getPointAt(progress)
+	// controlsPositionMemo.x = pointAtProgress.x
+	// controlsPositionMemo.y = pointAtProgress.y
 }
 
 function handleClosePanel() {
@@ -826,17 +904,34 @@ function handleClosePanel() {
 
 function openPanel() {
 	set(panelOpen, true)
+	set(pinsVisible, false)
 
 	get(panelScrollerRef).scrollTo(0, 0)
 	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
 }
 
-function closePanel() {
+async function closePanel() {
+	const currentNicheIndex = Number(get(currentProduct).split('_')[0])
+
 	set(panelOpen, false)
 	set(panelOpenFull, false)
 	set(currentProduct, null)
 
-	controls.enabled = true
+	const currentPos = new THREE.Vector3()
+	controls.getPosition(currentPos)
+
+	await controls.setLookAt(
+		controlsPositionMemo.x,
+		controlsPositionMemo.y,
+		controlsPositionMemo.z,
+		controlsPositionMemo.x,
+		controlsPositionMemo.y,
+		controlsPositionMemo.z - 1,
+		true
+	)
+
+	draggableInstance?.[0]?.enable()
+	set(pinsVisible, true)
 }
 
 function openPanelFull() {
@@ -999,12 +1094,16 @@ async function animateToInitialPosition() {
 
 	await controls.fitToBox(targets[0], true, {
 		cover: false,
-		paddingTop: 0.35,
-		paddingBottom: 0.35,
+		paddingTop: 0.25,
+		paddingBottom: 0.25,
 	})
 
+	const currentPos = new THREE.Vector3()
+	controls.getPosition(currentPos)
+	cameraZ = currentPos.z
+
 	controls.smoothTime = 0.25
-	controls.enabled = true
+	draggableInstance?.[0]?.enable()
 
 	animateInInstructions()
 
@@ -1105,7 +1204,7 @@ async function animateToInitialPosition() {
 	}
 
 	:is(.year, .title, .copy) {
-		@apply self-center pointer-events-none;
+		@apply self-center pointer-events-none whitespace-nowrap;
 		@apply transition-opacity duration-700 opacity-0;
 
 		.explore[data-text-visible='true'] & {
@@ -1138,7 +1237,11 @@ async function animateToInitialPosition() {
 
 	&[data-id='0'] {
 		.year {
-			translate: 0 calc(var(--h) * -0.75);
+			translate: 0 calc(var(--h) * -1.05);
+		}
+
+		.title {
+			translate: 0 calc(var(--h) * -0.8);
 		}
 
 		.copy {
@@ -1203,7 +1306,7 @@ async function animateToInitialPosition() {
 	--drag-pan-y: 0;
 	--height-on-open: 250;
 
-	@apply self-end justify-self-center relative z-[1];
+	@apply self-end justify-self-center relative z-[1] select-none;
 	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
 	@apply border border-solid border-[#75482E];
 
@@ -1252,18 +1355,22 @@ async function animateToInitialPosition() {
 }
 
 .panel-content {
-	@apply flex flex-col gap-y-12 relative pb-10;
+	@apply flex flex-col gap-y-7 relative pb-10;
 }
 
-.panel-content-title {
-	@apply tracking-[0.05em] leading-none uppercase;
+.panel-content-header {
+	@apply tracking-[0.05em] font-medium leading-none flex flex-col items-start;
 
-	font-size: toRem(22);
+	font-size: toRem(20);
 	width: calc(100% - toRem(32));
 }
 
+.panel-content-title {
+	@apply uppercase;
+}
+
 .panel-content-copy {
-	@apply tracking-[0.05em] leading-none;
+	@apply tracking-[0.05em] font-medium leading-[1.3333];
 
 	font-size: toRem(15);
 }
@@ -1273,9 +1380,17 @@ async function animateToInitialPosition() {
 }
 
 .panel-content-image {
-	@apply overflow-hidden w-full;
+	@apply overflow-hidden w-40 self-center;
 
 	:deep(img) {
+		@apply size-full object-contain object-center;
+	}
+}
+
+.panel-content-video {
+	@apply overflow-hidden w-full rounded-[20px];
+
+	:deep(video) {
 		@apply size-full object-contain object-center;
 	}
 }
@@ -1295,7 +1410,7 @@ async function animateToInitialPosition() {
 }
 
 .intro-text {
-	@apply text-base leading-none tracking-[0.05em];
+	@apply text-base leading-tight tracking-[0.05em];
 }
 
 .instructions {

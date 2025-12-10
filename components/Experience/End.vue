@@ -57,16 +57,16 @@
 		</button>
 
 		<Transition name="fade">
-			<div v-if="showResult && appStore.getResult" class="result | text-shadow">
-				<span class="body-9 | uppercase text-gold-light">
+			<div v-if="showResult && appStore.getResult" class="result">
+				<span class="result-pre-title">
 					{{ $t('experience_end.title') }}
 				</span>
 
-				<span class="display-3 | golden-text | uppercase">
+				<span class="result-title | golden-text">
 					{{ appStore.getResult.get('auraFull').title }}
 				</span>
 
-				<span class="body-10 | text-gold-light">
+				<span class="result-copy">
 					{{
 						appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
 							.desc
@@ -76,14 +76,7 @@
 		</Transition>
 
 		<Transition name="fade-long">
-			<nav
-				v-if="
-					showResult &&
-					appStore.getResult &&
-					!uiStore.isResultsScrollDownVisible
-				"
-				class="buttons"
-			>
+			<nav v-if="shouldShowButtons" class="buttons">
 				<div class="buttons-row">
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
@@ -97,12 +90,12 @@
 							:size="canPrint ? 'auto' : 'wide'"
 							class="!text-gold"
 							@click="handleQRCodeButtonClick"
-							>{{ $t('results.cta_download') }}</ButtonGolden
+							>{{ $t('download') }}</ButtonGolden
 						>
 					</template>
 
 					<template v-else>
-						<ButtonRestart />
+						<ButtonRestart class="!text-gold" />
 
 						<ButtonGolden
 							class="!text-gold"
@@ -129,7 +122,7 @@
 
 <script setup>
 import { computed } from 'vue'
-import { get, set } from '@vueuse/core'
+import { get, set, useStorage } from '@vueuse/core'
 import { Printer } from '@bcyesil/capacitor-plugin-printer'
 import { PDFDocument } from 'pdf-lib'
 import { ZeroConf } from 'capacitor-zeroconf'
@@ -175,6 +168,12 @@ const { gsap, Observer, SplitText } = useGSAP()
 
 const appStore = useAppStore()
 const uiStore = useUiStore()
+
+const { height: windowHeight } = useWindowSize()
+
+const urlParams = useUrlSearchParams('history')
+const isFromExplore = urlParams.ref === 'explore'
+const storage = useStorage('experience-answers', {})
 
 const showResult = shallowRef(false)
 
@@ -237,6 +236,21 @@ const allProducts = Object.values(tm('products')).map(product => ({
 let drawTimeline, pointerObserver
 
 //
+// Computed
+//
+const shouldShowButtons = computed(() => {
+	if (get(windowHeight) > 1000) {
+		return get(showResult) && appStore.getResult
+	} else {
+		return (
+			get(showResult) &&
+			appStore.getResult &&
+			!uiStore.isResultsScrollDownVisible
+		)
+	}
+})
+
+//
 // Lifecycle
 //
 onMounted(async () => {
@@ -246,7 +260,13 @@ onMounted(async () => {
 
 	setInitialState()
 
-	await animateInHeader()
+	if (isFromExplore) {
+		appStore.setStep01Selection(get(storage).q1)
+		appStore.setStep02Selection(get(storage).q2)
+		appStore.setStep03Selection(get(storage).q3)
+	} else {
+		await animateInHeader()
+	}
 
 	const res = calculateResult(
 		appStore.getStep01Selection,
@@ -256,7 +276,13 @@ onMounted(async () => {
 		allProducts,
 		allAurasFull
 	)
+
 	appStore.setResult(res.result)
+
+	if (isFromExplore) {
+		uiStore.setResultsVisible(true)
+		set(showResult, true)
+	}
 
 	experienceEndDrawMaterial.mapIndex.value =
 		res.result.get('shape') === 'male' ? 0 : 1
@@ -265,11 +291,16 @@ onMounted(async () => {
 
 	await gsap.delayedCall(0.5, () => {})
 
-	animateOutHeader()
+	if (isFromExplore) {
+		// Do Nothing
+		experienceEndDrawMaterial.progress.value = 1
+	} else {
+		animateOutHeader()
 
-	emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
+		emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START)
 
-	createButtonTimeline()
+		createButtonTimeline()
+	}
 })
 
 onBeforeUnmount(() => {
@@ -294,7 +325,7 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE, async () => {
 // Methods
 //
 const setInitialState = () => {
-	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
+	gsap.set(get(introHeaderRef), { autoAlpha: 0 })
 }
 
 const CM_TO_POINTS = 72 / 2.54
@@ -624,8 +655,13 @@ const handleDownloadButtonClick = async () => {
 	takeScreenshot(true)
 }
 
-const handleRestartButtonClick = () => {
-	emitter.emit(EVENTS.RESTART)
+const handleRestartButtonClick = async () => {
+	if (isFromExplore) {
+		await navigateTo('/')
+		emitter.emit(EVENTS.RESTART)
+	} else {
+		emitter.emit(EVENTS.RESTART)
+	}
 }
 
 const createButtonTimeline = () => {
@@ -704,6 +740,8 @@ const animateInHeader = () => {
 	const split01 = SplitText.create(get(title01Ref), {
 		type: 'lines,words,chars',
 	})
+
+	gsap.set(get(introHeaderRef), { autoAlpha: 1 })
 
 	const tl = gsap.timeline({ paused: true })
 	tl.addLabel('start')
@@ -873,12 +911,30 @@ const animateMask = () => {
 .result {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
 
-	row-gap: toRem(10);
-	width: toRem(160);
+	row-gap: toRem(11);
+	width: toRem(170);
 
 	@screen md {
-		width: toRem(220);
+		width: toRem(230);
 	}
+}
+
+.result-pre-title {
+	@apply uppercase font-normal leading-[1.7] tracking-[0.13em] text-gold-light;
+
+	font-size: toRem(17);
+}
+
+.result-title {
+	@apply font-normal uppercase leading-none;
+
+	font-size: toRem(36);
+}
+
+.result-copy {
+	@apply font-normal leading-[1.5] tracking-[0.04em] text-gold-light;
+
+	font-size: toRem(10);
 }
 
 .buttons {

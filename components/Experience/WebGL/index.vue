@@ -123,6 +123,17 @@ const START_PARAMS = Object.freeze({
 	maskRadius: maskRadius.value,
 })
 
+const END_PARANS = Object.freeze({
+	introSceneVisibility: 0,
+
+	maskProgress: 0.9,
+	maskBorderWidth: 0.01,
+
+	starsOpacity: 1,
+
+	endDrawProgress: 1,
+})
+
 //
 // Refs / State
 //
@@ -140,6 +151,7 @@ const { pixelRatio } = useDevicePixelRatio()
 const visible = useElementVisibility(el)
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
+const isFromExplore = urlParams.ref === 'explore'
 
 const { isPortrait, isLandscape, isMobile, isMedium, isDesktop } = useViewport()
 
@@ -194,6 +206,17 @@ const introSceneVisibility = uniform(1)
 // Lifecycle
 //
 onMounted(async () => {
+	if (isFromExplore) {
+		introSceneVisibility.value = END_PARANS.introSceneVisibility
+
+		maskProgress.value = END_PARANS.maskProgress
+		maskBorderWidth.value = END_PARANS.maskBorderWidth
+
+		starsOpacity.value = END_PARANS.starsOpacity
+
+		experienceEndDrawMaterial.progress.value = END_PARANS.endDrawProgress
+	}
+
 	createScene()
 	createCamera()
 
@@ -329,8 +352,8 @@ emitter.on(EVENTS.RESTART, () => {
 
 	experienceEndDrawMaterial.progress.value = 0
 
-	maskProgress.value = 0
-	maskBorderWidth.value = 0
+	maskProgress.value = START_PARAMS.maskProgress
+	maskBorderWidth.value = START_PARAMS.maskBorderWidth
 	maskRadius.value = START_PARAMS.maskRadius
 
 	starsOpacity.value = 0
@@ -538,7 +561,7 @@ function animateInMainScene() {
 	tl.fromTo(
 		introSceneVisibility,
 		{ value: 1 },
-		{ value: 0, duration: 0.1 },
+		{ value: END_PARANS.introSceneVisibility, duration: 0.1 },
 		'start'
 	)
 
@@ -612,7 +635,9 @@ function createCamera() {
 
 	camera.position.set(
 		mainCameraParams.positionStart.x,
-		mainCameraParams.positionStart.y,
+		isFromExplore
+			? mainCameraParams.positionEnd.y
+			: mainCameraParams.positionStart.y,
 		mainCameraParams.positionStart.z
 	)
 
@@ -647,10 +672,10 @@ async function loadTextures() {
 	ktxLoader.detectSupport(renderer)
 
 	const ktx = await ktxLoader.load([
-		'/webgl/backgrounds/01-mobile.ktx2',
-		'/webgl/backgrounds/02-mobile.ktx2',
-		'/webgl/backgrounds/03-mobile.ktx2',
-		'/webgl/backgrounds/04-mobile.ktx2',
+		'/webgl/backgrounds/01.ktx2',
+		'/webgl/backgrounds/02.ktx2',
+		'/webgl/backgrounds/03.ktx2',
+		'/webgl/backgrounds/04.ktx2',
 		'/webgl/noises/noise.ktx2',
 		'/webgl/draw/product-outline-male.ktx2',
 		'/webgl/draw/intro-outline.ktx2',
@@ -735,11 +760,11 @@ async function createParticles() {
 }
 
 function createBackground() {
-	const geometry = new THREE.PlaneGeometry(1, 1, 1, 1)
+	const geometry = new THREE.PlaneGeometry(1, 1)
 	const material = new BackgroundMaterial(textures).material
 	background = new THREE.Mesh(geometry, material)
 
-	background.position.set(0, -1.1, -5.5)
+	background.position.set(0, -0.65, -5.5)
 
 	setBackgroundSize()
 
@@ -763,6 +788,7 @@ async function createWinDrawingPlane() {
 	)
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
+	mesh.scale.set(1.1, 1.1, 1)
 	mesh.position.y = 0.05
 
 	scene.add(mesh)
@@ -933,8 +959,27 @@ function createPostprocessing() {
 function setBackgroundSize() {
 	if (!!!background) return
 
-	if (get(isPortrait)) background.scale.set(10.8, 19.2, 1)
-	else if (get(isLandscape)) background.scale.set(19.2, 10.8, 1)
+	const ratio = 1080 / 1920
+
+	const { fov, aspect } = camera
+	const distance = camera.position.z - background.position.z
+
+	// Calculate the viewport dimensions at the background's distance
+	const viewportHeight = 2 * distance * Math.tan((fov * Math.PI) / 360)
+	const viewportWidth = viewportHeight * aspect
+
+	// Calculate scale to cover the entire viewport while maintaining the ratio
+	// The mesh has a 1x1 base geometry, so we scale it maintaining the ratio
+	// We need to ensure both width and height cover the viewport
+	const scaleByWidth = viewportWidth
+	const scaleByHeight = viewportHeight / ratio
+	const scale = Math.max(scaleByWidth, scaleByHeight)
+
+	// Scale the mesh maintaining the aspect ratio
+	const width = scale
+	const height = scale * ratio
+
+	background.scale.set(width * 1.15, height * 1.15, 1)
 }
 
 function setIntroBackgroundSize() {
