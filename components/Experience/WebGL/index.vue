@@ -672,10 +672,10 @@ async function loadTextures() {
 	ktxLoader.detectSupport(renderer)
 
 	const ktx = await ktxLoader.load([
-		'/webgl/backgrounds/01-mobile.ktx2',
-		'/webgl/backgrounds/02-mobile.ktx2',
-		'/webgl/backgrounds/03-mobile.ktx2',
-		'/webgl/backgrounds/04-mobile.ktx2',
+		'/webgl/backgrounds/01.ktx2',
+		'/webgl/backgrounds/02.ktx2',
+		'/webgl/backgrounds/03.ktx2',
+		'/webgl/backgrounds/04.ktx2',
 		'/webgl/noises/noise.ktx2',
 		'/webgl/draw/product-outline-male.ktx2',
 		'/webgl/draw/intro-outline.ktx2',
@@ -764,7 +764,7 @@ function createBackground() {
 	const material = new BackgroundMaterial(textures).material
 	background = new THREE.Mesh(geometry, material)
 
-	background.position.set(0, -1.3, -5.5)
+	background.position.set(0, -0.65, -5.5)
 
 	setBackgroundSize()
 
@@ -959,7 +959,7 @@ function createPostprocessing() {
 function setBackgroundSize() {
 	if (!!!background) return
 
-	const ratio = 1920 / 1080
+	const ratio = 1080 / 1920
 
 	const { fov, aspect } = camera
 	const distance = camera.position.z - background.position.z
@@ -979,7 +979,7 @@ function setBackgroundSize() {
 	const width = scale
 	const height = scale * ratio
 
-	background.scale.set(width * 1.05, height * 1.05, 1)
+	background.scale.set(width * 1.15, height * 1.15, 1)
 }
 
 function setIntroBackgroundSize() {

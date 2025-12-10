@@ -43,12 +43,10 @@ export class BackgroundMaterial {
 
     this.material.opacityNode = Fn(() => {
       const centerUV = uv().mul(2).sub(1)
-      const distanceFromCenter = length(centerUV.x)
-      distanceFromCenter.assign(smoothstep(1.4, 0.7, distanceFromCenter))
+      const distanceFromCenter = length(centerUV)
 
-      const alpha = distanceFromCenter
-
-      alpha.mulAssign(smoothstep(-4, -0.5, positionWorld.y))
+      const alpha = smoothstep(1.4, 0.7, distanceFromCenter)
+      alpha.mulAssign(smoothstep(0.65, 1, centerUV.y).oneMinus())
 
       return alpha
     })()
