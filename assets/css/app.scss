@@ -4,6 +4,7 @@
 @use 'functions';
 @use 'layout';
 @use 'animations';
+@use 'download-card';
 
 html {
   @apply text-white bg-no-repeat bg-cover bg-center bg-fixed;

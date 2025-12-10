@@ -21,7 +21,7 @@
 					{{ result.get('auraFull').title }}
 				</span>
 
-				<span class="body-10 | text-gold-light">
+				<span class="card-content-copy | text-gold-light">
 					{{ result.get('auraFull')[result.get('shape')].desc }}
 				</span>
 			</div>
@@ -41,9 +41,18 @@
 					{{ $t('download_card.subcontent_title') }}
 				</span>
 
-				<span class="card-sub-content-copy | text-gold-light">
-					{{ result.get('auraFull')[result.get('shape')].fragrance.title }}
-					{{ result.get('auraFull')[result.get('shape')].fragrance.sub_title }}
+				<span class="card-sub-content-copy">
+					<span
+						class="golden-text | uppercase text-[9.4px] leading-[1.3] tracking-[0.05em]"
+					>
+						{{ result.get('auraFull')[result.get('shape')].fragrance.title }}
+					</span>
+					<span
+						class="text-gold-light text-[10.5px] leading-none tracking-[0.05em]"
+						>{{
+							result.get('auraFull')[result.get('shape')].fragrance.sub_title
+						}}</span
+					>
 				</span>
 			</div>
 		</div>
@@ -151,7 +160,9 @@ const allProducts = Object.values(tm('products')).map(product => ({
 const imageSrc = computed(() => {
 	if (!get(result)) return null
 
-	return `/images/download-cards/0${card}_${get(result).get('shape')}.webp`
+	return `/images/download-cards/download/0${card}_${get(result).get(
+		'shape'
+	)}.webp`
 })
 
 //
@@ -183,30 +194,12 @@ onMounted(async () => {
 const handleDownloadButtonClick = async event => {
 	set(isDownloading, true)
 
-	const { currentTarget: button } = event
+	get(result).set('pre-title', $t('results.pre_title'))
+	get(result).set('sub-content-title', $t('download_card.subcontent_title'))
 
-	gsap.to(button, {
-		opacity: 0.5,
-		duration: 0.5,
-		overwrite: true,
-	})
+	await downloadCard('download', Number(q1), get(result))
 
-	await snapdom.download(get(cardRef), {
-		format: 'png',
-		filename: `the-one-card-${Date.now()}.png`,
-		scale: 2,
-	})
-
-	gsap.delayedCall(0.8, () => {
-		gsap.to(button, {
-			opacity: 1,
-			duration: 0.8,
-			overwrite: true,
-			onStart: () => {
-				set(isDownloading, false)
-			},
-		})
-	})
+	set(isDownloading, true)
 }
 </script>
 
@@ -232,25 +225,43 @@ const handleDownloadButtonClick = async event => {
 }
 
 .card {
-	@apply grid aspect-[393/852];
+	@apply grid aspect-[1131/2010] rounded-[20px] overflow-hidden;
 
 	grid-area: a;
+	background-clip: padding-box, border-box;
+	background-origin: border-box;
+	background-image: linear-gradient(#8c3610, #3c1707),
+		linear-gradient(
+			147.91deg,
+			#f5d982 0.03%,
+			rgba(245, 217, 130, 0) 47.62%,
+			rgba(245, 217, 130, 0) 67.33%,
+			#f5d982 100.03%
+		);
+	border: 2px solid transparent;
+	border-image: var(--border-color) 1;
 	height: min(70svh, toRem(700));
 
 	img {
-		@apply size-full object-contain object-center;
+		@apply size-full object-cover object-center;
 	}
 }
 
 .card-content {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center justify-self-center;
 
-	row-gap: toRem(10);
-	width: 70%;
+	row-gap: toRem(12);
+	width: 50%;
+}
+
+.card-content-copy {
+	@apply leading-[1.3] font-normal tracking-[0.04em];
+
+	font-size: toRem(11);
 }
 
 .card-sub-content {
-	@apply grid gap-x-2 gap-y-1 col-start-1 row-start-1 self-end justify-self-center -translate-y-16 rounded-lg px-4 py-3;
+	@apply grid gap-x-5 gap-y-[5.3px] col-start-1 row-start-1 self-end justify-self-center -translate-y-16 rounded-lg px-4 py-3;
 	@apply bg-white/15 border border-gold-light/15;
 
 	grid-template-areas:
@@ -258,7 +269,7 @@ const handleDownloadButtonClick = async event => {
 		'a c';
 	grid-template-columns: theme('spacing.7') auto;
 	grid-template-rows: repeat(2, auto);
-	width: 70%;
+	width: 58%;
 }
 
 .card-sub-content-image {
@@ -268,12 +279,13 @@ const handleDownloadButtonClick = async event => {
 .card-sub-content-title {
 	@apply uppercase text-left tracking-[0.05em] leading-none self-end;
 
-	font-size: toRem(7);
+	font-size: toRem(8.5);
 	grid-area: b;
 }
 
 .card-sub-content-copy {
 	@apply text-left leading-none tracking-[0.05em] self-start;
+	@apply flex flex-col items-start gap-y-[5.3px];
 
 	font-size: toRem(8);
 	grid-area: c;

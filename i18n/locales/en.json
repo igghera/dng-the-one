@@ -76,7 +76,7 @@
   },
 
   "results": {
-    "pre_title": "Your perfect match is:",
+    "pre_title": "Your aura is",
     "cta_print": "Print your aura",
     "cta_download": "Download",
     "cta_restart": "Play again"
@@ -88,8 +88,8 @@
   },
 
   "download_card": {
-    "pre_title": "Your perfect match is:",
-    "subcontent_title": "My Aura's match is:"
+    "pre_title": "Your aura is",
+    "subcontent_title": "My Aura's Match is:"
   },
 
   "engagement": {
