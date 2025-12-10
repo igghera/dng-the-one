@@ -87,10 +87,10 @@ const images = Object.freeze([
 	'elegant',
 	'discrete',
 	'warm',
-	'resonant',
-	'glowing',
-	'gentle',
-	'refined',
+	'powerful',
+	'sophisticated',
+	'intriguing',
+	'mysterious',
 ])
 
 const allProducts = Object.values(tm('products')).map(product => ({
