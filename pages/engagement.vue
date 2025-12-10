@@ -106,7 +106,7 @@ const allProducts = Object.values(tm('products')).map(product => ({
 const imageSrc = computed(() => {
 	if (!get(aura)) return null
 
-	return `/images/engagement/${images[Number(aura)]}.webp`
+	return `/images/download-cards/engagement/${images[Number(aura)]}.webp`
 })
 
 const selectedProducts = computed(() => {
@@ -145,7 +145,7 @@ onMounted(async () => {
 const handleDownloadButtonClick = async () => {
 	set(isDownloading, true)
 
-	const path = `/images/engagement/${images[Number(aura)]}.png`
+	const path = `/images/download-cards/engagement/${images[Number(aura)]}.png`
 
 	const link = document.createElement('a')
 	link.href = path
