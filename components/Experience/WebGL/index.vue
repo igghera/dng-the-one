@@ -645,7 +645,7 @@ async function createRenderer() {
 	})
 
 	renderer.setClearColor(0x000000, 1)
-	// renderer.toneMapping = THREE.ACESFilmicToneMapping
+	renderer.toneMapping = THREE.ACESFilmicToneMapping
 	renderer.setSize(get(componentWidth), get(componentHeight))
 
 	if (isDebug) {
