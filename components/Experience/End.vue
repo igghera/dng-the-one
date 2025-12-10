@@ -325,11 +325,11 @@ const handleQRCodeButtonClick = () => {
 }
 
 const handleDownloadButtonClick = async () => {
-	downloadImage('/mock-download-card.png', 'the-one-card.png')
+	const data = appStore.getResult
+	data.set('pre-title', $t('results.pre_title'))
+	data.set('sub-content-title', $t('download_card.subcontent_title'))
 
-	return
-
-	takeScreenshot(true)
+	downloadCard('experience', Number(appStore.getStep01Selection), data)
 }
 
 const handleRestartButtonClick = async () => {

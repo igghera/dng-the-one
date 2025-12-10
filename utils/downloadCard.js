@@ -11,7 +11,7 @@ export async function downloadCard(source, bg, data) {
 
   const image = new Image()
   image.addEventListener('load', async () => {
-    const html = createHTML(image, data)
+    const html = createHTML(source, image, data)
     document.body.appendChild(html)
 
     const target = document.getElementById('download-card-holder')
@@ -33,7 +33,7 @@ export async function downloadCard(source, bg, data) {
   image.src = cardPath
 }
 
-function createHTML(image, data) {
+function createHTML(source, image, data) {
   const { naturalWidth: width, naturalHeight: height } = image
   const fragment = document.createDocumentFragment()
 
@@ -71,6 +71,13 @@ function createHTML(image, data) {
 
   const subContent = document.createElement('div')
   subContent.className = 'sub-content'
+
+  if (source === 'experience') {
+    Object.assign(subContent.style, {
+      transform: 'translateY(-6rem)',
+    })
+  }
+
   holder.appendChild(subContent)
 
   const subContentTitle = document.createElement('span')
