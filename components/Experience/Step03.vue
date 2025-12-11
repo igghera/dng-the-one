@@ -483,7 +483,7 @@ const zoomOutDropzoneCircle = () => {
 
 	grid-area: b;
 
-	@media (min-width: 450px) {
+	@media (min-width: 550px) {
 		@apply aspect-[260/290] w-auto;
 	}
 
