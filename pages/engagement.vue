@@ -92,14 +92,14 @@ const isDownloading = shallowRef(false)
 const { aura } = urlParams
 
 const images = Object.freeze([
-	'bold',
-	'elegant',
-	'discrete',
-	'warm',
-	'powerful',
-	'sophisticated',
-	'intriguing',
-	'mysterious',
+	'00-bold',
+	'01-elegant',
+	'02-discrete',
+	'03-warm',
+	'04-powerful',
+	'05-sophisticated',
+	'06-intriguing',
+	'07-mysterious',
 ])
 
 const allProducts = Object.values(tm('products')).map(product => ({

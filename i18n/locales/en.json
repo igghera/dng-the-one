@@ -329,15 +329,15 @@
           [
             {
               "component": "title",
-              "value": ["The One for Men Gold", "Eau De Toliette Intense"]
+              "value": ["The One for Men Gold", "Eau De Toilette Intense"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_GOLD_EDPI.webp"
             },
             {
               "component": "p",
               "value": "An homage to the magnetic allure of its wearer, featuring a captivating blend of woody and spicy notes, including Clary Sage, Bergamot, and Patchouli."
-            },
-            {
-              "component": "video",
-              "value": "/videos/dummy.mp4"
             }
           ]
         ]
@@ -362,11 +362,15 @@
             },
             {
               "component": "title",
-              "value": ["The One for Women"]
+              "value": ["The Campaign"]
             },
             {
               "component": "video",
               "value": "/videos/dummy.mp4"
+            },
+            {
+              "component": "p",
+              "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
             }
           ],
           [],
@@ -385,11 +389,15 @@
             },
             {
               "component": "title",
-              "value": ["The One for Men"]
+              "value": ["The Campaign"]
             },
             {
               "component": "video",
               "value": "/videos/dummy.mp4"
+            },
+            {
+              "component": "p",
+              "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
             }
           ],
           []
