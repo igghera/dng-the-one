@@ -350,6 +350,32 @@
           [
             {
               "component": "title",
+              "value": ["The One for Women", "Eau De Parfum"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDP.webp"
+            },
+            {
+              "component": "p",
+              "value": "Elegant and modern, blending notes of mandarin orange with rose and vanilla, in an exceptional blend between classic and contemporary characteristics."
+            },
+            {
+              "component": "title",
+              "value": ["The Campaign"]
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy.mp4"
+            },
+            {
+              "component": "p",
+              "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
+            }
+          ],
+          [
+            {
+              "component": "title",
               "value": ["The One for Women", "Eau De Parfum Intense"]
             },
             {
@@ -373,7 +399,6 @@
               "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
             }
           ],
-          [],
           [
             {
               "component": "title",
@@ -400,7 +425,32 @@
               "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
             }
           ],
-          []
+          [
+            {
+              "component": "title",
+              "value": ["The One for Men", "Eau De Toilette"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_EDT.webp"
+            },
+            {
+              "component": "p",
+              "value": "Charming and sensual, like the man who wears it. With an utterly charismatic blend of basil notes, bewitching lavender, and sandalwood accords."
+            },
+            {
+              "component": "title",
+              "value": ["The Campaign"]
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy.mp4"
+            },
+            {
+              "component": "p",
+              "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
+            }
+          ]
         ]
       }
     ]
