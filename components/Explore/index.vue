@@ -1239,67 +1239,67 @@ async function animateToInitialPosition() {
 
 	&[data-id='0'] {
 		.year {
-			translate: 0 calc(var(--h) * -1.05);
+			translate: 0 calc(var(--h) * -0.9);
 		}
 
 		.title {
-			translate: 0 calc(var(--h) * -0.8);
+			translate: 0 calc(var(--h) * -0.7);
 		}
 
 		.copy {
-			translate: 0 calc(var(--h) * 0.75);
+			translate: 0 calc(var(--h) * 0.67);
 		}
 	}
 
 	&[data-id='1'] {
 		.year {
-			translate: 0 calc(var(--h) * 1.1);
+			translate: 0 calc(var(--h) * 0.9);
 		}
 
 		.title {
-			translate: 0 calc(var(--h) * 1.55);
+			translate: 0 calc(var(--h) * 1.35);
 		}
 
 		.copy {
-			translate: 0 calc(var(--h) * -0.9);
+			translate: 0 calc(var(--h) * -0.88);
 		}
 	}
 
 	&[data-id='2'] {
 		.year {
-			translate: 0 calc(var(--h) * -1.1);
+			translate: 0 calc(var(--h) * -1);
 		}
 
 		.title {
-			translate: 0 calc(var(--h) * -0.85);
+			translate: 0 calc(var(--h) * -0.75);
 		}
 
 		.copy {
-			translate: 0 calc(var(--h) * 0.8);
+			translate: 0 calc(var(--h) * 0.67);
 		}
 	}
 
 	&[data-id='3'] {
 		.year {
-			translate: 0 calc(var(--h) * 0.9);
+			translate: 0 calc(var(--h) * 0.83);
 		}
 
 		.title {
-			translate: 0 calc(var(--h) * 1.3);
+			translate: 0 calc(var(--h) * 1.23);
 		}
 
 		.copy {
-			translate: 0 calc(var(--h) * -1);
+			translate: 0 calc(var(--h) * -0.92);
 		}
 	}
 
 	&[data-id='4'] {
 		.year {
-			translate: 0 calc(var(--h) * -1.1);
+			translate: 0 calc(var(--h) * -0.95);
 		}
 
 		.title {
-			translate: 0 calc(var(--h) * -0.82);
+			translate: 0 calc(var(--h) * -0.67);
 		}
 	}
 }
