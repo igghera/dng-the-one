@@ -322,11 +322,11 @@ const itemsData = [
 	},
 	{
 		position: {
-			x: 0.1,
-			y: -0.3675,
+			x: 0.123,
+			y: -0.358,
 			z: 0,
 		},
-		scaleFactor: 0.353,
+		scaleFactor: 0.37,
 		mainImage: {
 			src: '/images/explore/socket_04/00-dark.webp',
 			width: 784,
@@ -336,15 +336,15 @@ const itemsData = [
 			{
 				imageSrc: '/images/explore/socket_04/00-light.webp',
 				pin: {
-					x: 0.38,
-					y: 0.78,
+					x: 0.42,
+					y: 0.62,
 				},
 			},
 			{
 				imageSrc: '/images/explore/socket_04/01-light.webp',
 				pin: {
-					x: 0.72,
-					y: 0.73,
+					x: 0.77,
+					y: 0.58,
 				},
 			},
 		],
@@ -1174,8 +1174,10 @@ async function animateToInitialPosition() {
 	}
 
 	.pic {
-		display: block;
-		overflow: hidden;
+		@apply justify-self-center block overflow-hidden;
+
+		height: var(--h);
+		width: var(--w);
 	}
 
 	.img {
