@@ -87,16 +87,8 @@ function createHTML(source, image, data) {
 
   const subContentCopy = document.createElement('span')
   subContentCopy.className = 'sub-content-copy'
+  subContentCopy.textContent = `${data.get('auraFull')[data.get('shape')].fragrance.title} ${data.get('auraFull')[data.get('shape')].fragrance.sub_title}`
   subContent.appendChild(subContentCopy)
-
-  const subContentCopy01 = document.createElement('span')
-  subContentCopy01.className = 'golden-text'
-  subContentCopy01.textContent = data.get('auraFull')[data.get('shape')].fragrance.title
-  subContentCopy.appendChild(subContentCopy01)
-
-  const subContentCopy02 = document.createElement('span')
-  subContentCopy02.textContent = data.get('auraFull')[data.get('shape')].fragrance.sub_title
-  subContentCopy.appendChild(subContentCopy02)
 
   const picture = document.createElement('picture')
   picture.className = 'sub-content-image'
