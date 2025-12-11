@@ -251,7 +251,8 @@ const handleDownloadButtonClick = async event => {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center justify-self-center;
 
 	row-gap: toRem(12);
-	width: 50%;
+	translate: 0 toRem(10);
+	width: max(50%, toRem(160));
 }
 
 .card-content-copy {
@@ -261,15 +262,17 @@ const handleDownloadButtonClick = async event => {
 }
 
 .card-sub-content {
-	@apply grid gap-x-5 gap-y-[5.3px] col-start-1 row-start-1 self-end justify-self-center -translate-y-16 rounded-lg px-4 py-3;
+	@apply grid gap-x-5 gap-y-[5.3px] col-start-1 row-start-1 self-end justify-self-center -translate-y-7 rounded-lg px-4 py-3;
 	@apply bg-white/15 border border-gold-light/15;
+	@apply md:-translate-y-16;
 
 	grid-template-areas:
 		'a b'
 		'a c';
 	grid-template-columns: theme('spacing.7') auto;
 	grid-template-rows: repeat(2, auto);
-	width: 58%;
+
+	width: max(58%, toRem(200));
 }
 
 .card-sub-content-image {
