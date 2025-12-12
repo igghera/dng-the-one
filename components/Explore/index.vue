@@ -462,6 +462,8 @@ const panelsData = computed(() => {
 onClickOutside(
 	panelRef,
 	() => {
+		if (!get(panelOpen)) return
+
 		closePanel()
 		controls.enabled = true
 	},
