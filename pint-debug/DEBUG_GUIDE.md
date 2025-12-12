@@ -35,11 +35,15 @@ brew install cocoapods
     ```
 
 3.  **Setup variabili d'ambiente:**
-    Copiare il file `.env.example` in `.env` (se presente) o assicurarsi di avere le variabili corrette.
+    Copiare il file `.env.example` in `.env`.
     Per il debug della stampa, assicurarsi che nel `.env` ci sia:
     ```env
     # Impostare a false per testare la stampa diretta via plugin (non AirPrint nativo)
     USE_NATIVE_PICKER=false
+    
+    # Nome (o parte del nome) della stampante da cercare (default: cerca tutte)
+    # Utile se ci sono più stampanti nella rete e si vuole targettizzarne una specifica
+    PRINTER_NAME=QW410
     ```
 
 ## 3. Avvio in Sviluppo (Browser)
@@ -130,7 +134,20 @@ Sostituire l'uso di `cordova-plugin-printer` con una soluzione custom (plugin Ca
 2.  Inviare i dati grezzi dell'immagine (o un payload IPP valido) senza passare per il framework `UIPrintInteractionController` di iOS.
 3.  Gestire manualmente la comunicazione di rete (poiché `fetch()` da WebView verso IP locali è bloccato da iOS/CORS).
 
-## 7. Comandi Utili
+## 7. Workflow dell'App (Come testare)
+
+Per arrivare alla schermata di stampa e riprodurre il bug:
+
+1.  **Schermata Iniziale:** Inserire un nome qualsiasi nel campo di testo e proseguire.
+2.  **Quiz (Step 1-3):** Rispondere alle 3 domande successive selezionando un'opzione qualsiasi (ruotando, swipando o trascinando).
+3.  **Animazione Finale:** Attendere il completamento dell'animazione ("Unveiling your Aura").
+4.  **Schermata Risultati (End):** Tenere premuto quando indicato, apparirà la card finale con il risultato (es. "BOLD").
+    - In basso appariranno due pulsanti: **PRINT YOUR AURA** e **DOWNLOAD**.
+    - Premere **PRINT YOUR AURA** per avviare il processo di stampa e vedere i log di errore.
+
+![Schermata Finale](./assets/print_page.jpg)
+
+## 8. Comandi Utili
 
 - **Ricostruire e aggiornare iOS dopo modifiche JS/Vue:**
   Uso del comando unificato (consigliato):
