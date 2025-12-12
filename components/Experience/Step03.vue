@@ -250,14 +250,24 @@ const animateIn = () => {
 
 const createDraggable = () => {
 	draggableInstance = Draggable.create(get(draggersRef), {
-		onPress: self => {
+		minimumMovement: 5,
+		onClick: self => {
+			const idx = Number(self.target.dataset.index)
+
+			fadeOutDraggers(idx)
+
+			moveToFinalPosition(self.target)
+			appStore.setStep03Selection(idx)
+			storage.value.q3 = idx
+		},
+		onDragStart: self => {
 			const idx = Number(self.target.dataset.index)
 
 			fadeOutDraggers(idx)
 
 			zoomInDropzoneCircle()
 		},
-		onRelease: self => {
+		onDragEnd: self => {
 			zoomOutDropzoneCircle()
 
 			const inDropzone = Draggable.hitTest(self.target, get(dropzoneRef), '1%')
