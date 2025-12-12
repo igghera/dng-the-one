@@ -2,7 +2,7 @@
 	<Container class="pb-40 lg:pb-20">
 		<picture class="pic">
 			<img
-				src="/images/mock-timeline-intro.webp"
+				src="/images/timeline-intro.webp"
 				alt="Timeline"
 				loading="lazy"
 				decoding="async"
