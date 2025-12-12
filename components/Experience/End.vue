@@ -123,7 +123,6 @@
 <script setup>
 import { computed } from 'vue'
 import { get, set, useStorage } from '@vueuse/core'
-import { Printer } from '@bcyesil/capacitor-plugin-printer'
 import { PDFDocument } from 'pdf-lib'
 import { ZeroConf } from 'capacitor-zeroconf'
 import { snapdom } from '@zumer/snapdom'
@@ -326,12 +325,19 @@ const setInitialState = () => {
 	gsap.set(get(introHeaderRef), { autoAlpha: 0 })
 }
 
+// ============================================================================
+// PRINT CONFIGURATION
+// ============================================================================
+
 const CM_TO_POINTS = 72 / 2.54
+
+// PDF page dimensions (10.2cm x 15cm = 4x6 inch at 72 DPI)
 const PHOTO_PAPER = Object.freeze({
 	width: 10.2 * CM_TO_POINTS,
 	height: 15 * CM_TO_POINTS,
 })
 
+// Zero margins for borderless printing
 const ZERO_MARGINS = Object.freeze({
 	top: 0,
 	bottom: 0,
@@ -339,14 +345,22 @@ const ZERO_MARGINS = Object.freeze({
 	right: 0,
 })
 
+// Cordova printer plugin options
 const BORDERLESS_OPTIONS = {
 	printType: 'photo',
 	ui: {
-		hidePaperFormat: true, // Potentially hide paper format selection
-		hideBorder: true, // Specifically request borderless
+		hidePaperFormat: true,
+		hideBorder: true,
 	},
 }
 
+// ============================================================================
+// IMAGE PROCESSING UTILITIES (PDF - Currently Unused)
+// ============================================================================
+
+/**
+ * Convert data URL to byte array for PDF embedding
+ */
 const dataUrlToBytes = dataUrl => {
 	const match = dataUrl.match(/^data:(.+);base64,(.+)$/)
 	if (!match) throw new Error('Invalid data URL format')
@@ -362,6 +376,9 @@ const dataUrlToBytes = dataUrl => {
 	return { mime, bytes }
 }
 
+/**
+ * Create PDF document with photo (unused - direct PNG printing preferred)
+ */
 const createPhotoPrintPdf = async dataUrl => {
 	const pdfDoc = await PDFDocument.create()
 	const { mime, bytes } = dataUrlToBytes(dataUrl)
@@ -390,6 +407,12 @@ const createPhotoPrintPdf = async dataUrl => {
 	return `base64:${pdfDataUri}`
 }
 
+/**
+ * Convert blob to photo-ready PNG data URL
+ * Resizes to 1844x1240px (4x6 inch at 300 DPI) with white background
+ * @param {Blob} blob - Input image blob
+ * @returns {Promise<string>} - PNG data URL
+ */
 const buildPhotoReadyDataUrl = blob =>
 	new Promise((resolve, reject) => {
 		if (!blob) {
@@ -438,22 +461,229 @@ const buildPhotoReadyDataUrl = blob =>
 		image.src = objectUrl
 	})
 
+/**
+ * Extract base64 payload from data URL and format for Cordova printer plugin
+ * @param {string} dataUrl - Data URL (e.g., "data:image/png;base64,iVBOR...")
+ * @returns {string} - Formatted payload ("base64://iVBOR...")
+ */
 const buildBase64Payload = dataUrl => {
 	const [, payload] = dataUrl.split(',')
 	if (!payload) throw new Error('Invalid photo data URL')
 	return `base64://${payload}`
 }
 
+// ============================================================================
+// PRINT FUNCTIONS
+// ============================================================================
+
+/**
+ * Convert base64 string to Blob
+ * @param {string} base64 - Base64 string (with or without data URL prefix)
+ * @returns {Blob} - Image blob
+ */
+const base64ToBlob = base64 => {
+	// Remove data URL prefix if present
+	const base64Data = base64.replace(/^data:image\/\w+;base64,/, '')
+	const binaryString = atob(base64Data)
+	const bytes = new Uint8Array(binaryString.length)
+	
+	for (let i = 0; i < binaryString.length; i++) {
+		bytes[i] = binaryString.charCodeAt(i)
+	}
+	
+	return new Blob([bytes], { type: 'image/png' })
+}
+
+/**
+ * Send print job via direct HTTP POST to printer
+ * Bypasses Cordova plugin for better control and compatibility
+ * @param {string} dataUrl - Data URL of the image
+ * @returns {Promise<boolean>} - Success status
+ */
+const sendPrintJob = async dataUrl => {
+	if (!isClient) return false
+
+	const printer = get(selectedPrinter)
+	if (!printer) {
+		console.error('[Print] No printer selected')
+		return false
+	}
+
+	// Convert data URL to blob
+	const imageBlob = base64ToBlob(dataUrl)
+	console.log('[Print] Image blob size:', imageBlob.size, 'bytes')
+
+	// Try multiple approaches
+	const attempts = [
+		{
+			name: 'HTTP POST with IPP headers',
+			url: `http://${printer.ip}:631/printers/QW410-1-4x6`,
+			headers: {
+				'Content-Type': 'application/ipp',
+				'Content-Length': imageBlob.size.toString(),
+			},
+		},
+		{
+			name: 'HTTP POST with PNG',
+			url: `http://${printer.ip}:631/printers/QW410-1-4x6`,
+			headers: {
+				'Content-Type': 'image/png',
+			},
+		},
+		{
+			name: 'RAW socket port 9100',
+			url: `http://${printer.ip}:9100`,
+			headers: {
+				'Content-Type': 'application/octet-stream',
+			},
+		},
+	]
+
+	for (const attempt of attempts) {
+		try {
+			console.log(`[Print] Attempt: ${attempt.name}`)
+			console.log(`[Print] URL: ${attempt.url}`)
+
+			const response = await fetch(attempt.url, {
+				method: 'POST',
+				headers: attempt.headers,
+				body: imageBlob,
+			})
+
+			console.log(`[Print] Response: ${response.status} ${response.statusText}`)
+
+			if (response.ok || response.status === 200 || response.status === 201) {
+				console.log(`[Print] ✅ SUCCESS with ${attempt.name}!`)
+				return true
+			} else {
+				const text = await response.text().catch(() => '')
+				console.log(`[Print] Failed: ${text.substring(0, 200)}`)
+			}
+		} catch (error) {
+			console.error(`[Print] ${attempt.name} failed:`, {
+				name: error.name,
+				message: error.message,
+				type: error.constructor.name,
+			})
+		}
+	}
+
+	console.error('[Print] ❌ All attempts failed')
+	return false
+}
+
+/**
+ * Print using iOS native picker (AirPrint compatible printers only)
+ */
+const printWithNativePicker = async dataUrl => {
+	const base64Payload = buildBase64Payload(dataUrl)
+	
+	console.log('[Native Picker] Opening iOS print dialog...')
+	
+	try {
+		await window.cordova.plugins.printer.print(base64Payload, {
+			...BORDERLESS_OPTIONS,
+			bounds: {
+				width: PHOTO_PAPER.width,
+				height: PHOTO_PAPER.height,
+				...ZERO_MARGINS,
+			},
+		})
+		
+		console.log('✅ Print completed (or cancelled by user)')
+		return true
+	} catch (error) {
+		console.error('❌ Native picker error:', error)
+		throw error
+	}
+}
+
+/**
+ * Main print handler - captures screenshot and sends to printer
+ */
+const handlePrint = async () => {
+	try {
+		// 1. Capture screenshot
+		const blob = await takeScreenshot(false)
+		if (!blob) throw new Error('Failed to capture screenshot')
+
+		// 2. Convert to data URL (PNG format for photo printer)
+		const dataUrl = await buildPhotoReadyDataUrl(blob)
+		console.log('📸 Screenshot ready, size:', dataUrl.length, 'chars')
+		
+		// 3. Choose print method based on configuration
+		if (config.public.useNativePicker) {
+			// Use iOS native picker (AirPrint)
+			console.log('🖨️ Using iOS native picker')
+			await printWithNativePicker(dataUrl)
+		} else {
+			// Use Cordova plugin with specific printer URL (Direct Print)
+			const printer = get(selectedPrinter)
+			console.log('🖨️ Sending to printer:', printer?.name)
+			console.log('📍 Printer URL:', printer?.ippUrl)
+
+			if (printer?.ippUrl) {
+				const base64Payload = buildBase64Payload(dataUrl)
+				// Direct print attempt using plugin
+				// This uses the IPP URL discovered via ZeroConf (mdns)
+				// Format: ipp://[ip]:[port]/[resource_path]
+				await window.cordova.plugins.printer.print(base64Payload, {					
+					printer: printer.ippUrl
+				})
+				
+				// ALTERNATIVE CONFIGURATION (For Borderless Printing)
+				// If the simple call above works but margins are wrong, try this:
+				/*
+				await window.cordova.plugins.printer.print(base64Payload, {
+					...BORDERLESS_OPTIONS, // sets printType: 'photo' and hides UI
+					printer: printer.ippUrl,
+					bounds: {
+						width: PHOTO_PAPER.width, // 4x6 inches in points
+						height: PHOTO_PAPER.height,
+						...ZERO_MARGINS,
+					},
+				})
+				*/
+
+				console.log('✅ Print command sent to plugin')
+				// alert('Stampa inviata con successo!')
+			} else {
+				console.error('No printer URL available')
+				throw new Error('No printer selected')
+			}
+		}
+	} catch (error) {
+		console.error('❌ Print error:', error)
+		alert(
+			rt('experience_end.print_error') ?? 
+			'Unable to print. Please check printer connection.'
+		)
+	}
+}
+
+// ============================================================================
+// PRINTER DISCOVERY
+// ============================================================================
+
+/**
+ * Parses a discovered service and adds it to the list of available printers.
+ * Filters by name if `desiredPrinterName` is set in config.
+ * Constructs the IPP URL needed for direct printing.
+ * 
+ * @param {Object} service - The ZeroConf service object
+ */
 const upsertPrinterFromService = service => {
 	if (!service?.name) return
 
 	const printerName = service.name
+	// Filter printers if a specific name is configured in .env
 	if (
 		desiredPrinterName &&
 		!printerName.toLowerCase().includes(desiredPrinterName.toLowerCase())
 	)
 		return
 
+	// Resolve device IP address (IPv4 preferred)
 	const deviceAddress =
 		service.ipv4Addresses?.[0] ??
 		service.ipv6Addresses?.[0] ??
@@ -463,10 +693,16 @@ const upsertPrinterFromService = service => {
 	if (!deviceAddress) return
 
 	const port = service.port || 631
+	
+	// Use resource path from txtRecord if available (critical for some printers like DNP)
+	// Fallback to standard 'ipp/print' if not specified
+	const resourcePath = service.txtRecord?.rp || 'ipp/print'
+	
 	const nextPrinter = {
 		name: printerName,
 		ip: deviceAddress,
-		ippUrl: `ipp://${deviceAddress}:${port}/ipp/print`,
+		// Construct the full IPP URL: ipp://192.168.1.100:631/printers/NAME
+		ippUrl: `ipp://${deviceAddress}:${port}/${resourcePath}`,
 	}
 
 	const currentPrinters = get(printers)
@@ -480,6 +716,9 @@ const upsertPrinterFromService = service => {
 	}
 }
 
+/**
+ * Helper to format ZeroConf error messages into human-readable strings
+ */
 const formatZeroConfError = (type, error) => {
 	const code = error?.code ?? error?.message
 
@@ -490,7 +729,14 @@ const formatZeroConfError = (type, error) => {
 	return `ZeroConf watch error (${type}): ${error?.message ?? error}`
 }
 
+/**
+ * Starts watching for printer services on the local network using mDNS (Bonjour).
+ * Scans for multiple service types (_ipp._tcp, _printer._tcp, etc.) to ensure compatibility.
+ * 
+ * @returns {Promise<boolean>} - True if watchers were successfully started
+ */
 const startPrinterDiscovery = async () => {
+	// Only run in App Mode (Capacitor) and if not already active
 	if (!isClient || !config.public.isAppMode || get(isPrinterDiscoveryActive)) {
 		return false
 	}
@@ -524,6 +770,10 @@ const startPrinterDiscovery = async () => {
 	return hasActiveWatchers
 }
 
+/**
+ * Stops all active ZeroConf watchers to free resources.
+ * Should be called on component unmount.
+ */
 const stopPrinterDiscovery = async () => {
 	if (!watchedServiceTypes.size) return
 
@@ -541,105 +791,9 @@ const stopPrinterDiscovery = async () => {
 	set(isPrinterDiscoveryActive, false)
 }
 
-const tryDirectPrinterJob = async payload => {
-	if (!isClient) return false
-
-	const printerPlugin = window?.cordova?.plugins?.printer
-	const printerTarget = get(selectedPrinter)
-
-	if (!printerPlugin || !printerTarget) {
-		return false
-	}
-
-	return new Promise((resolve, reject) => {
-		let resolved = false
-		const complete = success => {
-			if (resolved) return
-			resolved = true
-			resolve(success)
-		}
-
-		try {
-			printerPlugin.print(
-				payload,
-				{
-					printer: printerTarget.ippUrl,
-					margin: ZERO_MARGINS,
-				},
-				() => complete(true)
-			)
-
-			setTimeout(() => complete(true), 300)
-		} catch (error) {
-			reject(error)
-		}
-	})
-}
-
-const handlePrint = async () => {
-	const printName = `the-one-card-${Date.now()}`
-
-	try {
-		const blob = await takeScreenshot(false)
-
-		if (!blob) throw new Error('Failed to capture screenshot blob')
-
-		const dataUrl = await buildPhotoReadyDataUrl(blob)
-		console.log('Screenshot captured, dataUrl prefix:', dataUrl.substring(0, 50))
-
-		const base64ImagePayload = buildBase64Payload(dataUrl)
-		console.log('Base64 Payload prefix:', base64ImagePayload.substring(0, 50))
-
-		let printedDirectly = false
-
-		try {
-			console.log('Attempting direct print...')
-			if (!isClient) throw new Error('Not client side')
-
-			// Use cordova.plugins.printer directly if available (bypass capacitor wrapper)
-			const printerPlugin = window?.cordova?.plugins?.printer
-			const printerTarget = get(selectedPrinter)
-			
-			if (!printerPlugin) throw new Error('Cordova printer plugin not found')
-			if (!printerTarget) throw new Error('No printer selected')
-
-			console.log('Printing to target:', printerTarget.ippUrl)
-			
-			printedDirectly = await new Promise((resolve, reject) => {
-				let resolved = false
-				const complete = success => {
-					if (resolved) return
-					resolved = true
-					resolve(success)
-				}
-
-				try {
-					printerPlugin.print(
-						base64ImagePayload,
-						{
-							printer: printerTarget.ippUrl,
-							margin: ZERO_MARGINS,
-							...BORDERLESS_OPTIONS,
-						},
-						() => complete(true)
-					)
-
-					setTimeout(() => complete(true), 1000) // Increased timeout
-				} catch (error) {
-					reject(error)
-				}
-			})
-			
-			console.log('Direct print result:', printedDirectly)
-		} catch (directError) {
-			console.error('Direct network print failed:', directError)
-			alert(rt('experience_end.print_error') ?? 'Unable to print directly to ' + (get(selectedPrinter)?.name || 'printer'))
-		}
-	} catch (error) {
-		console.error('handlePrint failed:', error)
-		alert(rt('experience_end.print_error') ?? 'Unable to start print job')
-	}
-}
+// ============================================================================
+// UI HANDLERS
+// ============================================================================
 
 const handleQRCodeButtonClick = () => {
 	uiStore.setQrCodeModalVisible(true)

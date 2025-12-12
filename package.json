@@ -9,7 +9,7 @@
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
 		"copy:basis": "node scripts/copyBasisLib.js",
-		"ios": "npx cap sync && npx cap open ios"
+		"ios": "pnpm build && npx cap sync && npx cap open ios"
 	},
 	"dependencies": {
 		"@capacitor/app": "^7.1.0",

@@ -60,6 +60,7 @@ export default defineNuxtConfig({
 			isAppMode: process.env.APP_MODE === "true",
 			printEnabled: process.env.PRINT_ENABLED === "true",
 			printerName: process.env.PRINTER_NAME ?? "none",
+			useNativePicker: process.env.USE_NATIVE_PICKER === "true",
 		},
 	},
 });
