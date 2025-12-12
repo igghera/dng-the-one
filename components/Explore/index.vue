@@ -127,7 +127,7 @@
 		>
 			<button
 				class="panel-close-button"
-				@click="handleClosePanel"
+				@click="closePanel"
 				aria-label="close panel"
 			>
 				<IconClose class="relative z-[1]" />
@@ -322,7 +322,7 @@ const itemsData = [
 	},
 	{
 		position: {
-			x: 0.123,
+			x: 0.151,
 			y: -0.358,
 			z: 0,
 		},
@@ -459,16 +459,16 @@ const panelsData = computed(() => {
 //
 // Misc
 //
-// onClickOutside(
-// 	panelRef,
-// 	() => {
-// 		set(panelOpen, false)
-// 		controls.enabled = true
-// 	},
-// 	{
-// 		ignore: ['.pin'],
-// 	}
-// )
+onClickOutside(
+	panelRef,
+	() => {
+		closePanel()
+		controls.enabled = true
+	},
+	{
+		ignore: ['.pin'],
+	}
+)
 
 //
 // Lifecycle
@@ -897,11 +897,6 @@ async function handlePinPointerdown(event) {
 	// controlsPositionMemo.y = pointAtProgress.y
 }
 
-function handleClosePanel() {
-	set(copyVisible, true)
-	closePanel()
-}
-
 function openPanel() {
 	set(panelOpen, true)
 	set(pinsVisible, false)
@@ -911,11 +906,10 @@ function openPanel() {
 }
 
 async function closePanel() {
-	const currentNicheIndex = Number(get(currentProduct).split('_')[0])
-
 	set(panelOpen, false)
 	set(panelOpenFull, false)
 	set(currentProduct, null)
+	set(copyVisible, true)
 
 	const currentPos = new THREE.Vector3()
 	controls.getPosition(currentPos)
