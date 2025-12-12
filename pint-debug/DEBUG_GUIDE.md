@@ -25,8 +25,9 @@ brew install cocoapods
 
 1.  **Clonare il repository:**
     ```bash
-    git clone <url-del-repo>
+    git clone https://gitlab.com/mirror-production/customers/dng/dng-the-one/dng-the-one-web.git
     cd dgb-the-one-website
+    git checkout feature/add-capacitor-support
     ```
 
 2.  **Installare le dipendenze:**
