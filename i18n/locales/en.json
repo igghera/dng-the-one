@@ -76,9 +76,9 @@
   },
 
   "results": {
-    "pre_title": "Your perfect match is:",
+    "pre_title": "Your aura is",
     "cta_print": "Print your aura",
-    "cta_download": "Get your gift",
+    "cta_download": "Download",
     "cta_restart": "Play again"
   },
 
@@ -88,12 +88,24 @@
   },
 
   "download_card": {
-    "pre_title": "Your perfect match is:",
-    "subcontent_title": "My Aura's match is:"
+    "pre_title": "Your aura is",
+    "subcontent_title": "My Aura's Match is:"
   },
 
   "engagement": {
-    "pre_title": "Your Aura matches are:"
+    "pre_title": "Your Aura matches are:",
+    "copy": [
+      "Two timeless icons. Dolce&Gabbana The One Eau de Parfum and The One For Men Eau de Parfum, now in updated version that’s even longer-lasting, even more irresistible.",
+      "Two new fragrance signatures that play on refined contrasts. Discover Dolce&Gabbana The One Eau de Parfum Intense and The One For Men Parfum.",
+      "Luminous, modern, magnetic. Discover two fragrances that captivate the senses: Dolce&Gabbana The One Gold Eau de Parfum Intense and The One For Men Gold Eau de Parfum Intense.",
+      "Sophisticated and irresistible. Discover the two iconic Dolce&Gabbana fragrances The One Eau The Parfum and The One Eau de Toilette."
+    ],
+    "subtitles": [
+      "Eau De Parfum",
+      "Parfum & Eau De Parfum Intense",
+      "Eau De Parfum Intense",
+      "Eau De Toilette & Eau De Parfum Intense"
+    ]
   },
 
   "products": [
@@ -221,7 +233,7 @@
   ],
 
   "modal_qr_code": {
-    "title": "Scan to download<br>your The One Aura",
+    "title": "Scan to download<br>your Aura",
     "copy": "Share with your friends<br>on your socials"
   },
 
@@ -248,11 +260,7 @@
             },
             {
               "component": "p",
-              "value": "Same signature, now even more long-lasting, even more captivating. It's a timeless icon gets reimagined, with ah enhanced fragrance that reveals new olfactory depths, crafter for a refined men with an elegant, distinctive character. A blend of intense, sophisticated, and instantly recognizable notes."
-            },
-            {
-              "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "Elegant and modern, blending notes of mandarin orange with rose and vanilla, in an exceptional blend between classic and contemporary characteristics."
             }
           ]
         ]
@@ -260,7 +268,7 @@
       {
         "year": "2008",
         "title": "The One for Men<br>Eau de Toilette",
-        "copy": "A new code<br>of masculine elegance",
+        "copy": "A new code<br>of masculine<br>elegance",
         "data": [
           [
             {
@@ -273,11 +281,7 @@
             },
             {
               "component": "p",
-              "value": "Charming and sensual, like the men who wears it, this fragrance makes an unmistakable impression with its utterly charismatic blend of basil notes, bewitching lavender, and sandalwood accords."
-            },
-            {
-              "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "Charming and sensual, like the man who wears it. With an utterly charismatic blend of basil notes, bewitching lavender, and sandalwood accords."
             }
           ]
         ]
@@ -298,11 +302,7 @@
             },
             {
               "component": "p",
-              "value": "Same signature, now even more long-lasting, even more captivating. It's a timeless icon gets reimagined, with ah enhanced fragrance that reveals new olfactory depths, crafter for a refined men with an elegant, distinctive character. A blend of intense, sophisticated, and instantly recognizable notes."
-            },
-            {
-              "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "A timeless icon gets reimagined, with ah enhanced fragrance that reveals new olfactory depths, crafted for a refined man with an elegant, distinctive character."
             }
           ]
         ]
@@ -310,7 +310,7 @@
       {
         "year": "2021",
         "title": "The One Gold<br>Eau De Parfum Intense",
-        "copy": "A new gold duo radiating brillance<br>and magnetic allure",
+        "copy": "A new gold duo<br>radiating brillance and<br> magnetic allure",
         "data": [
           [
             {
@@ -323,25 +323,21 @@
             },
             {
               "component": "p",
-              "value": "The ultimate expression of elegance and femininity. It is a celebration of the independent and captivating women, featuring a luminous and enchanting olfactory blend of Plum, Rose, and Jasmine."
-            },
-            {
-              "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "A tribute to luminous femininity and inner power. It celebrates the woman who owns her elegance and irresistible charm."
             }
           ],
           [
             {
               "component": "title",
-              "value": ["The One for Men", "Gold Eau De Parfum Intense"]
+              "value": ["The One for Men Gold", "Eau De Toilette Intense"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_GOLD_EDPI.webp"
             },
             {
               "component": "p",
-              "value": "It is synonymous with style and magnetic charm. This unique masculine essence pays homage to the magnetic allure of its wearer, featuring a captivating blend of woody and spicy notes, including Clary Sage, Bergamot, and Patchouli."
-            },
-            {
-              "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "An homage to the magnetic allure of its wearer, featuring a captivating blend of woody and spicy notes, including Clary Sage, Bergamot, and Patchouli."
             }
           ]
         ]
@@ -354,6 +350,32 @@
           [
             {
               "component": "title",
+              "value": ["The One for Women", "Eau De Parfum"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDP.webp"
+            },
+            {
+              "component": "p",
+              "value": "Elegant and modern, blending notes of mandarin orange with rose and vanilla, in an exceptional blend between classic and contemporary characteristics."
+            },
+            {
+              "component": "title",
+              "value": ["The Campaign"]
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy.mp4"
+            },
+            {
+              "component": "p",
+              "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
+            }
+          ],
+          [
+            {
+              "component": "title",
               "value": ["The One for Women", "Eau De Parfum Intense"]
             },
             {
@@ -362,14 +384,21 @@
             },
             {
               "component": "p",
-              "value": "It embodies bold femininity. Its olfactory signature plays with refined contrasts, blending the power of intense and radiant notes with the softness of gentler accents, creating a sophisticated and elegant composition that leaves a lasting impression. It is a tribute to the modern women: confident, captivating and irresistibly charming."
+              "value": "A bold yet refined expression of femininity. Blending the power of intense and radiant notes with the softness of gentler accents."
+            },
+            {
+              "component": "title",
+              "value": ["The Campaign"]
             },
             {
               "component": "video",
               "value": "/videos/dummy.mp4"
+            },
+            {
+              "component": "p",
+              "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
             }
           ],
-          [],
           [
             {
               "component": "title",
@@ -381,14 +410,47 @@
             },
             {
               "component": "p",
-              "value": "It reinterprets the Eau de Parfum with a deeper, more sensual signature. A warm, spicy composition that envelops the senses and embodies contemporary masculine sophistication. It unveils a new intensity where refined sensuality meets masculine strength. Warm, enveloping amber notes leave a deep, irresistibly charismatic trail."
+              "value": "Unveiling a new intensity where refined sensuality meets masculine strength. Warm, enveloping amber notes leave a deep, irresistibly charismatic trail."
+            },
+            {
+              "component": "title",
+              "value": ["The Campaign"]
             },
             {
               "component": "video",
               "value": "/videos/dummy.mp4"
+            },
+            {
+              "component": "p",
+              "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
             }
           ],
-          []
+          [
+            {
+              "component": "title",
+              "value": ["The One for Men", "Eau De Toilette"]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_EDT.webp"
+            },
+            {
+              "component": "p",
+              "value": "Charming and sensual, like the man who wears it. With an utterly charismatic blend of basil notes, bewitching lavender, and sandalwood accords."
+            },
+            {
+              "component": "title",
+              "value": ["The Campaign"]
+            },
+            {
+              "component": "video",
+              "value": "/videos/dummy.mp4"
+            },
+            {
+              "component": "p",
+              "value": "A powerful web of charisma, allure, and magnetism. Discover the new Dolce&Gabbana The One Campaign, captured by Mert Alas."
+            }
+          ]
         ]
       }
     ]

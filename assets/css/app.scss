@@ -4,6 +4,7 @@
 @use 'functions';
 @use 'layout';
 @use 'animations';
+@use 'download-card';
 
 html {
   @apply text-white bg-no-repeat bg-cover bg-center bg-fixed;
@@ -37,7 +38,6 @@ body {
 }
 
 button {
-  transition: opacity 0.35s ease-in-out;
 
   &[disabled] {
     opacity: 0.7;

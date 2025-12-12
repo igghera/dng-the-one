@@ -53,12 +53,12 @@ import {
   intensity as lutIntensity,
 } from './nodes/lut'
 
-import {
-  opacity as starsOpacity,
-  scale as starsScale,
-  offsetX as starsOffsetX,
-  offsetY as starsOffsetY,
-} from './materials/stars'
+// import {
+//   opacity as starsOpacity,
+//   scale as starsScale,
+//   offsetX as starsOffsetX,
+//   offsetY as starsOffsetY,
+// } from './materials/stars'
 
 export class Debug {
   constructor(dof, godrays, background, particles, endDrawMaterial, introDrawMaterial, introSceneVisibility, sea) {
@@ -78,7 +78,7 @@ export class Debug {
     this.createParticles(particles)
     this.createEndDrawPlane(endDrawMaterial)
     this.createMask()
-    this.createStars()
+    // this.createStars()
     this.createBloom()
     this.createLUT()
   }

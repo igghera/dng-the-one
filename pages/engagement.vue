@@ -29,29 +29,34 @@
 
 			<ClientOnly>
 				<div class="content-inner">
-					<div
-						v-for="product in selectedProducts"
-						:key="product.title"
-						class="product"
-					>
-						<div class="product-header | text-shadow">
-							<p class="product-title | golden-text">{{ product.title }}</p>
-							<p class="product-sub-title">{{ product.sub_title }}</p>
-						</div>
+					<div class="content-header | text-shadow">
+						<p
+							v-for="product in data.products"
+							:key="product.title"
+							class="content-title | golden-text"
+						>
+							{{ product.title }}
+						</p>
 
-						<picture class="product-image">
-							<img
-								:src="product.image"
-								:alt="product.title"
-								class="w-full"
-								loading="lazy"
-								decoding="async"
-								draggable="false"
-							/>
-						</picture>
-
-						<p class="product-copy | text-shadow">{{ product.copy }}</p>
+						<p class="content-subtitle">
+							{{ data.subtitle }}
+						</p>
 					</div>
+
+					<picture class="content-image">
+						<img
+							:src="data.image"
+							alt=""
+							class="w-full"
+							loading="lazy"
+							decoding="async"
+							draggable="false"
+						/>
+					</picture>
+
+					<p class="content-copy">
+						{{ data.copy }}
+					</p>
 				</div>
 			</ClientOnly>
 		</div>
@@ -60,6 +65,10 @@
 			class="explore"
 			cta-link="/explore?ref=engagement"
 		/>
+
+		<Transition name="fade">
+			<ExperienceTopGradient v-if="uiStore.isTopGradientVisible" />
+		</Transition>
 	</div>
 </template>
 
@@ -83,14 +92,14 @@ const isDownloading = shallowRef(false)
 const { aura } = urlParams
 
 const images = Object.freeze([
-	'bold',
-	'elegant',
-	'discrete',
-	'warm',
-	'resonant',
-	'glowing',
-	'gentle',
-	'refined',
+	'00-bold',
+	'01-elegant',
+	'02-discrete',
+	'03-warm',
+	'04-powerful',
+	'05-sophisticated',
+	'06-intriguing',
+	'07-mysterious',
 ])
 
 const allProducts = Object.values(tm('products')).map(product => ({
@@ -106,23 +115,43 @@ const allProducts = Object.values(tm('products')).map(product => ({
 const imageSrc = computed(() => {
 	if (!get(aura)) return null
 
-	return `/images/engagement/${images[Number(aura)]}.webp`
+	return `/images/download-cards/engagement/${images[Number(aura)]}.webp`
 })
 
-const selectedProducts = computed(() => {
+const data = computed(() => {
 	switch (get(aura)) {
 		case '0':
 		case '4':
-			return [allProducts[2], allProducts[5]]
+			return {
+				products: [allProducts[5], allProducts[2]],
+				subtitle: rt(tm('engagement.subtitles[0]')),
+				image: '/images/engagement/01.webp',
+				copy: rt(tm('engagement.copy[2]')),
+			}
 		case '1':
 		case '5':
-			return [allProducts[0], allProducts[3]]
+			return {
+				products: [allProducts[3], allProducts[0]],
+				subtitle: rt(tm('engagement.subtitles[1]')),
+				image: '/images/engagement/04.webp',
+				copy: rt(tm('engagement.copy[1]')),
+			}
 		case '2':
 		case '6':
-			return [allProducts[0], allProducts[4]]
+			return {
+				products: [allProducts[4], allProducts[0]],
+				subtitle: rt(tm('engagement.subtitles[3]')),
+				image: '/images/engagement/03.webp',
+				copy: rt(tm('engagement.copy[2]')),
+			}
 		case '3':
 		case '7':
-			return [allProducts[1], allProducts[3]]
+			return {
+				products: [allProducts[3], allProducts[1]],
+				subtitle: rt(tm('engagement.subtitles[2]')),
+				image: '/images/engagement/02.webp',
+				copy: rt(tm('engagement.copy[3]')),
+			}
 	}
 })
 
@@ -145,7 +174,7 @@ onMounted(async () => {
 const handleDownloadButtonClick = async () => {
 	set(isDownloading, true)
 
-	const path = `/images/engagement/${images[Number(aura)]}.png`
+	const path = `/images/download-cards/engagement/${images[Number(aura)]}.png`
 
 	const link = document.createElement('a')
 	link.href = path
@@ -218,29 +247,33 @@ const handleDownloadButtonClick = async () => {
 }
 
 .content-inner {
-	@apply flex flex-col gap-y-12;
+	@apply flex flex-col items-center gap-y-10;
 }
 
-.product {
-	@apply flex flex-col gap-y-10 items-center;
+.content-header {
+	@apply flex flex-col gap-y-3 items-center text-center;
 }
 
-.product-header {
-	@apply flex flex-col gap-y-1 items-center;
+.content-copy {
+	width: min(100%, toRem(360));
 }
 
-.product-title {
+.content-title {
 	@apply uppercase leading-none tracking-[0.05em] font-medium;
 
 	font-size: toRem(22);
 }
 
-.product-sub-title {
-	@apply text-base leading-none tracking-[0.05em] font-medium;
+.content-subtitle {
+	@apply text-sm leading-[2.4] tracking-[0.05em] font-medium;
 }
 
-.product-image {
-	width: toRem(200);
+.content-image {
+	width: min(100%, toRem(230));
+
+	@screen md {
+		width: toRem(500);
+	}
 }
 
 .product-copy {
@@ -251,5 +284,15 @@ const handleDownloadButtonClick = async () => {
 	@apply flex flex-col gap-y-10 items-center;
 
 	grid-area: d;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.7s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

@@ -35,7 +35,7 @@
 			/>
 		</picture>
 
-		<p class="copy | body-3-alt">
+		<p class="copy">
 			{{
 				appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
 					.fragrance.desc
@@ -75,7 +75,7 @@ const appStore = useAppStore()
 }
 
 .copy {
-	@apply text-gold max-w-64 text-center;
+	@apply text-gold max-w-64 text-center font-medium text-base leading-tight tracking-[0.05em];
 	@apply lg:max-w-80;
 
 	grid-area: c;
