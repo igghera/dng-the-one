@@ -36,6 +36,8 @@ import { get } from '@vueuse/core'
 //
 const { gsap, SplitText } = useGSAP()
 
+const appStore = useAppStore()
+
 const el = useCurrentElement()
 const titleRef = useTemplateRef('titleRef')
 const copyRef = useTemplateRef('copyRef')
@@ -110,6 +112,8 @@ const animateIn = () => {
 
 const handleClick = () => {
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)
+
+	appStore.setAudioEnabled(true)
 
 	!audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing() &&
 		audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)

@@ -29,6 +29,7 @@ defineProps({
 })
 
 const handleCtaClick = () => {
+	appStore.setAudioEnabled(false)
 	audioManager.fadeOut(AUDIO_LABELS.CAMPAIGN_LOOP)
 }
 </script>

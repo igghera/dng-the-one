@@ -26,6 +26,7 @@
 </template>
 
 <script setup>
+import { Howler } from 'howler'
 import { get } from '@vueuse/core'
 
 //
@@ -117,6 +118,17 @@ watch(
 //
 const handleClick = () => {
 	appStore.setAudioEnabled(!appStore.audioEnabled)
+
+	const volume = { value: Howler.volume() }
+	const targetVolume = appStore.audioEnabled ? 1 : 0
+
+	gsap.to(volume, {
+		value: targetVolume,
+		duration: 1,
+		onUpdate: () => {
+			Howler.volume(volume.value)
+		},
+	})
 }
 </script>
 
