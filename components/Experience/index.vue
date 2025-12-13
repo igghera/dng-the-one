@@ -12,22 +12,22 @@
 
 		<ExperienceEnterName
 			v-show="uiStore.isExperienceEnterNameVisible"
-			class="relative z-[1]"
+			class="experience-step | relative z-[1]"
 		/>
 
 		<ExperienceStep01
 			v-if="uiStore.isExperienceStep01Visible"
-			class="relative z-[1]"
+			class="experience-step | relative z-[1]"
 		/>
 
 		<ExperienceStep02
 			v-if="uiStore.isExperienceStep02Visible"
-			class="relative z-[1]"
+			class="experience-step | relative z-[1]"
 		/>
 
 		<ExperienceStep03
 			v-if="uiStore.isExperienceStep03Visible"
-			class="relative z-[1]"
+			class="experience-step | relative z-[1]"
 		/>
 
 		<ExperienceEnd
@@ -57,6 +57,12 @@ const uiStore = useUiStore()
 
 	@screen md {
 		grid-template-rows: toRem(110) 1fr toRem(80);
+	}
+}
+
+.experience-step {
+	@screen tablet-portrait {
+		@apply pt-[6vh] pb-[5vh];
 	}
 }
 

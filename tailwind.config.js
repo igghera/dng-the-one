@@ -22,6 +22,7 @@ export default {
         'md-down': { 'max': '767px' },
         'lg-down': { 'max': '1023px' },
         'xl-down': { 'max': '1279px' },
+        'tablet-portrait': { 'raw': '(min-width: 640px) and (orientation: portrait)' },
       },
 
     },
