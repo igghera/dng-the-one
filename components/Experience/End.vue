@@ -76,7 +76,10 @@
 		</Transition>
 
 		<Transition name="fade-long">
-			<nav v-if="shouldShowButtons" class="buttons">
+			<nav
+				v-if="shouldShowButtons && !uiStore.isResultsScrollDownVisible"
+				class="buttons"
+			>
 				<div class="buttons-row">
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
@@ -652,10 +655,11 @@ const animateMask = () => {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+	pointer-events: none;
 }
 
 .fade-long-enter-active {
-	transition: opacity 0.7s ease;
+	transition: opacity 1.5s ease;
 }
 
 .fade-long-leave-active {
@@ -665,5 +669,6 @@ const animateMask = () => {
 .fade-long-enter-from,
 .fade-long-leave-to {
 	opacity: 0;
+	pointer-events: none;
 }
 </style>
