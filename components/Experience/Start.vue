@@ -29,6 +29,7 @@
 </template>
 
 <script setup>
+import { Howler } from 'howler'
 import { get } from '@vueuse/core'
 
 //
@@ -114,6 +115,7 @@ const handleClick = () => {
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)
 
 	appStore.setAudioEnabled(true)
+	Howler.volume(1)
 
 	!audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing() &&
 		audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)
