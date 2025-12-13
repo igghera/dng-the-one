@@ -14,7 +14,7 @@
 			{{ $t('timeline_intro.copy') }}
 		</p>
 
-		<ButtonGolden :to="ctaLink" class="!text-gold">{{
+		<ButtonGolden :to="ctaLink" @click="handleCtaClick" class="!text-gold">{{
 			$t('timeline_intro.cta')
 		}}</ButtonGolden>
 	</Container>
@@ -27,6 +27,10 @@ defineProps({
 		required: true,
 	},
 })
+
+const handleCtaClick = () => {
+	audioManager.fadeOut(AUDIO_LABELS.CAMPAIGN_LOOP)
+}
 </script>
 
 <style lang="scss" scoped>

@@ -350,6 +350,8 @@ const createButtonTimeline = () => {
 		onComplete: async () => {
 			set(canInteract, false)
 
+			audioManager.fadeOut(AUDIO_LABELS.BASE_LOOP)
+
 			await gsap.to([get(ctaLabelRef), get(buttonRef)], {
 				autoAlpha: 0,
 				stagger: 0.2,
@@ -537,6 +539,7 @@ const animateMask = () => {
 	tl.call(
 		() => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+			audioManager.fadeIn(AUDIO_LABELS.CAMPAIGN_LOOP)
 			set(showResult, true)
 		},
 		null,
@@ -581,6 +584,10 @@ const animateMask = () => {
 
 	row-gap: toRem(11);
 	width: toRem(170);
+
+	@screen md {
+		width: toRem(210);
+	}
 
 	@screen lg {
 		row-gap: toRem(11);

@@ -40,6 +40,10 @@
 
 <script setup>
 const uiStore = useUiStore()
+
+onMounted(() => {
+	audioManager.preload()
+})
 </script>
 
 <style lang="scss" scoped>

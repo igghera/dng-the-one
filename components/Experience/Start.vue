@@ -111,6 +111,9 @@ const animateIn = () => {
 const handleClick = () => {
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)
 
+	!audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing() &&
+		audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)
+
 	gsap.to([get(titleRef), get(copyRef), get(buttonRef).$el], {
 		opacity: 0,
 		duration: 0.5,

@@ -17,3 +17,8 @@ export const EVENTS = {
 
   TRIGGER_FLASH_EFFECT: 'triggerFlashEffect',
 }
+
+export const AUDIO_LABELS = {
+  BASE_LOOP: 'baseLoop',
+  CAMPAIGN_LOOP: 'campaignLoop',
+}

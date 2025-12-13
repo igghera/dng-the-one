@@ -79,6 +79,9 @@ onMounted(async () => {
 emitter.on(EVENTS.RESTART, async () => {
 	emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
 
+	audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)
+	audioManager.fadeOut(AUDIO_LABELS.CAMPAIGN_LOOP)
+
 	get(lenis).stop()
 	get(lenis).scrollTo(0, { immediate: true, force: true })
 
