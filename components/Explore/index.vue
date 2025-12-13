@@ -743,6 +743,9 @@ function createDrag() {
 	const points = itemsData.map(item => new THREE.Vector3().copy(item.position))
 	curve = new THREE.CatmullRomCurve3(points, false, 'catmullrom', 0.6)
 
+	// TODO: Hardcoded values for now, need to calculate them dynamically.
+	const snaps = [980, 735, 490, 245, 0]
+
 	draggableInstance = Draggable.create(get(draggableDummyRef), {
 		trigger: get(el),
 		type: 'x',
@@ -754,6 +757,9 @@ function createDrag() {
 			width: 1000,
 		},
 		zIndexBoost: false,
+		snap: value => {
+			return getClosestValue(snaps, value)
+		},
 		onDrag: () => {
 			update(draggableInstance[0].x)
 		},
