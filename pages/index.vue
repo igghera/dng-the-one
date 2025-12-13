@@ -10,7 +10,7 @@
 			<ExperienceTopGradient v-if="uiStore.isTopGradientVisible" />
 		</Transition>
 
-		<Transition name="fade-long">
+		<Transition name="fade-from-bottom">
 			<ExperienceBottomGradient v-if="uiStore.isBottomGradientVisible" />
 		</Transition>
 
@@ -124,13 +124,16 @@ emitter.on(EVENTS.RESTART, async () => {
 	opacity: 0;
 }
 
-.fade-long-enter-active,
-.fade-long-leave-active {
-	transition: opacity 1s ease;
+.fade-from-bottom-enter-active,
+.fade-from-bottom-leave-active {
+	transition-property: transform, opacity;
+	transition-duration: 2s, 1.7s;
+	transition-timing-function: ease, ease;
 }
 
-.fade-long-enter-from,
-.fade-long-leave-to {
+.fade-from-bottom-enter-from,
+.fade-from-bottom-leave-to {
+	transform: translateY(50%);
 	opacity: 0;
 }
 </style>
