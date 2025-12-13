@@ -579,14 +579,16 @@ const animateMask = () => {
 .result {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
 
-	row-gap: toRem(16);
+	row-gap: toRem(11);
 	width: toRem(170);
 
-	@screen md {
+	@screen lg {
+		row-gap: toRem(11);
 		width: toRem(230);
 	}
 
 	@screen tablet-portrait {
+		row-gap: toRem(16);
 		width: toRem(330);
 	}
 }
@@ -594,10 +596,10 @@ const animateMask = () => {
 .result-pre-title {
 	@apply uppercase font-normal leading-[1.7] tracking-[0.13em] text-gold-light;
 
-	font-size: toRem(17);
+	font-size: toRem(12);
 
-	@screen md {
-		font-size: toRem(20);
+	@screen lg {
+		font-size: toRem(12);
 	}
 
 	@screen tablet-portrait {
@@ -610,8 +612,8 @@ const animateMask = () => {
 
 	font-size: toRem(36);
 
-	@screen md {
-		font-size: toRem(40);
+	@screen lg {
+		font-size: toRem(36);
 	}
 
 	@screen tablet-portrait {
@@ -622,10 +624,10 @@ const animateMask = () => {
 .result-copy {
 	@apply font-normal leading-[1.6] tracking-[0.04em] text-gold-light;
 
-	font-size: toRem(10);
+	font-size: toRem(12);
 
-	@screen md {
-		font-size: toRem(16);
+	@screen lg {
+		font-size: toRem(13);
 	}
 
 	@screen tablet-portrait {
