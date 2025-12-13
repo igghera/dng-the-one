@@ -174,6 +174,7 @@ onMounted(async () => {
 	get(lenis).start()
 
 	uiStore.setMainUiVisible(true)
+	uiStore.setBottomGradientVisible(true)
 	document.documentElement.dataset.init = true
 
 	const res = calculateResult(

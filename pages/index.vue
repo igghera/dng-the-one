@@ -10,6 +10,10 @@
 			<ExperienceTopGradient v-if="uiStore.isTopGradientVisible" />
 		</Transition>
 
+		<Transition name="fade-long">
+			<ExperienceBottomGradient v-if="uiStore.isBottomGradientVisible" />
+		</Transition>
+
 		<Transition name="fade">
 			<ExperienceScrollDown
 				v-if="uiStore.isResultsVisible && uiStore.isResultsScrollDownVisible"
@@ -55,6 +59,7 @@ onMounted(async () => {
 	if (isFromExplore) {
 		uiStore.setMainUiVisible(true)
 		uiStore.setPreloaderVisible(false)
+		uiStore.setBottomGradientVisible(true)
 		uiStore.setExperienceStartVisible(false)
 		uiStore.setExperienceEndVisible(true)
 
@@ -116,6 +121,16 @@ emitter.on(EVENTS.RESTART, async () => {
 
 .fade-enter-from,
 .fade-leave-to {
+	opacity: 0;
+}
+
+.fade-long-enter-active,
+.fade-long-leave-active {
+	transition: opacity 1s ease;
+}
+
+.fade-long-enter-from,
+.fade-long-leave-to {
 	opacity: 0;
 }
 </style>

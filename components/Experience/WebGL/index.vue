@@ -478,6 +478,7 @@ function animateInIntroShape() {
 	tl.call(
 		() => {
 			uiStore.setMainUiVisible(true)
+			uiStore.setBottomGradientVisible(true)
 		},
 		null,
 		'<2'

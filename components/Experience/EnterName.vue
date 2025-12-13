@@ -68,6 +68,8 @@ const inputMinWidth = 176
 //
 watch(isVisible, visible => {
 	if (visible) {
+		uiStore.setBottomGradientVisible(false)
+
 		gsap.fromTo(
 			[get(headerRef), get(formRef)],
 			{
