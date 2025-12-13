@@ -213,6 +213,9 @@ onMounted(async () => {
 				ease: 'power2.out',
 				overwrite: true,
 			})
+
+			set(instructionsVisible, false)
+			set(ctaVisible, true)
 		},
 		onPress() {
 			gsap.to(get(knobDotRef), {

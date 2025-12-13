@@ -53,10 +53,7 @@ defineProps({
 }
 
 .copy {
-	@apply w-80 text-center font-medium text-base leading-tight tracking-[0.05em];
-
-	@screen lg {
-		width: toRem(600);
-	}
+	@apply max-w-64 text-center font-medium text-base leading-tight tracking-[0.05em];
+	@apply lg:max-w-80;
 }
 </style>
