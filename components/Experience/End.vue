@@ -124,6 +124,7 @@
 </template>
 
 <script setup>
+import { Howler } from 'howler'
 import { get, set, useStorage } from '@vueuse/core'
 import { snapdom } from '@zumer/snapdom'
 import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
@@ -347,6 +348,9 @@ const handleRestartButtonClick = async () => {
 const createButtonTimeline = () => {
 	drawTimeline = gsap.timeline({
 		paused: true,
+		onUpdate: () => {
+			Howler.volume(1 - drawTimeline.progress())
+		},
 		onComplete: async () => {
 			set(canInteract, false)
 
@@ -539,6 +543,7 @@ const animateMask = () => {
 	tl.call(
 		() => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+			Howler.volume(1)
 			audioManager.fadeIn(AUDIO_LABELS.CAMPAIGN_LOOP)
 			set(showResult, true)
 		},
