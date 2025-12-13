@@ -576,11 +576,15 @@ const animateMask = () => {
 .result {
 	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
 
-	row-gap: toRem(11);
+	row-gap: toRem(16);
 	width: toRem(170);
 
 	@screen md {
 		width: toRem(230);
+	}
+
+	@screen tablet-portrait {
+		width: toRem(330);
 	}
 }
 
@@ -588,18 +592,42 @@ const animateMask = () => {
 	@apply uppercase font-normal leading-[1.7] tracking-[0.13em] text-gold-light;
 
 	font-size: toRem(17);
+
+	@screen md {
+		font-size: toRem(20);
+	}
+
+	@screen tablet-portrait {
+		font-size: toRem(15);
+	}
 }
 
 .result-title {
 	@apply font-normal uppercase leading-none;
 
 	font-size: toRem(36);
+
+	@screen md {
+		font-size: toRem(40);
+	}
+
+	@screen tablet-portrait {
+		font-size: toRem(54);
+	}
 }
 
 .result-copy {
-	@apply font-normal leading-[1.5] tracking-[0.04em] text-gold-light;
+	@apply font-normal leading-[1.6] tracking-[0.04em] text-gold-light;
 
 	font-size: toRem(10);
+
+	@screen md {
+		font-size: toRem(16);
+	}
+
+	@screen tablet-portrait {
+		font-size: toRem(17);
+	}
 }
 
 .buttons {
