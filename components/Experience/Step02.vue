@@ -8,7 +8,7 @@
 
 			<div class="labels">
 				<span
-					class="label | body-7"
+					class="label"
 					v-for="(label, idx) in labels"
 					:key="label"
 					:data-index="idx"
@@ -885,7 +885,7 @@ const createDraggable = () => {
 }
 
 .labels {
-	@apply grid;
+	@apply grid text-gold-light;
 
 	& > * {
 		@apply col-start-1 row-start-1;
@@ -893,11 +893,16 @@ const createDraggable = () => {
 }
 
 .label {
-	@apply text-gold-light;
+	@apply text-center font-medium text-base leading-snug tracking-[0.05em];
 	@apply transition-opacity duration-500 ease-out;
 
 	&[data-visible='false'] {
 		@apply opacity-0;
+	}
+
+	@screen md {
+		font-size: toRem(27);
+		line-height: 1.15;
 	}
 }
 

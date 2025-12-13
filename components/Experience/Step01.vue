@@ -2,7 +2,7 @@
 	<Container class="pointer-events-none" :data-ready="ready">
 		<header class="header" ref="headerRef">
 			<h2
-				class="display-2 | golden-text text-shadow | uppercase"
+				class="display-2 | golden-text text-shadow | uppercase font-medium"
 				v-html="$t('experience_step_01.title')"
 			/>
 
@@ -579,8 +579,8 @@ const handleClick = async () => {
 	}
 
 	@screen md {
-		font-size: toRem(21);
-		line-height: 1;
+		font-size: toRem(27);
+		line-height: 1.15;
 	}
 }
 
