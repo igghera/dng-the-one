@@ -123,6 +123,7 @@
 			class="panel"
 			:data-open="panelOpen"
 			:data-open-full="panelOpenFull"
+			:data-can-scroll="panelCanScroll"
 			ref="panelRef"
 		>
 			<button
@@ -137,7 +138,11 @@
 				class="panel-scroller | no-scrollbar | overflow-y-auto"
 				ref="panelScrollerRef"
 			>
-				<div v-if="currentProductData" class="panel-content">
+				<div
+					v-if="currentProductData"
+					class="panel-content"
+					ref="panelContentRef"
+				>
 					<template v-for="(item, idx) in currentProductData" :key="idx">
 						<div v-if="item.component === 'title'" class="panel-content-header">
 							<span class="panel-content-title">{{ item.value[0] }}</span>
@@ -220,11 +225,16 @@ const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
 const panelRef = useTemplateRef('panelRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
+const panelContentRef = useTemplateRef('panelContentRef')
 const draggableDummyRef = useTemplateRef('draggableDummyRef')
+
+const { isMobile } = useViewport()
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
+const { height: panelScrollerHeight } = useElementBounding(panelScrollerRef)
+const { height: panelContentHeight } = useElementBounding(panelContentRef)
 
 const { gsap, SplitText, Observer, Draggable } = useGSAP()
 const { rt, tm } = useI18n()
@@ -454,6 +464,10 @@ const panelsData = computed(() => {
 	})
 
 	return map
+})
+
+const panelCanScroll = computed(() => {
+	return get(panelContentHeight) > get(panelScrollerHeight)
 })
 
 //
@@ -855,6 +869,8 @@ function createPanelPointerObserver() {
 			gsap.set(get(panelRef), { '--drag-pan-y': newVal })
 		},
 		onRelease: () => {
+			if (!isMobile) return
+
 			// Prevent if the panel is not open.
 			if (!get(panelOpen)) return
 
@@ -892,17 +908,7 @@ async function handlePinPointerdown(event) {
 
 	controls.getPosition(controlsPositionMemo)
 
-	await controls.fitToBox(targets[nicheIndex], true, params)
-
-	// const progress = getProgressOnCurveAtIndex(nicheIndex)
-	// gsap.set(get(draggableDummyRef), {
-	// 	x: () => 980 - progress * 980,
-	// })
-	// draggableInstance?.[0]?.update()
-
-	// const pointAtProgress = curve.getPointAt(progress)
-	// controlsPositionMemo.x = pointAtProgress.x
-	// controlsPositionMemo.y = pointAtProgress.y
+	controls.fitToBox(targets[nicheIndex], true, params)
 }
 
 function openPanel() {
@@ -910,7 +916,12 @@ function openPanel() {
 	set(pinsVisible, false)
 
 	get(panelScrollerRef).scrollTo(0, 0)
-	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+
+	if (get(isMobile)) {
+		get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+	} else {
+		get(panelScrollerRef).dataset.lenisPrevent = ''
+	}
 }
 
 async function closePanel() {
@@ -1310,33 +1321,13 @@ async function animateToInitialPosition() {
 	--drag-pan-y: 0;
 	--height-on-open: 250;
 
-	@apply self-end justify-self-center relative z-[1] select-none;
-	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
+	@apply relative z-[1] select-none;
+	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-8;
 	@apply border border-solid border-[#75482E];
-
-	height: calc(var(--height-on-open) * 1px);
-	transition-property: transform, height;
-	transition-timing-function: theme('transitionTimingFunction.out'),
-		theme('transitionTimingFunction.out');
-	transition-duration: 700ms, 500ms;
-	width: min(100%, toRem(400));
-
-	&[data-open='false'] {
-		@apply translate-y-full;
-
-		transition-duration: 400ms;
-	}
-
-	&[data-open='true'][data-open-full='false'] {
-		height: calc((var(--height-on-open) + var(--drag-pan-y)) * 1px);
-	}
-
-	&[data-open-full='true'] {
-		height: min(toRem(500), calc(100svh - 80px));
-	}
 
 	&::after {
 		@apply block content-[''] absolute bottom-12 inset-x-0 h-16 pointer-events-none;
+		@apply md:bottom-8;
 
 		--hdr-gradient: linear-gradient(
 			to top in oklab,
@@ -1346,6 +1337,57 @@ async function animateToInitialPosition() {
 
 		background: var(--hdr-gradient);
 	}
+
+	@screen md-down {
+		@apply self-end justify-self-center pb-14;
+
+		height: calc(var(--height-on-open) * 1px);
+		transition-property: transform, height;
+		transition-timing-function: theme('transitionTimingFunction.out'),
+			theme('transitionTimingFunction.out');
+		transition-duration: 700ms, 500ms;
+		width: min(100%, toRem(400));
+
+		&[data-open='false'] {
+			@apply translate-y-full;
+
+			transition-duration: 400ms;
+		}
+
+		&[data-open='true'][data-open-full='false'] {
+			height: calc((var(--height-on-open) + var(--drag-pan-y)) * 1px);
+		}
+
+		&[data-open-full='true'] {
+			height: min(toRem(500), calc(100svh - 80px));
+		}
+	}
+
+	@screen md {
+		@apply h-auto rounded-b-[10px] right-9 justify-self-end self-center;
+
+		max-height: min(toRem(600), calc(100svh - toRem(280)));
+		transition-property: opacity, transform;
+		transition-duration: 0.8s, 0.5s;
+		transition-timing-function: theme('transitionTimingFunction.out'),
+			theme('transitionTimingFunction.out');
+		width: min(toRem(375), 50vw);
+
+		&[data-open='false'] {
+			@apply self-center opacity-0 pointer-events-none translate-y-8;
+		}
+
+		&[data-can-scroll='false']::after {
+			@apply hidden;
+		}
+	}
+}
+
+.panel-scroller {
+	timeline-scope: --scroll;
+	animation: --scroll forwards;
+	animation-timeline: --scroll;
+	container-name: --scroll;
 }
 
 .panel-close-button {
@@ -1359,7 +1401,14 @@ async function animateToInitialPosition() {
 }
 
 .panel-content {
-	@apply flex flex-col gap-y-7 relative pb-10;
+	@apply flex flex-col gap-y-7 relative;
+	@apply md-down:pb-10;
+
+	@screen md {
+		[data-can-scroll='true'] & {
+			@apply pb-14;
+		}
+	}
 }
 
 .panel-content-header {
