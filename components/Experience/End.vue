@@ -349,7 +349,9 @@ const createButtonTimeline = () => {
 	drawTimeline = gsap.timeline({
 		paused: true,
 		onUpdate: () => {
-			Howler.volume(1 - drawTimeline.progress())
+			if (appStore.isAudioEnabled) {
+				Howler.volume(1 - drawTimeline.progress())
+			}
 		},
 		onComplete: async () => {
 			set(canInteract, false)
@@ -543,7 +545,7 @@ const animateMask = () => {
 	tl.call(
 		() => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
-			Howler.volume(1)
+			appStore.isAudioEnabled && Howler.volume(1)
 			audioManager.fadeIn(AUDIO_LABELS.CAMPAIGN_LOOP)
 			set(showResult, true)
 		},
