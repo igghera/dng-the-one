@@ -1,5 +1,5 @@
 <template>
-	<Container class="pointer-events-none">
+	<Container class="pointer-events-none tablet-portrait:pb-16">
 		<header class="header | text-shadow">
 			<h1
 				class="display-1 | golden-text uppercase"

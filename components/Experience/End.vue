@@ -587,23 +587,13 @@ const animateMask = () => {
 }
 
 .result {
-	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
+	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center font-body-alt;
 
 	row-gap: toRem(11);
-	width: toRem(170);
+	width: min(toRem(230), 60vw);
 
-	@screen md {
-		width: toRem(210);
-	}
-
-	@screen lg {
-		row-gap: toRem(11);
-		width: toRem(230);
-	}
-
-	@screen tablet-portrait {
-		row-gap: toRem(16);
-		width: toRem(330);
+	@screen tablet-portrait-lg {
+		width: min(toRem(330), 40vw);
 	}
 }
 
@@ -613,11 +603,11 @@ const animateMask = () => {
 	font-size: toRem(12);
 
 	@screen lg {
-		font-size: toRem(12);
+		font-size: toRem(13);
 	}
 
-	@screen tablet-portrait {
-		font-size: toRem(15);
+	@screen tablet-portrait-lg {
+		font-size: toRem(20);
 	}
 }
 
@@ -627,11 +617,11 @@ const animateMask = () => {
 	font-size: toRem(36);
 
 	@screen lg {
-		font-size: toRem(36);
+		font-size: toRem(50);
 	}
 
-	@screen tablet-portrait {
-		font-size: toRem(54);
+	@screen tablet-portrait-lg {
+		font-size: toRem(60);
 	}
 }
 
@@ -644,8 +634,8 @@ const animateMask = () => {
 		font-size: toRem(13);
 	}
 
-	@screen tablet-portrait {
-		font-size: toRem(17);
+	@screen tablet-portrait-lg {
+		font-size: toRem(20);
 	}
 }
 

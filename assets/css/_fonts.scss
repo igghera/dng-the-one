@@ -15,3 +15,12 @@
   font-style: normal;
   font-display: swap;
 }
+
+@font-face {
+  font-family: 'Futura LT Pro Book';
+  src: url('/fonts/FuturaLTPro-Book.woff2') format('woff2'),
+      url('/fonts/FuturaLTPro-Book.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
