@@ -891,11 +891,36 @@ async function handlePinPointerdown(event) {
 
 	draggableInstance?.[0]?.disable()
 
-	const nicheIndex = productId.split('_')[0]
+	const nicheIndex = Number(productId.split('_')[0])
 	const params = {
 		cover: false,
-		paddingTop: 0.15,
-		paddingBottom: 0.25,
+		paddingTop: get(isMobile) ? 0.15 : 0,
+		paddingBottom: get(isMobile) ? 0.25 : 0,
+		paddingRight: get(isMobile) ? 0 : 0.4,
+		paddingLeft: get(isMobile) ? 0 : 0.1,
+	}
+
+	if (!get(isMobile)) {
+		switch (nicheIndex) {
+			case 1:
+				params.paddingRight = 0.25
+				params.paddingLeft = 0.02
+				break
+			case 2:
+				params.paddingRight = 0.35
+				params.paddingLeft = 0.05
+				break
+			case 3:
+				params.paddingRight = 0.3
+				params.paddingLeft = 0.05
+				break
+			case 4:
+				params.paddingRight = 0.55
+				params.paddingLeft = 0.15
+				break
+			default:
+				break
+		}
 	}
 
 	set(currentProduct, productId)
@@ -1365,21 +1390,22 @@ async function animateToInitialPosition() {
 
 	@screen md {
 		@apply h-auto rounded-b-[10px] right-9 justify-self-end self-center;
+		@apply transition-opacity duration-[800ms] delay-300;
 
 		max-height: min(toRem(600), calc(100svh - toRem(280)));
-		transition-property: opacity, transform;
-		transition-duration: 0.8s, 0.5s;
-		transition-timing-function: theme('transitionTimingFunction.out'),
-			theme('transitionTimingFunction.out');
 		width: min(toRem(375), 50vw);
 
 		&[data-open='false'] {
-			@apply self-center opacity-0 pointer-events-none translate-y-8;
+			@apply self-center opacity-0 pointer-events-none delay-0 duration-500;
 		}
 
 		&[data-can-scroll='false']::after {
 			@apply hidden;
 		}
+	}
+
+	@screen 2xl {
+		right: 15vw;
 	}
 }
 
