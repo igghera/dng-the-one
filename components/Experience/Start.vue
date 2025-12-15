@@ -112,6 +112,8 @@ const animateIn = () => {
 }
 
 const handleClick = () => {
+	audioManager.init()
+
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)
 
 	appStore.setAudioEnabled(true)

@@ -6,11 +6,13 @@ import baseLoop from '~/assets/music/base.wav'
 import campaignLoop from '~/assets/music/campaign.mp3'
 
 export class AudioManager {
+  #init = false
   #files = new Map()
 
   constructor() {}
 
-  preload() {
+  init() {
+    if (this.#init) return
     if (import.meta.server) return
 
     const commonParams = {
@@ -27,6 +29,8 @@ export class AudioManager {
         (track.volume() === 0) && track.stop()
       })
     })
+
+    this.#init = true
   }
 
   play(trackId) {

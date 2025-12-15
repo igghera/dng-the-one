@@ -203,6 +203,7 @@ import {
 } from 'three/addons/renderers/CSS3DRenderer'
 import CameraControls from 'camera-controls'
 import { get, set } from '@vueuse/core'
+import { Howler } from 'howler'
 
 import { ktxLoader } from '~/assets/js/loaders'
 import { backgroundCopper, backgroundGold } from './materials/background'
@@ -227,6 +228,8 @@ const panelRef = useTemplateRef('panelRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
 const panelContentRef = useTemplateRef('panelContentRef')
 const draggableDummyRef = useTemplateRef('draggableDummyRef')
+
+const appStore = useAppStore()
 
 const { isMobile } = useViewport()
 
@@ -808,29 +811,6 @@ function createDrag() {
 	}
 }
 
-function getProgressOnCurveAtIndex(index) {
-	const dummyPoints = []
-
-	let i
-	for (i = 0; i <= index; i++) {
-		dummyPoints.push(new THREE.Vector3().copy(itemsData[i].position))
-	}
-
-	if (dummyPoints.length < 2) return 0
-
-	const dummyCurve = new THREE.CatmullRomCurve3(
-		dummyPoints,
-		false,
-		'catmullrom',
-		0.6
-	)
-
-	const originalCurveLength = curve.getLength()
-	const dummyCurveLength = dummyCurve.getLength()
-
-	return dummyCurveLength / originalCurveLength
-}
-
 function createCameraTargets() {
 	targets.forEach(target => {
 		scene.add(target)
@@ -979,6 +959,18 @@ function openPanelFull() {
 }
 
 async function introButtonOnCompleteCallback() {
+	audioManager.init()
+
+	await nextTick()
+
+	appStore.setAudioEnabled(true)
+	Howler.volume(1)
+
+	console.log(audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing())
+
+	!audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing() &&
+		audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)
+
 	await animateOutIntro()
 
 	set(css3DContentVisible, true)
