@@ -891,7 +891,7 @@ async function handlePinPointerdown(event) {
 				params.paddingLeft = 0.05
 				break
 			case 3:
-				params.paddingRight = 0.3
+				params.paddingRight = 0.33
 				params.paddingLeft = 0.05
 				break
 			case 4:
@@ -965,8 +965,6 @@ async function introButtonOnCompleteCallback() {
 
 	appStore.setAudioEnabled(true)
 	Howler.volume(1)
-
-	console.log(audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing())
 
 	!audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing() &&
 		audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)
@@ -1396,6 +1394,10 @@ async function animateToInitialPosition() {
 		}
 	}
 
+	@screen lg {
+		width: min(toRem(425), 50vw);
+	}
+
 	@screen 2xl {
 		right: 15vw;
 	}
@@ -1434,6 +1436,10 @@ async function animateToInitialPosition() {
 
 	font-size: toRem(20);
 	width: calc(100% - toRem(32));
+
+	@screen tablet-portrait-lg {
+		font-size: toRem(26);
+	}
 }
 
 .panel-content-title {
@@ -1444,6 +1450,10 @@ async function animateToInitialPosition() {
 	@apply tracking-[0.05em] font-medium leading-[1.3333];
 
 	font-size: toRem(15);
+
+	@screen tablet-portrait-lg {
+		font-size: toRem(20);
+	}
 }
 
 .panel-content-cta {
