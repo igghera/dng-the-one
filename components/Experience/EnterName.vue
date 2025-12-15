@@ -31,8 +31,8 @@
 			<ButtonGolden
 				class="button | !text-gold"
 				size="square"
-				:data-visible="continueButtonVisible"
 				type="submit"
+				ref="submitButtonRef"
 			>
 				<IconArrowRight class="w-4" />
 			</ButtonGolden>
@@ -49,16 +49,17 @@ import { get, set } from '@vueuse/core'
 const appStore = useAppStore()
 const uiStore = useUiStore()
 
-const { gsap } = useGSAP()
+const { gsap, Flip } = useGSAP()
 
 const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
 const formRef = useTemplateRef('formRef')
 const inputRef = useTemplateRef('inputRef')
+const submitButtonRef = useTemplateRef('submitButtonRef')
 
 const isVisible = useElementVisibility(el)
 
-const continueButtonVisible = ref(false)
+const submitButtonVisible = ref(false)
 const canSubmit = shallowRef(false)
 
 const inputMinWidth = 176
@@ -97,7 +98,9 @@ watch(isVisible, visible => {
 const handleInput = async () => {
 	// appStore.setUsername(get(inputRef)?.value)
 
-	setContinueButtonVisible()
+	setSubmitButtonVisible()
+
+	return
 
 	const dummy = document.createElement('span')
 	Object.assign(dummy.style, {
@@ -117,8 +120,8 @@ const handleInput = async () => {
 	dummy.remove()
 }
 
-const setContinueButtonVisible = () => {
-	set(continueButtonVisible, appStore.getUsername.length >= 3)
+const setSubmitButtonVisible = () => {
+	set(submitButtonVisible, appStore.getUsername.length >= 3)
 }
 
 const handleSubmit = async () => {
@@ -170,22 +173,30 @@ async function animateOut() {
 }
 
 .form {
-	@apply grid grid-rows-subgrid justify-items-center pointer-events-auto;
+	@apply grid gap-x-6 justify-items-center items-center self-center pointer-events-auto;
+
+	transition-duration: 1s, 1s;
+	transition-property: grid-template-columns, column-gap;
 
 	grid-area: b / c;
+	grid-template-columns: 1fr 50px;
 
 	&:has(.input:not(:valid)) {
+		column-gap: 0;
+		grid-template-columns: 1fr 0px;
+		transition-delay: 200ms;
+
 		.button {
-			@apply pointer-events-none opacity-0;
+			@apply pointer-events-none opacity-0 delay-0;
+
+			transition-duration: 500ms;
 		}
 	}
 }
 
 .input-wrapper {
-	@apply border-b border-gold/80 border-solid p-3 self-center;
+	@apply border-b border-gold/80 border-solid p-3 self-center justify-self-center col-span-1 row-start-1;
 	@apply lg:py-7 lg:px-12;
-
-	grid-area: b;
 }
 
 .input {
@@ -193,9 +204,7 @@ async function animateOut() {
 }
 
 .button {
-	@apply self-end pointer-events-auto;
-	@apply duration-500 ease-out;
-
-	grid-area: c;
+	@apply pointer-events-auto col-start-2 row-start-1;
+	@apply transition-opacity duration-1000 delay-200;
 }
 </style>
