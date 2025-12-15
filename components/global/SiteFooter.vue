@@ -2,14 +2,14 @@
 	<Container class="site-footer" tag="footer">
 		<NuxtLink
 			class="button button-left | ui-2 | uppercase"
-			to="https://www.google.com?privacy"
+			:to="$t('link_privacy_policy')"
 			target="_blank"
 			>Privacy</NuxtLink
 		>
 
 		<NuxtLink
 			class="button button-right | ui-2 | uppercase"
-			to="https://www.google.com?cookies"
+			:to="$t('link_cookies_policy')"
 			target="_blank"
 			>Cookies</NuxtLink
 		>
