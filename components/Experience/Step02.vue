@@ -29,32 +29,6 @@
 					overflow="visible"
 					ref="trackRef"
 				>
-					<g v-if="false" id="step-02-content-mask">
-						<rect x="-300" y="0" width="716" height="2000" fill="black" />
-
-						<rect
-							style="transform-box: fill-box; transform-origin: center"
-							x="-300"
-							y="10"
-							width="716"
-							height="800"
-							fill="url(#step-02-content-gradient-init)"
-							fill-opacity="1"
-							ref="contentMaskRectInitRef"
-						/>
-
-						<rect
-							style="transform-box: fill-box; transform-origin: center"
-							x="-300"
-							y="10"
-							width="716"
-							height="800"
-							fill="url(#step-02-content-gradient-final)"
-							fill-opacity="1"
-							ref="contentMaskRectFinalRef"
-						/>
-					</g>
-
 					<g mask="url(#step-02-content-mask)">
 						<!-- DO NOT DELETE: Filler element to avoid clipping issues -->
 						<rect
@@ -200,8 +174,8 @@
 							id="step-02-content-gradient-init"
 							gradientTransform="rotate(90)"
 						>
-							<stop offset="0%" stop-color="black" />
-							<stop offset="28%" stop-color="black" />
+							<stop offset="0%" stop-color="white" />
+							<stop offset="28%" stop-color="white" />
 							<stop offset="40%" stop-color="white" />
 							<stop offset="100%" stop-color="white" />
 						</linearGradient>
@@ -211,8 +185,8 @@
 							gradientTransform="rotate(90)"
 						>
 							<stop offset="0%" stop-color="black" />
-							<stop offset="24%" stop-color="black" />
-							<stop offset="36%" stop-color="white" />
+							<stop offset="28%" stop-color="black" />
+							<stop offset="40%" stop-color="white" />
 							<stop offset="73%" stop-color="white" />
 							<stop offset="85%" stop-color="black" />
 							<stop offset="100%" stop-color="black" />
@@ -452,6 +426,17 @@ const animateIn = () => {
 	const tl = gsap.timeline({ paused: true })
 	tl.addLabel('start')
 
+	tl.to(
+		'#step-02-content-gradient-init stop:nth-child(-n + 2)',
+		{
+			attr: {
+				'stop-color': 'black',
+			},
+			duration: 0.5,
+		},
+		'start'
+	)
+
 	tl.fromTo(
 		[get(headerRef), get(dotsRef), get(draggerCircleRef)],
 		{
@@ -467,7 +452,7 @@ const animateIn = () => {
 				resetIdle()
 			},
 		},
-		'start'
+		'<0.2'
 	)
 
 	tl.to(
