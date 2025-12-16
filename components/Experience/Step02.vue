@@ -939,7 +939,7 @@ const createDraggable = () => {
 }
 
 .cta-wrapper {
-	@apply grid items-center justify-center;
+	@apply grid items-center justify-center justify-items-center;
 
 	grid-area: c;
 }

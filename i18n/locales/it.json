@@ -79,7 +79,7 @@
   },
 
   "results": {
-    "pre_title": "La tua Aura è",
+    "pre_title": "La tua fragranza è:",
     "cta_print": "Print your aura",
     "cta_download": "Download",
     "cta_restart": "Play again"
@@ -87,7 +87,7 @@
 
   "timeline_intro": {
     "copy": "A 20-years journey of elegance, where intensity and sensuality blend to create an unforgettable The One fragrance experience.",
-    "cta": "Explore The One collection"
+    "cta": "Esplore la collezione The One"
   },
 
   "download_card": {
@@ -236,7 +236,7 @@
   ],
 
   "modal_qr_code": {
-    "title": "Scan to download<br>your Aura"
+    "title": "Scansiona per scaricare<br>la tua Aura"
   },
 
   "explore": {
