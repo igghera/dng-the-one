@@ -1,0 +1,34 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [],
+  theme: {
+    extend: {
+      colors: {
+        current: 'currentColor',
+        'gold-dark': '#B0692B',
+        gold: '#FFDBA5',
+        'gold-light': '#FFFFC4'
+      },
+
+      fontFamily: {
+        'body': ['"Futura LT Pro"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+        'body-alt': ['"Futura LT Pro Book"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif']
+      },
+
+      screens: {
+        'can-hover': { 'raw': '(hover: hover) and (pointer: fine)' },
+        portrait: { 'raw': '(orientation: portrait)' },
+        landscape: { 'raw': '(orientation: landscape)' },
+        'sm-down': { 'max': '639px' },
+        'md-down': { 'max': '767px' },
+        'lg-down': { 'max': '1023px' },
+        'xl-down': { 'max': '1279px' },
+        'tablet-portrait': { 'raw': '(min-width: 640px) and (orientation: portrait)' },
+        'tablet-portrait-lg': { 'raw': '(min-width: 1024px) and (orientation: portrait)' },
+      },
+
+    },
+  },
+  plugins: [],
+}
+
