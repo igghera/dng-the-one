@@ -134,7 +134,7 @@
 								<circle cx="58" cy="58" r="58" fill="black" fill-opacity="1" />
 							</g>
 
-							<g transform="translate(0, 550)" ref="trackMaskInitialRef">
+							<g transform="translate(0, 650)" ref="trackMaskInitialRef">
 								<rect x="0" y="0" width="116" height="300" fill="black"></rect>
 							</g>
 						</mask>
