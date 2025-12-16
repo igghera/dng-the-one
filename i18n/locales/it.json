@@ -158,9 +158,9 @@
 
   "auras": [
     {
-      "title": "Elegant",
+      "title": "Elegante",
       "male": {
-        "desc": "Your aura moves before you do, a silent force that draws every gaze.",
+        "desc": "La tua Aura si muove con raffinatezza: una forza silenziosa che cattura ogni sguardo.",
         "fragrance": {
           "title": "The One for Men",
           "sub_title": "Eau De Parfum",
@@ -168,7 +168,7 @@
         }
       },
       "female": {
-        "desc": "Your aura radiates quiet elegance and confidence, turning simplicity into uniqueness.",
+        "desc": "La tua Aura irradia eleganza e sicurezza, trasformando la semplicità in qualcosa di unico.",
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum",
@@ -177,9 +177,9 @@
       }
     },
     {
-      "title": "Warm",
+      "title": "Avvolgente",
       "male": {
-        "desc": "Your aura lingers beyond the moment, a quiet depth people will never forget.",
+        "desc": "La tua Aura lascia il segno: una profondità emotiva che non si dimentica.",
         "fragrance": {
           "title": "The One for Men",
           "sub_title": "Parfum",
@@ -187,7 +187,7 @@
         }
       },
       "female": {
-        "desc": "Your aura lingers softly. A magnetic mystery that stays long after you’ve gone.",
+        "desc": "La tua Aura permane con delicatezza. Una profondità emotiva magnetica che rimane a lungo.",
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum Intense",
@@ -196,9 +196,9 @@
       }
     },
     {
-      "title": "Discrete",
+      "title": "Misteriosa",
       "male": {
-        "desc": "You speak only when it matters. Your aura whispers power, drawing others in effortlessly.",
+        "desc": "Riservi le parole ai momenti che contano. La tua Aura sussurra potere e attira gli altri con naturalezza.",
         "fragrance": {
           "title": "The One Men",
           "sub_title": "Eau De Toilette",
@@ -206,7 +206,7 @@
         }
       },
       "female": {
-        "desc": "You speak only when it matters. Your aura whispers power, drawing others in effortlessly.",
+        "desc": "Le tue parole hanno un potere silenzioso. La tua Aura sussurra sicurezza, attirando gli altri con naturalezza.",
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum",
@@ -215,9 +215,9 @@
       }
     },
     {
-      "title": "Bold",
+      "title": "Audace",
       "male": {
-        "desc": "Your aura commands the room. Unforgettable, leaving the silence charged with presence.",
+        "desc": "La tua Aura domina la stanza. Indimenticabile: anche il silenzio parla di te.",
         "fragrance": {
           "title": "The One Gold for Men",
           "sub_title": "Eau De Parfum Intense",
@@ -225,7 +225,7 @@
         }
       },
       "female": {
-        "desc": "You’re never afraid to shine. Your fierce aura lights up the room the moment you walk in.",
+        "desc": "Non hai mai paura di brillare. La tua Aura così intensa illumina la stanza nel momento stesso in cui entri.",
         "fragrance": {
           "title": "The One Gold",
           "sub_title": "Eau De Parfum Intense",
