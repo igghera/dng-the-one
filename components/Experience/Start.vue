@@ -4,7 +4,7 @@
 			<h1
 				class="display-1 | golden-text uppercase"
 				ref="titleRef"
-				style="opacity: 0"
+				style="opacity: 0.001"
 			>
 				{{ $t('experience_start.title') }}
 			</h1>
