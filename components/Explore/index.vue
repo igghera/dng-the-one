@@ -485,7 +485,7 @@ onClickOutside(
 		controls.enabled = true
 	},
 	{
-		ignore: ['.pin'],
+		ignore: ['.pin', '.button-audio'],
 	}
 )
 

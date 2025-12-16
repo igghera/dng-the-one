@@ -1,5 +1,5 @@
 <template>
-	<button class="button" @click="handleClick" aria-label="Toggle audio">
+	<button class="button-audio" @click="handleClick" aria-label="Toggle audio">
 		<svg
 			class="svg"
 			viewBox="0 0 22 20"
@@ -133,7 +133,7 @@ const handleClick = () => {
 </script>
 
 <style lang="scss" scoped>
-.button {
+.button-audio {
 	@apply uppercase grid items-center justify-center relative;
 
 	&::before {
