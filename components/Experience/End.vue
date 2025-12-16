@@ -330,7 +330,7 @@ const handleQRCodeButtonClick = () => {
 
 const handleDownloadButtonClick = async () => {
 	const data = appStore.getResult
-	data.set('pre-title', $t('results.pre_title'))
+	data.set('pre-title', $t('download_card.pre_title'))
 	data.set('sub-content-title', $t('download_card.subcontent_title'))
 
 	downloadCard('experience', Number(appStore.getStep01Selection), data)

@@ -80,19 +80,19 @@
 
   "results": {
     "pre_title": "La tua fragranza è:",
-    "cta_print": "Print your aura",
+    "cta_print": "Stampa la tua aura",
     "cta_download": "Download",
-    "cta_restart": "Play again"
+    "cta_restart": "Ricomincia"
   },
 
   "timeline_intro": {
-    "copy": "A 20-years journey of elegance, where intensity and sensuality blend to create an unforgettable The One fragrance experience.",
-    "cta": "Esplore la collezione The One"
+    "copy": "Celebriamo 20 anni di un’icona.<br>Scopri l’evoluzione di The One: un classico contemporaneo con un’Aura che non passa mai di moda.",
+    "cta": "Esplora la collezione The One"
   },
 
   "download_card": {
-    "pre_title": "La tua fragranza è:",
-    "subcontent_title": "My Aura's Match is:"
+    "pre_title": "La mia aura è:",
+    "subcontent_title": "La mia fragranza è:"
   },
 
   "engagement": {
