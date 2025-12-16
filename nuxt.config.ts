@@ -20,6 +20,9 @@ export default defineNuxtConfig({
     }
   },
 
+  dir: {
+    pages: process.env.SHOW_SPLASH_PAGE === 'true' ? 'splash' : 'pages',
+  },
 
   compatibilityDate: '2024-01-01',
 
