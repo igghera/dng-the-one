@@ -608,9 +608,9 @@ const upsertPrinterFromService = service => {
 
 	// Resolve device IP address (IPv4 preferred)
 	const deviceAddress =
+		service.hostname ??
 		service.ipv4Addresses?.[0] ??
 		service.ipv6Addresses?.[0] ??
-		service.hostname ??
 		''
 
 	if (!deviceAddress) return
@@ -625,7 +625,7 @@ const upsertPrinterFromService = service => {
 		name: printerName,
 		ip: deviceAddress,
 		// Construct the full IPP URL: ipp://192.168.1.100:631/printers/NAME
-		ippUrl: `ipp://${deviceAddress}:${port}/${resourcePath}`,
+		ippUrl: `ipps://${deviceAddress}:${port}/${resourcePath}`,
 	}
 
 	const currentPrinters = get(printers)
