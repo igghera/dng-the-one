@@ -413,6 +413,8 @@ const animateIn = () => {
 		'>1'
 	)
 
+	tl.add(wiggleKnob(), '>0.5')
+
 	// Show labels and enable draggable
 	tl.call(
 		() => {
@@ -420,7 +422,7 @@ const animateIn = () => {
 			set(labelsVisible, true)
 		},
 		null,
-		'<0.4'
+		'>'
 	)
 
 	// Show instructions
@@ -499,6 +501,45 @@ const moveDotToNextPosition = async () => {
 		},
 		'>'
 	)
+
+	return tl.play()
+}
+
+const wiggleKnob = () => {
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	tl.to(
+		get(knobRef),
+		{
+			rotation: 12,
+			duration: 0.65,
+			ease: 'power2.out',
+		},
+		'start'
+	)
+
+	tl.to(
+		get(knobRef),
+		{
+			rotation: -12,
+			duration: 0.8,
+			ease: 'power2.out',
+		},
+		'>0.05'
+	)
+
+	tl.to(
+		get(knobRef),
+		{
+			rotation: 0,
+			duration: 0.65,
+			ease: 'power2.out',
+		},
+		'>0.05'
+	)
+
+	tl.timeScale(1.2)
 
 	return tl.play()
 }
