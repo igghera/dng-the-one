@@ -164,7 +164,7 @@
         "fragrance": {
           "title": "The One for Men",
           "sub_title": "Eau De Parfum",
-          "desc": "A timeless icon, reborn. Crafted for the man of distinction, it reveals deeper nuances of elegance, power and allure."
+          "desc": "Un’icona senza tempo si reinventa con nuove profondità olfattive, pensata per un uomo dal carattere elegante e distintivo."
         }
       },
       "female": {
@@ -172,7 +172,7 @@
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum",
-          "desc": "A timeless icon, reimagined with radiant depth. Created for the woman of grace, it reveals elegance, confidence, and an allure that endures."
+          "desc": "Elegante e attuale. La fragranza sposa note di mandarino, rosa e vaniglia in un eccezionale connubio di classico e moderno."
         }
       }
     },
@@ -183,7 +183,7 @@
         "fragrance": {
           "title": "The One for Men",
           "sub_title": "Parfum",
-          "desc": "A richer, more intense interpretation of The One. It unveils depth and sophistication, embodying strength and timeless elegance with every encounter."
+          "desc": "Una nuova intensità, in cui la sensualità raffinata si fonde con la forza maschile. Le calde e avvolgenti note ambrate lasciano una scia profonda e irresistibilmente carismatica."
         }
       },
       "female": {
@@ -191,7 +191,7 @@
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum Intense",
-          "desc": "A bold yet refined expression of femininity. It captures the essence of a confident woman. Graceful and unforgettable."
+          "desc": "Una femminilità audace. La sua firma olfattiva gioca su contrasti raffinati, fondendo la forza di note intense e luminose con la delicatezza di accenti più morbidi."
         }
       }
     },
@@ -202,7 +202,7 @@
         "fragrance": {
           "title": "The One Men",
           "sub_title": "Eau De Toilette",
-          "desc": "This fragrance embodies the natural confidence of a man whose charm leaves a lasting, unforgettable impression to people."
+          "desc": "Affascinante e sensuale, come chi lo indossa. Una fragranza in cui si fondono, in un blend di assoluto fascino, note di basilico, ammaliante lavanda e accordi di sandalo."
         }
       },
       "female": {
@@ -210,7 +210,7 @@
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum",
-          "desc": "A timeless icon, reimagined with radiant depth. Created for the woman of grace, it reveals elegance, confidence, and an allure that endures."
+          "desc": "Elegante e attuale. La fragranza sposa note di mandarino, rosa e vaniglia in un eccezionale connubio di classico e moderno."
         }
       }
     },
@@ -219,9 +219,9 @@
       "male": {
         "desc": "La tua Aura domina la stanza. Indimenticabile: anche il silenzio parla di te.",
         "fragrance": {
-          "title": "The One Gold for Men",
+          "title": "The One for Men Gold",
           "sub_title": "Eau De Parfum Intense",
-          "desc": "A celebration of modern masculinity and magnetic allure. It reflects inner power, elegance, and the unmistakable brilliance of a man who stands apart."
+          "desc": "Un omaggio al fascino magnetico dell'uomo che lo indossa, con un accordo olfattivo legnoso e speziato composto da Salvia sclarea, Bergamotto e Patchouli."
         }
       },
       "female": {
@@ -229,7 +229,7 @@
         "fragrance": {
           "title": "The One Gold",
           "sub_title": "Eau De Parfum Intense",
-          "desc": "A tribute to luminous femininity and inner power. It celebrates the woman who owns her elegance and irresistible charm."
+          "desc": "Luminosa e moderna, un tributo alla massima espressione di eleganza e femminilità."
         }
       }
     }
