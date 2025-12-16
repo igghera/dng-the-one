@@ -6,8 +6,8 @@
   "press_and_hold": "Tieni premuto",
   "download": "Download",
 
-  "link_privacy_policy": "https://world.dolcegabbana.com/privacy",
-  "link_cookies_policy": "https://world.dolcegabbana.com/cookie-policy",
+  "link_privacy_policy": "https://world.dolcegabbana.com/it/privacy",
+  "link_cookies_policy": "https://world.dolcegabbana.com/it/cookie-policy",
 
   "experience_start": {
     "title": "Scopri la tua Aura",
@@ -91,7 +91,7 @@
   },
 
   "download_card": {
-    "pre_title": "Your aura is",
+    "pre_title": "La tua fragranza è:",
     "subcontent_title": "My Aura's Match is:"
   },
 

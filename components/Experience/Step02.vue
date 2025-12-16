@@ -581,7 +581,7 @@ const handleStepChange = (next, prev) => {
 		})
 
 		gsap.to(godraysSmoothBottom, {
-			value: 0.22,
+			value: 0.15,
 			duration: 3.5,
 			overwrite: true,
 		})

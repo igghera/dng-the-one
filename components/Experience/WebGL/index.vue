@@ -612,6 +612,7 @@ function updateScene(time = 0) {
 
 function createScene() {
 	scene = new THREE.Scene()
+	scene.name = 'Main Scene'
 }
 
 function createCamera() {
@@ -621,6 +622,8 @@ function createCamera() {
 		0.1,
 		20
 	)
+
+	camera.name = 'Main Camera'
 
 	camera.position.set(
 		mainCameraParams.positionStart.x,
@@ -740,6 +743,8 @@ async function createParticles() {
 	particles = new THREE.Sprite(material)
 	particles.count = count
 
+	particles.name = 'Particles'
+
 	scene.add(particles)
 }
 
@@ -750,6 +755,8 @@ function createBackground() {
 
 	background.position.set(0, -0.65, -5.5)
 
+	background.name = 'Background'
+
 	setBackgroundSize()
 
 	scene.add(background)
@@ -759,7 +766,9 @@ function createGodrays() {
 	const geometry = new THREE.CylinderGeometry(0.5, 0.5, 5, 64, 1, true)
 
 	godrays = new THREE.Mesh(geometry, GodraysMaterial)
-	godrays.position.set(0, 1.5, -1.3)
+	godrays.name = 'Godrays'
+	godrays.renderOrder = 1
+	godrays.position.set(0, 1.6, -1.3)
 
 	scene.add(godrays)
 }
@@ -774,6 +783,10 @@ async function createWinDrawingPlane() {
 
 	mesh.scale.set(1.1, 1.1, 1)
 	mesh.position.y = 0.05
+
+	mesh.renderOrder = 2
+
+	mesh.name = 'Win Drawing Plane'
 
 	scene.add(mesh)
 }
@@ -791,7 +804,9 @@ function createSea() {
 	})
 
 	seaMesh.rotation.x = -Math.PI / 2
-	seaMesh.position.y = -0.7
+	seaMesh.position.y = -0.8
+
+	seaMesh.name = 'Sea'
 
 	scene.add(seaMesh)
 }
@@ -830,6 +845,7 @@ function createControls() {
 
 async function createIntroScene() {
 	introScene = new THREE.Scene()
+	introScene.name = 'Intro Scene'
 
 	introCamera = new THREE.PerspectiveCamera(
 		40,
@@ -839,6 +855,7 @@ async function createIntroScene() {
 	)
 	introCamera.position.set(0, 0, 4)
 	introCamera.lookAt(0, 0, 0)
+	introCamera.name = 'Intro Camera'
 
 	const geometry = new THREE.PlaneGeometry(1.682, 2.124, 1, 1)
 	geometry.translate(-0.115, 0, 0)
@@ -848,6 +865,8 @@ async function createIntroScene() {
 	experienceIntroDrawMaterial.init(textures.get('intro_outline'))
 
 	introMesh = new THREE.Mesh(geometry, experienceIntroDrawMaterial.material)
+
+	introMesh.name = 'Intro Mesh'
 
 	introMesh.position.set(
 		introMeshParams.positionStart.x,
@@ -862,6 +881,8 @@ async function createIntroScene() {
 		IntroBackgroundMaterial
 	)
 
+	introBackground.name = 'Intro Background'
+
 	introBackground.position.set(0, 0, -3)
 
 	setIntroBackgroundSize()
@@ -873,6 +894,8 @@ async function createIntroScene() {
 function createMaskScene() {
 	maskScene = new THREE.Scene()
 	maskCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1)
+
+	maskCamera.name = 'Mask Camera'
 
 	const geometry = new THREE.PlaneGeometry(2, 2)
 	const mesh = new THREE.Mesh(geometry, MaskMaterial)
