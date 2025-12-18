@@ -1,21 +1,23 @@
 <template>
 	<Container class="pointer-events-none tablet-portrait:pb-16">
-		<header class="header | text-shadow">
-			<h1
-				class="display-1 | golden-text uppercase"
-				ref="titleRef"
-				style="opacity: 0.001"
-			>
-				{{ $t('experience_start.title') }}
-			</h1>
+		<ClientOnly>
+			<header class="header | text-shadow">
+				<h1
+					class="display-1 | golden-text uppercase"
+					ref="titleRef"
+					style="opacity: 0.001"
+				>
+					{{ $t('experience_start.title') }}
+				</h1>
 
-			<p
-				class="copy | body-4 | text-gold"
-				style="opacity: 0"
-				v-html="$t('experience_start.copy')"
-				ref="copyRef"
-			/>
-		</header>
+				<p
+					class="copy | body-4 | text-gold"
+					style="opacity: 0"
+					v-html="$t('experience_start.copy')"
+					ref="copyRef"
+				/>
+			</header>
+		</ClientOnly>
 
 		<ButtonGolden
 			class="self-end pointer-events-auto md:portrait:-translate-y-1/2"
