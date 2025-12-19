@@ -75,7 +75,7 @@ import { get, set } from '@vueuse/core'
 const lenis = useLenis()
 const uiStore = useUiStore()
 
-const { rt, tm } = useI18n()
+const { rt, tm, locale } = useI18n()
 
 const { gsap } = useGSAP()
 
@@ -102,7 +102,9 @@ const images = Object.freeze([
 const imageSrc = computed(() => {
 	if (!get(aura)) return null
 
-	return `/images/download-cards/engagement/${images[Number(aura)]}.webp`
+	return `/images/download-cards/engagement/${get(locale)}/${
+		images[Number(aura)]
+	}.webp`
 })
 
 const data = computed(() => {
@@ -161,7 +163,9 @@ onMounted(async () => {
 const handleDownloadButtonClick = async () => {
 	set(isDownloading, true)
 
-	const path = `/images/download-cards/engagement/${images[Number(aura)]}.png`
+	const path = `/images/download-cards/engagement/${get(locale)}/${
+		images[Number(aura)]
+	}.png`
 
 	const link = document.createElement('a')
 	link.href = path
