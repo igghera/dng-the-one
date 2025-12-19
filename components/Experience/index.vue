@@ -10,10 +10,12 @@
 			class="relative z-[1]"
 		/>
 
-		<ExperienceEnterName
-			v-show="uiStore.isExperienceEnterNameVisible"
-			class="experience-step | relative z-[1]"
-		/>
+		<ClientOnly>
+			<ExperienceEnterName
+				v-show="uiStore.isExperienceEnterNameVisible"
+				class="experience-step | relative z-[1]"
+			/>
+		</ClientOnly>
 
 		<ExperienceStep01
 			v-if="uiStore.isExperienceStep01Visible"
