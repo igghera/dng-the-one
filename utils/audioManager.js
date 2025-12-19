@@ -2,7 +2,7 @@ import { Howl } from 'howler'
 
 import { AUDIO_LABELS } from './constants'
 
-import baseLoop from '~/assets/music/base.wav'
+import baseLoop from '~/assets/music/base.mp3'
 import campaignLoop from '~/assets/music/campaign.mp3'
 
 export class AudioManager {
