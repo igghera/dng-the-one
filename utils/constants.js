@@ -16,6 +16,8 @@ export const EVENTS = {
   EXPERIENCE_END_DRAW_ANIMATION_COMPLETE: 'experienceEndDrawAnimationComplete',
 
   TRIGGER_FLASH_EFFECT: 'triggerFlashEffect',
+
+  TOGGLE_LANGUAGE_SELECTOR: 'toggleLanguageSelector',
 }
 
 export const AUDIO_LABELS = {

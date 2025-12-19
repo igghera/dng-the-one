@@ -1,5 +1,10 @@
 <template>
-	<button class="button" aria-label="Toggle language">
+	<button
+		class="button"
+		aria-label="Toggle language"
+		data-button-language
+		@click="handleClick"
+	>
 		<span class="relative z-[1] leading-none -translate-y-[0.15em]">{{
 			locale
 		}}</span>
@@ -8,6 +13,10 @@
 
 <script setup>
 const { locale } = useI18n()
+
+const handleClick = () => {
+	emitter.emit(EVENTS.TOGGLE_LANGUAGE_SELECTOR)
+}
 </script>
 
 <style lang="scss" scoped>
