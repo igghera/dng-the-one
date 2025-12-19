@@ -30,13 +30,7 @@
 			<ClientOnly>
 				<div class="content-inner">
 					<div class="content-header | text-shadow">
-						<p
-							v-for="product in data.products"
-							:key="product.title"
-							class="content-title | golden-text"
-						>
-							{{ product.title }}
-						</p>
+						<p v-html="data.title" class="content-title | golden-text" />
 
 						<p class="content-subtitle">
 							{{ data.subtitle }}
@@ -102,13 +96,6 @@ const images = Object.freeze([
 	'07-mysterious',
 ])
 
-const allProducts = Object.values(tm('products')).map(product => ({
-	title: rt(product.title),
-	sub_title: rt(product.sub_title),
-	copy: rt(product.copy),
-	image: rt(product.image),
-}))
-
 //
 // Computed
 //
@@ -123,34 +110,34 @@ const data = computed(() => {
 		case '0':
 		case '4':
 			return {
-				products: [allProducts[5], allProducts[2]],
-				subtitle: rt(tm('engagement.subtitles[0]')),
-				image: '/images/engagement/01.webp',
-				copy: rt(tm('engagement.copy[2]')),
+				title: rt(tm('engagement.result[0].title')),
+				subtitle: rt(tm('engagement.result[0].subtitle')),
+				image: rt(tm('engagement.result[0].image')),
+				copy: rt(tm('engagement.result[0].copy')),
 			}
 		case '1':
 		case '5':
 			return {
-				products: [allProducts[3], allProducts[0]],
-				subtitle: rt(tm('engagement.subtitles[1]')),
-				image: '/images/engagement/04.webp',
-				copy: rt(tm('engagement.copy[1]')),
+				title: rt(tm('engagement.result[1].title')),
+				subtitle: rt(tm('engagement.result[1].subtitle')),
+				image: rt(tm('engagement.result[1].image')),
+				copy: rt(tm('engagement.result[1].copy')),
 			}
 		case '2':
 		case '6':
 			return {
-				products: [allProducts[4], allProducts[0]],
-				subtitle: rt(tm('engagement.subtitles[3]')),
-				image: '/images/engagement/03.webp',
-				copy: rt(tm('engagement.copy[2]')),
+				title: rt(tm('engagement.result[3].title')),
+				subtitle: rt(tm('engagement.result[3].subtitle')),
+				image: rt(tm('engagement.result[3].image')),
+				copy: rt(tm('engagement.result[3].copy')),
 			}
 		case '3':
 		case '7':
 			return {
-				products: [allProducts[3], allProducts[1]],
-				subtitle: rt(tm('engagement.subtitles[2]')),
-				image: '/images/engagement/02.webp',
-				copy: rt(tm('engagement.copy[3]')),
+				title: rt(tm('engagement.result[2].title')),
+				subtitle: rt(tm('engagement.result[2].subtitle')),
+				image: rt(tm('engagement.result[2].image')),
+				copy: rt(tm('engagement.result[2].copy')),
 			}
 	}
 })
