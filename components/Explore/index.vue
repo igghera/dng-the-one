@@ -777,7 +777,26 @@ function createDrag() {
 		},
 		zIndexBoost: false,
 		snap: value => {
-			return getClosestValue(snaps, value)
+			const TOLERANCE = 150
+
+			const curr = getClosestValue(snaps, value)
+			let currIndex = snaps.findIndex(snap => snap === curr)
+
+			let newSnaps = [...snaps]
+
+			if (currIndex === 0) {
+				newSnaps[1] = snaps[1] + TOLERANCE
+			} else if (currIndex === 4) {
+				newSnaps[3] = snaps[3] - TOLERANCE
+			} else {
+				newSnaps[currIndex - 1] = snaps[currIndex - 1] - TOLERANCE
+				newSnaps[currIndex + 1] = snaps[currIndex + 1] + TOLERANCE
+			}
+
+			const newCurr = getClosestValue(newSnaps, value)
+			currIndex = newSnaps.findIndex(snap => snap === newCurr)
+
+			return snaps[currIndex]
 		},
 		onDrag: () => {
 			update(draggableInstance[0].x)
