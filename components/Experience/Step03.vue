@@ -320,12 +320,19 @@ const back = async () => {
 
 	await nextTick()
 
-	const dot = document.getElementById('glowing-dot')
-	dot.style.opacity = 0
+	const svgImage = document.createElementNS(
+		'http://www.w3.org/2000/svg',
+		'image'
+	)
+	svgImage.setAttribute('id', 'glowing-dot')
+	svgImage.setAttribute('href', '/images/glowing-dot.webp')
+	svgImage.setAttribute('width', '345')
+	svgImage.setAttribute('height', '345')
+	svgImage.setAttribute('transform', 'matrix(0.85,0,0,0.85,-146.625,-146.625)')
+	svgImage.style.opacity = 0
+	document.getElementById('dot-wrapper-step-02').appendChild(svgImage)
 
-	document.getElementById('dot-wrapper-step-02').appendChild(dot)
-
-	gsap.to(dot, {
+	gsap.to(svgImage, {
 		opacity: 1,
 		duration: 1,
 	})
