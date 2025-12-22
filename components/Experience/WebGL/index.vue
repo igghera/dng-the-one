@@ -360,6 +360,8 @@ emitter.on(EVENTS.ANIMATE_IN_MAIN_SCENE, () => {
 })
 
 emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
+	experienceEndDrawMaterial.opacity.value = 1
+
 	gsap.fromTo(
 		experienceEndDrawMaterial.progress,
 		{

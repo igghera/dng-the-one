@@ -10,6 +10,7 @@
 		<div class="content">
 			<div
 				v-for="(label, idx) in labels"
+				style="opacity: 0.001"
 				:key="idx"
 				class="dragger"
 				:data-index="idx"
@@ -147,7 +148,6 @@ emitter.on(EVENTS.BACK, () => {
 const setInitialState = () => {
 	gsap.set(
 		[
-			get(draggersRef),
 			get(draggersLabelsRef),
 			get(dropzoneCircleRef),
 			get(dropzoneArrowRef),

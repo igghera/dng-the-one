@@ -143,6 +143,7 @@ const config = useRuntimeConfig()
 
 const lenis = useLenis()
 
+const el = useCurrentElement()
 const introHeaderRef = useTemplateRef('introHeaderRef')
 const title01Ref = useTemplateRef('title01Ref')
 const title02Ref = useTemplateRef('title02Ref')
@@ -284,11 +285,52 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE, async () => {
 	createPointerObserver()
 })
 
+emitter.once(EVENTS.BACK, () => {
+	if (!uiStore.isExperienceEndVisible) return
+
+	back()
+})
+
 //
 // Methods
 //
 const setInitialState = () => {
 	gsap.set(get(introHeaderRef), { autoAlpha: 0 })
+}
+
+const back = async () => {
+	uiStore.setBackButtonVisible(false)
+
+	pointerObserver?.kill()
+
+	await animateBack()
+
+	uiStore.setExperienceStep03Visible(true)
+}
+
+const animateBack = async () => {
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	tl.to(
+		get(el),
+		{
+			autoAlpha: 0,
+			duration: 0.8,
+		},
+		'start'
+	)
+
+	tl.to(
+		experienceEndDrawMaterial.opacity,
+		{
+			value: 0,
+			duration: 0.65,
+		},
+		'start+=0.1'
+	)
+
+	return tl.play()
 }
 
 const handlePrint = async () => {
