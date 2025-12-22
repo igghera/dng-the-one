@@ -101,6 +101,7 @@ const { gsap, Draggable, Flip } = useGSAP()
 
 const { isPortrait } = useViewport()
 
+const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
 const instructionsRef = useTemplateRef('instructionsRef')
 const draggersRef = useTemplateRef('draggersRef')
@@ -128,7 +129,16 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-	draggableInstance?.[0]?.kill()
+	draggableInstance.forEach(instance => instance.kill())
+})
+
+//
+// Events
+//
+emitter.on(EVENTS.BACK, () => {
+	if (!uiStore.isExperienceStep03Visible) return
+
+	back()
 })
 
 //
@@ -296,6 +306,41 @@ const pulseDraggers = () => {
 		ease: 'power1.inOut',
 		repeat: 1,
 		yoyo: true,
+	})
+}
+
+const back = async () => {
+	uiStore.setBackButtonVisible(false)
+
+	draggableInstance.forEach(instance => instance.kill())
+
+	await animateBack()
+
+	uiStore.setExperienceStep02Visible(true)
+
+	await nextTick()
+
+	const dot = document.getElementById('glowing-dot')
+	dot.style.opacity = 0
+
+	document.getElementById('dot-wrapper-step-02').appendChild(dot)
+
+	gsap.to(dot, {
+		opacity: 1,
+		duration: 1,
+	})
+
+	uiStore.setExperienceStep03Visible(false)
+
+	await nextTick()
+
+	emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, { back: true })
+}
+
+const animateBack = () => {
+	return gsap.to(get(el), {
+		autoAlpha: 0,
+		duration: 0.8,
 	})
 }
 

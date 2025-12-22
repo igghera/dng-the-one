@@ -297,7 +297,7 @@ const labels = computed(() => {
 onMounted(async () => {
 	setInitialState()
 
-	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async () => {
+	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async params => {
 		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START')
 
 		gsap.set(get(trackRef), {
@@ -306,8 +306,16 @@ onMounted(async () => {
 
 		await nextTick()
 
-		// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
-		emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
+		if (params?.back) {
+			await animateIn()
+
+			uiStore.setBackButtonVisible(true)
+
+			createDraggable()
+		} else {
+			// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
+			emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
+		}
 	})
 
 	emitter.once(EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE, async () => {
@@ -485,16 +493,6 @@ const animateIn = () => {
 		},
 		'start+=0.2'
 	)
-
-	// tl.to(
-	// 	get(contentMaskRectInitRef),
-	// 	{
-	// 		scale: 1,
-	// 		duration: 1.2,
-	// 		ease: 'power1.out',
-	// 	},
-	// 	'start+=0.3'
-	// )
 
 	return tl.play()
 }
