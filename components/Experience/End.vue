@@ -126,7 +126,7 @@
 <script setup>
 import { Howler } from 'howler'
 import { get, set, useStorage } from '@vueuse/core'
-import { PDFDocument } from 'pdf-lib'
+// import { PDFDocument } from 'pdf-lib'
 import { ZeroConf } from 'capacitor-zeroconf'
 import { snapdom } from '@zumer/snapdom'
 import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
@@ -178,12 +178,15 @@ const storage = useStorage('experience-answers', {})
 const showResult = shallowRef(false)
 
 const MM_PER_INCH = 25.4
-const PHOTO_WIDTH_MM = 102
-const PHOTO_HEIGHT_MM = 150
+// Standard 4x6 inch dimensions
+const PHOTO_WIDTH_INCH = 4
+const PHOTO_HEIGHT_INCH = 6
 const BASE_DPI = 300
+
+// Exact 4x6 inch at 300 DPI (1200x1800)
 const CANVAS_DIMENSIONS = Object.freeze({
-	width: Math.round((PHOTO_WIDTH_MM / MM_PER_INCH) * BASE_DPI),
-	height: Math.round((PHOTO_HEIGHT_MM / MM_PER_INCH) * BASE_DPI),
+	width: PHOTO_WIDTH_INCH * BASE_DPI,
+	height: PHOTO_HEIGHT_INCH * BASE_DPI,
 })
 
 const ZERO_CONF_DOMAIN = 'local.'
@@ -332,12 +335,13 @@ const setInitialState = () => {
 // PRINT CONFIGURATION
 // ============================================================================
 
-const CM_TO_POINTS = 72 / 2.54
+// Points per inch
+const POINTS_PER_INCH = 72
 
-// PDF page dimensions (10.2cm x 15cm = 4x6 inch at 72 DPI)
+// Photo dimensions 4x6 inch in points (Standard iOS Print size)
 const PHOTO_PAPER = Object.freeze({
-	width: 10.2 * CM_TO_POINTS,
-	height: 15 * CM_TO_POINTS,
+	width: 4 * POINTS_PER_INCH, // 288
+	height: 6 * POINTS_PER_INCH, // 432
 })
 
 // Zero margins for borderless printing
@@ -350,11 +354,16 @@ const ZERO_MARGINS = Object.freeze({
 
 // Cordova printer plugin options
 const BORDERLESS_OPTIONS = {
-	printType: 'photo',
-	ui: {
-		hidePaperFormat: true,
-		hideBorder: true,
-	},
+	orientation:'portrait',
+	photo: true,
+	autoFit: false,
+	margin: {
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+	}, 
+	
 }
 
 // ============================================================================
@@ -379,36 +388,6 @@ const dataUrlToBytes = dataUrl => {
 	return { mime, bytes }
 }
 
-/**
- * Create PDF document with photo (unused - direct PNG printing preferred)
- */
-const createPhotoPrintPdf = async dataUrl => {
-	const pdfDoc = await PDFDocument.create()
-	const { mime, bytes } = dataUrlToBytes(dataUrl)
-	const embedImage = mime.includes('png')
-		? await pdfDoc.embedPng(bytes)
-		: await pdfDoc.embedJpg(bytes)
-
-	const page = pdfDoc.addPage([PHOTO_PAPER.width, PHOTO_PAPER.height])
-	const scale = Math.min(
-		page.getWidth() / embedImage.width,
-		page.getHeight() / embedImage.height
-	)
-
-	const drawWidth = embedImage.width * scale
-	const drawHeight = embedImage.height * scale
-
-	page.drawImage(embedImage, {
-		x: (page.getWidth() - drawWidth) / 2,
-		y: (page.getHeight() - drawHeight) / 2,
-		width: drawWidth,
-		height: drawHeight,
-	})
-
-	const pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true })
-
-	return `base64:${pdfDataUri}`
-}
 
 /**
  * Convert blob to photo-ready PNG data URL
@@ -553,23 +532,13 @@ const handlePrint = async () => {
 				// Direct print attempt using plugin
 				// This uses the IPP URL discovered via ZeroConf (mdns)
 				// Format: ipp://[ip]:[port]/[resource_path]
-				await window.cordova.plugins.printer.print(base64Payload, {					
-					printer: printer.ippUrl
-				})
 				
-				// ALTERNATIVE CONFIGURATION (For Borderless Printing)
-				// If the simple call above works but margins are wrong, try this:
-				/*
+				// Semplificazione opzioni per debug fallimento
 				await window.cordova.plugins.printer.print(base64Payload, {
-					...BORDERLESS_OPTIONS, // sets printType: 'photo' and hides UI
 					printer: printer.ippUrl,
-					bounds: {
-						width: PHOTO_PAPER.width, // 4x6 inches in points
-						height: PHOTO_PAPER.height,
-						...ZERO_MARGINS,
-					},
+					name: 'The One Experience',
+					...BORDERLESS_OPTIONS
 				})
-				*/
 
 				console.log('✅ Print command sent to plugin')
 				// alert('Stampa inviata con successo!')
