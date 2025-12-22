@@ -515,6 +515,8 @@ onMounted(async () => {
 
 	set(init, true)
 
+	gsap.set(get(el), { clearProps: '-webkit-user-select' })
+
 	gsap.delayedCall(0.4, () => {
 		animateInBackground()
 
@@ -1149,7 +1151,7 @@ async function animateToInitialPosition() {
 @use '@/assets/css/functions' as *;
 
 .explore {
-	@apply grid h-[100svh] overflow-hidden;
+	@apply grid h-[100svh] overflow-hidden select-none;
 	@apply transition-opacity duration-1000;
 
 	&[data-visible='false'] {
@@ -1485,17 +1487,17 @@ async function animateToInitialPosition() {
 }
 
 .intro {
-	@apply flex flex-col gap-y-20 items-center size-auto self-end justify-self-center text-center relative z-[1] pointer-events-none text-gold;
+	@apply flex flex-col gap-y-20 items-center size-auto self-end justify-self-center text-center relative z-[1] pointer-events-none select-none text-gold;
 
 	translate: 0 min(toRem(-66), -10svh);
 }
 
 .intro-text {
-	@apply text-base leading-tight tracking-[0.05em];
+	@apply text-base leading-tight tracking-[0.05em] whitespace-nowrap;
 }
 
 .instructions {
-	@apply size-auto self-end justify-self-center pointer-events-none text-gold relative z-[1];
+	@apply size-auto self-end justify-self-center pointer-events-none text-gold relative z-[1] select-none whitespace-nowrap;
 	@apply leading-none tracking-[0.03em];
 
 	font-size: toRem(15);
