@@ -160,7 +160,7 @@ const allProducts = Object.values(tm('products')).map(product => ({
 const imageSrc = computed(() => {
 	if (!get(result)) return null
 
-	return `/images/download-cards/download/0${card}_${get(result).get(
+	return `/images/download-cards/download/0${Number(q1) + 1}_${get(result).get(
 		'shape'
 	)}.webp`
 })
@@ -174,6 +174,7 @@ onMounted(async () => {
 	get(lenis).start()
 
 	uiStore.setMainUiVisible(true)
+	uiStore.setBottomGradientVisible(true)
 	document.documentElement.dataset.init = true
 
 	const res = calculateResult(

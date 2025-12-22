@@ -123,11 +123,12 @@
 			class="panel"
 			:data-open="panelOpen"
 			:data-open-full="panelOpenFull"
+			:data-can-scroll="panelCanScroll"
 			ref="panelRef"
 		>
 			<button
 				class="panel-close-button"
-				@click="handleClosePanel"
+				@click="closePanel"
 				aria-label="close panel"
 			>
 				<IconClose class="relative z-[1]" />
@@ -137,7 +138,11 @@
 				class="panel-scroller | no-scrollbar | overflow-y-auto"
 				ref="panelScrollerRef"
 			>
-				<div v-if="currentProductData" class="panel-content">
+				<div
+					v-if="currentProductData"
+					class="panel-content"
+					ref="panelContentRef"
+				>
 					<template v-for="(item, idx) in currentProductData" :key="idx">
 						<div v-if="item.component === 'title'" class="panel-content-header">
 							<span class="panel-content-title">{{ item.value[0] }}</span>
@@ -198,6 +203,7 @@ import {
 } from 'three/addons/renderers/CSS3DRenderer'
 import CameraControls from 'camera-controls'
 import { get, set } from '@vueuse/core'
+import { Howler } from 'howler'
 
 import { ktxLoader } from '~/assets/js/loaders'
 import { backgroundCopper, backgroundGold } from './materials/background'
@@ -220,11 +226,18 @@ const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
 const panelRef = useTemplateRef('panelRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
+const panelContentRef = useTemplateRef('panelContentRef')
 const draggableDummyRef = useTemplateRef('draggableDummyRef')
+
+const appStore = useAppStore()
+
+const { isMobile } = useViewport()
 
 const isVisible = useElementVisibility(el)
 const { width: componentWidth, height: componentHeight } =
 	useElementBounding(el)
+const { height: panelScrollerHeight } = useElementBounding(panelScrollerRef)
+const { height: panelContentHeight } = useElementBounding(panelContentRef)
 
 const { gsap, SplitText, Observer, Draggable } = useGSAP()
 const { rt, tm } = useI18n()
@@ -322,7 +335,7 @@ const itemsData = [
 	},
 	{
 		position: {
-			x: 0.123,
+			x: 0.151,
 			y: -0.358,
 			z: 0,
 		},
@@ -456,19 +469,25 @@ const panelsData = computed(() => {
 	return map
 })
 
+const panelCanScroll = computed(() => {
+	return get(panelContentHeight) > get(panelScrollerHeight)
+})
+
 //
 // Misc
 //
-// onClickOutside(
-// 	panelRef,
-// 	() => {
-// 		set(panelOpen, false)
-// 		controls.enabled = true
-// 	},
-// 	{
-// 		ignore: ['.pin'],
-// 	}
-// )
+onClickOutside(
+	panelRef,
+	() => {
+		if (!get(panelOpen)) return
+
+		closePanel()
+		controls.enabled = true
+	},
+	{
+		ignore: ['.pin', '.button-audio'],
+	}
+)
 
 //
 // Lifecycle
@@ -741,6 +760,9 @@ function createDrag() {
 	const points = itemsData.map(item => new THREE.Vector3().copy(item.position))
 	curve = new THREE.CatmullRomCurve3(points, false, 'catmullrom', 0.6)
 
+	// TODO: Hardcoded values for now, need to calculate them dynamically.
+	const snaps = [980, 735, 490, 245, 0]
+
 	draggableInstance = Draggable.create(get(draggableDummyRef), {
 		trigger: get(el),
 		type: 'x',
@@ -752,6 +774,9 @@ function createDrag() {
 			width: 1000,
 		},
 		zIndexBoost: false,
+		snap: value => {
+			return getClosestValue(snaps, value)
+		},
 		onDrag: () => {
 			update(draggableInstance[0].x)
 		},
@@ -784,29 +809,6 @@ function createDrag() {
 			false
 		)
 	}
-}
-
-function getProgressOnCurveAtIndex(index) {
-	const dummyPoints = []
-
-	let i
-	for (i = 0; i <= index; i++) {
-		dummyPoints.push(new THREE.Vector3().copy(itemsData[i].position))
-	}
-
-	if (dummyPoints.length < 2) return 0
-
-	const dummyCurve = new THREE.CatmullRomCurve3(
-		dummyPoints,
-		false,
-		'catmullrom',
-		0.6
-	)
-
-	const originalCurveLength = curve.getLength()
-	const dummyCurveLength = dummyCurve.getLength()
-
-	return dummyCurveLength / originalCurveLength
 }
 
 function createCameraTargets() {
@@ -847,6 +849,8 @@ function createPanelPointerObserver() {
 			gsap.set(get(panelRef), { '--drag-pan-y': newVal })
 		},
 		onRelease: () => {
+			if (!isMobile) return
+
 			// Prevent if the panel is not open.
 			if (!get(panelOpen)) return
 
@@ -867,11 +871,36 @@ async function handlePinPointerdown(event) {
 
 	draggableInstance?.[0]?.disable()
 
-	const nicheIndex = productId.split('_')[0]
+	const nicheIndex = Number(productId.split('_')[0])
 	const params = {
 		cover: false,
-		paddingTop: 0.15,
-		paddingBottom: 0.25,
+		paddingTop: get(isMobile) ? 0.15 : 0,
+		paddingBottom: get(isMobile) ? 0.25 : 0,
+		paddingRight: get(isMobile) ? 0 : 0.4,
+		paddingLeft: get(isMobile) ? 0 : 0.1,
+	}
+
+	if (!get(isMobile)) {
+		switch (nicheIndex) {
+			case 1:
+				params.paddingRight = 0.25
+				params.paddingLeft = 0.02
+				break
+			case 2:
+				params.paddingRight = 0.35
+				params.paddingLeft = 0.05
+				break
+			case 3:
+				params.paddingRight = 0.33
+				params.paddingLeft = 0.05
+				break
+			case 4:
+				params.paddingRight = 0.55
+				params.paddingLeft = 0.15
+				break
+			default:
+				break
+		}
 	}
 
 	set(currentProduct, productId)
@@ -884,22 +913,7 @@ async function handlePinPointerdown(event) {
 
 	controls.getPosition(controlsPositionMemo)
 
-	await controls.fitToBox(targets[nicheIndex], true, params)
-
-	// const progress = getProgressOnCurveAtIndex(nicheIndex)
-	// gsap.set(get(draggableDummyRef), {
-	// 	x: () => 980 - progress * 980,
-	// })
-	// draggableInstance?.[0]?.update()
-
-	// const pointAtProgress = curve.getPointAt(progress)
-	// controlsPositionMemo.x = pointAtProgress.x
-	// controlsPositionMemo.y = pointAtProgress.y
-}
-
-function handleClosePanel() {
-	set(copyVisible, true)
-	closePanel()
+	controls.fitToBox(targets[nicheIndex], true, params)
 }
 
 function openPanel() {
@@ -907,15 +921,19 @@ function openPanel() {
 	set(pinsVisible, false)
 
 	get(panelScrollerRef).scrollTo(0, 0)
-	get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+
+	if (get(isMobile)) {
+		get(panelScrollerRef).removeAttribute('data-lenis-prevent')
+	} else {
+		get(panelScrollerRef).dataset.lenisPrevent = ''
+	}
 }
 
 async function closePanel() {
-	const currentNicheIndex = Number(get(currentProduct).split('_')[0])
-
 	set(panelOpen, false)
 	set(panelOpenFull, false)
 	set(currentProduct, null)
+	set(copyVisible, true)
 
 	const currentPos = new THREE.Vector3()
 	controls.getPosition(currentPos)
@@ -941,6 +959,16 @@ function openPanelFull() {
 }
 
 async function introButtonOnCompleteCallback() {
+	audioManager.init()
+
+	await nextTick()
+
+	appStore.setAudioEnabled(true)
+	Howler.volume(1)
+
+	!audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing() &&
+		audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)
+
 	await animateOutIntro()
 
 	set(css3DContentVisible, true)
@@ -1308,33 +1336,13 @@ async function animateToInitialPosition() {
 	--drag-pan-y: 0;
 	--height-on-open: 250;
 
-	@apply self-end justify-self-center relative z-[1] select-none;
-	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-14;
+	@apply relative z-[1] select-none;
+	@apply flex flex-col items-stretch gap-y-5 bg-[hsl(22,43%,22%)] text-gold rounded-t-[10px] pt-5 px-5 pb-8;
 	@apply border border-solid border-[#75482E];
-
-	height: calc(var(--height-on-open) * 1px);
-	transition-property: transform, height;
-	transition-timing-function: theme('transitionTimingFunction.out'),
-		theme('transitionTimingFunction.out');
-	transition-duration: 700ms, 500ms;
-	width: min(100%, toRem(400));
-
-	&[data-open='false'] {
-		@apply translate-y-full;
-
-		transition-duration: 400ms;
-	}
-
-	&[data-open='true'][data-open-full='false'] {
-		height: calc((var(--height-on-open) + var(--drag-pan-y)) * 1px);
-	}
-
-	&[data-open-full='true'] {
-		height: min(toRem(500), calc(100svh - 80px));
-	}
 
 	&::after {
 		@apply block content-[''] absolute bottom-12 inset-x-0 h-16 pointer-events-none;
+		@apply md:bottom-8;
 
 		--hdr-gradient: linear-gradient(
 			to top in oklab,
@@ -1344,6 +1352,62 @@ async function animateToInitialPosition() {
 
 		background: var(--hdr-gradient);
 	}
+
+	@screen md-down {
+		@apply self-end justify-self-center pb-14;
+
+		height: calc(var(--height-on-open) * 1px);
+		transition-property: transform, height;
+		transition-timing-function: theme('transitionTimingFunction.out'),
+			theme('transitionTimingFunction.out');
+		transition-duration: 700ms, 500ms;
+		width: min(100%, toRem(400));
+
+		&[data-open='false'] {
+			@apply translate-y-full;
+
+			transition-duration: 400ms;
+		}
+
+		&[data-open='true'][data-open-full='false'] {
+			height: calc((var(--height-on-open) + var(--drag-pan-y)) * 1px);
+		}
+
+		&[data-open-full='true'] {
+			height: min(toRem(500), calc(100svh - 80px));
+		}
+	}
+
+	@screen md {
+		@apply h-auto rounded-b-[10px] right-9 justify-self-end self-center;
+		@apply transition-opacity duration-[800ms] delay-300;
+
+		max-height: min(toRem(600), calc(100svh - toRem(280)));
+		width: min(toRem(375), 50vw);
+
+		&[data-open='false'] {
+			@apply self-center opacity-0 pointer-events-none delay-0 duration-500;
+		}
+
+		&[data-can-scroll='false']::after {
+			@apply hidden;
+		}
+	}
+
+	@screen lg {
+		width: min(toRem(425), 50vw);
+	}
+
+	@screen 2xl {
+		right: 15vw;
+	}
+}
+
+.panel-scroller {
+	timeline-scope: --scroll;
+	animation: --scroll forwards;
+	animation-timeline: --scroll;
+	container-name: --scroll;
 }
 
 .panel-close-button {
@@ -1357,7 +1421,14 @@ async function animateToInitialPosition() {
 }
 
 .panel-content {
-	@apply flex flex-col gap-y-7 relative pb-10;
+	@apply flex flex-col gap-y-7 relative;
+	@apply md-down:pb-10;
+
+	@screen md {
+		[data-can-scroll='true'] & {
+			@apply pb-14;
+		}
+	}
 }
 
 .panel-content-header {
@@ -1365,6 +1436,10 @@ async function animateToInitialPosition() {
 
 	font-size: toRem(20);
 	width: calc(100% - toRem(32));
+
+	@screen tablet-portrait-lg {
+		font-size: toRem(26);
+	}
 }
 
 .panel-content-title {
@@ -1375,6 +1450,10 @@ async function animateToInitialPosition() {
 	@apply tracking-[0.05em] font-medium leading-[1.3333];
 
 	font-size: toRem(15);
+
+	@screen tablet-portrait-lg {
+		font-size: toRem(20);
+	}
 }
 
 .panel-content-cta {

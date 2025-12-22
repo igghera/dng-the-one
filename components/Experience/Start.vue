@@ -1,21 +1,23 @@
 <template>
-	<Container class="pointer-events-none">
-		<header class="header | text-shadow">
-			<h1
-				class="display-1 | golden-text uppercase"
-				ref="titleRef"
-				style="opacity: 0"
-			>
-				{{ $t('experience_start.title') }}
-			</h1>
+	<Container class="pointer-events-none tablet-portrait:pb-16">
+		<ClientOnly>
+			<header class="header | text-shadow">
+				<h1
+					class="display-1 | golden-text uppercase"
+					ref="titleRef"
+					style="opacity: 0.001"
+				>
+					{{ $t('experience_start.title') }}
+				</h1>
 
-			<p
-				class="copy | body-4 | text-gold"
-				style="opacity: 0"
-				v-html="$t('experience_start.copy')"
-				ref="copyRef"
-			/>
-		</header>
+				<p
+					class="copy | body-4 | text-gold"
+					style="opacity: 0"
+					v-html="$t('experience_start.copy')"
+					ref="copyRef"
+				/>
+			</header>
+		</ClientOnly>
 
 		<ButtonGolden
 			class="self-end pointer-events-auto md:portrait:-translate-y-1/2"
@@ -29,12 +31,15 @@
 </template>
 
 <script setup>
+import { Howler } from 'howler'
 import { get } from '@vueuse/core'
 
 //
 // Refs / State
 //
 const { gsap, SplitText } = useGSAP()
+
+const appStore = useAppStore()
 
 const el = useCurrentElement()
 const titleRef = useTemplateRef('titleRef')
@@ -109,7 +114,15 @@ const animateIn = () => {
 }
 
 const handleClick = () => {
+	audioManager.init()
+
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)
+
+	appStore.setAudioEnabled(true)
+	Howler.volume(1)
+
+	!audioManager.getTrack(AUDIO_LABELS.BASE_LOOP).playing() &&
+		audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)
 
 	gsap.to([get(titleRef), get(copyRef), get(buttonRef).$el], {
 		opacity: 0,

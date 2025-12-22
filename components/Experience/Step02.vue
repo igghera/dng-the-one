@@ -8,7 +8,7 @@
 
 			<div class="labels">
 				<span
-					class="label | body-7"
+					class="label"
 					v-for="(label, idx) in labels"
 					:key="label"
 					:data-index="idx"
@@ -29,32 +29,6 @@
 					overflow="visible"
 					ref="trackRef"
 				>
-					<g v-if="false" id="step-02-content-mask">
-						<rect x="-300" y="0" width="716" height="2000" fill="black" />
-
-						<rect
-							style="transform-box: fill-box; transform-origin: center"
-							x="-300"
-							y="10"
-							width="716"
-							height="800"
-							fill="url(#step-02-content-gradient-init)"
-							fill-opacity="1"
-							ref="contentMaskRectInitRef"
-						/>
-
-						<rect
-							style="transform-box: fill-box; transform-origin: center"
-							x="-300"
-							y="10"
-							width="716"
-							height="800"
-							fill="url(#step-02-content-gradient-final)"
-							fill-opacity="1"
-							ref="contentMaskRectFinalRef"
-						/>
-					</g>
-
 					<g mask="url(#step-02-content-mask)">
 						<!-- DO NOT DELETE: Filler element to avoid clipping issues -->
 						<rect
@@ -160,7 +134,7 @@
 								<circle cx="58" cy="58" r="58" fill="black" fill-opacity="1" />
 							</g>
 
-							<g transform="translate(0, 550)" ref="trackMaskInitialRef">
+							<g transform="translate(0, 650)" ref="trackMaskInitialRef">
 								<rect x="0" y="0" width="116" height="300" fill="black"></rect>
 							</g>
 						</mask>
@@ -200,8 +174,8 @@
 							id="step-02-content-gradient-init"
 							gradientTransform="rotate(90)"
 						>
-							<stop offset="0%" stop-color="black" />
-							<stop offset="28%" stop-color="black" />
+							<stop offset="0%" stop-color="white" />
+							<stop offset="28%" stop-color="white" />
 							<stop offset="40%" stop-color="white" />
 							<stop offset="100%" stop-color="white" />
 						</linearGradient>
@@ -211,8 +185,8 @@
 							gradientTransform="rotate(90)"
 						>
 							<stop offset="0%" stop-color="black" />
-							<stop offset="24%" stop-color="black" />
-							<stop offset="36%" stop-color="white" />
+							<stop offset="28%" stop-color="black" />
+							<stop offset="40%" stop-color="white" />
 							<stop offset="73%" stop-color="white" />
 							<stop offset="85%" stop-color="black" />
 							<stop offset="100%" stop-color="black" />
@@ -452,6 +426,17 @@ const animateIn = () => {
 	const tl = gsap.timeline({ paused: true })
 	tl.addLabel('start')
 
+	tl.to(
+		'#step-02-content-gradient-init stop:nth-child(-n + 2)',
+		{
+			attr: {
+				'stop-color': 'black',
+			},
+			duration: 0.5,
+		},
+		'start'
+	)
+
 	tl.fromTo(
 		[get(headerRef), get(dotsRef), get(draggerCircleRef)],
 		{
@@ -467,7 +452,7 @@ const animateIn = () => {
 				resetIdle()
 			},
 		},
-		'start'
+		'<0.2'
 	)
 
 	tl.to(
@@ -581,7 +566,7 @@ const handleStepChange = (next, prev) => {
 		})
 
 		gsap.to(godraysSmoothBottom, {
-			value: 0.22,
+			value: 0.15,
 			duration: 3.5,
 			overwrite: true,
 		})
@@ -885,7 +870,7 @@ const createDraggable = () => {
 }
 
 .labels {
-	@apply grid;
+	@apply grid text-gold-light;
 
 	& > * {
 		@apply col-start-1 row-start-1;
@@ -893,11 +878,16 @@ const createDraggable = () => {
 }
 
 .label {
-	@apply text-gold-light;
+	@apply text-center font-medium text-base leading-snug tracking-[0.05em];
 	@apply transition-opacity duration-500 ease-out;
 
 	&[data-visible='false'] {
 		@apply opacity-0;
+	}
+
+	@screen md {
+		font-size: toRem(27);
+		line-height: 1.15;
 	}
 }
 
@@ -934,7 +924,7 @@ const createDraggable = () => {
 }
 
 .cta-wrapper {
-	@apply grid items-center justify-center;
+	@apply grid items-center justify-center justify-items-center;
 
 	grid-area: c;
 }

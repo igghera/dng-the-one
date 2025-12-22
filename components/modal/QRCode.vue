@@ -10,8 +10,6 @@
 			</header>
 
 			<div class="qr-wrapper" ref="qrWrapperRef" />
-
-			<p class="copy" v-html="$t('modal_qr_code.copy')" />
 		</div>
 	</div>
 </template>
@@ -171,15 +169,11 @@ const generateQrCode = () => {
 		'.'
 		'b'
 		'.'
-		'c'
-		'.'
-		'd';
+		'c';
 	grid-template-columns: 1fr;
 	grid-template-rows:
 		auto
 		toRem(50)
-		auto
-		toRem(60)
 		auto
 		toRem(60)
 		auto;
@@ -218,12 +212,5 @@ const generateQrCode = () => {
 			#f5d982 88.29%
 		);
 	}
-}
-
-.copy {
-	@apply leading-none tracking-[0.05em];
-
-	font-size: toRem(20);
-	grid-area: d;
 }
 </style>

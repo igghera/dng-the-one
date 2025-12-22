@@ -11,6 +11,7 @@ export const useUiStore = defineStore('uiStore', {
     experienceEndVisible: false,
     resultsVisible: false,
     topGradientVisible: false,
+    bottomGradientVisible: false,
     resultsScrollDownVisible: false,
     qrCodeModalVisible: false,
   }),
@@ -28,6 +29,7 @@ export const useUiStore = defineStore('uiStore', {
       this.experienceEndVisible = false
       this.resultsVisible = false
       this.topGradientVisible = false
+      this.bottomGradientVisible = false
       this.resultsScrollDownVisible = false
       this.qrCodeModalVisible = false
     },
@@ -72,6 +74,10 @@ export const useUiStore = defineStore('uiStore', {
       this.topGradientVisible = visible
     },
 
+    setBottomGradientVisible(visible) {
+      this.bottomGradientVisible = visible
+    },
+
     setResultsVisible(visible) {
       this.resultsVisible = visible
     },
@@ -97,6 +103,7 @@ export const useUiStore = defineStore('uiStore', {
     isExperienceEndVisible: (state) => state.experienceEndVisible,
     isResultsVisible: (state) => state.resultsVisible,
     isTopGradientVisible: (state) => state.topGradientVisible,
+    isBottomGradientVisible: (state) => state.bottomGradientVisible,
     isResultsScrollDownVisible: (state) => state.resultsScrollDownVisible,
     isQrCodeModalVisible: (state) => state.qrCodeModalVisible,
   }

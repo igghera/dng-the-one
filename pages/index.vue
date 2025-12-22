@@ -10,6 +10,10 @@
 			<ExperienceTopGradient v-if="uiStore.isTopGradientVisible" />
 		</Transition>
 
+		<Transition name="fade-from-bottom">
+			<ExperienceBottomGradient v-if="uiStore.isBottomGradientVisible" />
+		</Transition>
+
 		<Transition name="fade">
 			<ExperienceScrollDown
 				v-if="uiStore.isResultsVisible && uiStore.isResultsScrollDownVisible"
@@ -55,6 +59,7 @@ onMounted(async () => {
 	if (isFromExplore) {
 		uiStore.setMainUiVisible(true)
 		uiStore.setPreloaderVisible(false)
+		uiStore.setBottomGradientVisible(true)
 		uiStore.setExperienceStartVisible(false)
 		uiStore.setExperienceEndVisible(true)
 
@@ -73,6 +78,9 @@ onMounted(async () => {
 
 emitter.on(EVENTS.RESTART, async () => {
 	emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+
+	audioManager.fadeIn(AUDIO_LABELS.BASE_LOOP)
+	audioManager.fadeOut(AUDIO_LABELS.CAMPAIGN_LOOP)
 
 	get(lenis).stop()
 	get(lenis).scrollTo(0, { immediate: true, force: true })
@@ -116,6 +124,19 @@ emitter.on(EVENTS.RESTART, async () => {
 
 .fade-enter-from,
 .fade-leave-to {
+	opacity: 0;
+}
+
+.fade-from-bottom-enter-active,
+.fade-from-bottom-leave-active {
+	transition-property: transform, opacity;
+	transition-duration: 2s, 1.7s;
+	transition-timing-function: ease, ease;
+}
+
+.fade-from-bottom-enter-from,
+.fade-from-bottom-leave-to {
+	transform: translateY(50%);
 	opacity: 0;
 }
 </style>

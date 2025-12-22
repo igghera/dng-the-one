@@ -1,5 +1,5 @@
 <template>
-	<button class="button" @click="handleClick" aria-label="Toggle audio">
+	<button class="button-audio" @click="handleClick" aria-label="Toggle audio">
 		<svg
 			class="svg"
 			viewBox="0 0 22 20"
@@ -26,6 +26,7 @@
 </template>
 
 <script setup>
+import { Howler } from 'howler'
 import { get } from '@vueuse/core'
 
 //
@@ -117,11 +118,22 @@ watch(
 //
 const handleClick = () => {
 	appStore.setAudioEnabled(!appStore.audioEnabled)
+
+	const volume = { value: Howler.volume() }
+	const targetVolume = appStore.audioEnabled ? 1 : 0
+
+	gsap.to(volume, {
+		value: targetVolume,
+		duration: 1,
+		onUpdate: () => {
+			Howler.volume(volume.value)
+		},
+	})
 }
 </script>
 
 <style lang="scss" scoped>
-.button {
+.button-audio {
 	@apply uppercase grid items-center justify-center relative;
 
 	&::before {

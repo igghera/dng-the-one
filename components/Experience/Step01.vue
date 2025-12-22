@@ -2,7 +2,7 @@
 	<Container class="pointer-events-none" :data-ready="ready">
 		<header class="header" ref="headerRef">
 			<h2
-				class="display-2 | golden-text text-shadow | uppercase"
+				class="display-2 | golden-text text-shadow | uppercase font-medium"
 				v-html="$t('experience_step_01.title')"
 			/>
 
@@ -46,15 +46,17 @@
 				viewBox="0 0 456 456"
 				overflow="visible"
 			>
-				<g ref="dotsRef">
+				<g>
 					<circle
 						v-for="({ x, y }, idx) in dotsCoords"
+						style="opacity: 0"
 						:key="idx"
 						:cx="x"
 						:cy="y"
 						r="6.271"
 						fill="#ffdba5"
-						opacity=".6"
+						fill-opacity=".6"
+						ref="dotsRef"
 					/>
 				</g>
 
@@ -213,6 +215,9 @@ onMounted(async () => {
 				ease: 'power2.out',
 				overwrite: true,
 			})
+
+			set(instructionsVisible, false)
+			set(ctaVisible, true)
 		},
 		onPress() {
 			gsap.to(get(knobDotRef), {
@@ -291,7 +296,7 @@ emitter.on(EVENTS.RESTART, () => {
 // Methods
 //
 const setInitialStyles = () => {
-	gsap.set([get(headerRef), get(dotsRef), get(knobRef)], {
+	gsap.set([get(headerRef), get(knobRef)], {
 		opacity: 0,
 	})
 
@@ -356,6 +361,26 @@ const animateIn = () => {
 		'<0.3'
 	)
 
+	// Show dots
+	tl.fromTo(
+		get(dotsRef),
+		{
+			opacity: 0,
+			scale: 0.35,
+			transformOrigin: 'center',
+		},
+		{
+			opacity: 1,
+			duration: 0.85,
+			ease: 'power1.out',
+			stagger: {
+				amount: 1.75,
+			},
+			scale: 1,
+		},
+		'<0.5'
+	)
+
 	// Knob position
 	tl.fromTo(
 		get(knobDotWrapperRef),
@@ -369,7 +394,15 @@ const animateIn = () => {
 			duration: 1.6,
 			ease: 'power2.inOut',
 		},
-		'<1.5'
+		'<1.7'
+	)
+
+	tl.call(
+		() => {
+			set(sunIconVisible, true)
+		},
+		null,
+		'<0.3'
 	)
 
 	tl.call(
@@ -377,33 +410,19 @@ const animateIn = () => {
 			set(ready, true)
 		},
 		null,
-		'>-0.1'
+		'>1'
 	)
 
-	// Show sun icon and dots
-	tl.fromTo(
-		get(dotsRef),
-		{
-			opacity: 0,
-		},
-		{
-			opacity: 1,
-			duration: 1.2,
-			ease: 'power1.inOut',
-			stagger: 0.6,
-		},
-		'<0.3'
-	)
+	tl.add(wiggleKnob(), '>0.5')
 
 	// Show labels and enable draggable
 	tl.call(
 		() => {
 			draggableInstance?.[0]?.enable()
 			set(labelsVisible, true)
-			set(sunIconVisible, true)
 		},
 		null,
-		'<0.2'
+		'>'
 	)
 
 	// Show instructions
@@ -412,7 +431,7 @@ const animateIn = () => {
 			set(instructionsVisible, true)
 		},
 		null,
-		'<0.4'
+		'<0.1'
 	)
 }
 
@@ -482,6 +501,45 @@ const moveDotToNextPosition = async () => {
 		},
 		'>'
 	)
+
+	return tl.play()
+}
+
+const wiggleKnob = () => {
+	const tl = gsap.timeline({ paused: true })
+	tl.addLabel('start')
+
+	tl.to(
+		get(knobRef),
+		{
+			rotation: 12,
+			duration: 0.65,
+			ease: 'power2.out',
+		},
+		'start'
+	)
+
+	tl.to(
+		get(knobRef),
+		{
+			rotation: -12,
+			duration: 0.8,
+			ease: 'power2.out',
+		},
+		'>0.05'
+	)
+
+	tl.to(
+		get(knobRef),
+		{
+			rotation: 0,
+			duration: 0.65,
+			ease: 'power2.out',
+		},
+		'>0.05'
+	)
+
+	tl.timeScale(1.2)
 
 	return tl.play()
 }
@@ -576,13 +634,13 @@ const handleClick = async () => {
 	}
 
 	@screen md {
-		font-size: toRem(21);
-		line-height: 1;
+		font-size: toRem(27);
+		line-height: 1.15;
 	}
 }
 
 .sun-icon {
-	@apply transition-opacity duration-300 ease-out;
+	@apply transition-opacity duration-1000 ease-out;
 
 	&[data-visible='false'] {
 		@apply opacity-0;
@@ -591,7 +649,7 @@ const handleClick = async () => {
 
 .instructions,
 .cta {
-	@apply self-start;
+	@apply self-center;
 	@apply transition-opacity duration-1000 ease-out;
 
 	grid-area: c;

@@ -37,7 +37,11 @@
 				</a>
 			</template>
 
-			<ButtonLanguage v-else class="button button-right" />
+			<template v-else>
+				<ButtonLanguage class="button button-right" />
+
+				<LanguageSelector class="language-selector" />
+			</template>
 		</ClientOnly>
 	</Container>
 </template>
@@ -118,7 +122,7 @@ watchEffect(() => {
 
 <style lang="scss" scoped>
 .site-header {
-	@apply fixed z-40 top-[30px] w-full pointer-events-none;
+	@apply fixed z-40 top-[30px] w-full pointer-events-none text-gold-light;
 	@apply md:top-12;
 	@apply lg:top-9;
 
@@ -150,6 +154,12 @@ watchEffect(() => {
 
 .button-right {
 	@apply justify-self-end;
+
+	grid-area: c;
+}
+
+.language-selector {
+	@apply justify-self-end translate-x-[18px];
 
 	grid-area: c;
 }

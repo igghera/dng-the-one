@@ -76,7 +76,10 @@
 		</Transition>
 
 		<Transition name="fade-long">
-			<nav v-if="shouldShowButtons" class="buttons">
+			<nav
+				v-if="shouldShowButtons && !uiStore.isResultsScrollDownVisible"
+				class="buttons"
+			>
 				<div class="buttons-row">
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
@@ -121,7 +124,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { Howler } from 'howler'
 import { get, set, useStorage } from '@vueuse/core'
 import { PDFDocument } from 'pdf-lib'
 import { ZeroConf } from 'capacitor-zeroconf'
@@ -724,7 +727,7 @@ const handleQRCodeButtonClick = () => {
 
 const handleDownloadButtonClick = async () => {
 	const data = appStore.getResult
-	data.set('pre-title', $t('results.pre_title'))
+	data.set('pre-title', $t('download_card.pre_title'))
 	data.set('sub-content-title', $t('download_card.subcontent_title'))
 
 	downloadCard('experience', Number(appStore.getStep01Selection), data)
@@ -742,8 +745,15 @@ const handleRestartButtonClick = async () => {
 const createButtonTimeline = () => {
 	drawTimeline = gsap.timeline({
 		paused: true,
+		onUpdate: () => {
+			if (appStore.isAudioEnabled) {
+				Howler.volume(1 - drawTimeline.progress())
+			}
+		},
 		onComplete: async () => {
 			set(canInteract, false)
+
+			audioManager.fadeOut(AUDIO_LABELS.BASE_LOOP)
 
 			await gsap.to([get(ctaLabelRef), get(buttonRef)], {
 				autoAlpha: 0,
@@ -932,6 +942,8 @@ const animateMask = () => {
 	tl.call(
 		() => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
+			appStore.isAudioEnabled && Howler.volume(1)
+			audioManager.fadeIn(AUDIO_LABELS.CAMPAIGN_LOOP)
 			set(showResult, true)
 		},
 		null,
@@ -972,32 +984,56 @@ const animateMask = () => {
 }
 
 .result {
-	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center;
+	@apply flex flex-col items-center text-center col-start-1 row-start-1 self-center font-body-alt;
 
 	row-gap: toRem(11);
-	width: toRem(170);
+	width: min(toRem(230), 60vw);
 
-	@screen md {
-		width: toRem(230);
+	@screen tablet-portrait-lg {
+		width: min(toRem(330), 40vw);
 	}
 }
 
 .result-pre-title {
 	@apply uppercase font-normal leading-[1.7] tracking-[0.13em] text-gold-light;
 
-	font-size: toRem(17);
+	font-size: toRem(12);
+
+	@screen lg {
+		font-size: toRem(13);
+	}
+
+	@screen tablet-portrait-lg {
+		font-size: toRem(20);
+	}
 }
 
 .result-title {
 	@apply font-normal uppercase leading-none;
 
 	font-size: toRem(36);
+
+	@screen lg {
+		font-size: toRem(50);
+	}
+
+	@screen tablet-portrait-lg {
+		font-size: toRem(60);
+	}
 }
 
 .result-copy {
-	@apply font-normal leading-[1.5] tracking-[0.04em] text-gold-light;
+	@apply font-normal leading-[1.6] tracking-[0.04em] text-gold-light;
 
-	font-size: toRem(10);
+	font-size: toRem(12);
+
+	@screen lg {
+		font-size: toRem(13);
+	}
+
+	@screen tablet-portrait-lg {
+		font-size: toRem(20);
+	}
 }
 
 .buttons {
@@ -1022,10 +1058,11 @@ const animateMask = () => {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+	pointer-events: none;
 }
 
 .fade-long-enter-active {
-	transition: opacity 0.7s ease;
+	transition: opacity 1.5s ease;
 }
 
 .fade-long-leave-active {
@@ -1035,5 +1072,6 @@ const animateMask = () => {
 .fade-long-enter-from,
 .fade-long-leave-to {
 	opacity: 0;
+	pointer-events: none;
 }
 </style>

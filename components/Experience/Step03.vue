@@ -77,6 +77,7 @@
 
 		<p
 			class="instructions | body-5 | text-gold-light text-shadow"
+			style="opacity: 0.001"
 			ref="instructionsRef"
 		>
 			{{ $t('experience_step_03.instructions') }}
@@ -183,13 +184,17 @@ const animateIn = () => {
 			})
 
 			Flip.from(state, {
-				duration: 1.3,
-				ease: 'power1.inOut',
+				duration: 1.7,
+				ease: 'power3.inOut',
+				stagger: 0.18,
 				onStart: () => {
 					gsap.set(get(dotWrapperStep03Ref), {
 						opacity: 0,
 						duration: 0.4,
 					})
+				},
+				onComplete: () => {
+					pulseDraggers()
 				},
 			})
 		},
@@ -204,7 +209,38 @@ const animateIn = () => {
 			opacity: 1,
 			duration: 1.5,
 		},
-		'<'
+		'>1'
+	)
+
+	// Fade in dropzone arrow
+	tl.to(
+		get(dropzoneArrowRef),
+		{
+			opacity: 1,
+			duration: 1.2,
+		},
+		'>0.55'
+	)
+
+	// Fade in instructions
+	tl.to(
+		get(instructionsRef),
+		{
+			opacity: 1,
+			duration: 1.5,
+		},
+		'<0.1'
+	)
+
+	// Fade in labels
+	tl.to(
+		get(draggersLabelsRef),
+		{
+			opacity: 1,
+			duration: 1.5,
+			stagger: 0.12,
+		},
+		'<0.7'
 	)
 
 	tl.call(
@@ -215,49 +251,72 @@ const animateIn = () => {
 		'<'
 	)
 
-	// Fade in dropzone arrow
-	tl.to(
-		get(dropzoneArrowRef),
-		{
-			opacity: 1,
-			duration: 1.2,
-		},
-		'<0.7'
-	)
-
-	// Fade in labels
-	tl.to(
-		get(draggersLabelsRef),
-		{
-			opacity: 1,
-			duration: 1.5,
-		},
-		'>-0.4'
-	)
-
-	// Fade in instructions
-	tl.to(
-		get(instructionsRef),
-		{
-			opacity: 1,
-			duration: 1.5,
-		},
-		'<0.2'
-	)
-
 	return tl.play()
+}
+
+const pulseDraggers = () => {
+	const dropzoneBounds = get(dropzoneRef).getBoundingClientRect()
+	const dropzoneCenter = {
+		x: dropzoneBounds.left + dropzoneBounds.width / 2,
+		y: dropzoneBounds.top + dropzoneBounds.height / 2,
+	}
+
+	const draggersCenters = get(draggersRef).map(dragger => {
+		const draggerBounds = dragger.getBoundingClientRect()
+
+		return {
+			x: draggerBounds.left + draggerBounds.width / 2,
+			y: draggerBounds.top + draggerBounds.height / 2,
+		}
+	})
+
+	const directions = draggersCenters.map(center => {
+		return {
+			x: dropzoneCenter.x - center.x,
+			y: dropzoneCenter.y - center.y,
+		}
+	})
+
+	const tl = gsap.timeline()
+	tl.addLabel('start')
+
+	tl.to(get(draggersRef), {
+		x: index => {
+			const dir = directions[index]
+			return `+=${dir.x * 0.1}`
+		},
+		y: index => {
+			const dir = directions[index]
+			return `+=${dir.y * 0.1}`
+		},
+		duration: 0.65,
+		stagger: 0.1,
+		ease: 'power1.inOut',
+		repeat: 1,
+		yoyo: true,
+	})
 }
 
 const createDraggable = () => {
 	draggableInstance = Draggable.create(get(draggersRef), {
-		onPress: self => {
+		minimumMovement: 5,
+		onClick: self => {
+			const idx = Number(self.target.dataset.index)
+
+			fadeOutDraggers(idx)
+
+			moveToFinalPosition(self.target)
+			appStore.setStep03Selection(idx)
+			storage.value.q3 = idx
+		},
+		onDragStart: self => {
 			const idx = Number(self.target.dataset.index)
 
 			fadeOutDraggers(idx)
 
 			zoomInDropzoneCircle()
 		},
-		onRelease: self => {
+		onDragEnd: self => {
 			zoomOutDropzoneCircle()
 
 			const inDropzone = Draggable.hitTest(self.target, get(dropzoneRef), '1%')

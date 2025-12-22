@@ -2,7 +2,7 @@
 	<Container class="pb-40 lg:pb-20">
 		<picture class="pic">
 			<img
-				src="/images/mock-timeline-intro.webp"
+				src="/images/timeline-intro.webp"
 				alt="Timeline"
 				loading="lazy"
 				decoding="async"
@@ -10,11 +10,9 @@
 			/>
 		</picture>
 
-		<p class="copy | text-gold">
-			{{ $t('timeline_intro.copy') }}
-		</p>
+		<p class="copy | text-gold" v-html="$t('timeline_intro.copy')" />
 
-		<ButtonGolden :to="ctaLink" class="!text-gold">{{
+		<ButtonGolden :to="ctaLink" @click="handleCtaClick" class="!text-gold">{{
 			$t('timeline_intro.cta')
 		}}</ButtonGolden>
 	</Container>
@@ -27,6 +25,13 @@ defineProps({
 		required: true,
 	},
 })
+
+const appStore = useAppStore()
+
+const handleCtaClick = () => {
+	appStore.setAudioEnabled(false)
+	audioManager.fadeOut(AUDIO_LABELS.CAMPAIGN_LOOP)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -53,10 +58,7 @@ defineProps({
 }
 
 .copy {
-	@apply w-80 text-center font-medium text-base leading-tight tracking-[0.05em];
-
-	@screen lg {
-		width: toRem(600);
-	}
+	@apply max-w-64 text-center font-medium text-base leading-tight tracking-[0.05em];
+	@apply lg:max-w-80;
 }
 </style>

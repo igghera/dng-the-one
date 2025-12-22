@@ -26,34 +26,38 @@ export default defineNuxtConfig({
 		},
 	},
 
-	compatibilityDate: "2024-01-01",
+  dir: {
+    pages: process.env.SHOW_SPLASH_PAGE === 'true' ? 'splash' : 'pages',
+  },
+
+  compatibilityDate: '2024-01-01',
 
 	devtools: { enabled: false },
 
 	modules: ["@nuxtjs/tailwindcss", "@vueuse/nuxt", "@nuxtjs/i18n", "@pinia/nuxt", "lenis/nuxt"],
 
-	i18n: {
-		defaultLocale: "en",
-		strategy: "no_prefix",
-		detectBrowserLanguage: {
-			useCookie: false,
-			redirectOn: "no prefix",
-			alwaysRedirect: false,
-			fallbackLocale: "en",
-		},
-		compilation: {
-			strictMessage: false,
-			escapeHtml: false,
-		},
-		bundle: {
-			optimizeTranslationDirective: false,
-		},
-		locales: [
-			{ code: "en", name: "EN / English", file: "en.json" },
-			// { code: 'it', name: 'IT / Italiano', file: 'it.json' },
-			// { code: 'ar', name: 'AR / العربية', file: 'ar.json', dir: 'rtl' },
-		],
-	},
+  i18n: {
+    defaultLocale: 'en',
+    strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: false,
+      redirectOn: 'no prefix',
+      alwaysRedirect: false,
+      fallbackLocale: 'en',
+    },
+    compilation: {
+      strictMessage: false,
+      escapeHtml: false,
+    },
+    bundle: {
+      optimizeTranslationDirective: false
+    },
+    locales: [
+      { code: 'en', name: 'EN / English', file: 'en.json' },
+      { code: 'it', name: 'IT / Italiano', file: 'it.json' },
+      // { code: 'ar', name: 'AR / العربية', file: 'ar.json', dir: 'rtl' },
+    ]
+  },
 
 	runtimeConfig: {
 		public: {

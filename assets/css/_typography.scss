@@ -107,7 +107,8 @@
   font-size: toRem(15);
 
   @screen md {
-    font-size: toRem(30);
+    font-size: toRem(25);
+    line-height: 1.25;
   }
 }
 

@@ -23,7 +23,7 @@ const isFromExplore = urlParams.ref === 'explore'
 
 const lenisOptions = {
 	autoRaf: false,
-	prevent: node => node.id === 'profiler-shell',
+	prevent: node => ['profiler-shell', 'NEEDLE_EDITOR_ROOT'].includes(node.id),
 }
 
 onMounted(() => {
