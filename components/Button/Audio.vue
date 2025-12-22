@@ -143,7 +143,7 @@ const handleClick = () => {
 }
 
 .svg {
-	@apply size-[18px] pointer-events-none relative z-[1] -translate-y-[0.35rem];
-	@apply md:size-[22px] md:-translate-y-2;
+	@apply size-[18px] pointer-events-none relative z-[1];
+	@apply md:size-[22px];
 }
 </style>
