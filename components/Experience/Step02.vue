@@ -316,6 +316,8 @@ onMounted(async () => {
 
 		await animateIn()
 
+		uiStore.setBackButtonVisible(true)
+
 		createDraggable()
 	})
 })
@@ -524,6 +526,8 @@ const moveDotToNextPosition = async () => {
 }
 
 const handleClick = async () => {
+	uiStore.setBackButtonVisible(false)
+
 	draggableInstance?.[0]?.kill()
 
 	await animateOut()

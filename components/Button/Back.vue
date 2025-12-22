@@ -1,8 +1,14 @@
 <template>
-	<button class="button-back">
+	<button class="button-back" @click="handleClick">
 		<IconChevronLeft class="w-[10px]" />
 	</button>
 </template>
+
+<script setup>
+const handleClick = () => {
+	emitter.emit(EVENTS.BACK)
+}
+</script>
 
 <style lang="scss" scoped>
 .button-back {

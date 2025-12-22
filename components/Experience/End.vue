@@ -356,6 +356,8 @@ const createButtonTimeline = () => {
 		onComplete: async () => {
 			set(canInteract, false)
 
+			uiStore.setBackButtonVisible(false)
+
 			audioManager.fadeOut(AUDIO_LABELS.BASE_LOOP)
 
 			await gsap.to([get(ctaLabelRef), get(buttonRef)], {

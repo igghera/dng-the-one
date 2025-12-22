@@ -3,7 +3,11 @@
 		<nav class="buttons-left" ref="buttonsLeftRef">
 			<ul class="grid items-start gap-x-10">
 				<li style="opacity: 0; visibility: hidden">
-					<ButtonBack class="button" />
+					<ButtonBack
+						class="button"
+						:disabled="!uiStore.isBackButtonVisible"
+						:aria-disabled="!uiStore.isBackButtonVisible"
+					/>
 				</li>
 
 				<li>
@@ -153,7 +157,7 @@ const toggleBackButton = visible => {
 	elements[1].style.gridArea = visible ? '1 / 2 / 1 / 2' : '1 / 1 / 1 / 1'
 
 	Flip.from(state, {
-		duration: 0.5,
+		duration: 0.8,
 		overwrite: true,
 		onStart: () => {
 			visible && (elements[0].style.visibility = 'inherit')

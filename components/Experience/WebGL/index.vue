@@ -371,6 +371,7 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
 			ease: 'power1.out',
 			onComplete: () => {
 				emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE)
+				uiStore.setBackButtonVisible(true)
 			},
 		}
 	)

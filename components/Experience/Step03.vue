@@ -122,7 +122,9 @@ let draggableInstance = null
 onMounted(async () => {
 	setInitialState()
 
-	animateIn()
+	await animateIn()
+
+	uiStore.setBackButtonVisible(true)
 })
 
 onBeforeUnmount(() => {
@@ -346,6 +348,8 @@ const createDraggable = () => {
 	}
 
 	function moveToFinalPosition(elem) {
+		uiStore.setBackButtonVisible(false)
+
 		// Kill all Draggable instances
 		for (const draggable of draggableInstance) {
 			draggable.kill()
