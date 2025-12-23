@@ -954,6 +954,12 @@ async function openPanel() {
 
 	await nextTick()
 
+	get(panelContentRef)
+		.querySelectorAll('video')
+		.forEach(video => {
+			video.currentTime = 0
+		})
+
 	const tl = gsap.timeline({ delay: 0.55 })
 	tl.addLabel('start')
 
@@ -999,6 +1005,12 @@ async function closePanel() {
 
 	const currentPos = new THREE.Vector3()
 	controls.getPosition(currentPos)
+
+	get(panelContentRef)
+		.querySelectorAll('video')
+		.forEach(video => {
+			video.pause()
+		})
 
 	await controls.setLookAt(
 		controlsPositionMemo.x,
@@ -1474,7 +1486,7 @@ async function animateToInitialPosition() {
 }
 
 .panel-close-button {
-	@apply absolute top-4 right-4;
+	@apply absolute z-[1] top-4 right-4;
 
 	width: toRem(14);
 
