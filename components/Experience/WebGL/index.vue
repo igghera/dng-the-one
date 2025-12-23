@@ -14,16 +14,7 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
-import {
-	vec2,
-	pass,
-	uniform,
-	screenUV,
-	mix,
-	time,
-	texture3D,
-	blendColor,
-} from 'three/tsl'
+import { vec2, pass, uniform, screenUV, mix, time, texture3D } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
 import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
 import { WaterMeshCustom } from './WaterMeshCustom'
@@ -652,7 +643,7 @@ async function createRenderer() {
 	})
 
 	renderer.setClearColor(0x000000, 1)
-	renderer.toneMapping = THREE.ACESFilmicToneMapping
+	// renderer.toneMapping = THREE.ACESFilmicToneMapping
 	renderer.setSize(get(componentWidth), get(componentHeight))
 
 	if (isDebug) {
@@ -677,10 +668,10 @@ async function loadTextures() {
 		'/webgl/draw/product-outline-female.ktx2',
 	])
 
-	ktx[0].colorSpace = THREE.SRGBColorSpace
-	ktx[1].colorSpace = THREE.SRGBColorSpace
-	ktx[2].colorSpace = THREE.SRGBColorSpace
-	ktx[3].colorSpace = THREE.SRGBColorSpace
+	// ktx[0].colorSpace = THREE.SRGBColorSpace
+	// ktx[1].colorSpace = THREE.SRGBColorSpace
+	// ktx[2].colorSpace = THREE.SRGBColorSpace
+	// ktx[3].colorSpace = THREE.SRGBColorSpace
 
 	ktx[4].colorSpace = THREE.NoColorSpace
 	ktx[4].wrapS = ktx[4].wrapT = THREE.RepeatWrapping
