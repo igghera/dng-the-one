@@ -1,5 +1,5 @@
 <template>
-	<Container class="pointer-events-none tablet-portrait:pb-16">
+	<Container class="pointer-events-none tablet-portrait-lg:pb-16">
 		<ClientOnly>
 			<header class="header | text-shadow">
 				<h1

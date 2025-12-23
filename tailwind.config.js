@@ -21,9 +21,10 @@ export default {
         landscape: { 'raw': '(orientation: landscape)' },
         'sm-down': { 'max': '639px' },
         'md-down': { 'max': '767px' },
-        'lg-down': { 'max': '1023px' },
+        'lg-down': { 'max': '1179px' },
+        'lg': { 'min': '1180px' },
         'xl-down': { 'max': '1279px' },
-        'tablet-portrait': { 'raw': '(min-width: 640px) and (orientation: portrait)' },
+        'tablet-portrait': { 'raw': '(min-width: 768px) and (orientation: portrait)' },
         'tablet-portrait-lg': { 'raw': '(min-width: 1024px) and (orientation: portrait)' },
       },
 

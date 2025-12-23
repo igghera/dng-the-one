@@ -11,6 +11,13 @@ html {
 
   background-color: #1B0B08;
 
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+
   &[data-init] {
     background-image: url('/images/bg-portrait.webp');
 
@@ -35,13 +42,6 @@ body {
   overscroll-behavior: none;
 
   @apply text-balance font-body;
-
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
-  user-select: none;
 }
 
 button {

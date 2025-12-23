@@ -999,7 +999,7 @@ function setIntroMeshScale() {
 	else if (get(isMedium) && get(isLandscape)) scale = 0.65
 	else if (get(isMedium) && get(isPortrait)) scale = 0.5
 	else if (get(isDesktop) && get(isLandscape)) scale = 1
-	else if (get(isDesktop) && get(isPortrait)) scale = 0.55
+	// else if (get(isDesktop) && get(isPortrait)) scale = 0.55
 
 	introMesh.scale.set(scale, scale, 1)
 }
