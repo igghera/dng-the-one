@@ -373,63 +373,9 @@ const animateBack = async () => {
 	return tl.play()
 }
 
-
-const back = async () => {
-	uiStore.setBackButtonVisible(false)
-
-	pointerObserver?.kill()
-
-	await animateBack()
-
-	uiStore.setExperienceStep03Visible(true)
-}
-
-const animateBack = async () => {
-	const tl = gsap.timeline({ paused: true })
-	tl.addLabel('start')
-
-	tl.to(
-		get(el),
-		{
-			autoAlpha: 0,
-			duration: 0.8,
-		},
-		'start'
-	)
-
-	tl.to(
-		experienceEndDrawMaterial.opacity,
-		{
-			value: 0,
-			duration: 0.65,
-		},
-		'start+=0.1'
-	)
-
-	return tl.play()
-}
-
-
 // ============================================================================
 // PRINT CONFIGURATION
 // ============================================================================
-
-// Points per inch
-const POINTS_PER_INCH = 72
-
-// Photo dimensions 4x6 inch in points (Standard iOS Print size)
-const PHOTO_PAPER = Object.freeze({
-	width: 4 * POINTS_PER_INCH, // 288
-	height: 6 * POINTS_PER_INCH, // 432
-})
-
-// Zero margins for borderless printing
-const ZERO_MARGINS = Object.freeze({
-	top: 0,
-	bottom: 0,
-	left: 0,
-	right: 0,
-})
 
 // Cordova printer plugin options
 const BORDERLESS_OPTIONS = {
@@ -448,25 +394,6 @@ const BORDERLESS_OPTIONS = {
 // ============================================================================
 // IMAGE PROCESSING UTILITIES (PDF - Currently Unused)
 // ============================================================================
-
-/**
- * Convert data URL to byte array for PDF embedding
- */
-const dataUrlToBytes = dataUrl => {
-	const match = dataUrl.match(/^data:(.+);base64,(.+)$/)
-	if (!match) throw new Error('Invalid data URL format')
-
-	const [, mime, base64] = match
-	const binary = atob(base64)
-	const bytes = new Uint8Array(binary.length)
-
-	for (let i = 0; i < binary.length; i += 1) {
-		bytes[i] = binary.charCodeAt(i)
-	}
-
-	return { mime, bytes }
-}
-
 
 /**
  * Convert blob to photo-ready PNG data URL
@@ -537,50 +464,6 @@ const buildBase64Payload = dataUrl => {
 // PRINT FUNCTIONS
 // ============================================================================
 
-/**
- * Convert base64 string to Blob
- * @param {string} base64 - Base64 string (with or without data URL prefix)
- * @returns {Blob} - Image blob
- */
-const base64ToBlob = base64 => {
-	// Remove data URL prefix if present
-	const base64Data = base64.replace(/^data:image\/\w+;base64,/, '')
-	const binaryString = atob(base64Data)
-	const bytes = new Uint8Array(binaryString.length)
-	
-	for (let i = 0; i < binaryString.length; i++) {
-		bytes[i] = binaryString.charCodeAt(i)
-	}
-	
-	return new Blob([bytes], { type: 'image/png' })
-}
-
-
-/**
- * Print using iOS native picker (AirPrint compatible printers only)
- */
-const printWithNativePicker = async dataUrl => {
-	const base64Payload = buildBase64Payload(dataUrl)
-	
-	console.log('[Native Picker] Opening iOS print dialog...')
-	
-	try {
-		await window.cordova.plugins.printer.print(base64Payload, {
-			...BORDERLESS_OPTIONS,
-			bounds: {
-				width: PHOTO_PAPER.width,
-				height: PHOTO_PAPER.height,
-				...ZERO_MARGINS,
-			},
-		})
-		
-		console.log('✅ Print completed (or cancelled by user)')
-		return true
-	} catch (error) {
-		console.error('❌ Native picker error:', error)
-		throw error
-	}
-}
 
 /**
  * Main print handler - captures screenshot and sends to printer
