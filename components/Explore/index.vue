@@ -130,6 +130,7 @@
 				class="panel-close-button"
 				@click="closePanel"
 				aria-label="close panel"
+				ref="closeButtonRef"
 			>
 				<IconClose class="relative z-[1]" />
 			</button>
@@ -225,6 +226,7 @@ const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
 const panelRef = useTemplateRef('panelRef')
+const closeButtonRef = useTemplateRef('closeButtonRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
 const panelContentRef = useTemplateRef('panelContentRef')
 const draggableDummyRef = useTemplateRef('draggableDummyRef')
@@ -938,7 +940,7 @@ async function handlePinPointerdown(event) {
 	controls.fitToBox(targets[nicheIndex], true, params)
 }
 
-function openPanel() {
+async function openPanel() {
 	set(panelOpen, true)
 	set(pinsVisible, false)
 
@@ -949,6 +951,44 @@ function openPanel() {
 	} else {
 		get(panelScrollerRef).dataset.lenisPrevent = ''
 	}
+
+	await nextTick()
+
+	const tl = gsap.timeline({ delay: 0.55 })
+	tl.addLabel('start')
+
+	tl.fromTo(
+		get(panelContentRef).children,
+		{
+			opacity: 0,
+			y: 10,
+		},
+		{
+			opacity: 1,
+			y: 0,
+			stagger: 0.1,
+			duration: 1.2,
+			ease: 'power2.out',
+			overwrite: true,
+		},
+		'start'
+	)
+
+	tl.fromTo(
+		get(closeButtonRef),
+		{
+			opacity: 0,
+			rotation: -75,
+		},
+		{
+			opacity: 1,
+			rotation: 0,
+			duration: 0.65,
+			ease: 'power2.out',
+			overwrite: true,
+		},
+		'start+=0.5'
+	)
 }
 
 async function closePanel() {
