@@ -121,7 +121,7 @@ const cardRef = useTemplateRef('cardRef')
 const result = shallowRef(null)
 const isDownloading = shallowRef(false)
 
-const { q1, q2, q3, card } = urlParams
+const { q1, q2, q3 } = urlParams
 
 const allAuras = Object.values(tm('experience_end.options')).map(option => ({
 	title: rt(option.title),

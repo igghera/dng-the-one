@@ -40,6 +40,7 @@ import { get } from '@vueuse/core'
 const { gsap, SplitText } = useGSAP()
 
 const appStore = useAppStore()
+const uiStore = useUiStore()
 
 const el = useCurrentElement()
 const titleRef = useTemplateRef('titleRef')
@@ -113,11 +114,12 @@ const animateIn = () => {
 	)
 }
 
-const handleClick = () => {
+const handleClick = async () => {
 	audioManager.init()
 
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)
 
+	uiStore.setAudioButtonVisible(true)
 	appStore.setAudioEnabled(true)
 	Howler.volume(1)
 

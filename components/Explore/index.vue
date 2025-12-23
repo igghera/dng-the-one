@@ -230,6 +230,7 @@ const panelContentRef = useTemplateRef('panelContentRef')
 const draggableDummyRef = useTemplateRef('draggableDummyRef')
 
 const appStore = useAppStore()
+const uiStore = useUiStore()
 
 const { isMobile } = useViewport()
 
@@ -984,6 +985,7 @@ async function introButtonOnCompleteCallback() {
 
 	await nextTick()
 
+	uiStore.setAudioButtonVisible(true)
 	appStore.setAudioEnabled(true)
 	Howler.volume(1)
 

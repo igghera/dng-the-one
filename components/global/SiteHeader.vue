@@ -10,9 +10,11 @@
 					/>
 				</li>
 
-				<li>
-					<ButtonAudio class="button" />
-				</li>
+				<Transition name="fade">
+					<li v-if="uiStore.isAudioButtonVisible">
+						<ButtonAudio class="button" />
+					</li>
+				</Transition>
 			</ul>
 		</nav>
 
@@ -215,5 +217,15 @@ const toggleBackButton = visible => {
 	@apply justify-self-end translate-x-[18px];
 
 	grid-area: c;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.7s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>
