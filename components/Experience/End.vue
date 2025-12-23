@@ -479,36 +479,36 @@ const handlePrint = async () => {
 		console.log('📸 Screenshot ready, size:', dataUrl.length, 'chars')
 		
 		// 3. Use Cordova plugin with specific printer URL (Direct Print)
-			const printer = get(selectedPrinter)
-			console.log('🖨️ Sending to printer:', printer?.name)
-			console.log('📍 Printer URL:', printer?.ippUrl)
+		const printer = get(selectedPrinter)
+		console.log('🖨️ Sending to printer:', printer?.name)
+		console.log('📍 Printer URL:', printer?.ippUrl)
 
-			if (printer?.ippUrl) {
-				const base64Payload = buildBase64Payload(dataUrl)
-				// Direct print attempt using plugin
-				// This uses the IPP URL discovered via ZeroConf (mdns)
-				// Format: ipp://[ip]:[port]/[resource_path]
-				
-				// Semplificazione opzioni per debug fallimento
-				await window.cordova.plugins.printer.print(base64Payload, {
-					printer: printer.ippUrl,
-					name: 'The One Experience',
-					...BORDERLESS_OPTIONS
-				})
+		if (printer?.ippUrl) {
+			const base64Payload = buildBase64Payload(dataUrl)
+			// Direct print attempt using plugin
+			// This uses the IPP URL discovered via ZeroConf (mdns)
+			// Format: ipp://[ip]:[port]/[resource_path]
+			
+			// Semplificazione opzioni per debug fallimento
+			await window.cordova.plugins.printer.print(base64Payload, {
+				printer: printer.ippUrl,
+				name: 'The One Experience',
+				...BORDERLESS_OPTIONS
+			})
 
-				console.log('✅ Print command sent to plugin')
-				// alert('Stampa inviata con successo!')
-			} else {
-				console.error('No printer URL available')
-				throw new Error('No printer selected')
-			}
-		}catch (error) {
-		console.error('❌ Print error:', error)
-		alert(
-			rt('experience_end.print_error') ?? 
-			'Unable to print. Please check printer connection.'
-		)
-	}
+			console.log('✅ Print command sent to plugin')
+			// alert('Stampa inviata con successo!')
+		} else {
+			console.error('No printer URL available')
+			throw new Error('No printer selected')
+		}
+	}catch (error) {
+	console.error('❌ Print error:', error)
+	alert(
+		rt('experience_end.print_error') ?? 
+		'Unable to print. Please check printer connection.'
+	)
+}
 }
 
 // ============================================================================
