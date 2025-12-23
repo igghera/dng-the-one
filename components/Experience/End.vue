@@ -478,13 +478,7 @@ const handlePrint = async () => {
 		const dataUrl = await buildPhotoReadyDataUrl(blob)
 		console.log('📸 Screenshot ready, size:', dataUrl.length, 'chars')
 		
-		// 3. Choose print method based on configuration
-		if (config.public.useNativePicker) {
-			// Use iOS native picker (AirPrint)
-			console.log('🖨️ Using iOS native picker')
-			await printWithNativePicker(dataUrl)
-		} else {
-			// Use Cordova plugin with specific printer URL (Direct Print)
+		// 3. Use Cordova plugin with specific printer URL (Direct Print)
 			const printer = get(selectedPrinter)
 			console.log('🖨️ Sending to printer:', printer?.name)
 			console.log('📍 Printer URL:', printer?.ippUrl)
@@ -508,8 +502,7 @@ const handlePrint = async () => {
 				console.error('No printer URL available')
 				throw new Error('No printer selected')
 			}
-		}
-	} catch (error) {
+		}catch (error) {
 		console.error('❌ Print error:', error)
 		alert(
 			rt('experience_end.print_error') ?? 
