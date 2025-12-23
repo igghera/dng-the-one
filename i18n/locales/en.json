@@ -86,7 +86,7 @@
   },
 
   "timeline_intro": {
-    "copy": "A 20-years journey of elegance, where intensity and sensuality blend to create an unforgettable The One fragrance experience.",
+    "copy": "Celebrating 20 years of an icon.<br>Discover the evolution of The One, a contemporary classic with an Aura that never goes out of style.",
     "cta": "Explore The One collection"
   },
 
@@ -97,17 +97,31 @@
 
   "engagement": {
     "pre_title": "Your Aura matches are:",
-    "copy": [
-      "Two timeless icons. Dolce&Gabbana The One Eau de Parfum and The One For Men Eau de Parfum, now in updated version that’s even longer-lasting, even more irresistible.",
-      "Two new fragrance signatures that play on refined contrasts. Discover Dolce&Gabbana The One Eau de Parfum Intense and The One For Men Parfum.",
-      "Luminous, modern, magnetic. Discover two fragrances that captivate the senses: Dolce&Gabbana The One Gold Eau de Parfum Intense and The One For Men Gold Eau de Parfum Intense.",
-      "Sophisticated and irresistible. Discover the two iconic Dolce&Gabbana fragrances The One Eau The Parfum and The One Eau de Toilette."
-    ],
-    "subtitles": [
-      "Eau De Parfum",
-      "Parfum & Eau De Parfum Intense",
-      "Eau De Parfum Intense",
-      "Eau De Toilette & Eau De Parfum Intense"
+    "result": [
+      {
+        "title": "The One Gold for Men<br>The One Gold",
+        "subtitle": "Eau De Parfum Intense",
+        "image": "/images/engagement/01.webp",
+        "copy": "Luminous, modern, magnetic. Discover two fragrances that captivate the senses: Dolce&Gabbana The One Gold Eau de Parfum Intense and The One For Men Gold Eau de Parfum Intense."
+      },
+      {
+        "title": "The One for Men<br>The One",
+        "subtitle": "Parfum & Eau De Parfum Intense",
+        "image": "/images/engagement/03.webp",
+        "copy": "Two new fragrance signatures that play on refined contrasts. Discover Dolce&Gabbana The One Eau de Parfum Intense and The One For Men Parfum."
+      },
+      {
+        "title": "The One for Men<br>The One",
+        "subtitle": "Eau De Parfum",
+        "image": "/images/engagement/02.webp",
+        "copy": "Two timeless icons. Dolce&Gabbana The One Eau de Parfum and The One For Men Eau de Parfum, now in updated version that’s even longer-lasting, even more irresistible."
+      },
+      {
+        "title": "The One for Men<br>The One",
+        "subtitle": "Eau De Toilette & Eau De Parfum",
+        "image": "/images/engagement/04.webp",
+        "copy": "Sophisticated and irresistible. Discover the two iconic Dolce&Gabbana fragrances The One Eau The Parfum and The One Eau de Toilette."
+      }
     ]
   },
 
@@ -183,7 +197,7 @@
         "fragrance": {
           "title": "The One for Men",
           "sub_title": "Parfum",
-          "desc": "A richer, more intense interpretation of The One. It unveils depth and sophistication, embodying strength and timeless elegance with every encounter."
+          "desc": "Unveiling a new intensity where refined sensuality meets masculine strength. Warm, enveloping amber notes leave a deep, irresistibly charismatic trail."
         }
       },
       "female": {
@@ -219,9 +233,9 @@
       "male": {
         "desc": "Your aura commands the room. Unforgettable, leaving the silence charged with presence.",
         "fragrance": {
-          "title": "The One Gold for Men",
+          "title": "The One for Men Gold",
           "sub_title": "Eau De Parfum Intense",
-          "desc": "A celebration of modern masculinity and magnetic allure. It reflects inner power, elegance, and the unmistakable brilliance of a man who stands apart."
+          "desc": "An homage to the magnetic allure of its wearer, featuring a captivating blend of woody and spicy notes, including Clary Sage, Bergamot, and Patchouli."
         }
       },
       "female": {
@@ -252,7 +266,7 @@
             {
               "component": "title",
               "value": [
-                "The One for Women",
+                "The One",
                 "Eau De Parfum"
               ]
             },
@@ -317,7 +331,7 @@
           [
             {
               "component": "title",
-              "value": ["The One Gold for Women", "Eau De Parfum Intense"]
+              "value": ["The One Gold", "Eau De Parfum Intense"]
             },
             {
               "component": "image",
@@ -331,7 +345,7 @@
           [
             {
               "component": "title",
-              "value": ["The One for Men Gold", "Eau De Toilette Intense"]
+              "value": ["The One for Men Gold", "Eau De Parfum Intense"]
             },
             {
               "component": "image",
@@ -352,7 +366,7 @@
           [
             {
               "component": "title",
-              "value": ["The One for Women", "Eau De Parfum"]
+              "value": ["The One", "Eau De Parfum"]
             },
             {
               "component": "image",
@@ -368,7 +382,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "/videos/TheOne_30s.mp4"
             },
             {
               "component": "p",
@@ -378,7 +392,7 @@
           [
             {
               "component": "title",
-              "value": ["The One for Women", "Eau De Parfum Intense"]
+              "value": ["The One", "Eau De Parfum Intense"]
             },
             {
               "component": "image",
@@ -386,7 +400,7 @@
             },
             {
               "component": "p",
-              "value": "A bold yet refined expression of femininity. Blending the power of intense and radiant notes with the softness of gentler accents."
+              "value": "Un’espressione audace ma raffinata della femminilità. La potenza di note intense e luminose si fonde con la morbidezza di accenti più delicati."
             },
             {
               "component": "title",
@@ -394,7 +408,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "/videos/TheOne_30s.mp4"
             },
             {
               "component": "p",
@@ -408,7 +422,7 @@
             },
             {
               "component": "image",
-              "value": "/images/products/MALE_PARFUM.webp"
+              "value": "/images/products/MALE_PARFUM_2026.webp"
             },
             {
               "component": "p",
@@ -420,7 +434,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "/videos/TheOne_30s.mp4"
             },
             {
               "component": "p",
@@ -434,7 +448,7 @@
             },
             {
               "component": "image",
-              "value": "/images/products/MALE_EDT.webp"
+              "value": "/images/products/MALE_EDP.webp"
             },
             {
               "component": "p",
@@ -446,7 +460,7 @@
             },
             {
               "component": "video",
-              "value": "/videos/dummy.mp4"
+              "value": "/videos/TheOne_30s.mp4"
             },
             {
               "component": "p",

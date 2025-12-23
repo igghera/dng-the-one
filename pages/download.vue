@@ -121,7 +121,7 @@ const cardRef = useTemplateRef('cardRef')
 const result = shallowRef(null)
 const isDownloading = shallowRef(false)
 
-const { q1, q2, q3, card } = urlParams
+const { q1, q2, q3 } = urlParams
 
 const allAuras = Object.values(tm('experience_end.options')).map(option => ({
 	title: rt(option.title),
@@ -160,7 +160,7 @@ const allProducts = Object.values(tm('products')).map(product => ({
 const imageSrc = computed(() => {
 	if (!get(result)) return null
 
-	return `/images/download-cards/download/0${card}_${get(result).get(
+	return `/images/download-cards/download/0${Number(q1) + 1}_${get(result).get(
 		'shape'
 	)}.webp`
 })

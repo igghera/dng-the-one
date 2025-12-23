@@ -1,21 +1,23 @@
 <template>
 	<Container class="pointer-events-none tablet-portrait:pb-16">
-		<header class="header | text-shadow">
-			<h1
-				class="display-1 | golden-text uppercase"
-				ref="titleRef"
-				style="opacity: 0.001"
-			>
-				{{ $t('experience_start.title') }}
-			</h1>
+		<ClientOnly>
+			<header class="header | text-shadow">
+				<h1
+					class="display-1 | golden-text uppercase"
+					ref="titleRef"
+					style="opacity: 0.001"
+				>
+					{{ $t('experience_start.title') }}
+				</h1>
 
-			<p
-				class="copy | body-4 | text-gold"
-				style="opacity: 0"
-				v-html="$t('experience_start.copy')"
-				ref="copyRef"
-			/>
-		</header>
+				<p
+					class="copy | body-4 | text-gold"
+					style="opacity: 0"
+					v-html="$t('experience_start.copy')"
+					ref="copyRef"
+				/>
+			</header>
+		</ClientOnly>
 
 		<ButtonGolden
 			class="self-end pointer-events-auto md:portrait:-translate-y-1/2"
@@ -38,6 +40,7 @@ import { get } from '@vueuse/core'
 const { gsap, SplitText } = useGSAP()
 
 const appStore = useAppStore()
+const uiStore = useUiStore()
 
 const el = useCurrentElement()
 const titleRef = useTemplateRef('titleRef')
@@ -111,11 +114,12 @@ const animateIn = () => {
 	)
 }
 
-const handleClick = () => {
+const handleClick = async () => {
 	audioManager.init()
 
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)
 
+	uiStore.setAudioButtonVisible(true)
 	appStore.setAudioEnabled(true)
 	Howler.volume(1)
 

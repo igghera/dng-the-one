@@ -1,5 +1,5 @@
 <template>
-	<button class="button" @click="handleClick" aria-label="Toggle audio">
+	<button class="button-audio" @click="handleClick" aria-label="Toggle audio">
 		<svg
 			class="svg"
 			viewBox="0 0 22 20"
@@ -27,7 +27,7 @@
 
 <script setup>
 import { Howler } from 'howler'
-import { get } from '@vueuse/core'
+import { get, set } from '@vueuse/core'
 
 //
 // Refs / State
@@ -38,6 +38,8 @@ const barsRef = useTemplateRef('barsRef')
 
 const { gsap } = useGSAP()
 
+const volume = shallowRef(0)
+
 let barsTimelineActive = null
 let barsTimelineInactive = null
 
@@ -45,95 +47,100 @@ let barsTimelineInactive = null
 // Lifecycle
 //
 onMounted(() => {
+	set(volume, Howler.volume())
+
 	gsap.set(get(barsRef), {
 		transformOrigin: 'center center',
 		scaleY: 0.3,
 	})
-})
 
-//
-// Watchers
-//
-watch(
-	() => appStore.audioEnabled,
-	enabled => {
-		if (enabled) {
-			barsTimelineInactive?.kill()
+	watch(
+		() => appStore.isAudioEnabled,
+		enabled => {
+			enabled && createLoop()
+			!enabled && killLoop()
 
-			barsTimelineActive = gsap.timeline({
-				repeat: -1,
+			const targetVolume = enabled ? 1 : 0
+
+			gsap.to(volume, {
+				value: targetVolume,
+				duration: 1,
+				overwrite: true,
+				onUpdate: () => {
+					Howler.volume(get(volume))
+				},
 			})
-			barsTimelineActive.addLabel('start')
-
-			barsTimelineActive.to(
-				get(barsRef),
-				{
-					scaleY: 1,
-					duration: 0.5,
-					stagger: {
-						from: 'center',
-						grid: [1, 5],
-						each: 0.065,
-					},
-					ease: 'power1.out',
-				},
-				'start'
-			)
-
-			barsTimelineActive.to(
-				get(barsRef),
-				{
-					scaleY: 0.3,
-					duration: 0.5,
-					stagger: {
-						from: 'center',
-						grid: [1, 5],
-						each: 0.065,
-					},
-					ease: 'power1.in',
-				},
-				'>-0.3'
-			)
-		} else {
-			barsTimelineActive?.kill()
-
-			barsTimelineInactive = gsap.timeline()
-			barsTimelineInactive.addLabel('start')
-
-			barsTimelineInactive.to(
-				get(barsRef),
-				{
-					scaleY: 0.3,
-					duration: 0.6,
-					ease: 'power1.out',
-				},
-				'start'
-			)
-		}
-	}
-)
+		},
+		{ immediate: true }
+	)
+})
 
 //
 // Methods
 //
 const handleClick = () => {
-	appStore.setAudioEnabled(!appStore.audioEnabled)
+	appStore.setAudioEnabled(!appStore.isAudioEnabled)
+}
 
-	const volume = { value: Howler.volume() }
-	const targetVolume = appStore.audioEnabled ? 1 : 0
+const createLoop = () => {
+	barsTimelineInactive?.kill()
 
-	gsap.to(volume, {
-		value: targetVolume,
-		duration: 1,
-		onUpdate: () => {
-			Howler.volume(volume.value)
-		},
+	barsTimelineActive = gsap.timeline({
+		repeat: -1,
 	})
+	barsTimelineActive.addLabel('start')
+
+	barsTimelineActive.to(
+		get(barsRef),
+		{
+			scaleY: 1,
+			duration: 0.5,
+			stagger: {
+				from: 'center',
+				grid: [1, 5],
+				each: 0.065,
+			},
+			ease: 'power1.out',
+		},
+		'start'
+	)
+
+	barsTimelineActive.to(
+		get(barsRef),
+		{
+			scaleY: 0.3,
+			duration: 0.5,
+			stagger: {
+				from: 'center',
+				grid: [1, 5],
+				each: 0.065,
+			},
+			ease: 'power1.in',
+		},
+		'>-0.3'
+	)
+}
+
+const killLoop = () => {
+	barsTimelineActive?.kill()
+
+	barsTimelineInactive = gsap.timeline()
+	barsTimelineInactive.addLabel('start')
+
+	barsTimelineInactive.to(
+		get(barsRef),
+		{
+			scaleY: 0.3,
+			duration: 0.6,
+			ease: 'power1.out',
+		},
+		'start'
+	)
 }
 </script>
 
 <style lang="scss" scoped>
-.button {
+.button-audio {
 	@apply uppercase grid items-center justify-center relative;
 
 	&::before {
@@ -143,7 +150,7 @@ const handleClick = () => {
 }
 
 .svg {
-	@apply size-[18px] pointer-events-none relative z-[1] -translate-y-[0.35rem];
-	@apply md:size-[22px] md:-translate-y-2;
+	@apply size-[18px] pointer-events-none relative z-[1];
+	@apply md:size-[22px];
 }
 </style>

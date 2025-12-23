@@ -29,32 +29,6 @@
 					overflow="visible"
 					ref="trackRef"
 				>
-					<g v-if="false" id="step-02-content-mask">
-						<rect x="-300" y="0" width="716" height="2000" fill="black" />
-
-						<rect
-							style="transform-box: fill-box; transform-origin: center"
-							x="-300"
-							y="10"
-							width="716"
-							height="800"
-							fill="url(#step-02-content-gradient-init)"
-							fill-opacity="1"
-							ref="contentMaskRectInitRef"
-						/>
-
-						<rect
-							style="transform-box: fill-box; transform-origin: center"
-							x="-300"
-							y="10"
-							width="716"
-							height="800"
-							fill="url(#step-02-content-gradient-final)"
-							fill-opacity="1"
-							ref="contentMaskRectFinalRef"
-						/>
-					</g>
-
 					<g mask="url(#step-02-content-mask)">
 						<!-- DO NOT DELETE: Filler element to avoid clipping issues -->
 						<rect
@@ -160,7 +134,7 @@
 								<circle cx="58" cy="58" r="58" fill="black" fill-opacity="1" />
 							</g>
 
-							<g transform="translate(0, 550)" ref="trackMaskInitialRef">
+							<g transform="translate(0, 650)" ref="trackMaskInitialRef">
 								<rect x="0" y="0" width="116" height="300" fill="black"></rect>
 							</g>
 						</mask>
@@ -200,8 +174,8 @@
 							id="step-02-content-gradient-init"
 							gradientTransform="rotate(90)"
 						>
-							<stop offset="0%" stop-color="black" />
-							<stop offset="28%" stop-color="black" />
+							<stop offset="0%" stop-color="white" />
+							<stop offset="28%" stop-color="white" />
 							<stop offset="40%" stop-color="white" />
 							<stop offset="100%" stop-color="white" />
 						</linearGradient>
@@ -211,8 +185,8 @@
 							gradientTransform="rotate(90)"
 						>
 							<stop offset="0%" stop-color="black" />
-							<stop offset="24%" stop-color="black" />
-							<stop offset="36%" stop-color="white" />
+							<stop offset="28%" stop-color="black" />
+							<stop offset="40%" stop-color="white" />
 							<stop offset="73%" stop-color="white" />
 							<stop offset="85%" stop-color="black" />
 							<stop offset="100%" stop-color="black" />
@@ -281,6 +255,7 @@ const { idle: isIdle, reset: resetIdle, stop: stopIdle } = useIdle(2500)
 
 const { gsap, Draggable, Flip } = useGSAP()
 
+const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
 const draggerRef = useTemplateRef('draggerRef')
 const contentMaskRectInitRef = useTemplateRef('contentMaskRectInitRef')
@@ -322,7 +297,7 @@ const labels = computed(() => {
 onMounted(async () => {
 	setInitialState()
 
-	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async () => {
+	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async params => {
 		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START')
 
 		gsap.set(get(trackRef), {
@@ -331,8 +306,16 @@ onMounted(async () => {
 
 		await nextTick()
 
-		// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
-		emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
+		if (params?.back) {
+			await animateIn()
+
+			uiStore.setBackButtonVisible(true)
+
+			createDraggable()
+		} else {
+			// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
+			emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
+		}
 	})
 
 	emitter.once(EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE, async () => {
@@ -341,6 +324,8 @@ onMounted(async () => {
 		// )
 
 		await animateIn()
+
+		uiStore.setBackButtonVisible(true)
 
 		createDraggable()
 	})
@@ -359,6 +344,12 @@ emitter.on(EVENTS.RESTART, () => {
 	stopIdle()
 
 	gsap.killTweensOf([get(draggerMaskRef), get(trackRef)])
+})
+
+emitter.on(EVENTS.BACK, () => {
+	if (!uiStore.isExperienceStep02Visible) return
+
+	back()
 })
 
 //
@@ -448,9 +439,31 @@ const setInitialState = () => {
 	set(instructionsVisible, false)
 }
 
+const back = async () => {
+	uiStore.setBackButtonVisible(false)
+
+	draggableInstance?.[0]?.kill()
+
+	await animateBack()
+
+	uiStore.setExperienceStep01Visible(true)
+	uiStore.setExperienceStep02Visible(false)
+}
+
 const animateIn = () => {
 	const tl = gsap.timeline({ paused: true })
 	tl.addLabel('start')
+
+	tl.to(
+		'#step-02-content-gradient-init stop:nth-child(-n + 2)',
+		{
+			attr: {
+				'stop-color': 'black',
+			},
+			duration: 0.5,
+		},
+		'start'
+	)
 
 	tl.fromTo(
 		[get(headerRef), get(dotsRef), get(draggerCircleRef)],
@@ -467,7 +480,7 @@ const animateIn = () => {
 				resetIdle()
 			},
 		},
-		'start'
+		'<0.2'
 	)
 
 	tl.to(
@@ -481,17 +494,14 @@ const animateIn = () => {
 		'start+=0.2'
 	)
 
-	// tl.to(
-	// 	get(contentMaskRectInitRef),
-	// 	{
-	// 		scale: 1,
-	// 		duration: 1.2,
-	// 		ease: 'power1.out',
-	// 	},
-	// 	'start+=0.3'
-	// )
-
 	return tl.play()
+}
+
+const animateBack = () => {
+	return gsap.to(get(el), {
+		autoAlpha: 0,
+		duration: 0.8,
+	})
 }
 
 const animateOut = async () => {
@@ -539,6 +549,8 @@ const moveDotToNextPosition = async () => {
 }
 
 const handleClick = async () => {
+	uiStore.setBackButtonVisible(false)
+
 	draggableInstance?.[0]?.kill()
 
 	await animateOut()
@@ -581,7 +593,7 @@ const handleStepChange = (next, prev) => {
 		})
 
 		gsap.to(godraysSmoothBottom, {
-			value: 0.22,
+			value: 0.15,
 			duration: 3.5,
 			overwrite: true,
 		})
