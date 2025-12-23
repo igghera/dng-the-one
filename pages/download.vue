@@ -102,7 +102,6 @@
 
 <script setup>
 import { get, set } from '@vueuse/core'
-import { snapdom } from '@zumer/snapdom'
 
 //
 // Refs / State
@@ -110,49 +109,14 @@ import { snapdom } from '@zumer/snapdom'
 const lenis = useLenis()
 const uiStore = useUiStore()
 
-const { rt, tm } = useI18n()
-
-const { gsap } = useGSAP()
+const { rt, tm, locale } = useI18n()
 
 const urlParams = useUrlSearchParams('history')
-
-const cardRef = useTemplateRef('cardRef')
 
 const result = shallowRef(null)
 const isDownloading = shallowRef(false)
 
 const { q1, q2, q3 } = urlParams
-
-const allAuras = Object.values(tm('experience_end.options')).map(option => ({
-	title: rt(option.title),
-	copy: rt(option.copy),
-}))
-
-const allAurasFull = Object.values(tm('auras')).map(aura => ({
-	title: rt(aura.title),
-	male: {
-		desc: rt(aura.male.desc),
-		fragrance: {
-			title: rt(aura.male.fragrance.title),
-			sub_title: rt(aura.male.fragrance.sub_title),
-			desc: rt(aura.male.fragrance.desc),
-		},
-	},
-	female: {
-		desc: rt(aura.female.desc),
-		fragrance: {
-			title: rt(aura.female.fragrance.title),
-			sub_title: rt(aura.female.fragrance.sub_title),
-			desc: rt(aura.female.fragrance.desc),
-		},
-	},
-}))
-
-const allProducts = Object.values(tm('products')).map(product => ({
-	title: rt(product.title),
-	sub_title: rt(product.sub_title),
-	copy: rt(product.copy),
-}))
 
 //
 // Computed
@@ -177,7 +141,52 @@ onMounted(async () => {
 	uiStore.setBottomGradientVisible(true)
 	document.documentElement.dataset.init = true
 
-	const res = calculateResult(
+	setResult()
+})
+
+//
+// Watchers
+//
+watch(locale, () => {
+	setResult()
+})
+
+//
+// Methods
+//
+const setResult = () => {
+	const allAuras = Object.values(tm('experience_end.options')).map(option => ({
+		title: rt(option.title),
+		copy: rt(option.copy),
+	}))
+
+	const allAurasFull = Object.values(tm('auras')).map(aura => ({
+		title: rt(aura.title),
+		male: {
+			desc: rt(aura.male.desc),
+			fragrance: {
+				title: rt(aura.male.fragrance.title),
+				sub_title: rt(aura.male.fragrance.sub_title),
+				desc: rt(aura.male.fragrance.desc),
+			},
+		},
+		female: {
+			desc: rt(aura.female.desc),
+			fragrance: {
+				title: rt(aura.female.fragrance.title),
+				sub_title: rt(aura.female.fragrance.sub_title),
+				desc: rt(aura.female.fragrance.desc),
+			},
+		},
+	}))
+
+	const allProducts = Object.values(tm('products')).map(product => ({
+		title: rt(product.title),
+		sub_title: rt(product.sub_title),
+		copy: rt(product.copy),
+	}))
+
+	const { result: data } = calculateResult(
 		Number(q1),
 		Number(q2),
 		Number(q3),
@@ -186,13 +195,10 @@ onMounted(async () => {
 		allAurasFull
 	)
 
-	set(result, res.result)
-})
+	set(result, data)
+}
 
-//
-// Methods
-//
-const handleDownloadButtonClick = async event => {
+const handleDownloadButtonClick = async () => {
 	set(isDownloading, true)
 
 	get(result).set('pre-title', $t('results.pre_title'))
