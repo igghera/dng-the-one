@@ -1,24 +1,30 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  app: {
-    head: {
-      title: 'DG - The One',
-      meta: [
-        { name: 'description', content: '[DESCRIPTION HERE]' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' },
-      ]
-    }
-  },
+	ssr: false, // Capacitor requires SPA mode for full functionality
+	nitro: {
+		prerender: {
+			routes: ["/"],
+			crawlLinks: true,
+			failOnError: false,
+		},
+	},
+	app: {
+		head: {
+			title: "DG - The One",
+			meta: [
+				{ name: "description", content: "[DESCRIPTION HERE]" },
+				{ name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
+			],
+		},
+	},
 
-  css: [
-    '~/assets/css/app.scss'
-  ],
+	css: ["~/assets/css/app.scss"],
 
-  postcss: {
-    plugins: {
-      'postcss-easing-gradients': {}
-    }
-  },
+	postcss: {
+		plugins: {
+			"postcss-easing-gradients": {},
+		},
+	},
 
   dir: {
     pages: process.env.SHOW_SPLASH_PAGE === 'true' ? 'splash' : 'pages',
@@ -26,15 +32,9 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-01-01',
 
-  devtools: { enabled: false },
+	devtools: { enabled: false },
 
-  modules: [
-    '@nuxtjs/tailwindcss',
-    '@vueuse/nuxt',
-    '@nuxtjs/i18n',
-    '@pinia/nuxt',
-    'lenis/nuxt'
-  ],
+	modules: ["@nuxtjs/tailwindcss", "@vueuse/nuxt", "@nuxtjs/i18n", "@pinia/nuxt", "lenis/nuxt"],
 
   i18n: {
     defaultLocale: 'en',
@@ -59,9 +59,12 @@ export default defineNuxtConfig({
     ]
   },
 
-  runtimeConfig: {
-    public: {
-      isAppMode: process.env.APP_MODE === 'true',
-    },
-  },
-})
+	runtimeConfig: {
+		public: {
+			isAppMode: process.env.APP_MODE === "true",
+			printEnabled: process.env.PRINT_ENABLED === "true",
+			printerName: process.env.PRINTER_NAME ?? "none",
+			useNativePicker: process.env.USE_NATIVE_PICKER === "true",
+		},
+	},
+});
