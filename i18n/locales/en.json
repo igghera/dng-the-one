@@ -99,26 +99,34 @@
     "pre_title": "Your Aura matches are:",
     "result": [
       {
-        "title": "The One Gold for Men<br>The One Gold",
-        "subtitle": "Eau De Parfum Intense",
+        "title": [
+          "The One Gold For Men Eau De Parfum Intense",
+          "The One Gold Eau De Parfum Intense"
+        ],
         "image": "/images/engagement/01.webp",
         "copy": "Luminous, modern, magnetic. Discover two fragrances that captivate the senses: Dolce&Gabbana The One Gold Eau de Parfum Intense and The One For Men Gold Eau de Parfum Intense."
       },
       {
-        "title": "The One for Men<br>The One",
-        "subtitle": "Parfum & Eau De Parfum Intense",
+        "title": [
+          "The One For Men Parfum",
+          "The One Gold Eau De Parfum Intense"
+        ],
         "image": "/images/engagement/03.webp",
         "copy": "Two new fragrance signatures that play on refined contrasts. Discover Dolce&Gabbana The One Eau de Parfum Intense and The One For Men Parfum."
       },
       {
-        "title": "The One for Men<br>The One",
-        "subtitle": "Eau De Parfum",
+        "title": [
+          "The One For Men Eau De Parfum",
+          "The One Eau De Parfum"
+        ],
         "image": "/images/engagement/02.webp",
         "copy": "Two timeless icons. Dolce&Gabbana The One Eau de Parfum and The One For Men Eau de Parfum, now in updated version that’s even longer-lasting, even more irresistible."
       },
       {
-        "title": "The One for Men<br>The One",
-        "subtitle": "Eau De Toilette & Eau De Parfum",
+        "title": [
+          "The One For Men Eau De Toilette",
+          "The One Eau De Parfum"
+        ],
         "image": "/images/engagement/04.webp",
         "copy": "Sophisticated and irresistible. Discover the two iconic Dolce&Gabbana fragrances The One Eau The Parfum and The One Eau de Toilette."
       }
