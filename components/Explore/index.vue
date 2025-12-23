@@ -777,7 +777,7 @@ function createDrag() {
 		},
 		zIndexBoost: false,
 		snap: value => {
-			const TOLERANCE = 150
+			const TOLERANCE = 200
 
 			const curr = getClosestValue(snaps, value)
 			let currIndex = snaps.findIndex(snap => snap === curr)
