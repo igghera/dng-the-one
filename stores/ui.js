@@ -3,6 +3,8 @@ export const useUiStore = defineStore('uiStore', {
     mainUiVisible: false,
     preloaderVisible: true,
     webglVisible: false,
+    audioButtonVisible: false,
+    backButtonVisible: false,
     experienceStartVisible: false,
     experienceEnterNameVisible: false,
     experienceStep01Visible: false,
@@ -21,6 +23,8 @@ export const useUiStore = defineStore('uiStore', {
       this.mainUiVisible = true
       this.preloaderVisible = false
       this.webglVisible = true
+      // this.audioButtonVisible = false
+      this.backButtonVisible = false
       this.experienceStartVisible = true
       this.experienceEnterNameVisible = false
       this.experienceStep01Visible = false
@@ -44,6 +48,14 @@ export const useUiStore = defineStore('uiStore', {
 
     setWebglVisible(visible) {
       this.webglVisible = visible
+    },
+
+    setAudioButtonVisible(visible) {
+      this.audioButtonVisible = visible
+    },
+
+    setBackButtonVisible(visible) {
+      this.backButtonVisible = visible
     },
 
     setExperienceStartVisible(visible) {
@@ -95,6 +107,8 @@ export const useUiStore = defineStore('uiStore', {
     isMainUiVisible: (state) => state.mainUiVisible,
     isPreloaderVisible: (state) => state.preloaderVisible,
     isWebglVisible: (state) => state.webglVisible,
+    isAudioButtonVisible: (state) => state.audioButtonVisible,
+    isBackButtonVisible: (state) => state.backButtonVisible,
     isExperienceStartVisible: (state) => state.experienceStartVisible,
     isExperienceEnterNameVisible: (state) => state.experienceEnterNameVisible,
     isExperienceStep01Visible: (state) => state.experienceStep01Visible,

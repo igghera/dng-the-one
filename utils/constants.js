@@ -1,5 +1,6 @@
 export const EVENTS = {
   RESTART: 'restart',
+  BACK: 'back',
 
   WEBGL_READY: 'webglReady',
 

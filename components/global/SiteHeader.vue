@@ -1,6 +1,22 @@
 <template>
 	<Container class="site-header" tag="header">
-		<ButtonAudio class="button button-left" />
+		<nav class="buttons-left" ref="buttonsLeftRef">
+			<ul class="grid items-start gap-x-10">
+				<li style="opacity: 0; visibility: hidden">
+					<ButtonBack
+						class="button"
+						:disabled="!uiStore.isBackButtonVisible"
+						:aria-disabled="!uiStore.isBackButtonVisible"
+					/>
+				</li>
+
+				<Transition name="fade">
+					<li v-if="uiStore.isAudioButtonVisible">
+						<ButtonAudio class="button" />
+					</li>
+				</Transition>
+			</ul>
+		</nav>
 
 		<button class="logotype" ref="logoButtonRef" @contextmenu.prevent>
 			<LogoLettering />
@@ -52,11 +68,14 @@ import { useStorage, get, set } from '@vueuse/core'
 //
 // Refs / State
 //
-const { gsap, Observer } = useGSAP()
+const uiStore = useUiStore()
+
+const { gsap, Observer, Flip } = useGSAP()
 
 const route = useRoute()
 
 const logoButtonRef = useTemplateRef('logoButtonRef')
+const buttonsLeftRef = useTemplateRef('buttonsLeftRef')
 
 const isFromEngagement = shallowRef(false)
 const engagementPageLink = shallowRef('/engagement')
@@ -118,6 +137,38 @@ watchEffect(() => {
 	set(isFromEngagement, route.query.ref === 'engagement')
 	set(engagementPageLink, window.history.state.back)
 })
+
+watch(
+	() => uiStore.isBackButtonVisible,
+	visible => {
+		toggleBackButton(visible)
+	}
+)
+
+//
+// Methods
+//
+const toggleBackButton = visible => {
+	const elements = get(buttonsLeftRef).querySelectorAll('li')
+
+	const state = Flip.getState(elements, {
+		props: 'opacity',
+	})
+
+	gsap.set(elements[0], { opacity: visible ? 1 : 0 })
+	elements[1].style.gridArea = visible ? '1 / 2 / 1 / 2' : '1 / 1 / 1 / 1'
+
+	Flip.from(state, {
+		duration: 0.8,
+		overwrite: true,
+		onStart: () => {
+			visible && (elements[0].style.visibility = 'inherit')
+		},
+		onComplete: () => {
+			!visible && (elements[0].style.visibility = 'hidden')
+		},
+	})
+}
 </script>
 
 <style lang="scss" scoped>
@@ -137,10 +188,14 @@ watchEffect(() => {
 	@apply pointer-events-auto text-gold;
 }
 
-.button-left {
+.buttons-left {
 	@apply justify-self-start;
 
 	grid-area: a;
+
+	li {
+		grid-area: 1 / 1 / 1 / 1;
+	}
 }
 
 .logotype {
@@ -162,5 +217,15 @@ watchEffect(() => {
 	@apply justify-self-end translate-x-[18px];
 
 	grid-area: c;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.7s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

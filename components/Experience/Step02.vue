@@ -255,6 +255,7 @@ const { idle: isIdle, reset: resetIdle, stop: stopIdle } = useIdle(2500)
 
 const { gsap, Draggable, Flip } = useGSAP()
 
+const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
 const draggerRef = useTemplateRef('draggerRef')
 const contentMaskRectInitRef = useTemplateRef('contentMaskRectInitRef')
@@ -296,7 +297,7 @@ const labels = computed(() => {
 onMounted(async () => {
 	setInitialState()
 
-	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async () => {
+	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async params => {
 		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START')
 
 		gsap.set(get(trackRef), {
@@ -305,8 +306,16 @@ onMounted(async () => {
 
 		await nextTick()
 
-		// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
-		emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
+		if (params?.back) {
+			await animateIn()
+
+			uiStore.setBackButtonVisible(true)
+
+			createDraggable()
+		} else {
+			// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
+			emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
+		}
 	})
 
 	emitter.once(EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE, async () => {
@@ -315,6 +324,8 @@ onMounted(async () => {
 		// )
 
 		await animateIn()
+
+		uiStore.setBackButtonVisible(true)
 
 		createDraggable()
 	})
@@ -333,6 +344,12 @@ emitter.on(EVENTS.RESTART, () => {
 	stopIdle()
 
 	gsap.killTweensOf([get(draggerMaskRef), get(trackRef)])
+})
+
+emitter.on(EVENTS.BACK, () => {
+	if (!uiStore.isExperienceStep02Visible) return
+
+	back()
 })
 
 //
@@ -422,6 +439,17 @@ const setInitialState = () => {
 	set(instructionsVisible, false)
 }
 
+const back = async () => {
+	uiStore.setBackButtonVisible(false)
+
+	draggableInstance?.[0]?.kill()
+
+	await animateBack()
+
+	uiStore.setExperienceStep01Visible(true)
+	uiStore.setExperienceStep02Visible(false)
+}
+
 const animateIn = () => {
 	const tl = gsap.timeline({ paused: true })
 	tl.addLabel('start')
@@ -466,17 +494,14 @@ const animateIn = () => {
 		'start+=0.2'
 	)
 
-	// tl.to(
-	// 	get(contentMaskRectInitRef),
-	// 	{
-	// 		scale: 1,
-	// 		duration: 1.2,
-	// 		ease: 'power1.out',
-	// 	},
-	// 	'start+=0.3'
-	// )
-
 	return tl.play()
+}
+
+const animateBack = () => {
+	return gsap.to(get(el), {
+		autoAlpha: 0,
+		duration: 0.8,
+	})
 }
 
 const animateOut = async () => {
@@ -524,6 +549,8 @@ const moveDotToNextPosition = async () => {
 }
 
 const handleClick = async () => {
+	uiStore.setBackButtonVisible(false)
+
 	draggableInstance?.[0]?.kill()
 
 	await animateOut()

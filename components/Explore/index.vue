@@ -230,6 +230,7 @@ const panelContentRef = useTemplateRef('panelContentRef')
 const draggableDummyRef = useTemplateRef('draggableDummyRef')
 
 const appStore = useAppStore()
+const uiStore = useUiStore()
 
 const { isMobile } = useViewport()
 
@@ -515,6 +516,8 @@ onMounted(async () => {
 
 	set(init, true)
 
+	gsap.set(get(el), { clearProps: '-webkit-user-select' })
+
 	gsap.delayedCall(0.4, () => {
 		animateInBackground()
 
@@ -775,7 +778,26 @@ function createDrag() {
 		},
 		zIndexBoost: false,
 		snap: value => {
-			return getClosestValue(snaps, value)
+			const TOLERANCE = 200
+
+			const curr = getClosestValue(snaps, value)
+			let currIndex = snaps.findIndex(snap => snap === curr)
+
+			let newSnaps = [...snaps]
+
+			if (currIndex === 0) {
+				newSnaps[1] = snaps[1] + TOLERANCE
+			} else if (currIndex === 4) {
+				newSnaps[3] = snaps[3] - TOLERANCE
+			} else {
+				newSnaps[currIndex - 1] = snaps[currIndex - 1] - TOLERANCE
+				newSnaps[currIndex + 1] = snaps[currIndex + 1] + TOLERANCE
+			}
+
+			const newCurr = getClosestValue(newSnaps, value)
+			currIndex = newSnaps.findIndex(snap => snap === newCurr)
+
+			return snaps[currIndex]
 		},
 		onDrag: () => {
 			update(draggableInstance[0].x)
@@ -963,6 +985,7 @@ async function introButtonOnCompleteCallback() {
 
 	await nextTick()
 
+	uiStore.setAudioButtonVisible(true)
 	appStore.setAudioEnabled(true)
 	Howler.volume(1)
 
@@ -1149,7 +1172,7 @@ async function animateToInitialPosition() {
 @use '@/assets/css/functions' as *;
 
 .explore {
-	@apply grid h-[100svh] overflow-hidden;
+	@apply grid h-[100svh] overflow-hidden select-none;
 	@apply transition-opacity duration-1000;
 
 	&[data-visible='false'] {
@@ -1485,17 +1508,17 @@ async function animateToInitialPosition() {
 }
 
 .intro {
-	@apply flex flex-col gap-y-20 items-center size-auto self-end justify-self-center text-center relative z-[1] pointer-events-none text-gold;
+	@apply flex flex-col gap-y-20 items-center size-auto self-end justify-self-center text-center relative z-[1] pointer-events-none select-none text-gold;
 
 	translate: 0 min(toRem(-66), -10svh);
 }
 
 .intro-text {
-	@apply text-base leading-tight tracking-[0.05em];
+	@apply text-base leading-tight tracking-[0.05em] whitespace-nowrap;
 }
 
 .instructions {
-	@apply size-auto self-end justify-self-center pointer-events-none text-gold relative z-[1];
+	@apply size-auto self-end justify-self-center pointer-events-none text-gold relative z-[1] select-none whitespace-nowrap;
 	@apply leading-none tracking-[0.03em];
 
 	font-size: toRem(15);

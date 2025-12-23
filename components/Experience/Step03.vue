@@ -10,6 +10,7 @@
 		<div class="content">
 			<div
 				v-for="(label, idx) in labels"
+				style="opacity: 0.001"
 				:key="idx"
 				class="dragger"
 				:data-index="idx"
@@ -101,6 +102,7 @@ const { gsap, Draggable, Flip } = useGSAP()
 
 const { isPortrait } = useViewport()
 
+const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
 const instructionsRef = useTemplateRef('instructionsRef')
 const draggersRef = useTemplateRef('draggersRef')
@@ -122,11 +124,22 @@ let draggableInstance = null
 onMounted(async () => {
 	setInitialState()
 
-	animateIn()
+	await animateIn()
+
+	uiStore.setBackButtonVisible(true)
 })
 
 onBeforeUnmount(() => {
-	draggableInstance?.[0]?.kill()
+	draggableInstance.forEach(instance => instance.kill())
+})
+
+//
+// Events
+//
+emitter.on(EVENTS.BACK, () => {
+	if (!uiStore.isExperienceStep03Visible) return
+
+	back()
 })
 
 //
@@ -135,7 +148,6 @@ onBeforeUnmount(() => {
 const setInitialState = () => {
 	gsap.set(
 		[
-			get(draggersRef),
 			get(draggersLabelsRef),
 			get(dropzoneCircleRef),
 			get(dropzoneArrowRef),
@@ -297,6 +309,48 @@ const pulseDraggers = () => {
 	})
 }
 
+const back = async () => {
+	uiStore.setBackButtonVisible(false)
+
+	draggableInstance.forEach(instance => instance.kill())
+
+	await animateBack()
+
+	uiStore.setExperienceStep02Visible(true)
+
+	await nextTick()
+
+	const svgImage = document.createElementNS(
+		'http://www.w3.org/2000/svg',
+		'image'
+	)
+	svgImage.setAttribute('id', 'glowing-dot')
+	svgImage.setAttribute('href', '/images/glowing-dot.webp')
+	svgImage.setAttribute('width', '345')
+	svgImage.setAttribute('height', '345')
+	svgImage.setAttribute('transform', 'matrix(0.85,0,0,0.85,-146.625,-146.625)')
+	svgImage.style.opacity = 0
+	document.getElementById('dot-wrapper-step-02').appendChild(svgImage)
+
+	gsap.to(svgImage, {
+		opacity: 1,
+		duration: 1,
+	})
+
+	uiStore.setExperienceStep03Visible(false)
+
+	await nextTick()
+
+	emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, { back: true })
+}
+
+const animateBack = () => {
+	return gsap.to(get(el), {
+		autoAlpha: 0,
+		duration: 0.8,
+	})
+}
+
 const createDraggable = () => {
 	draggableInstance = Draggable.create(get(draggersRef), {
 		minimumMovement: 5,
@@ -346,6 +400,8 @@ const createDraggable = () => {
 	}
 
 	function moveToFinalPosition(elem) {
+		uiStore.setBackButtonVisible(false)
+
 		// Kill all Draggable instances
 		for (const draggable of draggableInstance) {
 			draggable.kill()

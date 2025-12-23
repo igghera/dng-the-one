@@ -154,6 +154,6 @@ const createPointerObserver = () => {
 }
 
 .btn-label {
-	@apply leading-none font-medium tracking-[0.03em] text-gold;
+	@apply leading-none font-medium tracking-[0.03em] text-gold pointer-events-none select-none;
 }
 </style>
