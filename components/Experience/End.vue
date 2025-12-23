@@ -502,13 +502,13 @@ const handlePrint = async () => {
 			console.error('No printer URL available')
 			throw new Error('No printer selected')
 		}
-	}catch (error) {
-	console.error('❌ Print error:', error)
-	alert(
-		rt('experience_end.print_error') ?? 
-		'Unable to print. Please check printer connection.'
-	)
-}
+	} catch (error) {
+		console.error('❌ Print error:', error)
+		alert(
+			rt('experience_end.print_error') ?? 
+			'Unable to print. Please check printer connection.'
+		)
+	}
 }
 
 // ============================================================================
