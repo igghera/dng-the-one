@@ -132,13 +132,12 @@ const data = computed(() => {
 				copy: rt(tm('engagement.result[1].copy')),
 			}
 		case '3':
-		case '7':
 			return {
 				title: Object.values(
-					tm('engagement.result[2].title').map(row => rt(row))
+					tm('engagement.result[3].title').map(row => rt(row))
 				),
-				image: rt(tm('engagement.result[2].image')),
-				copy: rt(tm('engagement.result[2].copy')),
+				image: rt(tm('engagement.result[3].image')),
+				copy: rt(tm('engagement.result[3].copy')),
 			}
 	}
 })
