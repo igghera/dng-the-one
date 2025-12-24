@@ -108,6 +108,7 @@ const imageSrc = computed(() => {
 const data = computed(() => {
 	switch (get(aura)) {
 		case '0':
+		case '4':
 			return {
 				title: Object.values(
 					tm('engagement.result[0].title').map(row => rt(row))
