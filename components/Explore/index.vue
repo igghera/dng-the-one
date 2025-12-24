@@ -767,11 +767,18 @@ function createDrag() {
 
 	// TODO: Hardcoded values for now, need to calculate them dynamically.
 	const snaps = [980, 735, 490, 245, 0]
+	const TOLERANCE = 10
+
+	// Track the currently active snap point
+	let currentSnapIndex = 0
+	let valueOnPress = 0
 
 	draggableInstance = Draggable.create(get(draggableDummyRef), {
 		trigger: get(el),
 		type: 'x',
 		inertia: true,
+		overshootTolerance: 0,
+		throwResistance: 10000,
 		edgeResistance: 1,
 		dragResistance: 0.85,
 		bounds: {
@@ -779,27 +786,25 @@ function createDrag() {
 			width: 1000,
 		},
 		zIndexBoost: false,
+		onPress: () => {
+			valueOnPress = draggableInstance[0].x
+		},
 		snap: value => {
-			const TOLERANCE = 200
+			const distanceToCurrent = Math.abs(value - snaps[currentSnapIndex])
 
-			const curr = getClosestValue(snaps, value)
-			let currIndex = snaps.findIndex(snap => snap === curr)
-
-			let newSnaps = [...snaps]
-
-			if (currIndex === 0) {
-				newSnaps[1] = snaps[1] + TOLERANCE
-			} else if (currIndex === 4) {
-				newSnaps[3] = snaps[3] - TOLERANCE
-			} else {
-				newSnaps[currIndex - 1] = snaps[currIndex - 1] - TOLERANCE
-				newSnaps[currIndex + 1] = snaps[currIndex + 1] + TOLERANCE
+			// If within tolerance, snap to the current snap point (allows small drag movement)
+			if (distanceToCurrent <= TOLERANCE) {
+				return snaps[currentSnapIndex]
 			}
 
-			const newCurr = getClosestValue(newSnaps, value)
-			currIndex = newSnaps.findIndex(snap => snap === newCurr)
+			const direction = Math.sign(valueOnPress - value)
+			currentSnapIndex = gsap.utils.clamp(
+				0,
+				snaps.length - 1,
+				currentSnapIndex + direction
+			)
 
-			return snaps[currIndex]
+			return snaps[currentSnapIndex]
 		},
 		onDrag: () => {
 			update(draggableInstance[0].x)
