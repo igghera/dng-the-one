@@ -86,7 +86,7 @@ const { aura } = urlParams
 const images = Object.freeze([
 	'00-bold',
 	'01-elegant',
-	'02-discrete',
+	'02-warm',
 	'03-warm',
 	'04-powerful',
 	'05-sophisticated',
@@ -124,13 +124,12 @@ const data = computed(() => {
 				copy: rt(tm('engagement.result[2].copy')),
 			}
 		case '2':
-		case '6':
 			return {
 				title: Object.values(
-					tm('engagement.result[3].title').map(row => rt(row))
+					tm('engagement.result[1].title').map(row => rt(row))
 				),
-				image: rt(tm('engagement.result[3].image')),
-				copy: rt(tm('engagement.result[3].copy')),
+				image: rt(tm('engagement.result[1].image')),
+				copy: rt(tm('engagement.result[1].copy')),
 			}
 		case '3':
 		case '7':
