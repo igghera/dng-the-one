@@ -126,6 +126,7 @@ const data = computed(() => {
 				copy: rt(tm('engagement.result[2].copy')),
 			}
 		case '2':
+		case '6':
 			return {
 				title: Object.values(
 					tm('engagement.result[1].title').map(row => rt(row))
