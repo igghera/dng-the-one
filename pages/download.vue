@@ -97,6 +97,8 @@
 		<p class="copy | body-4">
 			{{ result.get('auraFull')[result.get('shape')].fragrance.desc }}
 		</p>
+
+		<ExperienceTimelineIntro class="explore | !p-0" cta-link="/explore" />
 	</div>
 </template>
 
@@ -222,12 +224,14 @@ const handleDownloadButtonClick = async () => {
 		'c' // Header
 		'd' // Picture
 		'e' // Copy
+		'.' // MArgin
+		'f' // Timeline Intro
 		'.'; // Margin
 	grid-template-columns: 1fr;
-	grid-template-rows: toRem(60) repeat(5, auto) toRem(40);
+	grid-template-rows: toRem(60) repeat(5, auto) toRem(40) auto toRem(40);
 
 	@screen md {
-		grid-template-rows: toRem(90) repeat(5, auto) toRem(60);
+		grid-template-rows: toRem(90) repeat(5, auto) toRem(60) auto toRem(60);
 	}
 }
 
@@ -336,5 +340,9 @@ const handleDownloadButtonClick = async () => {
 
 	grid-area: e;
 	width: min(80%, toRem(400));
+}
+
+.explore {
+	grid-area: f;
 }
 </style>

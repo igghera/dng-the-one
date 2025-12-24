@@ -121,8 +121,7 @@ const generateQrCode = () => {
 	const q1 = appStore.getStep01Selection ?? 0
 	const q2 = appStore.getStep02Selection ?? 0
 	const q3 = appStore.getStep03Selection ?? 0
-	const card = (appStore.getStep01Selection ?? 0) + 1
-	const data = `${pathNoTrailingSlash}/download?q1=${q1}&q2=${q2}&q3=${q3}&card=${card}`
+	const data = `${pathNoTrailingSlash}/download?q1=${q1}&q2=${q2}&q3=${q3}}`
 
 	const qr = new QRCodeStyling({
 		...qrCodeOptions,
