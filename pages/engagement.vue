@@ -108,7 +108,6 @@ const imageSrc = computed(() => {
 const data = computed(() => {
 	switch (get(aura)) {
 		case '0':
-		case '4':
 			return {
 				title: Object.values(
 					tm('engagement.result[0].title').map(row => rt(row))
@@ -117,13 +116,12 @@ const data = computed(() => {
 				copy: rt(tm('engagement.result[0].copy')),
 			}
 		case '1':
-		case '5':
 			return {
 				title: Object.values(
-					tm('engagement.result[1].title').map(row => rt(row))
+					tm('engagement.result[2].title').map(row => rt(row))
 				),
-				image: rt(tm('engagement.result[1].image')),
-				copy: rt(tm('engagement.result[1].copy')),
+				image: rt(tm('engagement.result[2].image')),
+				copy: rt(tm('engagement.result[2].copy')),
 			}
 		case '2':
 		case '6':
