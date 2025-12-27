@@ -40,8 +40,8 @@
 			id="explore-canvas"
 			class="canvas"
 			ref="canvasRef"
-			:width="componentWidth"
-			:height="componentHeight"
+			:width="canvasSize.width"
+			:height="canvasSize.height"
 		/>
 
 		<div
@@ -431,6 +431,22 @@ const targets = itemsData.map(item => {
 //
 // Computed
 //
+const canvasSize = computed(() => {
+	const width =
+		get(componentWidth) % 2 === 0
+			? get(componentWidth)
+			: get(componentWidth) - 1
+	const height =
+		get(componentHeight) % 2 === 0
+			? get(componentHeight)
+			: get(componentHeight) - 1
+
+	return {
+		width,
+		height,
+	}
+})
+
 const itemsCopy = computed(() => {
 	return tm('explore.items').map(item => {
 		return {
@@ -581,17 +597,17 @@ onMounted(async () => {
 watch([componentWidth, componentHeight], value => {
 	if (!camera) return
 
-	camera.aspect = value[0] / value[1]
+	const width = value[0] % 2 === 0 ? value[0] : value[0] - 1
+	const height = value[1] % 2 === 0 ? value[1] : value[1] - 1
+
+	camera.aspect = width / height
 	camera.updateProjectionMatrix()
 
 	if (!renderer) return
 
-	renderer.setSize(value[0], value[1])
+	renderer.setSize(width, height)
 
-	rendererCSS.setSize(
-		value[0] % 2 === 0 ? value[0] : value[0] - 1,
-		value[1] % 2 === 0 ? value[1] : value[1] - 1
-	)
+	rendererCSS.setSize(width, height)
 })
 
 //
@@ -621,7 +637,7 @@ function createScene() {
 function createCamera() {
 	camera = new THREE.PerspectiveCamera(
 		40,
-		get(componentWidth) / get(componentHeight),
+		get(canvasSize).width / get(canvasSize).height,
 		0.1,
 		20
 	)
@@ -631,7 +647,7 @@ function createCamera() {
 
 async function createRenderer() {
 	rendererCSS = new CSS3DRenderer()
-	rendererCSS.setSize(get(componentWidth), get(componentHeight))
+	rendererCSS.setSize(get(canvasSize).width, get(canvasSize).height)
 	get(css3DContentRef).appendChild(rendererCSS.domElement)
 
 	renderer = new THREE.WebGPURenderer({
@@ -642,7 +658,7 @@ async function createRenderer() {
 	})
 
 	renderer.toneMapping = THREE.ACESFilmicToneMapping
-	renderer.setSize(get(componentWidth), get(componentHeight))
+	renderer.setSize(get(canvasSize).width, get(canvasSize).height)
 	renderer.setPixelRatio(1)
 
 	await renderer.init()
@@ -1272,10 +1288,11 @@ async function animateToInitialPosition() {
 }
 
 :deep(.socket) {
-	@apply grid text-gold text-center uppercase;
+	@apply grid text-gold text-center uppercase relative;
 
 	height: var(--h);
 	width: var(--w);
+	transform-origin: center center;
 
 	> * {
 		@apply col-start-1 row-start-1;
