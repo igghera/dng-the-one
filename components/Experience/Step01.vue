@@ -119,6 +119,7 @@
 
 <script setup>
 import { get, set, useStorage } from '@vueuse/core'
+import slugify from 'voca/slugify'
 
 import { progress as backgroundProgress } from './WebGL/materials/background'
 
@@ -127,6 +128,7 @@ import { progress as backgroundProgress } from './WebGL/materials/background'
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const { rt, tm } = useI18n()
 const { gsap, Draggable, Flip } = useGSAP()
@@ -165,6 +167,13 @@ const ready = shallowRef(false)
 const labels = computed(() => {
 	return Object.values(tm('experience_step_01.labels')).map(label => rt(label))
 })
+
+const labelsEN = Object.freeze([
+	'Refined and exclusive',
+	'Bold and commanding',
+	'Mysterious and magnetic',
+	'Confident and sophisticated',
+])
 
 let draggableInstance = null
 
@@ -545,6 +554,12 @@ const wiggleKnob = () => {
 }
 
 const handleClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'select',
+		customizator_option: slugify(labelsEN[get(knobStep)]),
+	})
+	trackingStore.setFunnel('3')
+
 	draggableInstance?.[0]?.kill()
 
 	await animateOut()

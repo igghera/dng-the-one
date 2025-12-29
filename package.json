@@ -38,6 +38,7 @@
 		"three": "^0.182.0",
 		"tweakpane": "^4.0.5",
 		"tweakpane-plugin-file-import": "^1.1.1",
+		"voca": "^1.4.1",
 		"vue": "^3.5.25",
 		"vue-router": "^4.6.3"
 	},
