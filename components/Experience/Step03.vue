@@ -88,12 +88,14 @@
 
 <script setup>
 import { get, useStorage } from '@vueuse/core'
+import slugify from 'voca/slugify'
 
 //
 // Refs / State
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const storage = useStorage('experience-answers', {})
 
@@ -115,6 +117,8 @@ const dotWrapperStep03Ref = useTemplateRef('dotWrapperStep03Ref')
 const labels = computed(() => {
 	return Object.values(tm('experience_step_03.labels')).map(label => rt(label))
 })
+
+const labelsEN = Object.freeze(['Masculine', 'Feminine', "I don't care"])
 
 let draggableInstance = null
 
@@ -359,8 +363,8 @@ const createDraggable = () => {
 
 			fadeOutDraggers(idx)
 
-			moveToFinalPosition(self.target)
 			appStore.setStep03Selection(idx)
+			moveToFinalPosition(self.target)
 			storage.value.q3 = idx
 		},
 		onDragStart: self => {
@@ -377,8 +381,8 @@ const createDraggable = () => {
 			const idx = Number(self.target.dataset.index)
 
 			if (inDropzone) {
-				moveToFinalPosition(self.target)
 				appStore.setStep03Selection(idx)
+				moveToFinalPosition(self.target)
 				storage.value.q3 = idx
 			} else {
 				fadeInDraggers(idx)
@@ -400,6 +404,12 @@ const createDraggable = () => {
 	}
 
 	function moveToFinalPosition(elem) {
+		Tracking.sendEvent({
+			generic_event_and_label: 'drag_and_drop_into_the_circle',
+			customizator_option: slugify(labelsEN[appStore.getStep03Selection]),
+		})
+		trackingStore.setFunnel('5')
+
 		uiStore.setBackButtonVisible(false)
 
 		// Kill all Draggable instances
