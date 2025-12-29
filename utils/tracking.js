@@ -2,11 +2,9 @@ export class Tracking {
 	constructor() {}
 
   static globalParams = {
-    market: undefined,
-    region: undefined,
-    store: undefined,
-    store_type: undefined,
-    store_id: undefined,
+    event: 'select_content',
+    content_type: 'button',
+    content_id: 'the-one'
   }
 
   static init() {

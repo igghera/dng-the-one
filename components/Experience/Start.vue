@@ -41,6 +41,7 @@ const { gsap, SplitText } = useGSAP()
 
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const el = useCurrentElement()
 const titleRef = useTemplateRef('titleRef')
@@ -115,6 +116,11 @@ const animateIn = () => {
 }
 
 const handleClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'start',
+	})
+	trackingStore.setFunnel('1')
+
 	audioManager.init()
 
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)

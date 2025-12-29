@@ -52,6 +52,7 @@ import { get } from '@vueuse/core'
 const config = useRuntimeConfig()
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const lenis = useLenis()
 
@@ -95,6 +96,7 @@ emitter.on(EVENTS.RESTART, async () => {
 
 	uiStore.reset()
 	appStore.reset()
+	trackingStore.reset()
 })
 </script>
 
