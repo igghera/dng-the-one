@@ -34,7 +34,14 @@ export default defineNuxtConfig({
 
 	devtools: { enabled: false },
 
-	modules: ["@nuxtjs/tailwindcss", "@vueuse/nuxt", "@nuxtjs/i18n", "@pinia/nuxt", "lenis/nuxt"],
+	modules: [
+		"@nuxtjs/tailwindcss",
+		"@vueuse/nuxt",
+		"@nuxtjs/i18n",
+		"@pinia/nuxt",
+		"lenis/nuxt",
+		'@nuxt/scripts'
+	],
 
   i18n: {
     defaultLocale: 'en',
@@ -67,4 +74,14 @@ export default defineNuxtConfig({
 			useNativePicker: process.env.USE_NATIVE_PICKER === "true",
 		},
 	},
+
+	$production: {
+    scripts: {
+      registry: {
+        googleTagManager: {
+          id: process.env.GTM_ID,
+        }
+      }
+    }
+  }
 });
