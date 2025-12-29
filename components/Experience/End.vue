@@ -126,6 +126,7 @@
 <script setup>
 import { Howler } from 'howler'
 import { get, set, useStorage } from '@vueuse/core'
+import slugify from 'voca/slugify'
 // import { PDFDocument } from 'pdf-lib'
 import { ZeroConf } from 'capacitor-zeroconf'
 import { snapdom } from '@zumer/snapdom'
@@ -672,7 +673,7 @@ const createButtonTimeline = () => {
 			Tracking.sendEvent({
 				generic_event_and_label: 'press_&_hold',
 			})
-			trackingStore.setFunnel('5-result')
+			trackingStore.setFunnelName('result')
 
 			set(canInteract, false)
 
@@ -870,6 +871,12 @@ const animateMask = () => {
 			appStore.isAudioEnabled && Howler.volume(1)
 			audioManager.fadeIn(AUDIO_LABELS.CAMPAIGN_LOOP)
 			set(showResult, true)
+
+			Tracking.sendEvent({
+				content_type: 'results_page',
+				generic_event_and_label: 'tool_end',
+				customizator_option: slugify(appStore.getResult.get('aura').title),
+			})
 		},
 		null,
 		'>-0.05'

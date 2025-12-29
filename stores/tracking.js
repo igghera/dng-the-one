@@ -20,10 +20,17 @@ export const useTrackingStore = defineStore('trackingStore', {
       this.funnelName = funnelMap.get('0')
     },
 
-
     setFunnel(step) {
       this.funnelStep = String(step)
       this.funnelName = funnelMap.get(this.funnelStep)
+    },
+
+    setFunnelStep(step) {
+      this.funnelStep = String(step)
+    },
+
+    setFunnelName(name) {
+      this.funnelName = name
     },
   },
 
