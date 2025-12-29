@@ -166,6 +166,7 @@ const { gsap, Observer, SplitText } = useGSAP()
 
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const { height: windowHeight } = useWindowSize()
 
@@ -668,6 +669,11 @@ const createButtonTimeline = () => {
 			}
 		},
 		onComplete: async () => {
+			Tracking.sendEvent({
+				generic_event_and_label: 'press_&_hold',
+			})
+			trackingStore.setFunnel('5-result')
+
 			set(canInteract, false)
 
 			uiStore.setBackButtonVisible(false)
