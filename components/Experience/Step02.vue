@@ -220,6 +220,8 @@
 
 <script setup>
 import { get, set, useStorage } from '@vueuse/core'
+import slugify from 'voca/slugify'
+
 import {
 	opacity as particlesOpacity,
 	strength as particlesStrength,
@@ -241,6 +243,7 @@ import {
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const { rt, tm } = useI18n()
 
@@ -280,6 +283,13 @@ const dotsCoords = [
 
 // const trackTranslateValues = [-15, 11, 37, 62]
 const trackTranslateValues = [-35, -4, 22, 47]
+
+const labelsEN = Object.freeze([
+	'My aura speaks for itself',
+	'All eyes are on me',
+	'I own the room',
+	"I'm the spotlight",
+])
 
 let draggableInstance = null
 let idleTween = null
@@ -549,6 +559,12 @@ const moveDotToNextPosition = async () => {
 }
 
 const handleClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'select',
+		customizator_option: slugify(labelsEN[get(currentStep)]),
+	})
+	trackingStore.setFunnel('4')
+
 	uiStore.setBackButtonVisible(false)
 
 	draggableInstance?.[0]?.kill()
