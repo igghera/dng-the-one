@@ -5,9 +5,20 @@
   "shop_now": "Acquista ora",
   "press_and_hold": "Tieni premuto",
   "download": "Download",
+  "done": "Fatto",
 
   "link_privacy_policy": "https://world.dolcegabbana.com/it/privacy",
   "link_cookies_policy": "https://world.dolcegabbana.com/it/cookie-policy",
+
+  "modal_configuration": {
+    "title": "Configura la tua esperienza",
+    "options": [
+      {
+        "label": "Stampa",
+        "options": ["Si", "No"]
+      }
+    ]
+  },
 
   "experience_start": {
     "title": "Scopri la tua Aura",

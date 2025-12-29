@@ -32,6 +32,12 @@
 			/>
 		</Transition>
 
+		<Transition name="fade">
+			<ModalConfiguration
+				v-if="uiStore.isConfigPanelVisible && config.public.isAppMode"
+			/>
+		</Transition>
+
 		<ClientOnly>
 			<div id="stats-wrapper" v-if="isDebug"></div>
 			<div id="debug-wrapper" v-if="isDebug"></div>

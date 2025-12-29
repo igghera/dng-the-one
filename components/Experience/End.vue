@@ -83,14 +83,14 @@
 				<div class="buttons-row">
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
-							v-if="config.public.isAppMode && canPrint"
+							v-if="config.public.isAppMode && printEnabled"
 							class="!text-gold"
 							@click="handlePrint"
 							>{{ $t('results.cta_print') }}</ButtonGolden
 						>
 
 						<ButtonGolden
-							:size="canPrint ? 'auto' : 'wide'"
+							:size="printEnabled ? 'auto' : 'wide'"
 							class="!text-gold"
 							@click="handleQRCodeButtonClick"
 							>{{ $t('download') }}</ButtonGolden
@@ -157,9 +157,6 @@ const ctaLabelRef = useTemplateRef('ctaLabelRef')
 
 const canInteract = shallowRef(true)
 
-// TODO: Set this value in the app store / local storage
-const canPrint = shallowRef(true)
-
 const printers = shallowRef([])
 const printerDiscoveryError = shallowRef(null)
 const isPrinterDiscoveryActive = shallowRef(false)
@@ -174,6 +171,8 @@ const { height: windowHeight } = useWindowSize()
 
 const urlParams = useUrlSearchParams('history')
 const isFromExplore = urlParams.ref === 'explore'
+
+const printEnabled = useStorage(STORAGE_LABELS.PRINT_ENABLED, false)
 const storage = useStorage('experience-answers', {})
 
 const showResult = shallowRef(false)
@@ -201,8 +200,7 @@ const ZERO_CONF_SERVICE_TYPES = [
 
 const watchedServiceTypes = new Set()
 const isClient = typeof window !== 'undefined'
-const desiredPrinterName =
-	config.public.printerName ?? 'none'
+const desiredPrinterName = config.public.printerName ?? 'none'
 
 const selectedPrinter = computed(() => get(printers)[0] ?? null)
 
@@ -379,7 +377,7 @@ const animateBack = async () => {
 
 // Cordova printer plugin options
 const BORDERLESS_OPTIONS = {
-	orientation:'portrait',
+	orientation: 'portrait',
 	photo: true,
 	autoFit: false,
 	margin: {
@@ -387,8 +385,7 @@ const BORDERLESS_OPTIONS = {
 		left: 0,
 		right: 0,
 		bottom: 0,
-	}, 
-	
+	},
 }
 
 // ============================================================================
@@ -464,7 +461,6 @@ const buildBase64Payload = dataUrl => {
 // PRINT FUNCTIONS
 // ============================================================================
 
-
 /**
  * Main print handler - captures screenshot and sends to printer
  */
@@ -477,7 +473,7 @@ const handlePrint = async () => {
 		// 2. Convert to data URL (PNG format for photo printer)
 		const dataUrl = await buildPhotoReadyDataUrl(blob)
 		console.log('📸 Screenshot ready, size:', dataUrl.length, 'chars')
-		
+
 		// 3. Use Cordova plugin with specific printer URL (Direct Print)
 		const printer = get(selectedPrinter)
 		console.log('🖨️ Sending to printer:', printer?.name)
@@ -488,12 +484,12 @@ const handlePrint = async () => {
 			// Direct print attempt using plugin
 			// This uses the IPP URL discovered via ZeroConf (mdns)
 			// Format: ipp://[ip]:[port]/[resource_path]
-			
+
 			// Semplificazione opzioni per debug fallimento
 			await window.cordova.plugins.printer.print(base64Payload, {
 				printer: printer.ippUrl,
 				name: 'The One Experience',
-				...BORDERLESS_OPTIONS
+				...BORDERLESS_OPTIONS,
 			})
 
 			console.log('✅ Print command sent to plugin')
@@ -505,8 +501,8 @@ const handlePrint = async () => {
 	} catch (error) {
 		console.error('❌ Print error:', error)
 		alert(
-			rt('experience_end.print_error') ?? 
-			'Unable to print. Please check printer connection.'
+			rt('experience_end.print_error') ??
+				'Unable to print. Please check printer connection.'
 		)
 	}
 }
@@ -519,7 +515,7 @@ const handlePrint = async () => {
  * Parses a discovered service and adds it to the list of available printers.
  * Filters by name if `desiredPrinterName` is set in config.
  * Constructs the IPP URL needed for direct printing.
- * 
+ *
  * @param {Object} service - The ZeroConf service object
  */
 const upsertPrinterFromService = service => {
@@ -543,11 +539,11 @@ const upsertPrinterFromService = service => {
 	if (!deviceAddress) return
 
 	const port = service.port || 631
-	
+
 	// Use resource path from txtRecord if available (critical for some printers like DNP)
 	// Fallback to standard 'ipp/print' if not specified
 	const resourcePath = service.txtRecord?.rp || 'ipp/print'
-	
+
 	const nextPrinter = {
 		name: printerName,
 		ip: deviceAddress,
@@ -582,7 +578,7 @@ const formatZeroConfError = (type, error) => {
 /**
  * Starts watching for printer services on the local network using mDNS (Bonjour).
  * Scans for multiple service types (_ipp._tcp, _printer._tcp, etc.) to ensure compatibility.
- * 
+ *
  * @returns {Promise<boolean>} - True if watchers were successfully started
  */
 const startPrinterDiscovery = async () => {
@@ -597,16 +593,13 @@ const startPrinterDiscovery = async () => {
 	await Promise.all(
 		ZERO_CONF_SERVICE_TYPES.map(async type => {
 			try {
-				await ZeroConf.watch(
-					{ type, domain: ZERO_CONF_DOMAIN },
-					result => {
-						if (result?.service) {
-							console.log('Discovered printer service:', result.service)
-							
-							upsertPrinterFromService(result.service)
-						}
+				await ZeroConf.watch({ type, domain: ZERO_CONF_DOMAIN }, result => {
+					if (result?.service) {
+						console.log('Discovered printer service:', result.service)
+
+						upsertPrinterFromService(result.service)
 					}
-				)
+				})
 				watchedServiceTypes.add(type)
 				hasActiveWatchers = true
 			} catch (error) {

@@ -5,6 +5,7 @@ export default {
     extend: {
       colors: {
         current: 'currentColor',
+        'old-study': '#431B08',
         'gold-dark': '#B0692B',
         gold: '#FFDBA5',
         'gold-light': '#FFFFC4'

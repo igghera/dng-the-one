@@ -1,4 +1,4 @@
-export const EVENTS = {
+export const EVENTS = Object.freeze({
   RESTART: 'restart',
   BACK: 'back',
 
@@ -19,9 +19,13 @@ export const EVENTS = {
   TRIGGER_FLASH_EFFECT: 'triggerFlashEffect',
 
   TOGGLE_LANGUAGE_SELECTOR: 'toggleLanguageSelector',
-}
+})
 
-export const AUDIO_LABELS = {
+export const AUDIO_LABELS = Object.freeze({
   BASE_LOOP: 'baseLoop',
   CAMPAIGN_LOOP: 'campaignLoop',
-}
+})
+
+export const STORAGE_LABELS = Object.freeze({
+  PRINT_ENABLED: 'printEnabled',
+})
