@@ -121,7 +121,8 @@ onMounted(() => {
 			if (longPress) {
 				// Do nothing
 			} else {
-				emitter.emit(EVENTS.RESTART)
+				window.location.reload()
+				// emitter.emit(EVENTS.RESTART)
 			}
 
 			longPressTween?.kill()

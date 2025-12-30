@@ -674,7 +674,8 @@ const handleRestartButtonClick = async () => {
 		await navigateTo('/')
 		emitter.emit(EVENTS.RESTART)
 	} else {
-		emitter.emit(EVENTS.RESTART)
+		window.location.reload()
+		// emitter.emit(EVENTS.RESTART)
 	}
 }
 

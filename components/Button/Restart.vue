@@ -18,6 +18,8 @@ const handleClick = async () => {
 		customizator_option: 'play-again',
 	})
 
+	await nextTick()
+
 	if (props.to) {
 		await navigateTo(props.to, {
 			open: {
@@ -25,7 +27,8 @@ const handleClick = async () => {
 			},
 		})
 	} else {
-		emitter.emit(EVENTS.RESTART)
+		window.location.reload()
+		// emitter.emit(EVENTS.RESTART)
 	}
 }
 </script>
