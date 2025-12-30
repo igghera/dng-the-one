@@ -660,6 +660,11 @@ const handleDownloadButtonClick = async () => {
 }
 
 const handleRestartButtonClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'play_again',
+		customizator_option: 'play-again',
+	})
+
 	if (isFromExplore) {
 		await navigateTo('/')
 		emitter.emit(EVENTS.RESTART)

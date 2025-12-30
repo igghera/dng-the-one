@@ -13,6 +13,11 @@ const props = defineProps({
 })
 
 const handleClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'play_again',
+		customizator_option: 'play-again',
+	})
+
 	if (props.to) {
 		await navigateTo(props.to, {
 			open: {
