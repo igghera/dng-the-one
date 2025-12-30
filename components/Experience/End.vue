@@ -162,7 +162,7 @@ const printers = shallowRef([])
 const printerDiscoveryError = shallowRef(null)
 const isPrinterDiscoveryActive = shallowRef(false)
 
-const { rt, tm } = useI18n()
+const { rt, tm, locale } = useI18n()
 const { gsap, Observer, SplitText } = useGSAP()
 
 const appStore = useAppStore()
@@ -206,37 +206,6 @@ const desiredPrinterName = config.public.printerName ?? 'none'
 
 const selectedPrinter = computed(() => get(printers)[0] ?? null)
 
-const allAurasFull = Object.values(tm('auras')).map(aura => ({
-	title: rt(aura.title),
-	male: {
-		desc: rt(aura.male.desc),
-		fragrance: {
-			title: rt(aura.male.fragrance.title),
-			sub_title: rt(aura.male.fragrance.sub_title),
-			desc: rt(aura.male.fragrance.desc),
-		},
-	},
-	female: {
-		desc: rt(aura.female.desc),
-		fragrance: {
-			title: rt(aura.female.fragrance.title),
-			sub_title: rt(aura.female.fragrance.sub_title),
-			desc: rt(aura.female.fragrance.desc),
-		},
-	},
-}))
-
-const allAuras = Object.values(tm('experience_end.options')).map(option => ({
-	title: rt(option.title),
-	copy: rt(option.copy),
-}))
-
-const allProducts = Object.values(tm('products')).map(product => ({
-	title: rt(product.title),
-	sub_title: rt(product.sub_title),
-	copy: rt(product.copy),
-}))
-
 let drawTimeline, pointerObserver
 
 //
@@ -252,6 +221,13 @@ const shouldShowButtons = computed(() => {
 			!uiStore.isResultsScrollDownVisible
 		)
 	}
+})
+
+//
+// Watchers
+//
+watch(locale, () => {
+	setResult()
 })
 
 //
@@ -274,16 +250,7 @@ onMounted(async () => {
 		await animateInHeader()
 	}
 
-	const res = calculateResult(
-		appStore.getStep01Selection,
-		appStore.getStep02Selection,
-		appStore.getStep03Selection,
-		allAuras,
-		allProducts,
-		allAurasFull
-	)
-
-	appStore.setResult(res.result)
+	setResult()
 
 	if (isFromExplore) {
 		uiStore.setResultsVisible(true)
@@ -291,7 +258,7 @@ onMounted(async () => {
 	}
 
 	experienceEndDrawMaterial.mapIndex.value =
-		res.result.get('shape') === 'male' ? 0 : 1
+		appStore.getResult.get('shape') === 'male' ? 0 : 1
 
 	if (!uiStore.isExperienceEndVisible) return
 
@@ -338,6 +305,50 @@ emitter.once(EVENTS.BACK, () => {
 //
 const setInitialState = () => {
 	gsap.set(get(introHeaderRef), { autoAlpha: 0 })
+}
+
+const setResult = () => {
+	const allAurasFull = Object.values(tm('auras')).map(aura => ({
+		title: rt(aura.title),
+		male: {
+			desc: rt(aura.male.desc),
+			fragrance: {
+				title: rt(aura.male.fragrance.title),
+				sub_title: rt(aura.male.fragrance.sub_title),
+				desc: rt(aura.male.fragrance.desc),
+			},
+		},
+		female: {
+			desc: rt(aura.female.desc),
+			fragrance: {
+				title: rt(aura.female.fragrance.title),
+				sub_title: rt(aura.female.fragrance.sub_title),
+				desc: rt(aura.female.fragrance.desc),
+			},
+		},
+	}))
+
+	const allAuras = Object.values(tm('experience_end.options')).map(option => ({
+		title: rt(option.title),
+		copy: rt(option.copy),
+	}))
+
+	const allProducts = Object.values(tm('products')).map(product => ({
+		title: rt(product.title),
+		sub_title: rt(product.sub_title),
+		copy: rt(product.copy),
+	}))
+
+	const { result: data } = calculateResult(
+		appStore.getStep01Selection,
+		appStore.getStep02Selection,
+		appStore.getStep03Selection,
+		allAuras,
+		allProducts,
+		allAurasFull
+	)
+
+	appStore.setResult(data)
 }
 
 const back = async () => {
