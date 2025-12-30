@@ -26,9 +26,18 @@ defineProps({
 	},
 })
 
+const route = useRoute()
+
 const appStore = useAppStore()
 
 const handleCtaClick = () => {
+	if (route.fullPath === '/') {
+		Tracking.sendEvent({
+			customizator_option: 'explore-the-collection',
+			generic_event_and_label: 'explore_the_collection',
+		})
+	}
+
 	appStore.setAudioEnabled(false)
 	audioManager.fadeOut(AUDIO_LABELS.CAMPAIGN_LOOP)
 }

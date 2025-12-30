@@ -41,7 +41,7 @@
 				</li>
 			</ul>
 
-			<ButtonGolden class="submit" size="wide">
+			<ButtonGolden class="submit" size="wide" @click="close">
 				{{ $t('done') }}
 			</ButtonGolden>
 		</div>
