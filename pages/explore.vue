@@ -13,12 +13,15 @@
 
 <script setup>
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 
 onMounted(() => {
 	uiStore.setMainUiVisible(true)
+
+	trackingStore.setFunnel('6')
 })
 </script>
 

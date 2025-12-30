@@ -516,6 +516,12 @@ onMounted(async () => {
 
 	setInitialStyles()
 
+	Tracking.sendEvent({
+		content_type: 'navigation',
+		customizator_option: '',
+		generic_event_and_label: 'explore_the_collection',
+	})
+
 	createScene()
 	createCamera()
 
