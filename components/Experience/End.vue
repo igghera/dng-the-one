@@ -469,6 +469,11 @@ const buildBase64Payload = dataUrl => {
  * Main print handler - captures screenshot and sends to printer
  */
 const handlePrint = async () => {
+	Tracking.sendEvent({
+		customizator_option: 'print_your_aura',
+		generic_event_and_label: 'print-your-aura',
+	})
+
 	try {
 		// 1. Capture screenshot
 		const blob = await takeScreenshot(false)
