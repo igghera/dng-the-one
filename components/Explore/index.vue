@@ -205,6 +205,7 @@ import {
 import CameraControls from 'camera-controls'
 import { get, set } from '@vueuse/core'
 import { Howler } from 'howler'
+import slugify from 'voca/slugify'
 
 import { ktxLoader } from '~/assets/js/loaders'
 import { backgroundCopper, backgroundGold } from './materials/background'
@@ -956,6 +957,14 @@ async function handlePinPointerdown(event) {
 
 	set(currentProduct, productId)
 	set(currentProductData, get(panelsData).get(productId))
+
+	const titleField = get(currentProductData).find(
+		item => item.component === 'title'
+	)
+	Tracking.sendEvent({
+		customizator_option: slugify(titleField.value.join(' ')),
+		generic_event_and_label: 'product_click',
+	})
 
 	await nextTick()
 

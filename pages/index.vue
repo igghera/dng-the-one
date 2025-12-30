@@ -63,6 +63,8 @@ const isDebug = Object.hasOwn(urlParams, 'debug')
 const isFromExplore = urlParams.ref === 'explore'
 
 onMounted(async () => {
+	trackingStore.setFunnel('0')
+
 	if (isFromExplore) {
 		uiStore.setMainUiVisible(true)
 		uiStore.setPreloaderVisible(false)
