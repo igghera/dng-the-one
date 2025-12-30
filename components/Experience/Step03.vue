@@ -128,6 +128,8 @@ let draggableInstance = null
 onMounted(async () => {
 	setInitialState()
 
+	trackingStore.setFunnel('4')
+
 	await animateIn()
 
 	uiStore.setBackButtonVisible(true)
@@ -408,7 +410,7 @@ const createDraggable = () => {
 			generic_event_and_label: 'drag_and_drop_into_the_circle',
 			customizator_option: slugify(labelsEN[appStore.getStep03Selection]),
 		})
-		trackingStore.setFunnel('5')
+		// trackingStore.setFunnel('5')
 
 		uiStore.setBackButtonVisible(false)
 

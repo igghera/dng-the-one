@@ -264,6 +264,8 @@ onMounted(async () => {
 
 	setInitialState()
 
+	trackingStore.setFunnel('5')
+
 	if (isFromExplore) {
 		appStore.setStep01Selection(get(storage).q1)
 		appStore.setStep02Selection(get(storage).q2)
@@ -645,6 +647,11 @@ const handleQRCodeButtonClick = () => {
 }
 
 const handleDownloadButtonClick = async () => {
+	Tracking.sendEvent({
+		customizator_option: 'download',
+		generic_event_and_label: 'download',
+	})
+
 	const data = appStore.getResult
 	data.set('pre-title', $t('download_card.pre_title'))
 	data.set('sub-content-title', $t('download_card.subcontent_title'))

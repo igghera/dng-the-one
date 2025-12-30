@@ -190,6 +190,8 @@ const knobRotationRadians = computed(() => {
 onMounted(async () => {
 	setInitialStyles()
 
+	trackingStore.setFunnel('2')
+
 	await nextTick()
 
 	animateIn()
@@ -558,7 +560,7 @@ const handleClick = async () => {
 		generic_event_and_label: 'select',
 		customizator_option: slugify(labelsEN[get(knobStep)]),
 	})
-	trackingStore.setFunnel('3')
+	// trackingStore.setFunnel('3')
 
 	draggableInstance?.[0]?.kill()
 

@@ -102,7 +102,7 @@ const handleSubmit = async () => {
 	Tracking.sendEvent({
 		generic_event_and_label: 'next',
 	})
-	trackingStore.setFunnel('2')
+	// trackingStore.setFunnel('2')
 
 	set(canSubmit, false)
 

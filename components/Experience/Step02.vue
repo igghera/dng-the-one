@@ -307,6 +307,8 @@ const labels = computed(() => {
 onMounted(async () => {
 	setInitialState()
 
+	trackingStore.setFunnel('3')
+
 	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async params => {
 		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START')
 
@@ -563,7 +565,7 @@ const handleClick = async () => {
 		generic_event_and_label: 'select',
 		customizator_option: slugify(labelsEN[get(currentStep)]),
 	})
-	trackingStore.setFunnel('4')
+	// trackingStore.setFunnel('4')
 
 	uiStore.setBackButtonVisible(false)
 
