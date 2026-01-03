@@ -406,6 +406,8 @@ const createDraggable = () => {
 	}
 
 	function moveToFinalPosition(elem) {
+		audioManager.play(AUDIO_LABELS.SFX_CLICK)
+
 		Tracking.sendEvent({
 			generic_event_and_label: 'drag_and_drop_into_the_circle',
 			customizator_option: slugify(labelsEN[appStore.getStep03Selection]),

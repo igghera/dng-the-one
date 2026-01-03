@@ -304,6 +304,13 @@ emitter.on(EVENTS.RESTART, () => {
 })
 
 //
+// Watchers
+//
+watch(knobStep, () => {
+	audioManager.play(AUDIO_LABELS.SFX_CLICK)
+})
+
+//
 // Methods
 //
 const setInitialStyles = () => {

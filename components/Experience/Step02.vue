@@ -367,7 +367,10 @@ emitter.on(EVENTS.BACK, () => {
 //
 // Watchers
 //
-watch(currentStep, (next, prev) => handleStepChange(next, prev))
+watch(currentStep, (next, prev) => {
+	audioManager.play(AUDIO_LABELS.SFX_CLICK)
+	handleStepChange(next, prev)
+})
 
 watch(isIdle, idle => {
 	if (idle) {

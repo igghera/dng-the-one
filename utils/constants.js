@@ -25,6 +25,7 @@ export const AUDIO_LABELS = Object.freeze({
   BASE_LOOP: 'baseLoop',
   CAMPAIGN_LOOP: 'campaignLoop',
   SFX_TRANSITION: 'sfxTransition',
+  SFX_CLICK: 'sfxClick',
 })
 
 export const STORAGE_LABELS = Object.freeze({
