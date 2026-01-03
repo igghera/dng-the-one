@@ -106,6 +106,8 @@ const handleSubmit = async () => {
 
 	set(canSubmit, false)
 
+	audioManager.play(AUDIO_LABELS.SFX_TRANSITION)
+
 	await animateOut()
 
 	uiStore.setExperienceEnterNameVisible(false)

@@ -517,6 +517,8 @@ const animateBack = () => {
 }
 
 const animateOut = async () => {
+	audioManager.play(AUDIO_LABELS.SFX_TRANSITION)
+
 	const tl = gsap.timeline({
 		paused: true,
 		onStart: () => {

@@ -24,6 +24,7 @@ export const EVENTS = Object.freeze({
 export const AUDIO_LABELS = Object.freeze({
   BASE_LOOP: 'baseLoop',
   CAMPAIGN_LOOP: 'campaignLoop',
+  SFX_TRANSITION: 'sfxTransition',
 })
 
 export const STORAGE_LABELS = Object.freeze({

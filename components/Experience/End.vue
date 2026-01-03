@@ -708,7 +708,9 @@ const createButtonTimeline = () => {
 
 			uiStore.setBackButtonVisible(false)
 
-			audioManager.fadeOut(AUDIO_LABELS.BASE_LOOP)
+			audioManager.stop(AUDIO_LABELS.BASE_LOOP)
+			appStore.isAudioEnabled && Howler.volume(1)
+			audioManager.play(AUDIO_LABELS.SFX_TRANSITION)
 
 			await gsap.to([get(ctaLabelRef), get(buttonRef)], {
 				autoAlpha: 0,
@@ -897,7 +899,6 @@ const animateMask = () => {
 	tl.call(
 		() => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
-			appStore.isAudioEnabled && Howler.volume(1)
 			audioManager.fadeIn(AUDIO_LABELS.CAMPAIGN_LOOP)
 			set(showResult, true)
 
