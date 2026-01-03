@@ -375,6 +375,9 @@ const animateIn = () => {
 			stagger: {
 				amount: 3,
 			},
+			onStart: () => {
+				audioManager.play(AUDIO_LABELS.SFX_STEP_01_ANIMATE_IN)
+			},
 		},
 		'<0.3'
 	)

@@ -505,6 +505,9 @@ const animateIn = () => {
 				'fill-opacity': 1,
 			},
 			duration: 1,
+			onStart: () => {
+				audioManager.play(AUDIO_LABELS.SFX_STEP_02_ANIMATE_IN)
+			},
 		},
 		'start+=0.2'
 	)

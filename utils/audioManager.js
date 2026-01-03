@@ -7,6 +7,9 @@ import campaignLoop from '~/assets/music/campaign.mp3'
 import sfxTransition from '~/assets/music/transition.mp3'
 import sfxClick from '~/assets/music/click.mp3'
 import sfxEndShape from '~/assets/music/end_shape_transition.mp3'
+import sfxStep01AnimateIn from '~/assets/music/step_01_animate_in.mp3'
+import sfxStep02AnimateIn from '~/assets/music/step_02_animate_in.mp3'
+import sfxStep03AnimateIn from '~/assets/music/step_03_animate_in.mp3'
 
 export const COMMON_PARAMS = {
   loop: true,
@@ -26,9 +29,12 @@ export class AudioManager {
 
     this.#files.set(AUDIO_LABELS.BASE_LOOP, new Howl({ src: [baseLoop], ...COMMON_PARAMS }))
     this.#files.set(AUDIO_LABELS.CAMPAIGN_LOOP, new Howl({ src: [campaignLoop], ...COMMON_PARAMS }))
-    this.#files.set(AUDIO_LABELS.SFX_TRANSITION, new Howl({ src: [sfxTransition], html5: true, volume: 0.1 }))
-    this.#files.set(AUDIO_LABELS.SFX_CLICK, new Howl({ src: [sfxClick], html5: true, volume: 0.35 }))
-    this.#files.set(AUDIO_LABELS.SFX_END_SHAPE, new Howl({ src: [sfxEndShape], html5: true, volume: 0.5 }))
+    this.#files.set(AUDIO_LABELS.SFX_TRANSITION, new Howl({ src: [sfxTransition], html5: true, volume: 0.15 }))
+    this.#files.set(AUDIO_LABELS.SFX_CLICK, new Howl({ src: [sfxClick], html5: true, volume: 0.4 }))
+    this.#files.set(AUDIO_LABELS.SFX_END_SHAPE, new Howl({ src: [sfxEndShape], html5: true, volume: 0.65 }))
+    this.#files.set(AUDIO_LABELS.SFX_STEP_01_ANIMATE_IN, new Howl({ src: [sfxStep01AnimateIn], html5: true, volume: 0.5 }))
+    this.#files.set(AUDIO_LABELS.SFX_STEP_02_ANIMATE_IN, new Howl({ src: [sfxStep02AnimateIn], html5: true, volume: 0.5 }))
+    this.#files.set(AUDIO_LABELS.SFX_STEP_03_ANIMATE_IN, new Howl({ src: [sfxStep03AnimateIn], html5: true, volume: 0.5 }))
 
     this.#files.forEach(track => {
       track.on('fade', () => {

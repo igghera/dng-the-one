@@ -206,6 +206,8 @@ const animateIn = () => {
 				ease: 'power3.inOut',
 				stagger: 0.18,
 				onStart: () => {
+					audioManager.play(AUDIO_LABELS.SFX_STEP_03_ANIMATE_IN)
+
 					gsap.set(get(dotWrapperStep03Ref), {
 						opacity: 0,
 						duration: 0.4,
