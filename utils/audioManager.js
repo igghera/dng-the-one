@@ -6,6 +6,7 @@ import baseLoop from '~/assets/music/base.mp3'
 import campaignLoop from '~/assets/music/campaign.mp3'
 import sfxTransition from '~/assets/music/transition.mp3'
 import sfxClick from '~/assets/music/click.mp3'
+import sfxEndShape from '~/assets/music/end_shape_transition.mp3'
 
 export const COMMON_PARAMS = {
   loop: true,
@@ -27,6 +28,7 @@ export class AudioManager {
     this.#files.set(AUDIO_LABELS.CAMPAIGN_LOOP, new Howl({ src: [campaignLoop], ...COMMON_PARAMS }))
     this.#files.set(AUDIO_LABELS.SFX_TRANSITION, new Howl({ src: [sfxTransition], html5: true, volume: 0.1 }))
     this.#files.set(AUDIO_LABELS.SFX_CLICK, new Howl({ src: [sfxClick], html5: true, volume: 0.35 }))
+    this.#files.set(AUDIO_LABELS.SFX_END_SHAPE, new Howl({ src: [sfxEndShape], html5: true, volume: 0.5 }))
 
     this.#files.forEach(track => {
       track.on('fade', () => {

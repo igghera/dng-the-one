@@ -351,6 +351,8 @@ emitter.on(EVENTS.ANIMATE_IN_MAIN_SCENE, () => {
 })
 
 emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
+	audioManager.play(AUDIO_LABELS.SFX_END_SHAPE)
+
 	experienceEndDrawMaterial.opacity.value = 1
 
 	gsap.fromTo(
