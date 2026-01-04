@@ -5,7 +5,7 @@ import {
 	MeshLambertNodeMaterial
 } from 'three/webgpu';
 
-import { Fn, add, cameraPosition, div, normalize, positionWorld, sub, time, texture, vec2, vec3, max, dot, reflect, pow, length, float, uniform, reflector, mul, mix, diffuseColor } from 'three/tsl';
+import { Fn, add, cameraPosition, div, normalize, positionWorld, sub, time, texture, vec2, vec3, max, dot, reflect, pow, length, float, uniform, reflector, mul, mix, diffuseColor, uv, smoothstep } from 'three/tsl';
 
 import { linear2srgb } from './nodes'
 
@@ -187,7 +187,9 @@ class WaterMeshCustom extends Mesh {
 
 		material.transparent = true;
 
-		material.opacityNode = this.alpha;
+		material.opacityNode = Fn(() => {
+			return this.alpha.mul(smoothstep(0.98, 0.9, uv().y))
+		})();
 
 		material.receivedShadowPositionNode = positionWorld.add( distortion );
 
