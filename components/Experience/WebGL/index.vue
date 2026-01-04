@@ -820,7 +820,7 @@ function createSea() {
 	seaMesh = new WaterMeshCustom(geometry, {
 		waterNormals: textures.get('water_normals'),
 		sunDirection: new THREE.Vector3(),
-		sunColor: 0x00ff00,
+		sunColor: 0x000000,
 		alpha: 1,
 		distortionScale: 0.2,
 		size: 10,
