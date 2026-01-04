@@ -19,9 +19,11 @@ import { bloom } from 'three/addons/tsl/display/BloomNode'
 import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
 import { WaterMeshCustom } from './WaterMeshCustom'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
-import { get } from '@vueuse/core'
+import { get, useStorage } from '@vueuse/core'
 
 import { ktxLoader, textureLoader, lutCubeLoader } from '~/assets/js/loaders'
+
+import { animateInGodrays, animateGodrays } from './manageGodrays'
 
 import {
 	BackgroundMaterial,
@@ -52,6 +54,8 @@ import {
 	scaleHeight as godraysScaleHeight,
 	noiseScale as godraysNoiseScale,
 	godraysColor,
+	colorA as godraysColorA,
+	colorB as godraysColorB,
 	opacity as godraysOpacity,
 	smoothTop as godraysSmoothTop,
 	smoothBottom as godraysSmoothBottom,
@@ -136,6 +140,8 @@ const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 const isFromExplore = urlParams.ref === 'explore'
 
+const storage = useStorage('experience-answers', {})
+
 const { isPortrait, isLandscape, isMobile, isMedium, isDesktop } = useViewport()
 
 let scene,
@@ -196,6 +202,21 @@ onMounted(async () => {
 		maskBorderWidth.value = END_PARANS.maskBorderWidth
 
 		experienceEndDrawMaterial.progress.value = END_PARANS.endDrawProgress
+
+		backgroundProgress.value = 0.25 * (get(storage).q1 ?? 0)
+
+		if (get(storage).q1 < 2) {
+			godraysColor.value.r = godraysColorA[0]
+			godraysColor.value.g = godraysColorA[1]
+			godraysColor.value.b = godraysColorA[2]
+		} else {
+			godraysColor.value.r = godraysColorB[0]
+			godraysColor.value.g = godraysColorB[1]
+			godraysColor.value.b = godraysColorB[2]
+		}
+
+		animateInGodrays()
+		animateGodrays(get(storage).q2 ?? 0)
 	}
 
 	createScene()

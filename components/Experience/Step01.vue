@@ -122,6 +122,11 @@ import { get, set, useStorage } from '@vueuse/core'
 import slugify from 'voca/slugify'
 
 import { progress as backgroundProgress } from './WebGL/materials/background'
+import {
+	colorA as godraysColorA,
+	colorB as godraysColorB,
+	godraysColor,
+} from './WebGL/materials/godrays'
 
 //
 // Refs / State
@@ -306,8 +311,20 @@ emitter.on(EVENTS.RESTART, () => {
 //
 // Watchers
 //
-watch(knobStep, () => {
+watch(knobStep, value => {
 	audioManager.play(AUDIO_LABELS.SFX_CLICK)
+})
+
+watchEffect(() => {
+	const godraysFinalColor = get(knobStep) < 2 ? godraysColorA : godraysColorB
+
+	gsap.to(godraysColor.value, {
+		r: godraysFinalColor[0],
+		g: godraysFinalColor[1],
+		b: godraysFinalColor[2],
+		duration: 0.8,
+		overwrite: true,
+	})
 })
 
 //

@@ -16,12 +16,15 @@ import {
 } from 'three/tsl'
 import { noiseTexture } from '../nodes'
 
+export const colorA = [0.73, 0.27, 0.02]
+export const colorB = [0.949, 0.906, 0.718]
+
 export const scaleTop = uniform(0.4)
 export const scaleBottom = uniform(0.4)
 export const scaleHeight = uniform(1)
 export const noiseScale = uniform(0.6)
 export const obstructionScale = uniform(1)
-export const godraysColor = uniform(color(0.73, 0.27, 0.02))
+export const godraysColor = uniform(color(colorA[0], colorA[1], colorA[2]))
 export const opacity = uniform(0)
 export const timeSpeed = uniform(0)
 export const smoothTop = uniform(0.1)
