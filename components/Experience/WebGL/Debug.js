@@ -303,7 +303,7 @@ export class Debug {
       expanded: false,
     })
 
-    folder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 1, max: 2, step: 0.01 })
+    folder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 0.5, max: 2, step: 0.01 })
     folder.addBinding(bloomStrength, 'value', { label: 'Strength', min: 0, max: 3, step: 0.01 })
     folder.addBinding(bloomRadius, 'value', { label: 'Radius', min: 0, max: 1.5, step: 0.01 })
 }

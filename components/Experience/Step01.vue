@@ -128,6 +128,12 @@ import {
 	godraysColor,
 } from './WebGL/materials/godrays'
 
+import {
+	thresholdA as bloomThresholdA,
+	thresholdB as bloomThresholdB,
+	threshold as bloomThreshold,
+} from './WebGL/nodes/bloom'
+
 //
 // Refs / State
 //
@@ -322,6 +328,12 @@ watchEffect(() => {
 		r: godraysFinalColor[0],
 		g: godraysFinalColor[1],
 		b: godraysFinalColor[2],
+		duration: 0.8,
+		overwrite: true,
+	})
+
+	gsap.to(bloomThreshold, {
+		value: get(knobStep) < 2 ? bloomThresholdA : bloomThresholdB,
 		duration: 0.8,
 		overwrite: true,
 	})

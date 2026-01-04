@@ -77,6 +77,8 @@ import { bgTexturePortrait, bgTextureLandscape } from './nodes/textures'
 
 import {
 	threshold as bloomThreshold,
+	thresholdA as bloomThresholdA,
+	thresholdB as bloomThresholdB,
 	strength as bloomStrength,
 	radius as bloomRadius,
 	strengthDesktop as bloomStrengthDesktop,
@@ -209,10 +211,14 @@ onMounted(async () => {
 			godraysColor.value.r = godraysColorA[0]
 			godraysColor.value.g = godraysColorA[1]
 			godraysColor.value.b = godraysColorA[2]
+
+			bloomThreshold.value = bloomThresholdA
 		} else {
 			godraysColor.value.r = godraysColorB[0]
 			godraysColor.value.g = godraysColorB[1]
 			godraysColor.value.b = godraysColorB[2]
+
+			bloomThreshold.value = bloomThresholdB
 		}
 
 		animateInGodrays()
