@@ -965,6 +965,10 @@ const animateMask = () => {
 	@screen tablet-portrait-lg {
 		width: min(toRem(330), 40vw);
 	}
+
+	@screen landscape {
+		width: 28dvh;
+	}
 }
 
 .result-pre-title {
@@ -978,6 +982,10 @@ const animateMask = () => {
 
 	@screen tablet-portrait-lg {
 		font-size: toRem(20);
+	}
+
+	@screen landscape {
+		font-size: max(toRem(8), 1.5dvh);
 	}
 }
 
@@ -993,6 +1001,10 @@ const animateMask = () => {
 	@screen tablet-portrait-lg {
 		font-size: toRem(60);
 	}
+
+	@screen landscape {
+		font-size: max(toRem(13), 4.5dvh);
+	}
 }
 
 .result-copy {
@@ -1006,6 +1018,10 @@ const animateMask = () => {
 
 	@screen tablet-portrait-lg {
 		font-size: toRem(20);
+	}
+
+	@screen landscape {
+		font-size: max(toRem(8), 1.5dvh);
 	}
 }
 
