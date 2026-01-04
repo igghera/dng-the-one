@@ -20,7 +20,13 @@
 		</header>
 
 		<div class="content" ref="contentRef">
-			<div class="track-wrapper">
+			<div
+				class="track-wrapper"
+				:class="{
+					'text-gold-light': storage.q1 < 2,
+					'text-gold-dark': storage.q1 >= 2,
+				}"
+			>
 				<svg
 					class="track"
 					xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +49,7 @@
 							<rect x="0" y="0" width="116" height="600" fill="transparent" />
 
 							<path
-								class="stroke-gold-light"
+								class="stroke-current"
 								stroke-dasharray="1.5 18"
 								stroke-width="8"
 								d="M58 0v600"
@@ -57,7 +63,7 @@
 								:transform="`translate(${dot.x}, ${dot.y})`"
 							>
 								<circle
-									class="fill-gold-light"
+									class="fill-current"
 									cx="0"
 									cy="0"
 									r="10"
@@ -73,7 +79,7 @@
 						>
 							<g ref="draggerCircleWrapperRef">
 								<circle
-									class="stroke-gold-light fill-transparent"
+									class="stroke-current fill-transparent"
 									cx="58"
 									cy="55"
 									r="46"
@@ -90,7 +96,7 @@
 										"
 									>
 										<path
-											class="fill-gold-light"
+											class="fill-current"
 											d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
 										/>
 									</g>
@@ -103,7 +109,7 @@
 										"
 									>
 										<path
-											class="fill-gold-light"
+											class="fill-current"
 											d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
 										/>
 									</g>
