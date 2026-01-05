@@ -672,7 +672,7 @@ async function createRenderer() {
 	})
 
 	renderer.setClearColor(0x000000, 1)
-	// renderer.toneMapping = THREE.ACESFilmicToneMapping
+	renderer.toneMapping = THREE.ACESFilmicToneMapping
 	renderer.setSize(get(componentWidth), get(componentHeight))
 
 	if (isDebug) {
@@ -697,10 +697,10 @@ async function loadTextures() {
 		'/webgl/draw/product-outline-female.ktx2',
 	])
 
-	// ktx[0].colorSpace = THREE.SRGBColorSpace
-	// ktx[1].colorSpace = THREE.SRGBColorSpace
-	// ktx[2].colorSpace = THREE.SRGBColorSpace
-	// ktx[3].colorSpace = THREE.SRGBColorSpace
+	ktx[0].colorSpace = THREE.SRGBColorSpace
+	ktx[1].colorSpace = THREE.SRGBColorSpace
+	ktx[2].colorSpace = THREE.SRGBColorSpace
+	ktx[3].colorSpace = THREE.SRGBColorSpace
 
 	ktx[4].colorSpace = THREE.NoColorSpace
 	ktx[4].wrapS = ktx[4].wrapT = THREE.RepeatWrapping

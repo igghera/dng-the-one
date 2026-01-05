@@ -1,4 +1,4 @@
-import { MeshBasicNodeMaterial, DoubleSide, AdditiveBlending } from 'three/webgpu'
+import { MeshBasicNodeMaterial, DoubleSide, AdditiveBlending, NormalBlending } from 'three/webgpu'
 import {
   Fn,
   uniform,
@@ -35,7 +35,7 @@ export const offset = uniform(0)
 export const GodraysMaterial = new MeshBasicNodeMaterial({
   transparent: true,
   side: DoubleSide,
-  blending: AdditiveBlending,
+  blending: NormalBlending,
   color: 0x000000,
   depthWrite: false,
   visible: true

@@ -210,7 +210,7 @@ class WaterMeshCustom extends Mesh {
 			// const albedo = mix( this.sunColor.mul( diffuseLight ).mul( 0.3 ).add( scatter ), mirrorSampler.rgb.mul( specularLight ).add( mirrorSampler.rgb.mul( 0.9 ) ).add( vec3( 0.1 ) ), reflectance );
 			const albedo = mix(
 				this.sunColor.mul( diffuseLight ),
-				mirrorSampler.rgb.mul(specularLight).add( mirrorSampler.rgb.mul(1.5)),
+				mirrorSampler.rgb.mul(specularLight).add( mirrorSampler.rgb.mul(0.9)),
 				reflectance
 			);
 
