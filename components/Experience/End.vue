@@ -672,7 +672,21 @@ const handleDownloadButtonClick = async () => {
 	data.set('pre-title', $t('download_card.pre_title'))
 	data.set('sub-content-title', $t('download_card.subcontent_title'))
 
-	downloadCard('experience', Number(appStore.getStep01Selection), data)
+	const base = `/images/download-cards/experience/${get(locale)}`
+	const shape = data.get('shape')
+
+	let aura = data.get('aura').title.toLowerCase()
+	if (aura === 'elegant') aura = '00-elegant'
+	if (aura === 'warm') aura = '01-warm'
+	if (aura === 'discrete') aura = '02-mysterious'
+	if (aura === 'bold') aura = '03-bold'
+
+	const imageUrl = `${base}/${aura}-${shape}.png`
+
+	const link = document.createElement('a')
+	link.href = imageUrl
+	link.download = `the-one-card-${aura}-${shape}-${Date.now()}.png`
+	link.click()
 }
 
 const handleRestartButtonClick = async () => {
