@@ -64,6 +64,8 @@ const inputMinWidth = 176
 //
 watch(isVisible, visible => {
 	if (visible) {
+		trackingStore.setFunnel('1')
+
 		uiStore.setBottomGradientVisible(false)
 
 		gsap.fromTo(

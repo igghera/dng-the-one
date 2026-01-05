@@ -46,18 +46,21 @@
 				ref="dropzoneRef"
 				overflow="visible"
 			>
-				<circle
-					class="stroke-gold-light"
-					cx="48"
-					cy="66"
-					r="46"
-					stroke-width="2"
-					stroke="red"
-					fill="transparent"
-					data-dropzone-circle
-					data-default-radius="46"
-					ref="dropzoneCircleRef"
-				/>
+				<g ref="dropzoneCircleWrapperRef">
+					<circle
+						class="stroke-gold-light"
+						style="opacity: 0.001"
+						cx="48"
+						cy="66"
+						r="46"
+						stroke-width="2"
+						stroke="red"
+						fill="transparent"
+						data-dropzone-circle
+						data-default-radius="46"
+						ref="dropzoneCircleRef"
+					/>
+				</g>
 
 				<g class="dropzone-arrow-wrapper">
 					<path
@@ -110,6 +113,7 @@ const instructionsRef = useTemplateRef('instructionsRef')
 const draggersRef = useTemplateRef('draggersRef')
 const draggersLabelsRef = useTemplateRef('draggersLabelsRef')
 const dropzoneRef = useTemplateRef('dropzoneRef')
+const dropzoneCircleWrapperRef = useTemplateRef('dropzoneCircleWrapperRef')
 const dropzoneCircleRef = useTemplateRef('dropzoneCircleRef')
 const dropzoneArrowRef = useTemplateRef('dropzoneArrowRef')
 const dotWrapperStep03Ref = useTemplateRef('dotWrapperStep03Ref')
@@ -155,7 +159,6 @@ const setInitialState = () => {
 	gsap.set(
 		[
 			get(draggersLabelsRef),
-			get(dropzoneCircleRef),
 			get(dropzoneArrowRef),
 			get(headerRef),
 			get(instructionsRef),
@@ -166,6 +169,8 @@ const setInitialState = () => {
 	)
 
 	gsap.set(get(dotWrapperStep03Ref), { clearProps: 'all' })
+	gsap.set(get(dropzoneCircleRef), { drawSVG: '0% 0%', clearProps: 'opacity' })
+	gsap.set(get(dropzoneCircleWrapperRef), { transformOrigin: 'center' })
 }
 
 const animateIn = () => {
@@ -222,15 +227,13 @@ const animateIn = () => {
 		'>0.7'
 	)
 
-	// Fade in dropzone circle
+	// Animate in dropzone circle
 	tl.to(
-		get(dropzoneCircleRef),
-		{
-			opacity: 1,
-			duration: 1.5,
-		},
-		'>1'
+		get(dropzoneCircleWrapperRef),
+		{ rotation: 290, duration: 2, ease: 'power2.out' },
+		'>0.75'
 	)
+	tl.to(get(dropzoneCircleRef), { drawSVG: '0% 100%', duration: 2 }, '<')
 
 	// Fade in dropzone arrow
 	tl.to(

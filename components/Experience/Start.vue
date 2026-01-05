@@ -21,6 +21,7 @@
 
 		<ButtonGolden
 			class="self-end pointer-events-auto md:portrait:-translate-y-1/2"
+			style="opacity: 0"
 			size="wide"
 			@click="handleClick"
 			ref="buttonRef"
@@ -41,7 +42,6 @@ const { gsap, SplitText } = useGSAP()
 
 const appStore = useAppStore()
 const uiStore = useUiStore()
-const trackingStore = useTrackingStore()
 
 const el = useCurrentElement()
 const titleRef = useTemplateRef('titleRef')
@@ -119,7 +119,6 @@ const handleClick = async () => {
 	Tracking.sendEvent({
 		generic_event_and_label: 'start',
 	})
-	trackingStore.setFunnel('1')
 
 	audioManager.init()
 
