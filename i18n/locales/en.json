@@ -78,7 +78,7 @@
         "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
       },
       {
-        "title": "Discrete",
+        "title": "Mysterious",
         "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
       },
       {
@@ -229,9 +229,9 @@
       }
     },
     {
-      "title": "Discrete",
+      "title": "Mysterious",
       "male": {
-        "desc": "You speak only when it matters. Your aura whispers power, drawing others in effortlessly.",
+        "desc": "You reserve your words for moments that matter. Your Aura whispers power, drawing others in effortlessly.",
         "fragrance": {
           "title": "The One Men",
           "sub_title": "Eau De Toilette",
@@ -239,7 +239,7 @@
         }
       },
       "female": {
-        "desc": "You speak only when it matters. Your aura whispers power, drawing others in effortlessly.",
+        "desc": "You reserve your words for moments that matter. Your Aura whispers power, drawing others in effortlessly.",
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum",
