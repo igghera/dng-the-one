@@ -42,6 +42,23 @@
 
 <script setup>
 const uiStore = useUiStore()
+
+const { idle: isIdle, start: startIdle, stop: stopIdle } = useIdle(15000)
+
+onMounted(() => {
+	stopIdle()
+})
+
+watch(
+	() => uiStore.isExperienceEnterNameVisible,
+	visible => {
+		visible && startIdle()
+	}
+)
+
+watch(isIdle, idle => {
+	idle && window.location.reload()
+})
 </script>
 
 <style lang="scss" scoped>
