@@ -24,7 +24,7 @@
 				class="track-wrapper"
 				:class="{
 					'text-gold-light': storage.q1 < 2,
-					'text-gold-dark': storage.q1 >= 2,
+					'text-gold-light': storage.q1 >= 2,
 				}"
 			>
 				<svg
@@ -588,7 +588,7 @@ const handleClick = async () => {
 const handleStepChange = (next, prev) => {
 	// Initial transition
 	if (prev === -1 && next === 0) {
-		animateInGodrays()
+		animateInGodrays(appStore.getStep01Selection)
 	}
 
 	animateGodrays(next)

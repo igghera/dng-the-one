@@ -17,7 +17,10 @@ import {
 import { noiseTexture } from '../nodes'
 
 export const colorA = [0.73, 0.27, 0.02]
-export const colorB = [0.949, 0.906, 0.718]
+export const colorB = [0.47, 0.18, 0.05]
+
+export const opacityA = 0.2
+export const opacityB = 0.95
 
 export const scaleTop = uniform(0.4)
 export const scaleBottom = uniform(0.4)

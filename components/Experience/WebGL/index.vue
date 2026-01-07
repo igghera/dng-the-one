@@ -221,7 +221,7 @@ onMounted(async () => {
 			bloomThreshold.value = bloomThresholdB
 		}
 
-		animateInGodrays()
+		animateInGodrays(get(storage).q1 ?? 0)
 		animateGodrays(get(storage).q2 ?? 0)
 	}
 

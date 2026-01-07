@@ -6,6 +6,8 @@ import {
 } from './materials/particles'
 
 import {
+	opacityA as godraysOpacityA,
+	opacityB as godraysOpacityB,
 	opacity as godraysOpacity,
 	smoothBottom as godraysSmoothBottom,
   scaleTop as godraysScaleTop,
@@ -16,7 +18,7 @@ import {
 
 import { gsap } from 'gsap'
 
-export const animateInGodrays = () => {
+export const animateInGodrays = step01Selection => {
   gsap.to(particlesOpacity, {
     value: 1,
     duration: 2,
@@ -24,7 +26,7 @@ export const animateInGodrays = () => {
   })
 
   gsap.to(godraysOpacity, {
-    value: 0.25,
+    value: step01Selection < 2 ? godraysOpacityA : godraysOpacityB,
     duration: 2,
     overwrite: true,
   })
