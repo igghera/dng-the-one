@@ -20,7 +20,13 @@
 		</header>
 
 		<div class="content" ref="contentRef">
-			<div class="track-wrapper">
+			<div
+				class="track-wrapper"
+				:class="{
+					'text-gold-light': storage.q1 < 2,
+					'text-gold-light': storage.q1 >= 2,
+				}"
+			>
 				<svg
 					class="track"
 					xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +49,7 @@
 							<rect x="0" y="0" width="116" height="600" fill="transparent" />
 
 							<path
-								class="stroke-gold-light"
+								class="stroke-current"
 								stroke-dasharray="1.5 18"
 								stroke-width="8"
 								d="M58 0v600"
@@ -57,7 +63,7 @@
 								:transform="`translate(${dot.x}, ${dot.y})`"
 							>
 								<circle
-									class="fill-gold-light"
+									class="fill-current"
 									cx="0"
 									cy="0"
 									r="10"
@@ -73,7 +79,7 @@
 						>
 							<g ref="draggerCircleWrapperRef">
 								<circle
-									class="stroke-gold-light fill-transparent"
+									class="stroke-current fill-transparent"
 									cx="58"
 									cy="55"
 									r="46"
@@ -90,7 +96,7 @@
 										"
 									>
 										<path
-											class="fill-gold-light"
+											class="fill-current"
 											d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
 										/>
 									</g>
@@ -103,7 +109,7 @@
 										"
 									>
 										<path
-											class="fill-gold-light"
+											class="fill-current"
 											d="M9.658.792a.5.5 0 0 1 .759 0l8.644 10.085a.5.5 0 0 1-.38.825H1.394a.5.5 0 0 1-.38-.825z"
 										/>
 									</g>
@@ -220,27 +226,16 @@
 
 <script setup>
 import { get, set, useStorage } from '@vueuse/core'
-import {
-	opacity as particlesOpacity,
-	strength as particlesStrength,
-	speed as particlesSpeed,
-	sizeMax as particlesSizeMax,
-} from './WebGL/materials/particles'
+import slugify from 'voca/slugify'
 
-import {
-	opacity as godraysOpacity,
-	smoothBottom as godraysSmoothBottom,
-	scaleTop as godraysScaleTop,
-	scaleBottom as godraysScaleBottom,
-	timeSpeed as godraysTimeSpeed,
-	obstructionScale as godraysObstructionScale,
-} from './WebGL/materials/godrays'
+import { animateInGodrays, animateGodrays } from './WebGL/manageGodrays'
 
 //
 // Refs / State
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const { rt, tm } = useI18n()
 
@@ -281,6 +276,13 @@ const dotsCoords = [
 // const trackTranslateValues = [-15, 11, 37, 62]
 const trackTranslateValues = [-35, -4, 22, 47]
 
+const labelsEN = Object.freeze([
+	'My aura speaks for itself',
+	'All eyes are on me',
+	'I own the room',
+	"I'm the spotlight",
+])
+
 let draggableInstance = null
 let idleTween = null
 
@@ -296,6 +298,8 @@ const labels = computed(() => {
 //
 onMounted(async () => {
 	setInitialState()
+
+	trackingStore.setFunnel('3')
 
 	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async params => {
 		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START')
@@ -355,7 +359,10 @@ emitter.on(EVENTS.BACK, () => {
 //
 // Watchers
 //
-watch(currentStep, (next, prev) => handleStepChange(next, prev))
+watch(currentStep, (next, prev) => {
+	audioManager.play(AUDIO_LABELS.SFX_CLICK)
+	handleStepChange(next, prev)
+})
 
 watch(isIdle, idle => {
 	if (idle) {
@@ -490,6 +497,9 @@ const animateIn = () => {
 				'fill-opacity': 1,
 			},
 			duration: 1,
+			onStart: () => {
+				audioManager.play(AUDIO_LABELS.SFX_STEP_02_ANIMATE_IN)
+			},
 		},
 		'start+=0.2'
 	)
@@ -505,6 +515,8 @@ const animateBack = () => {
 }
 
 const animateOut = async () => {
+	audioManager.play(AUDIO_LABELS.SFX_TRANSITION)
+
 	const tl = gsap.timeline({
 		paused: true,
 		onStart: () => {
@@ -549,6 +561,12 @@ const moveDotToNextPosition = async () => {
 }
 
 const handleClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'select',
+		customizator_option: slugify(labelsEN[get(currentStep)]),
+	})
+	// trackingStore.setFunnel('4')
+
 	uiStore.setBackButtonVisible(false)
 
 	draggableInstance?.[0]?.kill()
@@ -568,126 +586,12 @@ const handleClick = async () => {
 }
 
 const handleStepChange = (next, prev) => {
-	let strength = 0
-	let speed = 0
-	let sizeMax = 0
-
-	let radiusTop = 0
-	let radiusBottom = 0
-
-	let obstructionScale = 1
-	let timeSpeed = 0
-
 	// Initial transition
 	if (prev === -1 && next === 0) {
-		gsap.to(particlesOpacity, {
-			value: 1,
-			duration: 2,
-			overwrite: true,
-		})
-
-		gsap.to(godraysOpacity, {
-			value: 0.25,
-			duration: 2,
-			overwrite: true,
-		})
-
-		gsap.to(godraysSmoothBottom, {
-			value: 0.15,
-			duration: 3.5,
-			overwrite: true,
-		})
+		animateInGodrays(appStore.getStep01Selection)
 	}
 
-	switch (next) {
-		case 0:
-			strength = 0.23
-			speed = 0.1
-			sizeMax = 0.035
-
-			radiusTop = 0.4
-			radiusBottom = 0.4
-			break
-		case 1:
-			strength = 0.35
-			speed = 0.16
-			sizeMax = 0.048
-
-			radiusTop = 0.5
-			radiusBottom = 0.9
-			break
-		case 2:
-			strength = 0.48
-			speed = 0.21
-			sizeMax = 0.056
-
-			radiusTop = 0.8
-			radiusBottom = 1.75
-
-			obstructionScale = 0
-			timeSpeed = 0.07
-			break
-		case 3:
-			strength = 0.65
-			speed = 0.26
-			sizeMax = 0.065
-
-			radiusTop = 1.2
-			radiusBottom = 2.35
-
-			obstructionScale = 0
-			timeSpeed = 0.07
-			break
-	}
-
-	gsap.to(particlesStrength, {
-		value: strength,
-		duration: 2,
-		overwrite: true,
-		ease: 'sine.out',
-	})
-
-	gsap.to(particlesSpeed, {
-		value: speed,
-		duration: 2,
-		overwrite: true,
-		ease: 'sine.out',
-	})
-
-	gsap.to(particlesSizeMax, {
-		value: sizeMax,
-		duration: 2,
-		overwrite: true,
-		ease: 'sine.out',
-	})
-
-	gsap.to(godraysScaleTop, {
-		value: radiusTop,
-		duration: 1.6,
-		overwrite: true,
-		ease: 'sine.out',
-	})
-
-	gsap.to(godraysScaleBottom, {
-		value: radiusBottom,
-		duration: 1.6,
-		overwrite: true,
-		ease: 'sine.out',
-	})
-
-	gsap.to(godraysObstructionScale, {
-		value: obstructionScale,
-		duration: 1,
-		overwrite: true,
-		ease: 'sine.out',
-	})
-
-	gsap.to(godraysTimeSpeed, {
-		value: timeSpeed,
-		duration: 1.5,
-		overwrite: true,
-		ease: 'sine.out',
-	})
+	animateGodrays(next)
 }
 
 const updateCurrentStep = () => {

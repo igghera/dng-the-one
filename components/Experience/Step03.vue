@@ -46,18 +46,21 @@
 				ref="dropzoneRef"
 				overflow="visible"
 			>
-				<circle
-					class="stroke-gold-light"
-					cx="48"
-					cy="66"
-					r="46"
-					stroke-width="2"
-					stroke="red"
-					fill="transparent"
-					data-dropzone-circle
-					data-default-radius="46"
-					ref="dropzoneCircleRef"
-				/>
+				<g ref="dropzoneCircleWrapperRef">
+					<circle
+						class="stroke-gold-light"
+						style="opacity: 0.001"
+						cx="48"
+						cy="66"
+						r="46"
+						stroke-width="2"
+						stroke="red"
+						fill="transparent"
+						data-dropzone-circle
+						data-default-radius="46"
+						ref="dropzoneCircleRef"
+					/>
+				</g>
 
 				<g class="dropzone-arrow-wrapper">
 					<path
@@ -88,12 +91,14 @@
 
 <script setup>
 import { get, useStorage } from '@vueuse/core'
+import slugify from 'voca/slugify'
 
 //
 // Refs / State
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const storage = useStorage('experience-answers', {})
 
@@ -108,6 +113,7 @@ const instructionsRef = useTemplateRef('instructionsRef')
 const draggersRef = useTemplateRef('draggersRef')
 const draggersLabelsRef = useTemplateRef('draggersLabelsRef')
 const dropzoneRef = useTemplateRef('dropzoneRef')
+const dropzoneCircleWrapperRef = useTemplateRef('dropzoneCircleWrapperRef')
 const dropzoneCircleRef = useTemplateRef('dropzoneCircleRef')
 const dropzoneArrowRef = useTemplateRef('dropzoneArrowRef')
 const dotWrapperStep03Ref = useTemplateRef('dotWrapperStep03Ref')
@@ -116,6 +122,8 @@ const labels = computed(() => {
 	return Object.values(tm('experience_step_03.labels')).map(label => rt(label))
 })
 
+const labelsEN = Object.freeze(['Masculine', 'Feminine', "I don't care"])
+
 let draggableInstance = null
 
 //
@@ -123,6 +131,8 @@ let draggableInstance = null
 //
 onMounted(async () => {
 	setInitialState()
+
+	trackingStore.setFunnel('4')
 
 	await animateIn()
 
@@ -149,7 +159,6 @@ const setInitialState = () => {
 	gsap.set(
 		[
 			get(draggersLabelsRef),
-			get(dropzoneCircleRef),
 			get(dropzoneArrowRef),
 			get(headerRef),
 			get(instructionsRef),
@@ -160,6 +169,8 @@ const setInitialState = () => {
 	)
 
 	gsap.set(get(dotWrapperStep03Ref), { clearProps: 'all' })
+	gsap.set(get(dropzoneCircleRef), { drawSVG: '0% 0%', clearProps: 'opacity' })
+	gsap.set(get(dropzoneCircleWrapperRef), { transformOrigin: 'center' })
 }
 
 const animateIn = () => {
@@ -200,6 +211,8 @@ const animateIn = () => {
 				ease: 'power3.inOut',
 				stagger: 0.18,
 				onStart: () => {
+					audioManager.play(AUDIO_LABELS.SFX_STEP_03_ANIMATE_IN)
+
 					gsap.set(get(dotWrapperStep03Ref), {
 						opacity: 0,
 						duration: 0.4,
@@ -214,15 +227,13 @@ const animateIn = () => {
 		'>0.7'
 	)
 
-	// Fade in dropzone circle
+	// Animate in dropzone circle
 	tl.to(
-		get(dropzoneCircleRef),
-		{
-			opacity: 1,
-			duration: 1.5,
-		},
-		'>1'
+		get(dropzoneCircleWrapperRef),
+		{ rotation: 290, duration: 2, ease: 'power2.out' },
+		'>0.75'
 	)
+	tl.to(get(dropzoneCircleRef), { drawSVG: '0% 100%', duration: 2 }, '<')
 
 	// Fade in dropzone arrow
 	tl.to(
@@ -359,8 +370,8 @@ const createDraggable = () => {
 
 			fadeOutDraggers(idx)
 
-			moveToFinalPosition(self.target)
 			appStore.setStep03Selection(idx)
+			moveToFinalPosition(self.target)
 			storage.value.q3 = idx
 		},
 		onDragStart: self => {
@@ -377,8 +388,8 @@ const createDraggable = () => {
 			const idx = Number(self.target.dataset.index)
 
 			if (inDropzone) {
-				moveToFinalPosition(self.target)
 				appStore.setStep03Selection(idx)
+				moveToFinalPosition(self.target)
 				storage.value.q3 = idx
 			} else {
 				fadeInDraggers(idx)
@@ -400,6 +411,14 @@ const createDraggable = () => {
 	}
 
 	function moveToFinalPosition(elem) {
+		audioManager.play(AUDIO_LABELS.SFX_CLICK)
+
+		Tracking.sendEvent({
+			generic_event_and_label: 'drag_and_drop_into_the_circle',
+			customizator_option: slugify(labelsEN[appStore.getStep03Selection]),
+		})
+		// trackingStore.setFunnel('5')
+
 		uiStore.setBackButtonVisible(false)
 
 		// Kill all Draggable instances

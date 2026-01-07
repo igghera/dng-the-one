@@ -1,5 +1,5 @@
 <template>
-	<Container class="pointer-events-none tablet-portrait:pb-16">
+	<Container class="pointer-events-none tablet-portrait-lg:pb-16">
 		<ClientOnly>
 			<header class="header | text-shadow">
 				<h1
@@ -21,6 +21,7 @@
 
 		<ButtonGolden
 			class="self-end pointer-events-auto md:portrait:-translate-y-1/2"
+			style="opacity: 0"
 			size="wide"
 			@click="handleClick"
 			ref="buttonRef"
@@ -115,6 +116,10 @@ const animateIn = () => {
 }
 
 const handleClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'start',
+	})
+
 	audioManager.init()
 
 	emitter.emit(EVENTS.ANIMATE_OUT_INTRO_SHAPE)

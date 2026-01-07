@@ -1,4 +1,4 @@
-import { MeshBasicNodeMaterial, DoubleSide, AdditiveBlending } from 'three/webgpu'
+import { MeshBasicNodeMaterial, DoubleSide, AdditiveBlending, NormalBlending } from 'three/webgpu'
 import {
   Fn,
   uniform,
@@ -16,12 +16,18 @@ import {
 } from 'three/tsl'
 import { noiseTexture } from '../nodes'
 
+export const colorA = [0.73, 0.27, 0.02]
+export const colorB = [0.47, 0.18, 0.05]
+
+export const opacityA = 0.2
+export const opacityB = 0.95
+
 export const scaleTop = uniform(0.4)
 export const scaleBottom = uniform(0.4)
 export const scaleHeight = uniform(1)
 export const noiseScale = uniform(0.6)
 export const obstructionScale = uniform(1)
-export const godraysColor = uniform(color(0.73, 0.27, 0.02))
+export const godraysColor = uniform(color(colorA[0], colorA[1], colorA[2]))
 export const opacity = uniform(0)
 export const timeSpeed = uniform(0)
 export const smoothTop = uniform(0.1)
@@ -32,7 +38,7 @@ export const offset = uniform(0)
 export const GodraysMaterial = new MeshBasicNodeMaterial({
   transparent: true,
   side: DoubleSide,
-  blending: AdditiveBlending,
+  blending: NormalBlending,
   color: 0x000000,
   depthWrite: false,
   visible: true

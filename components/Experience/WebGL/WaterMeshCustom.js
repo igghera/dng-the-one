@@ -5,7 +5,9 @@ import {
 	MeshLambertNodeMaterial
 } from 'three/webgpu';
 
-import { Fn, add, cameraPosition, div, normalize, positionWorld, sub, time, texture, vec2, vec3, max, dot, reflect, pow, length, float, uniform, reflector, mul, mix, diffuseColor } from 'three/tsl';
+import { Fn, add, cameraPosition, div, normalize, positionWorld, sub, time, texture, vec2, vec3, max, dot, reflect, pow, length, float, uniform, reflector, mul, mix, diffuseColor, uv, smoothstep } from 'three/tsl';
+
+import { linear2srgb } from './nodes'
 
 /**
  * A basic flat, reflective water effect.
@@ -185,7 +187,9 @@ class WaterMeshCustom extends Mesh {
 
 		material.transparent = true;
 
-		material.opacityNode = this.alpha;
+		material.opacityNode = Fn(() => {
+			return this.alpha.mul(smoothstep(0.98, 0.9, uv().y))
+		})();
 
 		material.receivedShadowPositionNode = positionWorld.add( distortion );
 
@@ -206,7 +210,7 @@ class WaterMeshCustom extends Mesh {
 			// const albedo = mix( this.sunColor.mul( diffuseLight ).mul( 0.3 ).add( scatter ), mirrorSampler.rgb.mul( specularLight ).add( mirrorSampler.rgb.mul( 0.9 ) ).add( vec3( 0.1 ) ), reflectance );
 			const albedo = mix(
 				this.sunColor.mul( diffuseLight ),
-				mirrorSampler.rgb.mul( specularLight ).add( mirrorSampler.rgb.mul( 0.9 ) ),
+				mirrorSampler.rgb.mul(specularLight).add( mirrorSampler.rgb.mul(0.9)),
 				reflectance
 			);
 

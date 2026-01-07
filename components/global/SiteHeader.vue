@@ -19,7 +19,7 @@
 		</nav>
 
 		<button class="logotype" ref="logoButtonRef" @contextmenu.prevent>
-			<LogoLettering />
+			<LogoLettering class="pointer-events-none" />
 		</button>
 
 		<ClientOnly>
@@ -68,6 +68,8 @@ import { useStorage, get, set } from '@vueuse/core'
 //
 // Refs / State
 //
+const config = useRuntimeConfig()
+
 const uiStore = useUiStore()
 
 const { gsap, Observer, Flip } = useGSAP()
@@ -86,7 +88,7 @@ const engagementPageLink = shallowRef('/engagement')
 const isExplorePage = computed(() => route.path === '/explore')
 
 const isFirstView = computed(() => {
-	const state = useStorage('isFirstView', false)
+	const state = useStorage(STORAGE_LABELS.IS_FIRST_VIEW, false)
 	return state.value
 })
 
@@ -107,8 +109,9 @@ onMounted(() => {
 			longPressTween = gsap.delayedCall(1, () => {
 				longPress = true
 
-				// TODO: Add configuration panel
-				console.log('TODO: Add configuration panel')
+				if (config.public.isAppMode) {
+					uiStore.setConfigPanelVisible(true)
+				}
 			})
 		},
 		onRelease: () => {
@@ -118,7 +121,8 @@ onMounted(() => {
 			if (longPress) {
 				// Do nothing
 			} else {
-				emitter.emit(EVENTS.RESTART)
+				window.location.reload()
+				// emitter.emit(EVENTS.RESTART)
 			}
 
 			longPressTween?.kill()

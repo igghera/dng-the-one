@@ -32,6 +32,12 @@
 			/>
 		</Transition>
 
+		<Transition name="fade">
+			<ModalConfiguration
+				v-if="uiStore.isConfigPanelVisible && config.public.isAppMode"
+			/>
+		</Transition>
+
 		<ClientOnly>
 			<div id="stats-wrapper" v-if="isDebug"></div>
 			<div id="debug-wrapper" v-if="isDebug"></div>
@@ -46,6 +52,7 @@ import { get } from '@vueuse/core'
 const config = useRuntimeConfig()
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const lenis = useLenis()
 
@@ -56,6 +63,8 @@ const isDebug = Object.hasOwn(urlParams, 'debug')
 const isFromExplore = urlParams.ref === 'explore'
 
 onMounted(async () => {
+	trackingStore.setFunnel('0')
+
 	if (isFromExplore) {
 		uiStore.setMainUiVisible(true)
 		uiStore.setPreloaderVisible(false)
@@ -89,6 +98,7 @@ emitter.on(EVENTS.RESTART, async () => {
 
 	uiStore.reset()
 	appStore.reset()
+	trackingStore.reset()
 })
 </script>
 

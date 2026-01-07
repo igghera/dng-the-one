@@ -86,7 +86,7 @@ export class Debug {
   createScreenshot() {
     const folder = this.pane.addFolder({
       title: 'Screenshot',
-      expanded: true,
+      expanded: false,
     })
 
     const hideUi = { value: false }
@@ -205,7 +205,7 @@ export class Debug {
   createGodrays(godrays) {
     const godraysFolder = this.pane.addFolder({
       title: 'Godrays',
-      expanded: false,
+      expanded: true,
     })
 
     godraysFolder.addBinding(godrays.position, 'x', { label: 'Position X', min: -3, max: 3 })
@@ -274,7 +274,7 @@ export class Debug {
   createMask() {
     const maskFolder = this.pane.addFolder({
       title: 'End Mask',
-      expanded: true,
+      expanded: false,
     })
 
     maskFolder.addBinding(maskProgress, 'value', { label: 'Progress', min: 0, max: 1 })
@@ -303,7 +303,7 @@ export class Debug {
       expanded: false,
     })
 
-    folder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 1, max: 2, step: 0.01 })
+    folder.addBinding(bloomThreshold, 'value', { label: 'Threshold', min: 0.5, max: 2, step: 0.01 })
     folder.addBinding(bloomStrength, 'value', { label: 'Strength', min: 0, max: 3, step: 0.01 })
     folder.addBinding(bloomRadius, 'value', { label: 'Radius', min: 0, max: 1.5, step: 0.01 })
 }

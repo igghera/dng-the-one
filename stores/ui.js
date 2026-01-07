@@ -1,5 +1,6 @@
 export const useUiStore = defineStore('uiStore', {
   state: () => ({
+    configPanelVisible: false,
     mainUiVisible: false,
     preloaderVisible: true,
     webglVisible: false,
@@ -36,6 +37,10 @@ export const useUiStore = defineStore('uiStore', {
       this.bottomGradientVisible = false
       this.resultsScrollDownVisible = false
       this.qrCodeModalVisible = false
+    },
+
+    setConfigPanelVisible(visible) {
+      this.configPanelVisible = visible
     },
 
     setMainUiVisible(visible) {
@@ -104,6 +109,7 @@ export const useUiStore = defineStore('uiStore', {
   },
 
   getters: {
+    isConfigPanelVisible: (state) => state.configPanelVisible,
     isMainUiVisible: (state) => state.mainUiVisible,
     isPreloaderVisible: (state) => state.preloaderVisible,
     isWebglVisible: (state) => state.webglVisible,

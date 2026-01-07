@@ -5,9 +5,21 @@
   "shop_now": "Acquista ora",
   "press_and_hold": "Tieni premuto",
   "download": "Download",
+  "done": "Fatto",
+  "scroll_down": "Scorri verso il basso",
 
   "link_privacy_policy": "https://world.dolcegabbana.com/it/privacy",
   "link_cookies_policy": "https://world.dolcegabbana.com/it/cookie-policy",
+
+  "modal_configuration": {
+    "title": "Configura la tua esperienza",
+    "options": [
+      {
+        "label": "Stampa",
+        "options": ["Si", "No"]
+      }
+    ]
+  },
 
   "experience_start": {
     "title": "Scopri la tua Aura",
@@ -34,7 +46,7 @@
     "title": "Quando entri<br>nella stanza...",
     "instructions": "Scorri verso l'alto per selezionare",
     "labels": [
-      "Chi sa, sa",
+      "La mia aura parla per me",
       "Tutti gli sguardi su di me",
       "Mi prendo la scena",
       "Sono al centro dell'attenzione"
@@ -99,26 +111,34 @@
     "pre_title": "Le tua Aura si abbina a:",
     "result": [
       {
-        "title": "The One Gold for Men<br>The One Gold",
-        "subtitle": "Eau De Parfum Intense",
+        "title": [
+          "The One Gold For Men Eau De Parfum Intense",
+          "The One Gold Eau De Parfum Intense"
+        ],
         "image": "/images/engagement/01.webp",
         "copy": "Luminose, moderne, magnetiche. Scopri due fragranze che catturano i tuoi sensi Dolce&Gabbana The One Gold Eau de Parfum Intense e The One For Men Gold Eau de Parfum Intense."
       },
       {
-        "title": "The One for Men<br>The One",
-        "subtitle": "Parfum & Eau De Parfum Intense",
+        "title": [
+          "The One For Men Parfum",
+          "The One Eau De Parfum Intense"
+        ],
         "image": "/images/engagement/03.webp",
         "copy": "Due nuove firme olfattive che giocano su contrasti raffinati. Scopri Dolce&Gabbana The One Eau de Parfum Intense e The One For Men Parfum."
       },
       {
-        "title": "The One for Men<br>The One",
-        "subtitle": "Eau De Parfum",
+        "title": [
+          "The One For Men Eau De Parfum",
+          "The One Eau De Parfum"
+        ],
         "image": "/images/engagement/02.webp",
         "copy": "Due icone senza tempo. Dolce&Gabbana The One Eau de Parfum e The One For Men Eau de Parfum, ora in una nuova edizione, ancor più persistente, ancora più irresistibile."
       },
       {
-        "title": "The One for Men<br>The One",
-        "subtitle": "Eau De Toilette & Eau De Parfum",
+        "title": [
+          "The One For Men Eau De Toilette",
+          "The One Eau De Parfum"
+        ],
         "image": "/images/engagement/04.webp",
         "copy": "Sofisticate e irresistibili. Scopri le due fragranze iconiche Dolce&Gabbana The One Eau de Parfum e The One Eau de Toilette."
       }
@@ -201,7 +221,7 @@
         }
       },
       "female": {
-        "desc": "La tua Aura permane con delicatezza. Una profondità emotiva magnetica che rimane a lungo.",
+        "desc": "La tua Aura persiste oltre l’istante. Una profondità emotiva impossibile da dimenticare.",
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum Intense",
@@ -212,7 +232,7 @@
     {
       "title": "Misteriosa",
       "male": {
-        "desc": "Riservi le parole ai momenti che contano. La tua Aura sussurra potere e attira gli altri con naturalezza.",
+        "desc": "Le tue parole hanno un potere silenzioso. La tua Aura sussurra sicurezza e attira gli altri con naturalezza.",
         "fragrance": {
           "title": "The One Men",
           "sub_title": "Eau De Toilette",
@@ -220,7 +240,7 @@
         }
       },
       "female": {
-        "desc": "Le tue parole hanno un potere silenzioso. La tua Aura sussurra sicurezza, attirando gli altri con naturalezza.",
+        "desc": "Le tue parole hanno un potere silenzioso. La tua Aura sussurra sicurezza e attira gli altri con naturalezza.",
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum",

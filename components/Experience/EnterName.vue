@@ -28,12 +28,7 @@
 				/>
 			</fieldset>
 
-			<ButtonGolden
-				class="button | !text-gold"
-				size="square"
-				type="submit"
-				ref="submitButtonRef"
-			>
+			<ButtonGolden class="button | !text-gold" size="square" type="submit">
 				<IconArrowRight class="w-4" />
 			</ButtonGolden>
 		</form>
@@ -48,14 +43,14 @@ import { get, set } from '@vueuse/core'
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
-const { gsap, Flip } = useGSAP()
+const { gsap } = useGSAP()
 
 const el = useCurrentElement()
 const headerRef = useTemplateRef('headerRef')
 const formRef = useTemplateRef('formRef')
 const inputRef = useTemplateRef('inputRef')
-const submitButtonRef = useTemplateRef('submitButtonRef')
 
 const isVisible = useElementVisibility(el)
 
@@ -69,6 +64,8 @@ const inputMinWidth = 176
 //
 watch(isVisible, visible => {
 	if (visible) {
+		trackingStore.setFunnel('1')
+
 		uiStore.setBottomGradientVisible(false)
 
 		gsap.fromTo(
@@ -96,28 +93,7 @@ watch(isVisible, visible => {
 // Methods
 //
 const handleInput = async () => {
-	// appStore.setUsername(get(inputRef)?.value)
-
 	setSubmitButtonVisible()
-
-	return
-
-	const dummy = document.createElement('span')
-	Object.assign(dummy.style, {
-		position: 'fixed',
-		top: '0',
-		left: '-9999px',
-		textTransform: 'uppercase',
-	})
-	dummy.classList.add('body-3')
-	dummy.innerHTML = get(inputRef)?.value
-
-	document.body.appendChild(dummy)
-	await nextTick()
-
-	get(inputRef).style.width = `${Math.max(inputMinWidth, dummy.clientWidth)}px`
-
-	dummy.remove()
 }
 
 const setSubmitButtonVisible = () => {
@@ -125,7 +101,14 @@ const setSubmitButtonVisible = () => {
 }
 
 const handleSubmit = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'next',
+	})
+	// trackingStore.setFunnel('2')
+
 	set(canSubmit, false)
+
+	audioManager.play(AUDIO_LABELS.SFX_TRANSITION)
 
 	await animateOut()
 

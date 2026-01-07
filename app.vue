@@ -29,6 +29,8 @@ const lenisOptions = {
 onMounted(() => {
 	const state = useStorage('isFirstView', true)
 	state.value = true
+
+	Tracking.init()
 })
 
 watchEffect(onInvalidate => {

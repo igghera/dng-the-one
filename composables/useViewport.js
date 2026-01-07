@@ -1,3 +1,5 @@
+const DESKTOP_WIDTH = 1180
+
 export function useViewport() {
   const { width: windowWidth, height: windowHeight } = useWindowSize()
 
@@ -6,11 +8,11 @@ export function useViewport() {
   })
 
   const isMedium = computed(() => {
-    return windowWidth.value >= 768 && windowWidth.value < 1024
+    return windowWidth.value >= 768 && windowWidth.value < DESKTOP_WIDTH
   })
 
   const isDesktop = computed(() => {
-    return windowWidth.value >= 1024
+    return windowWidth.value >= DESKTOP_WIDTH
   })
 
   const isDesktopWide = computed(() => {

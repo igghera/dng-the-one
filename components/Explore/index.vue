@@ -40,8 +40,8 @@
 			id="explore-canvas"
 			class="canvas"
 			ref="canvasRef"
-			:width="componentWidth"
-			:height="componentHeight"
+			:width="canvasSize.width"
+			:height="canvasSize.height"
 		/>
 
 		<div
@@ -130,6 +130,7 @@
 				class="panel-close-button"
 				@click="closePanel"
 				aria-label="close panel"
+				ref="closeButtonRef"
 			>
 				<IconClose class="relative z-[1]" />
 			</button>
@@ -204,6 +205,7 @@ import {
 import CameraControls from 'camera-controls'
 import { get, set } from '@vueuse/core'
 import { Howler } from 'howler'
+import slugify from 'voca/slugify'
 
 import { ktxLoader } from '~/assets/js/loaders'
 import { backgroundCopper, backgroundGold } from './materials/background'
@@ -225,6 +227,7 @@ const canvasRef = useTemplateRef('canvasRef')
 const css3DContentRef = useTemplateRef('css3DContentRef')
 const socketRefs = useTemplateRef('socketRefs')
 const panelRef = useTemplateRef('panelRef')
+const closeButtonRef = useTemplateRef('closeButtonRef')
 const panelScrollerRef = useTemplateRef('panelScrollerRef')
 const panelContentRef = useTemplateRef('panelContentRef')
 const draggableDummyRef = useTemplateRef('draggableDummyRef')
@@ -429,6 +432,22 @@ const targets = itemsData.map(item => {
 //
 // Computed
 //
+const canvasSize = computed(() => {
+	const width =
+		get(componentWidth) % 2 === 0
+			? get(componentWidth)
+			: get(componentWidth) - 1
+	const height =
+		get(componentHeight) % 2 === 0
+			? get(componentHeight)
+			: get(componentHeight) - 1
+
+	return {
+		width,
+		height,
+	}
+})
+
 const itemsCopy = computed(() => {
 	return tm('explore.items').map(item => {
 		return {
@@ -497,6 +516,12 @@ onMounted(async () => {
 	await nextTick()
 
 	setInitialStyles()
+
+	Tracking.sendEvent({
+		content_type: 'navigation',
+		customizator_option: '',
+		generic_event_and_label: 'explore_the_collection',
+	})
 
 	createScene()
 	createCamera()
@@ -579,17 +604,17 @@ onMounted(async () => {
 watch([componentWidth, componentHeight], value => {
 	if (!camera) return
 
-	camera.aspect = value[0] / value[1]
+	const width = value[0] % 2 === 0 ? value[0] : value[0] - 1
+	const height = value[1] % 2 === 0 ? value[1] : value[1] - 1
+
+	camera.aspect = width / height
 	camera.updateProjectionMatrix()
 
 	if (!renderer) return
 
-	renderer.setSize(value[0], value[1])
+	renderer.setSize(width, height)
 
-	rendererCSS.setSize(
-		value[0] % 2 === 0 ? value[0] : value[0] - 1,
-		value[1] % 2 === 0 ? value[1] : value[1] - 1
-	)
+	rendererCSS.setSize(width, height)
 })
 
 //
@@ -619,7 +644,7 @@ function createScene() {
 function createCamera() {
 	camera = new THREE.PerspectiveCamera(
 		40,
-		get(componentWidth) / get(componentHeight),
+		get(canvasSize).width / get(canvasSize).height,
 		0.1,
 		20
 	)
@@ -629,7 +654,7 @@ function createCamera() {
 
 async function createRenderer() {
 	rendererCSS = new CSS3DRenderer()
-	rendererCSS.setSize(get(componentWidth), get(componentHeight))
+	rendererCSS.setSize(get(canvasSize).width, get(canvasSize).height)
 	get(css3DContentRef).appendChild(rendererCSS.domElement)
 
 	renderer = new THREE.WebGPURenderer({
@@ -640,7 +665,7 @@ async function createRenderer() {
 	})
 
 	renderer.toneMapping = THREE.ACESFilmicToneMapping
-	renderer.setSize(get(componentWidth), get(componentHeight))
+	renderer.setSize(get(canvasSize).width, get(canvasSize).height)
 	renderer.setPixelRatio(1)
 
 	await renderer.init()
@@ -765,11 +790,18 @@ function createDrag() {
 
 	// TODO: Hardcoded values for now, need to calculate them dynamically.
 	const snaps = [980, 735, 490, 245, 0]
+	const TOLERANCE = 10
+
+	// Track the currently active snap point
+	let currentSnapIndex = 0
+	let valueOnPress = 0
 
 	draggableInstance = Draggable.create(get(draggableDummyRef), {
 		trigger: get(el),
 		type: 'x',
 		inertia: true,
+		overshootTolerance: 0,
+		throwResistance: 10000,
 		edgeResistance: 1,
 		dragResistance: 0.85,
 		bounds: {
@@ -777,27 +809,25 @@ function createDrag() {
 			width: 1000,
 		},
 		zIndexBoost: false,
+		onPress: () => {
+			valueOnPress = draggableInstance[0].x
+		},
 		snap: value => {
-			const TOLERANCE = 200
+			const distanceToCurrent = Math.abs(value - snaps[currentSnapIndex])
 
-			const curr = getClosestValue(snaps, value)
-			let currIndex = snaps.findIndex(snap => snap === curr)
-
-			let newSnaps = [...snaps]
-
-			if (currIndex === 0) {
-				newSnaps[1] = snaps[1] + TOLERANCE
-			} else if (currIndex === 4) {
-				newSnaps[3] = snaps[3] - TOLERANCE
-			} else {
-				newSnaps[currIndex - 1] = snaps[currIndex - 1] - TOLERANCE
-				newSnaps[currIndex + 1] = snaps[currIndex + 1] + TOLERANCE
+			// If within tolerance, snap to the current snap point (allows small drag movement)
+			if (distanceToCurrent <= TOLERANCE) {
+				return snaps[currentSnapIndex]
 			}
 
-			const newCurr = getClosestValue(newSnaps, value)
-			currIndex = newSnaps.findIndex(snap => snap === newCurr)
+			const direction = Math.sign(valueOnPress - value)
+			currentSnapIndex = gsap.utils.clamp(
+				0,
+				snaps.length - 1,
+				currentSnapIndex + direction
+			)
 
-			return snaps[currIndex]
+			return snaps[currentSnapIndex]
 		},
 		onDrag: () => {
 			update(draggableInstance[0].x)
@@ -928,6 +958,14 @@ async function handlePinPointerdown(event) {
 	set(currentProduct, productId)
 	set(currentProductData, get(panelsData).get(productId))
 
+	const titleField = get(currentProductData).find(
+		item => item.component === 'title'
+	)
+	Tracking.sendEvent({
+		customizator_option: slugify(titleField.value.join(' ')),
+		generic_event_and_label: 'product_click',
+	})
+
 	await nextTick()
 
 	set(copyVisible, false)
@@ -938,7 +976,7 @@ async function handlePinPointerdown(event) {
 	controls.fitToBox(targets[nicheIndex], true, params)
 }
 
-function openPanel() {
+async function openPanel() {
 	set(panelOpen, true)
 	set(pinsVisible, false)
 
@@ -949,6 +987,50 @@ function openPanel() {
 	} else {
 		get(panelScrollerRef).dataset.lenisPrevent = ''
 	}
+
+	await nextTick()
+
+	get(panelContentRef)
+		.querySelectorAll('video')
+		.forEach(video => {
+			video.currentTime = 0
+		})
+
+	const tl = gsap.timeline({ delay: 0.55 })
+	tl.addLabel('start')
+
+	tl.fromTo(
+		get(panelContentRef).children,
+		{
+			opacity: 0,
+			y: 10,
+		},
+		{
+			opacity: 1,
+			y: 0,
+			stagger: 0.1,
+			duration: 1.2,
+			ease: 'power2.out',
+			overwrite: true,
+		},
+		'start'
+	)
+
+	tl.fromTo(
+		get(closeButtonRef),
+		{
+			opacity: 0,
+			rotation: -75,
+		},
+		{
+			opacity: 1,
+			rotation: 0,
+			duration: 0.65,
+			ease: 'power2.out',
+			overwrite: true,
+		},
+		'start+=0.5'
+	)
 }
 
 async function closePanel() {
@@ -959,6 +1041,12 @@ async function closePanel() {
 
 	const currentPos = new THREE.Vector3()
 	controls.getPosition(currentPos)
+
+	get(panelContentRef)
+		.querySelectorAll('video')
+		.forEach(video => {
+			video.pause()
+		})
 
 	await controls.setLookAt(
 		controlsPositionMemo.x,
@@ -1215,10 +1303,11 @@ async function animateToInitialPosition() {
 }
 
 :deep(.socket) {
-	@apply grid text-gold text-center uppercase;
+	@apply grid text-gold text-center uppercase relative;
 
 	height: var(--h);
 	width: var(--w);
+	transform-origin: center center;
 
 	> * {
 		@apply col-start-1 row-start-1;
@@ -1434,7 +1523,7 @@ async function animateToInitialPosition() {
 }
 
 .panel-close-button {
-	@apply absolute top-4 right-4;
+	@apply absolute z-[1] top-4 right-4;
 
 	width: toRem(14);
 

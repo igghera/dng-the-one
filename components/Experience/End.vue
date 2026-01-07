@@ -83,14 +83,14 @@
 				<div class="buttons-row">
 					<template v-if="config.public.isAppMode">
 						<ButtonGolden
-							v-if="config.public.isAppMode && canPrint"
+							v-if="config.public.isAppMode && printEnabled"
 							class="!text-gold"
 							@click="handlePrint"
 							>{{ $t('results.cta_print') }}</ButtonGolden
 						>
 
 						<ButtonGolden
-							:size="canPrint ? 'auto' : 'wide'"
+							:size="printEnabled ? 'auto' : 'wide'"
 							class="!text-gold"
 							@click="handleQRCodeButtonClick"
 							>{{ $t('download') }}</ButtonGolden
@@ -126,6 +126,9 @@
 <script setup>
 import { Howler } from 'howler'
 import { get, set, useStorage } from '@vueuse/core'
+import slugify from 'voca/slugify'
+// import { PDFDocument } from 'pdf-lib'
+import { ZeroConf } from 'capacitor-zeroconf'
 import { snapdom } from '@zumer/snapdom'
 import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
 
@@ -155,53 +158,53 @@ const ctaLabelRef = useTemplateRef('ctaLabelRef')
 
 const canInteract = shallowRef(true)
 
-// TODO: Set this value in the app store / local storage
-const canPrint = shallowRef(true)
+const printers = shallowRef([])
+const printerDiscoveryError = shallowRef(null)
+const isPrinterDiscoveryActive = shallowRef(false)
 
-const { rt, tm } = useI18n()
+const { rt, tm, locale } = useI18n()
 const { gsap, Observer, SplitText } = useGSAP()
 
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const { height: windowHeight } = useWindowSize()
 
 const urlParams = useUrlSearchParams('history')
 const isFromExplore = urlParams.ref === 'explore'
+
+const printEnabled = useStorage(STORAGE_LABELS.PRINT_ENABLED, false)
 const storage = useStorage('experience-answers', {})
 
 const showResult = shallowRef(false)
 
-const allAurasFull = Object.values(tm('auras')).map(aura => ({
-	title: rt(aura.title),
-	male: {
-		desc: rt(aura.male.desc),
-		fragrance: {
-			title: rt(aura.male.fragrance.title),
-			sub_title: rt(aura.male.fragrance.sub_title),
-			desc: rt(aura.male.fragrance.desc),
-		},
-	},
-	female: {
-		desc: rt(aura.female.desc),
-		fragrance: {
-			title: rt(aura.female.fragrance.title),
-			sub_title: rt(aura.female.fragrance.sub_title),
-			desc: rt(aura.female.fragrance.desc),
-		},
-	},
-}))
+const MM_PER_INCH = 25.4
+// Standard 4x6 inch dimensions
+const PHOTO_WIDTH_INCH = 4
+const PHOTO_HEIGHT_INCH = 6
+const BASE_DPI = 300
 
-const allAuras = Object.values(tm('experience_end.options')).map(option => ({
-	title: rt(option.title),
-	copy: rt(option.copy),
-}))
+// Exact 4x6 inch at 300 DPI (1200x1800)
+const CANVAS_DIMENSIONS = Object.freeze({
+	width: PHOTO_WIDTH_INCH * BASE_DPI,
+	height: PHOTO_HEIGHT_INCH * BASE_DPI,
+})
 
-const allProducts = Object.values(tm('products')).map(product => ({
-	title: rt(product.title),
-	sub_title: rt(product.sub_title),
-	copy: rt(product.copy),
-}))
+const ZERO_CONF_DOMAIN = 'local.'
+const ZERO_CONF_SERVICE_TYPES = [
+	'_ipp._tcp',
+	'_printer._tcp',
+	'_pdl-datastream._tcp',
+	'_riousbprint._tcp',
+	'_print-caps._tcp',
+]
+
+const watchedServiceTypes = new Set()
+const isClient = typeof window !== 'undefined'
+const desiredPrinterName = config.public.printerName ?? 'none'
+
+const selectedPrinter = computed(() => get(printers)[0] ?? null)
 
 let drawTimeline, pointerObserver
 
@@ -221,10 +224,23 @@ const shouldShowButtons = computed(() => {
 })
 
 //
+// Watchers
+//
+watch(locale, () => {
+	setResult()
+})
+
+//
 // Lifecycle
 //
 onMounted(async () => {
+	if (config.public.isAppMode) {
+		startPrinterDiscovery()
+	}
+
 	setInitialState()
+
+	trackingStore.setFunnel('5')
 
 	if (isFromExplore) {
 		appStore.setStep01Selection(get(storage).q1)
@@ -234,16 +250,7 @@ onMounted(async () => {
 		await animateInHeader()
 	}
 
-	const res = calculateResult(
-		appStore.getStep01Selection,
-		appStore.getStep02Selection,
-		appStore.getStep03Selection,
-		allAuras,
-		allProducts,
-		allAurasFull
-	)
-
-	appStore.setResult(res.result)
+	setResult()
 
 	if (isFromExplore) {
 		uiStore.setResultsVisible(true)
@@ -251,7 +258,7 @@ onMounted(async () => {
 	}
 
 	experienceEndDrawMaterial.mapIndex.value =
-		res.result.get('shape') === 'male' ? 0 : 1
+		appStore.getResult.get('shape') === 'male' ? 0 : 1
 
 	if (!uiStore.isExperienceEndVisible) return
 
@@ -272,6 +279,8 @@ onMounted(async () => {
 onBeforeUnmount(() => {
 	drawTimeline?.kill()
 	pointerObserver?.kill()
+
+	stopPrinterDiscovery()
 
 	emitter.removeListener(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE)
 })
@@ -296,6 +305,50 @@ emitter.once(EVENTS.BACK, () => {
 //
 const setInitialState = () => {
 	gsap.set(get(introHeaderRef), { autoAlpha: 0 })
+}
+
+const setResult = () => {
+	const allAurasFull = Object.values(tm('auras')).map(aura => ({
+		title: rt(aura.title),
+		male: {
+			desc: rt(aura.male.desc),
+			fragrance: {
+				title: rt(aura.male.fragrance.title),
+				sub_title: rt(aura.male.fragrance.sub_title),
+				desc: rt(aura.male.fragrance.desc),
+			},
+		},
+		female: {
+			desc: rt(aura.female.desc),
+			fragrance: {
+				title: rt(aura.female.fragrance.title),
+				sub_title: rt(aura.female.fragrance.sub_title),
+				desc: rt(aura.female.fragrance.desc),
+			},
+		},
+	}))
+
+	const allAuras = Object.values(tm('experience_end.options')).map(option => ({
+		title: rt(option.title),
+		copy: rt(option.copy),
+	}))
+
+	const allProducts = Object.values(tm('products')).map(product => ({
+		title: rt(product.title),
+		sub_title: rt(product.sub_title),
+		copy: rt(product.copy),
+	}))
+
+	const { result: data } = calculateResult(
+		appStore.getStep01Selection,
+		appStore.getStep02Selection,
+		appStore.getStep03Selection,
+		allAuras,
+		allProducts,
+		allAurasFull
+	)
+
+	appStore.setResult(data)
 }
 
 const back = async () => {
@@ -333,57 +386,321 @@ const animateBack = async () => {
 	return tl.play()
 }
 
+// ============================================================================
+// PRINT CONFIGURATION
+// ============================================================================
+
+// Cordova printer plugin options
+const BORDERLESS_OPTIONS = {
+	orientation: 'portrait',
+	photo: true,
+	autoFit: false,
+	margin: {
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+	},
+}
+
+// ============================================================================
+// IMAGE PROCESSING UTILITIES (PDF - Currently Unused)
+// ============================================================================
+
+/**
+ * Convert blob to photo-ready PNG data URL
+ * Resizes to 1844x1240px (4x6 inch at 300 DPI) with white background
+ * @param {Blob} blob - Input image blob
+ * @returns {Promise<string>} - PNG data URL
+ */
+const buildPhotoReadyDataUrl = blob =>
+	new Promise((resolve, reject) => {
+		if (!blob) {
+			reject(new Error('Screenshot blob is missing'))
+			return
+		}
+
+		const objectUrl = URL.createObjectURL(blob)
+		const image = new Image()
+
+		image.onload = () => {
+			const canvas = document.createElement('canvas')
+			canvas.width = CANVAS_DIMENSIONS.width
+			canvas.height = CANVAS_DIMENSIONS.height
+
+			const ctx = canvas.getContext('2d')
+			if (!ctx) {
+				URL.revokeObjectURL(objectUrl)
+				reject(new Error('Unable to obtain canvas context'))
+				return
+			}
+
+			ctx.fillStyle = '#ffffff'
+			ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+			const scale = Math.max(
+				canvas.width / image.width,
+				canvas.height / image.height
+			)
+
+			const drawWidth = image.width * scale
+			const drawHeight = image.height * scale
+			const offsetX = (canvas.width - drawWidth) / 2
+			const offsetY = (canvas.height - drawHeight) / 2
+
+			ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
+			URL.revokeObjectURL(objectUrl)
+			resolve(canvas.toDataURL('image/png'))
+		}
+
+		image.onerror = error => {
+			URL.revokeObjectURL(objectUrl)
+			reject(error)
+		}
+
+		image.src = objectUrl
+	})
+
+/**
+ * Extract base64 payload from data URL and format for Cordova printer plugin
+ * @param {string} dataUrl - Data URL (e.g., "data:image/png;base64,iVBOR...")
+ * @returns {string} - Formatted payload ("base64://iVBOR...")
+ */
+const buildBase64Payload = dataUrl => {
+	const [, payload] = dataUrl.split(',')
+	if (!payload) throw new Error('Invalid photo data URL')
+	return `base64://${payload}`
+}
+
+// ============================================================================
+// PRINT FUNCTIONS
+// ============================================================================
+
+/**
+ * Main print handler - captures screenshot and sends to printer
+ */
 const handlePrint = async () => {
-	const blob = await takeScreenshot(false)
-	const url = URL.createObjectURL(blob)
+	Tracking.sendEvent({
+		customizator_option: 'print_your_aura',
+		generic_event_and_label: 'print-your-aura',
+	})
 
-	const img = document.createElement('img')
+	try {
+		// 1. Capture screenshot
+		const blob = await takeScreenshot(false)
+		if (!blob) throw new Error('Failed to capture screenshot')
 
-	img.addEventListener(
-		'load',
-		() => {
-			// TODO: Print the image
-			alert('TODO: Implement print feature')
+		// 2. Convert to data URL (PNG format for photo printer)
+		const dataUrl = await buildPhotoReadyDataUrl(blob)
+		console.log('📸 Screenshot ready, size:', dataUrl.length, 'chars')
 
-			// `img` is the image to print
+		// 3. Use Cordova plugin with specific printer URL (Direct Print)
+		const printer = get(selectedPrinter)
+		console.log('🖨️ Sending to printer:', printer?.name)
+		console.log('📍 Printer URL:', printer?.ippUrl)
 
-			// (debug) Adding the image to the DOM
-			// Object.assign(img.style, {
-			// 	position: 'fixed',
-			// 	top: 0,
-			// 	left: 0,
-			// 	width: '30%',
-			// 	height: 'auto',
-			// })
+		if (printer?.ippUrl) {
+			const base64Payload = buildBase64Payload(dataUrl)
+			// Direct print attempt using plugin
+			// This uses the IPP URL discovered via ZeroConf (mdns)
+			// Format: ipp://[ip]:[port]/[resource_path]
 
-			// document.body.appendChild(img)
+			// Semplificazione opzioni per debug fallimento
+			await window.cordova.plugins.printer.print(base64Payload, {
+				printer: printer.ippUrl,
+				name: 'The One Experience',
+				...BORDERLESS_OPTIONS,
+			})
 
-			URL.revokeObjectURL(url)
-		},
-		{ once: true }
+			console.log('✅ Print command sent to plugin')
+			// alert('Stampa inviata con successo!')
+		} else {
+			console.error('No printer URL available')
+			throw new Error('No printer selected')
+		}
+	} catch (error) {
+		console.error('❌ Print error:', error)
+		alert(
+			rt('experience_end.print_error') ??
+				'Unable to print. Please check printer connection.'
+		)
+	}
+}
+
+// ============================================================================
+// PRINTER DISCOVERY
+// ============================================================================
+
+/**
+ * Parses a discovered service and adds it to the list of available printers.
+ * Filters by name if `desiredPrinterName` is set in config.
+ * Constructs the IPP URL needed for direct printing.
+ *
+ * @param {Object} service - The ZeroConf service object
+ */
+const upsertPrinterFromService = service => {
+	if (!service?.name) return
+
+	const printerName = service.name
+	// Filter printers if a specific name is configured in .env
+	if (
+		desiredPrinterName &&
+		!printerName.toLowerCase().includes(desiredPrinterName.toLowerCase())
+	)
+		return
+
+	// Resolve device IP address (IPv4 preferred)
+	const deviceAddress =
+		service.hostname ??
+		service.ipv4Addresses?.[0] ??
+		service.ipv6Addresses?.[0] ??
+		''
+
+	if (!deviceAddress) return
+
+	const port = service.port || 631
+
+	// Use resource path from txtRecord if available (critical for some printers like DNP)
+	// Fallback to standard 'ipp/print' if not specified
+	const resourcePath = service.txtRecord?.rp || 'ipp/print'
+
+	const nextPrinter = {
+		name: printerName,
+		ip: deviceAddress,
+		// Construct the full IPP URL: ipp://192.168.1.100:631/printers/NAME
+		ippUrl: `ipps://${deviceAddress}:${port}/${resourcePath}`,
+	}
+
+	const currentPrinters = get(printers)
+	const exists = currentPrinters.some(
+		printer =>
+			printer.ip === nextPrinter.ip && printer.name === nextPrinter.name
 	)
 
-	img.src = url
+	if (!exists) {
+		set(printers, [...currentPrinters, nextPrinter])
+	}
 }
+
+/**
+ * Helper to format ZeroConf error messages into human-readable strings
+ */
+const formatZeroConfError = (type, error) => {
+	const code = error?.code ?? error?.message
+
+	if (code === -72008) {
+		return 'Network permission denied for printer discovery'
+	}
+
+	return `ZeroConf watch error (${type}): ${error?.message ?? error}`
+}
+
+/**
+ * Starts watching for printer services on the local network using mDNS (Bonjour).
+ * Scans for multiple service types (_ipp._tcp, _printer._tcp, etc.) to ensure compatibility.
+ *
+ * @returns {Promise<boolean>} - True if watchers were successfully started
+ */
+const startPrinterDiscovery = async () => {
+	// Only run in App Mode (Capacitor) and if not already active
+	if (!isClient || !config.public.isAppMode || get(isPrinterDiscoveryActive)) {
+		return false
+	}
+
+	set(printerDiscoveryError, null)
+
+	let hasActiveWatchers = false
+	await Promise.all(
+		ZERO_CONF_SERVICE_TYPES.map(async type => {
+			try {
+				await ZeroConf.watch({ type, domain: ZERO_CONF_DOMAIN }, result => {
+					if (result?.service) {
+						console.log('Discovered printer service:', result.service)
+
+						upsertPrinterFromService(result.service)
+					}
+				})
+				watchedServiceTypes.add(type)
+				hasActiveWatchers = true
+			} catch (error) {
+				console.error(`[ZeroConf] Failed to watch ${type}`, error)
+				set(printerDiscoveryError, formatZeroConfError(type, error))
+			}
+		})
+	)
+
+	set(isPrinterDiscoveryActive, hasActiveWatchers)
+	return hasActiveWatchers
+}
+
+/**
+ * Stops all active ZeroConf watchers to free resources.
+ * Should be called on component unmount.
+ */
+const stopPrinterDiscovery = async () => {
+	if (!watchedServiceTypes.size) return
+
+	await Promise.all(
+		Array.from(watchedServiceTypes).map(async type => {
+			try {
+				await ZeroConf.unwatch({ type, domain: ZERO_CONF_DOMAIN })
+			} catch (error) {
+				console.warn(`[ZeroConf] Failed to unwatch ${type}`, error)
+			}
+		})
+	)
+
+	watchedServiceTypes.clear()
+	set(isPrinterDiscoveryActive, false)
+}
+
+// ============================================================================
+// UI HANDLERS
+// ============================================================================
 
 const handleQRCodeButtonClick = () => {
 	uiStore.setQrCodeModalVisible(true)
 }
 
 const handleDownloadButtonClick = async () => {
+	Tracking.sendEvent({
+		customizator_option: 'download',
+		generic_event_and_label: 'download',
+	})
+
 	const data = appStore.getResult
 	data.set('pre-title', $t('download_card.pre_title'))
 	data.set('sub-content-title', $t('download_card.subcontent_title'))
 
-	downloadCard('experience', Number(appStore.getStep01Selection), data)
+	const base = `/images/download-cards/experience/${get(locale)}`
+	const shape = data.get('shape')
+
+	let aura = data.get('aura').title.toLowerCase()
+	if (aura === 'elegant') aura = '00-elegant'
+	if (aura === 'warm') aura = '01-warm'
+	if (aura === 'discrete') aura = '02-mysterious'
+	if (aura === 'bold') aura = '03-bold'
+
+	const imageUrl = `${base}/${aura}-${shape}.png`
+
+	const link = document.createElement('a')
+	link.href = imageUrl
+	link.download = `the-one-card-${aura}-${shape}-${Date.now()}.png`
+	link.click()
 }
 
 const handleRestartButtonClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'play_again',
+		customizator_option: 'play-again',
+	})
+
 	if (isFromExplore) {
 		await navigateTo('/')
 		emitter.emit(EVENTS.RESTART)
 	} else {
-		emitter.emit(EVENTS.RESTART)
+		window.location.reload()
+		// emitter.emit(EVENTS.RESTART)
 	}
 }
 
@@ -396,11 +713,18 @@ const createButtonTimeline = () => {
 			}
 		},
 		onComplete: async () => {
+			Tracking.sendEvent({
+				generic_event_and_label: 'press_&_hold',
+			})
+			trackingStore.setFunnelName('result')
+
 			set(canInteract, false)
 
 			uiStore.setBackButtonVisible(false)
 
-			audioManager.fadeOut(AUDIO_LABELS.BASE_LOOP)
+			audioManager.stop(AUDIO_LABELS.BASE_LOOP)
+			appStore.isAudioEnabled && Howler.volume(1)
+			audioManager.play(AUDIO_LABELS.SFX_TRANSITION)
 
 			await gsap.to([get(ctaLabelRef), get(buttonRef)], {
 				autoAlpha: 0,
@@ -589,9 +913,25 @@ const animateMask = () => {
 	tl.call(
 		() => {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
-			appStore.isAudioEnabled && Howler.volume(1)
 			audioManager.fadeIn(AUDIO_LABELS.CAMPAIGN_LOOP)
 			set(showResult, true)
+
+			Tracking.sendEvent({
+				content_type: 'results_page',
+				generic_event_and_label: 'tool_end',
+				customizator_option: slugify(appStore.getResult.get('aura').title),
+			})
+
+			const productName = slugify(
+				`${appStore.getResult.get('product').title} ${
+					appStore.getResult.get('product').sub_title
+				}`
+			)
+			Tracking.sendEvent({
+				content_type: 'results_page',
+				generic_event_and_label: 'tool_end_product_view',
+				customizator_option: productName,
+			})
 		},
 		null,
 		'>-0.05'
@@ -639,6 +979,10 @@ const animateMask = () => {
 	@screen tablet-portrait-lg {
 		width: min(toRem(330), 40vw);
 	}
+
+	@screen landscape {
+		width: 28dvh;
+	}
 }
 
 .result-pre-title {
@@ -652,6 +996,10 @@ const animateMask = () => {
 
 	@screen tablet-portrait-lg {
 		font-size: toRem(20);
+	}
+
+	@screen landscape {
+		font-size: max(toRem(8), 1.5dvh);
 	}
 }
 
@@ -667,6 +1015,10 @@ const animateMask = () => {
 	@screen tablet-portrait-lg {
 		font-size: toRem(60);
 	}
+
+	@screen landscape {
+		font-size: max(toRem(13), 4.5dvh);
+	}
 }
 
 .result-copy {
@@ -680,6 +1032,10 @@ const animateMask = () => {
 
 	@screen tablet-portrait-lg {
 		font-size: toRem(20);
+	}
+
+	@screen landscape {
+		font-size: max(toRem(8), 1.5dvh);
 	}
 }
 

@@ -14,23 +14,16 @@
 
 <script setup>
 import * as THREE from 'three/webgpu'
-import {
-	vec2,
-	pass,
-	uniform,
-	screenUV,
-	mix,
-	time,
-	texture3D,
-	blendColor,
-} from 'three/tsl'
+import { vec2, pass, uniform, screenUV, mix, time, texture3D } from 'three/tsl'
 import { bloom } from 'three/addons/tsl/display/BloomNode'
 import { lut3D } from 'three/addons/tsl/display/Lut3DNode'
 import { WaterMeshCustom } from './WaterMeshCustom'
 import { OrbitControls } from 'three/addons/controls/OrbitControls'
-import { get } from '@vueuse/core'
+import { get, useStorage } from '@vueuse/core'
 
 import { ktxLoader, textureLoader, lutCubeLoader } from '~/assets/js/loaders'
+
+import { animateInGodrays, animateGodrays } from './manageGodrays'
 
 import {
 	BackgroundMaterial,
@@ -61,6 +54,8 @@ import {
 	scaleHeight as godraysScaleHeight,
 	noiseScale as godraysNoiseScale,
 	godraysColor,
+	colorA as godraysColorA,
+	colorB as godraysColorB,
 	opacity as godraysOpacity,
 	smoothTop as godraysSmoothTop,
 	smoothBottom as godraysSmoothBottom,
@@ -82,6 +77,8 @@ import { bgTexturePortrait, bgTextureLandscape } from './nodes/textures'
 
 import {
 	threshold as bloomThreshold,
+	thresholdA as bloomThresholdA,
+	thresholdB as bloomThresholdB,
 	strength as bloomStrength,
 	radius as bloomRadius,
 	strengthDesktop as bloomStrengthDesktop,
@@ -145,6 +142,8 @@ const urlParams = useUrlSearchParams('history')
 const isDebug = Object.hasOwn(urlParams, 'debug')
 const isFromExplore = urlParams.ref === 'explore'
 
+const storage = useStorage('experience-answers', {})
+
 const { isPortrait, isLandscape, isMobile, isMedium, isDesktop } = useViewport()
 
 let scene,
@@ -205,6 +204,25 @@ onMounted(async () => {
 		maskBorderWidth.value = END_PARANS.maskBorderWidth
 
 		experienceEndDrawMaterial.progress.value = END_PARANS.endDrawProgress
+
+		backgroundProgress.value = 0.25 * (get(storage).q1 ?? 0)
+
+		if (get(storage).q1 < 2) {
+			godraysColor.value.r = godraysColorA[0]
+			godraysColor.value.g = godraysColorA[1]
+			godraysColor.value.b = godraysColorA[2]
+
+			bloomThreshold.value = bloomThresholdA
+		} else {
+			godraysColor.value.r = godraysColorB[0]
+			godraysColor.value.g = godraysColorB[1]
+			godraysColor.value.b = godraysColorB[2]
+
+			bloomThreshold.value = bloomThresholdB
+		}
+
+		animateInGodrays(get(storage).q1 ?? 0)
+		animateGodrays(get(storage).q2 ?? 0)
 	}
 
 	createScene()
@@ -360,6 +378,8 @@ emitter.on(EVENTS.ANIMATE_IN_MAIN_SCENE, () => {
 })
 
 emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
+	audioManager.play(AUDIO_LABELS.SFX_END_SHAPE)
+
 	experienceEndDrawMaterial.opacity.value = 1
 
 	gsap.fromTo(
@@ -800,7 +820,7 @@ function createSea() {
 	seaMesh = new WaterMeshCustom(geometry, {
 		waterNormals: textures.get('water_normals'),
 		sunDirection: new THREE.Vector3(),
-		sunColor: 0x00ff00,
+		sunColor: 0x000000,
 		alpha: 1,
 		distortionScale: 0.2,
 		size: 10,
@@ -1008,7 +1028,7 @@ function setIntroMeshScale() {
 	else if (get(isMedium) && get(isLandscape)) scale = 0.65
 	else if (get(isMedium) && get(isPortrait)) scale = 0.5
 	else if (get(isDesktop) && get(isLandscape)) scale = 1
-	else if (get(isDesktop) && get(isPortrait)) scale = 0.55
+	// else if (get(isDesktop) && get(isPortrait)) scale = 0.55
 
 	introMesh.scale.set(scale, scale, 1)
 }

@@ -30,10 +30,8 @@
 			<ClientOnly>
 				<div class="content-inner">
 					<div class="content-header | text-shadow">
-						<p v-html="data.title" class="content-title | golden-text" />
-
-						<p class="content-subtitle">
-							{{ data.subtitle }}
+						<p v-for="row in data.title" :key="row" class="content-title">
+							{{ row }}
 						</p>
 					</div>
 
@@ -88,11 +86,11 @@ const { aura } = urlParams
 const images = Object.freeze([
 	'00-bold',
 	'01-elegant',
-	'02-discrete',
-	'03-warm',
+	'02-warm',
+	'03-intriguing',
 	'04-powerful',
 	'05-sophisticated',
-	'06-intriguing',
+	'06-charming',
 	'07-mysterious',
 ])
 
@@ -112,34 +110,38 @@ const data = computed(() => {
 		case '0':
 		case '4':
 			return {
-				title: rt(tm('engagement.result[0].title')),
-				subtitle: rt(tm('engagement.result[0].subtitle')),
+				title: Object.values(
+					tm('engagement.result[0].title').map(row => rt(row))
+				),
 				image: rt(tm('engagement.result[0].image')),
 				copy: rt(tm('engagement.result[0].copy')),
 			}
 		case '1':
 		case '5':
 			return {
-				title: rt(tm('engagement.result[1].title')),
-				subtitle: rt(tm('engagement.result[1].subtitle')),
-				image: rt(tm('engagement.result[1].image')),
-				copy: rt(tm('engagement.result[1].copy')),
+				title: Object.values(
+					tm('engagement.result[2].title').map(row => rt(row))
+				),
+				image: rt(tm('engagement.result[2].image')),
+				copy: rt(tm('engagement.result[2].copy')),
 			}
 		case '2':
 		case '6':
 			return {
-				title: rt(tm('engagement.result[3].title')),
-				subtitle: rt(tm('engagement.result[3].subtitle')),
-				image: rt(tm('engagement.result[3].image')),
-				copy: rt(tm('engagement.result[3].copy')),
+				title: Object.values(
+					tm('engagement.result[1].title').map(row => rt(row))
+				),
+				image: rt(tm('engagement.result[1].image')),
+				copy: rt(tm('engagement.result[1].copy')),
 			}
 		case '3':
 		case '7':
 			return {
-				title: rt(tm('engagement.result[2].title')),
-				subtitle: rt(tm('engagement.result[2].subtitle')),
-				image: rt(tm('engagement.result[2].image')),
-				copy: rt(tm('engagement.result[2].copy')),
+				title: Object.values(
+					tm('engagement.result[3].title').map(row => rt(row))
+				),
+				image: rt(tm('engagement.result[3].image')),
+				copy: rt(tm('engagement.result[3].copy')),
 			}
 	}
 })
@@ -234,7 +236,7 @@ const handleDownloadButtonClick = async () => {
 }
 
 .content-pre-title {
-	@apply text-gold uppercase text-base font-medium leading-none tracking-[0.05em];
+	@apply text-gold-light uppercase text-xl font-body font-medium leading-normal tracking-[0.05em];
 }
 
 .content-inner {
@@ -242,7 +244,7 @@ const handleDownloadButtonClick = async () => {
 }
 
 .content-header {
-	@apply flex flex-col gap-y-3 items-center text-center;
+	@apply flex flex-col gap-y-2 items-center text-center;
 }
 
 .content-copy {
@@ -250,13 +252,7 @@ const handleDownloadButtonClick = async () => {
 }
 
 .content-title {
-	@apply uppercase leading-none tracking-[0.05em] font-medium;
-
-	font-size: toRem(22);
-}
-
-.content-subtitle {
-	@apply text-sm leading-[2.4] tracking-[0.05em] font-medium;
+	@apply capitalize text-gold-light text-base font-body leading-tight tracking-[0.03em] font-medium;
 }
 
 .content-image {

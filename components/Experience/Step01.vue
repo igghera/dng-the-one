@@ -119,14 +119,27 @@
 
 <script setup>
 import { get, set, useStorage } from '@vueuse/core'
+import slugify from 'voca/slugify'
 
 import { progress as backgroundProgress } from './WebGL/materials/background'
+import {
+	colorA as godraysColorA,
+	colorB as godraysColorB,
+	godraysColor,
+} from './WebGL/materials/godrays'
+
+import {
+	thresholdA as bloomThresholdA,
+	thresholdB as bloomThresholdB,
+	threshold as bloomThreshold,
+} from './WebGL/nodes/bloom'
 
 //
 // Refs / State
 //
 const appStore = useAppStore()
 const uiStore = useUiStore()
+const trackingStore = useTrackingStore()
 
 const { rt, tm } = useI18n()
 const { gsap, Draggable, Flip } = useGSAP()
@@ -166,6 +179,13 @@ const labels = computed(() => {
 	return Object.values(tm('experience_step_01.labels')).map(label => rt(label))
 })
 
+const labelsEN = Object.freeze([
+	'Refined and exclusive',
+	'Bold and commanding',
+	'Mysterious and magnetic',
+	'Confident and sophisticated',
+])
+
 let draggableInstance = null
 
 //
@@ -180,6 +200,8 @@ const knobRotationRadians = computed(() => {
 //
 onMounted(async () => {
 	setInitialStyles()
+
+	trackingStore.setFunnel('2')
 
 	await nextTick()
 
@@ -293,6 +315,31 @@ emitter.on(EVENTS.RESTART, () => {
 })
 
 //
+// Watchers
+//
+watch(knobStep, value => {
+	audioManager.play(AUDIO_LABELS.SFX_CLICK)
+})
+
+watchEffect(() => {
+	const godraysFinalColor = get(knobStep) < 2 ? godraysColorA : godraysColorB
+
+	gsap.to(godraysColor.value, {
+		r: godraysFinalColor[0],
+		g: godraysFinalColor[1],
+		b: godraysFinalColor[2],
+		duration: 0.8,
+		overwrite: true,
+	})
+
+	gsap.to(bloomThreshold, {
+		value: get(knobStep) < 2 ? bloomThresholdA : bloomThresholdB,
+		duration: 0.8,
+		overwrite: true,
+	})
+})
+
+//
 // Methods
 //
 const setInitialStyles = () => {
@@ -356,6 +403,9 @@ const animateIn = () => {
 			visibility: 'visible',
 			stagger: {
 				amount: 3,
+			},
+			onStart: () => {
+				audioManager.play(AUDIO_LABELS.SFX_STEP_01_ANIMATE_IN)
 			},
 		},
 		'<0.3'
@@ -436,6 +486,8 @@ const animateIn = () => {
 }
 
 const animateOut = async () => {
+	audioManager.play(AUDIO_LABELS.SFX_TRANSITION)
+
 	const tl = gsap.timeline({ paused: true })
 	tl.addLabel('start')
 
@@ -545,6 +597,12 @@ const wiggleKnob = () => {
 }
 
 const handleClick = async () => {
+	Tracking.sendEvent({
+		generic_event_and_label: 'select',
+		customizator_option: slugify(labelsEN[get(knobStep)]),
+	})
+	// trackingStore.setFunnel('3')
+
 	draggableInstance?.[0]?.kill()
 
 	await animateOut()
