@@ -24,6 +24,8 @@ import { get } from '@vueuse/core'
 const appStore = useAppStore()
 const uiStore = useUiStore()
 
+const config = useRuntimeConfig()
+
 const innerRef = useTemplateRef('innerRef')
 const qrWrapperRef = useTemplateRef('qrWrapperRef')
 
@@ -120,7 +122,7 @@ const generateQrCode = () => {
 	const q1 = appStore.getStep01Selection ?? 0
 	const q2 = appStore.getStep02Selection ?? 0
 	const q3 = appStore.getStep03Selection ?? 0
-	const data = `${window.location.origin}/download?q1=${q1}&q2=${q2}&q3=${q3}`
+	const data = `${config.public.siteUrl}/download?q1=${q1}&q2=${q2}&q3=${q3}`
 
 	console.info('⚠️ Generated QR code:', data)
 

@@ -76,6 +76,7 @@ export default defineNuxtConfig({
 			printEnabled: process.env.PRINT_ENABLED === "true",
 			printerName: process.env.PRINTER_NAME ?? "none",
 			useNativePicker: process.env.USE_NATIVE_PICKER === "true",
+			siteUrl: process.env.SITE_URL ?? "http://localhost:3000",
 		},
 	},
 
