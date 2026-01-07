@@ -60,16 +60,20 @@ onMounted(() => {
 			enabled && createLoop()
 			!enabled && killLoop()
 
-			const targetVolume = enabled ? 1 : 0
+			// TODO: Safari/iOS has issue adjusting volume with `Howler.volume()`,
+			// so we need to use `Howler.mute()` instead.
+			Howler.mute(!enabled)
 
-			gsap.to(volume, {
-				value: targetVolume,
-				duration: 1,
-				overwrite: true,
-				onUpdate: () => {
-					Howler.volume(get(volume))
-				},
-			})
+			// const targetVolume = enabled ? 1 : 0
+
+			// gsap.to(volume, {
+			// 	value: targetVolume,
+			// 	duration: 1,
+			// 	overwrite: true,
+			// 	onUpdate: () => {
+			// 		Howler.volume(get(volume))
+			// 	},
+			// })
 		},
 		{ immediate: true }
 	)
