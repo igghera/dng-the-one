@@ -695,13 +695,9 @@ const handleRestartButtonClick = async () => {
 		customizator_option: 'play-again',
 	})
 
-	if (isFromExplore) {
-		await navigateTo('/')
-		emitter.emit(EVENTS.RESTART)
-	} else {
-		window.location.reload()
-		// emitter.emit(EVENTS.RESTART)
-	}
+	await nextTick()
+
+	window.location.href = window.location.origin
 }
 
 const createButtonTimeline = () => {
