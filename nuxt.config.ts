@@ -10,9 +10,9 @@ export default defineNuxtConfig({
 	},
 	app: {
 		head: {
-			title: "DG - The One",
+			title: 'Dolce&Gabbana The One | Find Your Aura',
 			meta: [
-				{ name: "description", content: "[DESCRIPTION HERE]" },
+				{ name: "description", content: 'Express your confidence and reveal your unique Aura' },
 				{ name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
 			],
 			link: [
