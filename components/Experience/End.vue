@@ -445,7 +445,7 @@ const buildPhotoReadyDataUrl = imgUrl =>
 			const offsetY = (canvas.height - drawHeight) / 2
 
 			ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
-			resolve(canvas.toDataURL('image/png'))
+			resolve(canvas.toDataURL('image/webp'))
 		}
 
 		image.onerror = error => {
