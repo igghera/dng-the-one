@@ -203,7 +203,7 @@ const toggleBackButton = visible => {
 }
 
 .logotype {
-	@apply w-[150px] justify-self-center pointer-events-auto;
+	@apply text-white w-[150px] justify-self-center pointer-events-auto;
 	@apply md:w-64;
 
 	grid-area: b;
