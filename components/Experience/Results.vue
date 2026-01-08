@@ -35,6 +35,14 @@
 			/>
 		</picture>
 
+		<ButtonGolden
+			v-if="isFromNotino"
+			:to="getShopCtaLink(productId, urlParams.ref, shopCtaCountry)"
+			target="_blank"
+		>
+			{{ $t('shop_now') }}
+		</ButtonGolden>
+
 		<p class="copy">
 			{{
 				appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
@@ -45,7 +53,25 @@
 </template>
 
 <script setup>
+//
+// Refs / State
+//
 const appStore = useAppStore()
+
+const urlParams = useUrlSearchParams('history')
+
+const isFromNotino = urlParams.ref === 'notino'
+
+//
+// Computed
+//
+const shopCtaCountry = computed(() => {
+	return urlParams.country ?? 'italy'
+})
+
+const productId = computed(() => {
+	return appStore.getResult.get('product').id
+})
 </script>
 
 <style lang="scss" scoped>

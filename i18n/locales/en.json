@@ -147,42 +147,49 @@
 
   "products": [
     {
+      "id": "FEMALE_EDP",
       "title": "The One",
       "sub_title": "Eau De Parfum",
       "copy": "[lorem ipsum dolor sit amet]",
       "image": "/images/products/FEMALE_EDP.webp"
     },
     {
+      "id": "FEMALE_EDPI",
       "title": "The One",
       "sub_title": "Eau De Parfum Intense",
       "copy": "[lorem ipsum dolor sit amet]",
       "image": "/images/products/FEMALE_EDPI.webp"
     },
     {
+      "id": "FEMALE_GOLD_EDPI",
       "title": "The One Gold",
       "sub_title": "Eau De Parfum Intense",
       "copy": "[lorem ipsum dolor sit amet]",
       "image": "/images/products/FEMALE_GOLD_EDPI.webp"
     },
     {
+      "id": "MALE_EDP",
       "title": "The One for Men",
       "sub_title": "Eau De Parfum",
       "copy": "A fragrance that stands out for its sophisticated, authentic masculinity. Radiant and intense.",
       "image": "/images/products/MALE_EDP.webp"
     },
     {
+      "id": "MALE_EDT",
       "title": "The One for Men",
       "sub_title": "Eau De Toilette",
       "copy": "[lorem ipsum dolor sit amet]",
       "image": "/images/products/MALE_EDT.webp"
     },
     {
+      "id": "MALE_GOLD_EDPI",
       "title": "The One for Men Gold",
       "sub_title": "Eau De Parfum Intense",
       "copy": "[lorem ipsum dolor sit amet]",
       "image": "/images/products/MALE_GOLD_EDPI.webp"
     },
     {
+      "id": "MALE_PARFUM",
       "title": "The One for Men",
       "sub_title": "Parfum",
       "copy": "[lorem ipsum dolor sit amet]",

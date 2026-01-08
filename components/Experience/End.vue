@@ -332,6 +332,7 @@ const setResult = () => {
 	}))
 
 	const allProducts = Object.values(tm('products')).map(product => ({
+		id: rt(product.id),
 		title: rt(product.title),
 		sub_title: rt(product.sub_title),
 		copy: rt(product.copy),
