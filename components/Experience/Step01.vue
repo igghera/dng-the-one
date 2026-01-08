@@ -156,10 +156,10 @@ const labelsVisible = shallowRef(false)
 const storage = useStorage('experience-answers', {})
 
 const dotsCoords = [
-	{ x: 228.86, y: 64.097 },
-	{ x: 396.634, y: 225.365 },
-	{ x: 227.233, y: 400.802 },
-	{ x: 59.694, y: 231.636 },
+	{ x: 228, y: 64.097 },
+	{ x: 396.634, y: 228 },
+	{ x: 228, y: 400.802 },
+	{ x: 59.694, y: 228 },
 ]
 
 const knobRef = useTemplateRef('knobRef')

@@ -20,13 +20,7 @@
 		</header>
 
 		<div class="content" ref="contentRef">
-			<div
-				class="track-wrapper"
-				:class="{
-					'text-gold-light': storage.q1 < 2,
-					'text-gold-light': storage.q1 >= 2,
-				}"
-			>
+			<div class="track-wrapper | text-gold-light">
 				<svg
 					class="track"
 					xmlns="http://www.w3.org/2000/svg"
