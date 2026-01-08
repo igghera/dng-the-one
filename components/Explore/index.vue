@@ -182,6 +182,7 @@
 						<div v-if="item.component === 'video'" class="panel-content-video">
 							<video
 								:src="item.value"
+								:poster="item.poster"
 								controls
 								preload="metadata"
 								playsinline
@@ -461,6 +462,7 @@ const itemsCopy = computed(() => {
 						value: Array.isArray(item.value)
 							? item.value.map(v => rt(v))
 							: rt(item.value),
+						poster: item.component === 'video' ? rt(item.poster) : null,
 					}
 				})
 			}),

@@ -402,7 +402,8 @@
             },
             {
               "component": "video",
-              "value": "/videos/TheOne_30s.mp4"
+              "value": "/videos/TheOne_30s.mp4",
+              "poster": "/images/campaign-video-poster.webp"
             },
             {
               "component": "p",
@@ -428,7 +429,8 @@
             },
             {
               "component": "video",
-              "value": "/videos/TheOne_30s.mp4"
+              "value": "/videos/TheOne_30s.mp4",
+              "poster": "/images/campaign-video-poster.webp"
             },
             {
               "component": "p",
@@ -454,7 +456,8 @@
             },
             {
               "component": "video",
-              "value": "/videos/TheOne_30s.mp4"
+              "value": "/videos/TheOne_30s.mp4",
+              "poster": "/images/campaign-video-poster.webp"
             },
             {
               "component": "p",
@@ -480,7 +483,8 @@
             },
             {
               "component": "video",
-              "value": "/videos/TheOne_30s.mp4"
+              "value": "/videos/TheOne_30s.mp4",
+              "poster": "/images/campaign-video-poster.webp"
             },
             {
               "component": "p",
