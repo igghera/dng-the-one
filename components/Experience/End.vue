@@ -479,7 +479,7 @@ const generatePrintCardUrl = () => {
 
 	const shape = appStore.getResult.get('shape')
 
-	return `/images/download-cards/print/${get(locale)}/${aura}-${shape}.png`
+	return `/images/download-cards/print/${get(locale)}/${aura}-${shape}.webp`
 }
 
 // ============================================================================
@@ -498,6 +498,7 @@ const handlePrint = async () => {
 	try {
 		// 1. Generate the image URL
 		const imageUrl = generatePrintCardUrl()
+		console.log('🖼️ Image URL:', imageUrl)
 
 		// 2. Convert to data URL (PNG format for photo printer)
 		const dataUrl = await buildPhotoReadyDataUrl(imageUrl)
