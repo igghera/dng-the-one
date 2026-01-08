@@ -126,6 +126,7 @@ const END_PARANS = Object.freeze({
 //
 // Refs / State
 //
+const appStore = useAppStore()
 const uiStore = useUiStore()
 
 const { gsap, Observer } = useGSAP()
@@ -250,6 +251,23 @@ onMounted(async () => {
 
 	emitter.emit(EVENTS.WEBGL_READY)
 	uiStore.setWebglVisible(true)
+
+	// Set the drawing plane scale and position based on the shape (male/female)
+	watchEffect(() => {
+		const shape = appStore.getResult?.get('shape') ?? null
+		if (!!!shape) return
+
+		const mesh = scene?.getObjectByName('Win Drawing Plane') ?? null
+		if (!!!mesh) return
+
+		if (shape === 'male') {
+			mesh.scale.set(1.2, 1.2, 1)
+			mesh.position.y = 0.065
+		} else if (shape === 'female') {
+			mesh.scale.set(1.35, 1.35, 1)
+			mesh.position.y = 0.08
+		}
+	})
 
 	gsap.ticker.add((time, deltaTime) => {
 		if (!get(visible)) return
@@ -803,9 +821,6 @@ async function createWinDrawingPlane() {
 		textures.get('product_outline_female')
 	)
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
-
-	mesh.scale.set(1.1, 1.1, 1)
-	mesh.position.y = 0.05
 
 	mesh.renderOrder = 2
 

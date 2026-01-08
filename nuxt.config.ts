@@ -10,11 +10,15 @@ export default defineNuxtConfig({
 	},
 	app: {
 		head: {
-			title: "DG - The One",
+			title: 'Dolce&Gabbana The One | Find Your Aura',
 			meta: [
-				{ name: "description", content: "[DESCRIPTION HERE]" },
+				{ name: "description", content: 'Express your confidence and reveal your unique Aura' },
 				{ name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
 			],
+			link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' }
+      ]
+
 		},
 	},
 
@@ -72,6 +76,7 @@ export default defineNuxtConfig({
 			printEnabled: process.env.PRINT_ENABLED === "true",
 			printerName: process.env.PRINTER_NAME ?? "none",
 			useNativePicker: process.env.USE_NATIVE_PICKER === "true",
+			siteUrl: process.env.SITE_URL ?? "http://localhost:3000",
 		},
 	},
 

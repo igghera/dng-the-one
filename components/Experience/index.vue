@@ -42,6 +42,26 @@
 
 <script setup>
 const uiStore = useUiStore()
+
+const config = useRuntimeConfig()
+
+const { idle: isIdle, start: startIdle, stop: stopIdle } = useIdle(60 * 1000)
+
+onMounted(() => {
+	stopIdle()
+})
+
+config.public.isAppMode &&
+	watch(
+		() => uiStore.isExperienceEnterNameVisible,
+		visible => {
+			visible && startIdle()
+		}
+	)
+
+watch(isIdle, idle => {
+	idle && window.location.reload()
+})
 </script>
 
 <style lang="scss" scoped>

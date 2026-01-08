@@ -129,8 +129,6 @@ import { get, set, useStorage } from '@vueuse/core'
 import slugify from 'voca/slugify'
 // import { PDFDocument } from 'pdf-lib'
 import { ZeroConf } from 'capacitor-zeroconf'
-import { snapdom } from '@zumer/snapdom'
-import { cropTransparentPixels } from '~/assets/js/cropTransparentPixels'
 
 import {
 	progress as maskProgress,
@@ -334,6 +332,7 @@ const setResult = () => {
 	}))
 
 	const allProducts = Object.values(tm('products')).map(product => ({
+		id: rt(product.id),
 		title: rt(product.title),
 		sub_title: rt(product.sub_title),
 		copy: rt(product.copy),
@@ -410,17 +409,16 @@ const BORDERLESS_OPTIONS = {
 /**
  * Convert blob to photo-ready PNG data URL
  * Resizes to 1844x1240px (4x6 inch at 300 DPI) with white background
- * @param {Blob} blob - Input image blob
+ * @param {string} imgUrl - Input image URL
  * @returns {Promise<string>} - PNG data URL
  */
-const buildPhotoReadyDataUrl = blob =>
+const buildPhotoReadyDataUrl = imgUrl =>
 	new Promise((resolve, reject) => {
-		if (!blob) {
-			reject(new Error('Screenshot blob is missing'))
+		if (!imgUrl) {
+			reject(new Error('Image URL is missing'))
 			return
 		}
 
-		const objectUrl = URL.createObjectURL(blob)
 		const image = new Image()
 
 		image.onload = () => {
@@ -430,7 +428,6 @@ const buildPhotoReadyDataUrl = blob =>
 
 			const ctx = canvas.getContext('2d')
 			if (!ctx) {
-				URL.revokeObjectURL(objectUrl)
 				reject(new Error('Unable to obtain canvas context'))
 				return
 			}
@@ -449,16 +446,14 @@ const buildPhotoReadyDataUrl = blob =>
 			const offsetY = (canvas.height - drawHeight) / 2
 
 			ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
-			URL.revokeObjectURL(objectUrl)
-			resolve(canvas.toDataURL('image/png'))
+			resolve(canvas.toDataURL('image/webp'))
 		}
 
 		image.onerror = error => {
-			URL.revokeObjectURL(objectUrl)
 			reject(error)
 		}
 
-		image.src = objectUrl
+		image.src = imgUrl
 	})
 
 /**
@@ -470,6 +465,22 @@ const buildBase64Payload = dataUrl => {
 	const [, payload] = dataUrl.split(',')
 	if (!payload) throw new Error('Invalid photo data URL')
 	return `base64://${payload}`
+}
+
+/**
+ * Generate the URL of the print card image
+ * @returns {string} - Absolute URL of the print card image
+ */
+const generatePrintCardUrl = () => {
+	let aura = appStore.getResult.get('aura').title.toLowerCase()
+	if (aura === 'elegant') aura = '00-elegant'
+	if (aura === 'warm') aura = '01-warm'
+	if (aura === 'discrete') aura = '02-mysterious'
+	if (aura === 'bold') aura = '03-bold'
+
+	const shape = appStore.getResult.get('shape')
+
+	return `/images/download-cards/print/${get(locale)}/${aura}-${shape}.webp`
 }
 
 // ============================================================================
@@ -486,12 +497,12 @@ const handlePrint = async () => {
 	})
 
 	try {
-		// 1. Capture screenshot
-		const blob = await takeScreenshot(false)
-		if (!blob) throw new Error('Failed to capture screenshot')
+		// 1. Generate the image URL
+		const imageUrl = generatePrintCardUrl()
+		console.log('🖼️ Image URL:', imageUrl)
 
 		// 2. Convert to data URL (PNG format for photo printer)
-		const dataUrl = await buildPhotoReadyDataUrl(blob)
+		const dataUrl = await buildPhotoReadyDataUrl(imageUrl)
 		console.log('📸 Screenshot ready, size:', dataUrl.length, 'chars')
 
 		// 3. Use Cordova plugin with specific printer URL (Direct Print)
@@ -695,13 +706,9 @@ const handleRestartButtonClick = async () => {
 		customizator_option: 'play-again',
 	})
 
-	if (isFromExplore) {
-		await navigateTo('/')
-		emitter.emit(EVENTS.RESTART)
-	} else {
-		window.location.reload()
-		// emitter.emit(EVENTS.RESTART)
-	}
+	await nextTick()
+
+	window.location.href = window.location.origin
 }
 
 const createButtonTimeline = () => {
@@ -833,52 +840,6 @@ const animateInButton = () => {
 			duration: 0.5,
 		}
 	)
-}
-
-const takeScreenshot = async (download = true) => {
-	const canvasElem = document.getElementById('experience-canvas')
-	const canvas = await snapdom.toCanvas(canvasElem, { scale: 2 })
-
-	const domElem = document.getElementById('experience-end')
-	const dom = await snapdom.toCanvas(domElem, {
-		scale: 2,
-		filter: el => {
-			return el.tagName !== 'BUTTON'
-		},
-	})
-
-	// Create a combined canvas that can accommodate both screenshots
-	const combinedWidth = Math.max(canvas.width, dom.width)
-	const combinedHeight = Math.max(canvas.height, dom.height)
-	const combinedCanvas = document.createElement('canvas')
-	combinedCanvas.width = combinedWidth
-	combinedCanvas.height = combinedHeight
-
-	const ctx = combinedCanvas.getContext('2d')
-
-	// Draw the canvas screenshot first (background)
-	ctx.drawImage(canvas, 0, 0)
-
-	// Draw the DOM screenshot on top (overlay)
-	// Center the DOM canvas if sizes differ, or draw at 0,0 if same size
-	const domX = (combinedWidth - dom.width) / 2
-	const domY = (combinedHeight - dom.height) / 2 + 30
-	ctx.drawImage(dom, domX, domY)
-
-	// Apply cropTransparentPixels to the combined result
-	const filename = `the-one-card-${Date.now()}`
-
-	const result = cropTransparentPixels(
-		combinedCanvas,
-		{
-			padding: 4,
-			inset: 20,
-			filename,
-		},
-		download
-	)
-
-	return result
 }
 
 const animateMask = () => {
