@@ -22,7 +22,7 @@
 			</h2>
 		</header>
 
-		<picture class="pic">
+		<picture class="pic" ref="productPicRef">
 			<img
 				:src="appStore.getResult.get('imageSrc')"
 				:alt="
@@ -53,12 +53,18 @@
 </template>
 
 <script setup>
+import slugify from 'voca/slugify'
+import { get } from '@vueuse/core'
+
 //
 // Refs / State
 //
+const { ScrollTrigger } = useGSAP()
+
 const appStore = useAppStore()
 
 const urlParams = useUrlSearchParams('history')
+const productPicRef = useTemplateRef('productPicRef')
 
 const isFromNotino = urlParams.ref === 'notino'
 
@@ -71,6 +77,27 @@ const shopCtaCountry = computed(() => {
 
 const productId = computed(() => {
 	return appStore.getResult.get('product').id
+})
+
+onMounted(() => {
+	ScrollTrigger.create({
+		trigger: get(productPicRef),
+		start: 'top 60%',
+		once: true,
+		onEnter: () => {
+			const productName = slugify(
+				`${appStore.getResult.get('product').title} ${
+					appStore.getResult.get('product').sub_title
+				}`
+			)
+
+			Tracking.sendEvent({
+				content_type: 'results_page',
+				generic_event_and_label: 'tool_end_product_view',
+				customizator_option: productName,
+			})
+		}
+	})
 })
 </script>
 

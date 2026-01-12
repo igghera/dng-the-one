@@ -882,17 +882,6 @@ const animateMask = () => {
 				generic_event_and_label: 'tool_end',
 				customizator_option: slugify(appStore.getResult.get('aura').title),
 			})
-
-			const productName = slugify(
-				`${appStore.getResult.get('product').title} ${
-					appStore.getResult.get('product').sub_title
-				}`
-			)
-			Tracking.sendEvent({
-				content_type: 'results_page',
-				generic_event_and_label: 'tool_end_product_view',
-				customizator_option: productName,
-			})
 		},
 		null,
 		'>-0.05'
