@@ -48,13 +48,13 @@ export default defineNuxtConfig({
 	],
 
 	i18n: {
-		defaultLocale: 'es',
+		defaultLocale: 'en',
 		strategy: 'no_prefix',
 		detectBrowserLanguage: {
 			useCookie: false,
 			redirectOn: 'no prefix',
 			alwaysRedirect: false,
-			fallbackLocale: 'es',
+			fallbackLocale: 'en',
 		},
 		compilation: {
 			strictMessage: false,
@@ -64,8 +64,8 @@ export default defineNuxtConfig({
 			optimizeTranslationDirective: false
 		},
 		locales: [
-			// { code: 'en', file: 'en.json' },
-			// { code: 'it', file: 'it.json' },
+			{ code: 'en', file: 'en.json' },
+			{ code: 'it', file: 'it.json' },
 			{ code: 'es', file: 'es.json' },
 			// { code: 'ar', name: 'AR / العربية', file: 'ar.json', dir: 'rtl' },
 		]
