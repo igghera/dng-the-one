@@ -38,6 +38,7 @@
 		<ButtonGolden
 			v-if="isFromNotino"
 			:to="getShopCtaLink(productId, urlParams.ref, shopCtaCountry)"
+			@click="handleShopNowButtonClick"
 			target="_blank"
 		>
 			{{ $t('shop_now') }}
@@ -62,6 +63,7 @@ import { get } from '@vueuse/core'
 const { ScrollTrigger } = useGSAP()
 
 const appStore = useAppStore()
+const trackingStore = useTrackingStore()
 
 const urlParams = useUrlSearchParams('history')
 const productPicRef = useTemplateRef('productPicRef')
@@ -85,6 +87,9 @@ onMounted(() => {
 		start: 'top 60%',
 		once: true,
 		onEnter: () => {
+			trackingStore.setFunnelStep('5')
+			trackingStore.setFunnelName('result')
+
 			const productName = slugify(
 				`${appStore.getResult.get('product').title} ${
 					appStore.getResult.get('product').sub_title
@@ -99,6 +104,16 @@ onMounted(() => {
 		}
 	})
 })
+
+//
+// Method
+//
+const handleShopNowButtonClick = () => {
+	Tracking.sendEvent({
+		customizator_option: "shop-now",
+		generic_event_and_label: "shop_now"
+	})
+}
 </script>
 
 <style lang="scss" scoped>
