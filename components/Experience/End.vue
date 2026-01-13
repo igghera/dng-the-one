@@ -307,6 +307,7 @@ const setInitialState = () => {
 
 const setResult = () => {
 	const allAurasFull = Object.values(tm('auras')).map(aura => ({
+		id: rt(aura.id),
 		title: rt(aura.title),
 		male: {
 			desc: rt(aura.male.desc),
@@ -327,6 +328,7 @@ const setResult = () => {
 	}))
 
 	const allAuras = Object.values(tm('auras')).map(option => ({
+		id: rt(option.id),
 		title: rt(option.title),
 		copy_male: rt(option.male.desc),
 		copy_female: rt(option.female.desc)
@@ -473,7 +475,8 @@ const buildBase64Payload = dataUrl => {
  * @returns {string} - Absolute URL of the print card image
  */
 const generatePrintCardUrl = () => {
-	let aura = appStore.getResult.get('aura').title.toLowerCase()
+	let aura = appStore.getResult.get('aura').id.toLowerCase()
+
 	if (aura === 'elegant') aura = '00-elegant'
 	if (aura === 'warm') aura = '01-warm'
 	if (aura === 'discrete') aura = '02-mysterious'

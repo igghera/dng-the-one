@@ -170,6 +170,7 @@
   ],
   "auras": [
     {
+      "id": "elegant",
       "title": "Elegante",
       "male": {
         "desc": "Tu aura se mueve antes que t&uacute;, una fuerza silenciosa que acapara todas las miradas.",
@@ -189,6 +190,7 @@
       }
     },
     {
+      "id": "warm",
       "title": "C&aacute;lida",
       "male": {
         "desc": "Tu aura perdura m&aacute;s all&aacute; del momento, una profundidad tranquila que la gente nunca olvidar&aacute;.",
@@ -208,6 +210,7 @@
       }
     },
     {
+      "id": "mysterious",
       "title": "Misteriosa",
       "male": {
         "desc": "Reservas tus palabras para los momentos importantes. Tu Aura susurra poder, atrayendo a los dem&aacute;s sin esfuerzo.",
@@ -227,6 +230,7 @@
       }
     },
     {
+      "id": "bold",
       "title": "Audaz",
       "male": {
         "desc": "Tu aura domina la habitaci&oacute;n. Inolvidable, dejando el silencio cargado de presencia.",

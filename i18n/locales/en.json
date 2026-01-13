@@ -170,6 +170,7 @@
   ],
   "auras": [
     {
+      "id": "elegant",
       "title": "Elegant",
       "male": {
         "desc": "Your Aura always moves with sophistication, a silent force that draws every gaze.",
@@ -189,6 +190,7 @@
       }
     },
     {
+      "id": "warm",
       "title": "Warm",
       "male": {
         "desc": "Your Aura lingers beyond the moment, an emotional depth people will never forget.",
@@ -208,6 +210,7 @@
       }
     },
     {
+      "id": "mysterious",
       "title": "Mysterious",
       "male": {
         "desc": "You reserve your words for moments that matter. Your Aura whispers power, drawing others in effortlessly.",
@@ -227,6 +230,7 @@
       }
     },
     {
+      "id": "bold",
       "title": "Bold",
       "male": {
         "desc": "Your Aura commands the room. Unforgettable, leaving the silence charged with presence.",

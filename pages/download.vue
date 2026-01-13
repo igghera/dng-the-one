@@ -149,12 +149,14 @@ watch(locale, () => {
 // Methods
 //
 const setResult = () => {
-	const allAuras = Object.values(tm('experience_end.options')).map(option => ({
+	const allAuras = Object.values(tm('auras')).map(option => ({
+		id: rt(option.id),
 		title: rt(option.title),
 		copy: rt(option.copy),
 	}))
 
 	const allAurasFull = Object.values(tm('auras')).map(aura => ({
+		id: rt(aura.id),
 		title: rt(aura.title),
 		male: {
 			desc: rt(aura.male.desc),

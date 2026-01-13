@@ -170,6 +170,7 @@
   ],
   "auras": [
     {
+      "id": "elegant",
       "title": "Elegante",
       "male": {
         "desc": "La tua Aura si muove con raffinatezza: una forza silenziosa che cattura ogni sguardo.",
@@ -189,6 +190,7 @@
       }
     },
     {
+      "id": "warm",
       "title": "Avvolgente",
       "male": {
         "desc": "La tua Aura lascia il segno: una profondità emotiva che non si dimentica.",
@@ -208,6 +210,7 @@
       }
     },
     {
+      "id": "mysterious",
       "title": "Misteriosa",
       "male": {
         "desc": "Riservi le parole ai momenti che contano. La tua Aura sussurra potere e attira gli altri con naturalezza.",
@@ -227,6 +230,7 @@
       }
     },
     {
+      "id": "bold",
       "title": "Audace",
       "male": {
         "desc": "La tua Aura domina la stanza. Indimenticabile: anche il silenzio parla di te.",
