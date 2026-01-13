@@ -16,7 +16,7 @@ export async function downloadCard(source, bg, data) {
 
     const target = document.getElementById('download-card-holder')
 
-    await gsap.delayedCall(0.5, () => {})
+    await gsap.delayedCall(0.5, () => { })
 
     const snap = await snapdom(target)
 
@@ -61,12 +61,12 @@ function createHTML(source, image, data) {
   Object.assign(title.style, {
     animationPlayState: 'paused',
   })
-  title.textContent = data.get('auraFull').title
+  title.innerHTML = data.get('auraFull').title
   content.appendChild(title)
 
   const copy = document.createElement('span')
   copy.className = 'copy | text-gold-light'
-  copy.textContent = data.get('auraFull')[data.get('shape')].desc
+  copy.innerHTML = data.get('auraFull')[data.get('shape')].desc
   content.appendChild(copy)
 
   const subContent = document.createElement('div')
@@ -82,7 +82,7 @@ function createHTML(source, image, data) {
 
   const subContentTitle = document.createElement('span')
   subContentTitle.className = 'sub-content-title'
-  subContentTitle.textContent = data.get('sub-content-title')
+  subContentTitle.innerHTML = data.get('sub-content-title')
   subContent.appendChild(subContentTitle)
 
   const subContentCopy = document.createElement('span')

@@ -9,13 +9,12 @@
 			<div class="labels">
 				<span
 					v-for="(label, idx) in labels"
+					v-html="label"
 					:key="idx"
 					class="label"
 					:data-index="idx"
 					:data-visible="idx === knobStep && labelsVisible"
-				>
-					{{ label }}
-				</span>
+				/>
 			</div>
 		</header>
 

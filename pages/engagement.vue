@@ -25,7 +25,7 @@
 		</nav>
 
 		<div class="content">
-			<p class="content-pre-title">{{ $t('engagement.pre_title') }}</p>
+			<p v-html="$t('engagement.pre_title')" class="content-pre-title" />
 
 			<ClientOnly>
 				<div class="content-inner">
@@ -46,9 +46,7 @@
 						/>
 					</picture>
 
-					<p class="content-copy">
-						{{ data.copy }}
-					</p>
+					<p v-html="data.copy" class="content-copy" />
 				</div>
 			</ClientOnly>
 		</div>

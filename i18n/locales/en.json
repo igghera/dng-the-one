@@ -7,30 +7,28 @@
   "download": "Download",
   "done": "Done",
   "scroll_down": "Scroll down",
-
   "link_privacy_policy": "https://world.dolcegabbana.com/privacy",
   "link_cookies_policy": "https://world.dolcegabbana.com/cookie-policy",
-
   "modal_configuration": {
     "title": "Configure your experience",
     "options": [
       {
         "label": "Enable print",
-        "options": ["Yes", "No"]
+        "options": [
+          "Yes",
+          "No"
+        ]
       }
     ]
   },
-
   "experience_start": {
     "title": "Find your Aura",
     "copy": "Express your confidence and reveal your unique aura"
   },
-
   "experience_enter_name": {
     "title": "Enter your name<br>to start the experience ",
     "input_palceholder": "Your name"
   },
-
   "experience_step_01": {
     "title": "How would you<br>describe your Aura?",
     "instructions": "Turn to select your preference",
@@ -41,7 +39,6 @@
       "Confident and sophisticated"
     ]
   },
-
   "experience_step_02": {
     "title": "When you step<br>into the room...",
     "instructions": "Swipe up to choose",
@@ -52,7 +49,6 @@
       "I'm the spotlight"
     ]
   },
-
   "experience_step_03": {
     "title": "What vibe do you<br>want to radiate?",
     "instructions": "Drag and drop into the circle",
@@ -62,51 +58,28 @@
       "I don't care"
     ]
   },
-
   "experience_end": {
     "intro_title": [
       "Just a moment.<br>We're unveiling your",
       "Aura"
     ],
     "title": "Your Aura is",
-    "options": [
-      {
-        "title": "Elegant",
-        "copy": "Your aura moves before you do, a silent force that draws every gaze"
-      },
-      {
-        "title": "Warm",
-        "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
-      },
-      {
-        "title": "Mysterious",
-        "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
-      },
-      {
-        "title": "Bold",
-        "copy": "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellendus, quos."
-      }
-    ],
     "cta": "Press & Hold"
   },
-
   "results": {
     "pre_title": "Your aura is",
     "cta_print": "Print your aura",
     "cta_download": "Download",
     "cta_restart": "Play again"
   },
-
   "timeline_intro": {
     "copy": "Celebrating 20 years of an icon.<br>Discover the evolution of The One, a contemporary classic with an Aura that never goes out of style.",
     "cta": "Explore The One collection"
   },
-
   "download_card": {
     "pre_title": "Your aura is",
     "subcontent_title": "My Aura's Match is:"
   },
-
   "engagement": {
     "pre_title": "Your Aura matches are:",
     "result": [
@@ -144,7 +117,6 @@
       }
     ]
   },
-
   "products": [
     {
       "id": "FEMALE_EDP",
@@ -196,12 +168,12 @@
       "image": "/images/products/MALE_PARFUM.webp"
     }
   ],
-
   "auras": [
     {
+      "id": "elegant",
       "title": "Elegant",
       "male": {
-        "desc": "Your aura moves before you do, a silent force that draws every gaze.",
+        "desc": "Your Aura always moves with sophistication, a silent force that draws every gaze.",
         "fragrance": {
           "title": "The One for Men",
           "sub_title": "Eau De Parfum",
@@ -218,9 +190,10 @@
       }
     },
     {
+      "id": "warm",
       "title": "Warm",
       "male": {
-        "desc": "Your aura lingers beyond the moment, a quiet depth people will never forget.",
+        "desc": "Your Aura lingers beyond the moment, an emotional depth people will never forget.",
         "fragrance": {
           "title": "The One for Men",
           "sub_title": "Parfum",
@@ -228,7 +201,7 @@
         }
       },
       "female": {
-        "desc": "Your Aura lingers beyond the moment, an emotional depth people will never forget.",
+        "desc": "Your Aura lingers softly. A magnetic emotional depth that stays long after you’ve gone.",
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum Intense",
@@ -237,6 +210,7 @@
       }
     },
     {
+      "id": "mysterious",
       "title": "Mysterious",
       "male": {
         "desc": "You reserve your words for moments that matter. Your Aura whispers power, drawing others in effortlessly.",
@@ -247,7 +221,7 @@
         }
       },
       "female": {
-        "desc": "You reserve your words for moments that matter. Your Aura whispers power, drawing others in effortlessly.",
+        "desc": "Your words carry a quiet power. Your Aura whispers confidence, drawing others in effortlessly.",
         "fragrance": {
           "title": "The One",
           "sub_title": "Eau De Parfum",
@@ -256,9 +230,10 @@
       }
     },
     {
+      "id": "bold",
       "title": "Bold",
       "male": {
-        "desc": "Your aura commands the room. Unforgettable, leaving the silence charged with presence.",
+        "desc": "Your Aura commands the room. Unforgettable, leaving the silence charged with presence.",
         "fragrance": {
           "title": "The One for Men Gold",
           "sub_title": "Eau De Parfum Intense",
@@ -266,7 +241,7 @@
         }
       },
       "female": {
-        "desc": "You’re never afraid to shine. Your fierce aura lights up the room the moment you walk in.",
+        "desc": "You’re never afraid to shine. Your fierce Aura lights up the room the moment you walk in.",
         "fragrance": {
           "title": "The One Gold",
           "sub_title": "Eau De Parfum Intense",
@@ -275,11 +250,9 @@
       }
     }
   ],
-
   "modal_qr_code": {
     "title": "Scan to download<br>your Aura"
   },
-
   "explore": {
     "intro": "Immerse yourself in the alluring scents of<br>The One Collection",
     "instructions": "Swipe and tap to explore",
@@ -316,7 +289,10 @@
           [
             {
               "component": "title",
-              "value": ["The One for Men", "Eau de Toilette"]
+              "value": [
+                "The One for Men",
+                "Eau de Toilette"
+              ]
             },
             {
               "component": "image",
@@ -337,7 +313,10 @@
           [
             {
               "component": "title",
-              "value": ["The One for Men", "Eau De Parfum"]
+              "value": [
+                "The One for Men",
+                "Eau De Parfum"
+              ]
             },
             {
               "component": "image",
@@ -358,7 +337,10 @@
           [
             {
               "component": "title",
-              "value": ["The One Gold", "Eau De Parfum Intense"]
+              "value": [
+                "The One Gold",
+                "Eau De Parfum Intense"
+              ]
             },
             {
               "component": "image",
@@ -372,7 +354,10 @@
           [
             {
               "component": "title",
-              "value": ["The One for Men Gold", "Eau De Parfum Intense"]
+              "value": [
+                "The One for Men Gold",
+                "Eau De Parfum Intense"
+              ]
             },
             {
               "component": "image",
@@ -393,7 +378,10 @@
           [
             {
               "component": "title",
-              "value": ["The One", "Eau De Parfum"]
+              "value": [
+                "The One",
+                "Eau De Parfum"
+              ]
             },
             {
               "component": "image",
@@ -405,7 +393,9 @@
             },
             {
               "component": "title",
-              "value": ["The Campaign"]
+              "value": [
+                "The Campaign"
+              ]
             },
             {
               "component": "video",
@@ -420,7 +410,10 @@
           [
             {
               "component": "title",
-              "value": ["The One", "Eau De Parfum Intense"]
+              "value": [
+                "The One",
+                "Eau De Parfum Intense"
+              ]
             },
             {
               "component": "image",
@@ -432,7 +425,9 @@
             },
             {
               "component": "title",
-              "value": ["The Campaign"]
+              "value": [
+                "The Campaign"
+              ]
             },
             {
               "component": "video",
@@ -447,7 +442,10 @@
           [
             {
               "component": "title",
-              "value": ["The One for Men", "Parfum"]
+              "value": [
+                "The One for Men",
+                "Parfum"
+              ]
             },
             {
               "component": "image",
@@ -459,7 +457,9 @@
             },
             {
               "component": "title",
-              "value": ["The Campaign"]
+              "value": [
+                "The Campaign"
+              ]
             },
             {
               "component": "video",
@@ -474,7 +474,10 @@
           [
             {
               "component": "title",
-              "value": ["The One for Men", "Eau De Parfum"]
+              "value": [
+                "The One for Men",
+                "Eau De Parfum"
+              ]
             },
             {
               "component": "image",
@@ -486,7 +489,9 @@
             },
             {
               "component": "title",
-              "value": ["The Campaign"]
+              "value": [
+                "The Campaign"
+              ]
             },
             {
               "component": "video",

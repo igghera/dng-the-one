@@ -146,8 +146,8 @@
 				>
 					<template v-for="(item, idx) in currentProductData" :key="idx">
 						<div v-if="item.component === 'title'" class="panel-content-header">
-							<span class="panel-content-title">{{ item.value[0] }}</span>
-							<span class="panel-content-subtitle">{{ item.value?.[1] }}</span>
+							<span v-html="item.value[0]" class="panel-content-title" />
+							<span v-html="item.value?.[1]" class="panel-content-subtitle" />
 						</div>
 
 						<div

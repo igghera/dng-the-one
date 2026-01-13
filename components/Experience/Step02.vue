@@ -10,12 +10,11 @@
 				<span
 					class="label"
 					v-for="(label, idx) in labels"
+					v-html="label"
 					:key="label"
 					:data-index="idx"
 					:data-visible="currentStep === idx"
-				>
-					{{ label }}
-				</span>
+				/>
 			</div>
 		</header>
 

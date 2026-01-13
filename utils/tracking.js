@@ -1,5 +1,5 @@
 export class Tracking {
-	constructor() {}
+  constructor() { }
 
   static globalParams = {
     event: 'select_content',
@@ -14,8 +14,15 @@ export class Tracking {
     // this.globalParams.store_id = appStore.getStoreID
 
     const params = {
-      ...this.globalParams,
-      event: 'attributes_push'
+      event: "attributes_push",
+      market: "", // “Americas” or “Emea” or “Apac” etc..
+      region: "", // “Peru” or “Panama” or “Italia” etc..
+      store: "", // “Convent Garden” etc..
+      store_type: "", // “Permanent” or “Temporary” etc..
+      entry_point: "", // “Touch screen” or “Ipad” or “QR code” etc..
+      store_id: "", // ID of the store
+      retailer: "", // name of the retailer
+      retailer_id: "", // ID of the retailer
     }
 
     console.log('Init tracking')
@@ -25,7 +32,7 @@ export class Tracking {
     !!proxy.google_tag_manager && proxy.dataLayer.push(params)
   }
 
-	static sendEvent(params = {}) {
+  static sendEvent(params = {}) {
     // const appStore = useAppStore()
     const trackingStore = useTrackingStore()
 
@@ -40,10 +47,10 @@ export class Tracking {
       funnel_name: trackingStore.getFunnelName,
     }
 
-		console.log('sendEvent')
+    console.log('sendEvent')
     console.table(paramsToSend)
     console.log('--------------------------------')
 
     !!proxy.google_tag_manager && proxy.dataLayer.push(paramsToSend)
-	}
+  }
 }

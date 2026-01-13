@@ -307,6 +307,7 @@ const setInitialState = () => {
 
 const setResult = () => {
 	const allAurasFull = Object.values(tm('auras')).map(aura => ({
+		id: rt(aura.id),
 		title: rt(aura.title),
 		male: {
 			desc: rt(aura.male.desc),
@@ -326,9 +327,11 @@ const setResult = () => {
 		},
 	}))
 
-	const allAuras = Object.values(tm('experience_end.options')).map(option => ({
+	const allAuras = Object.values(tm('auras')).map(option => ({
+		id: rt(option.id),
 		title: rt(option.title),
-		copy: rt(option.copy),
+		copy_male: rt(option.male.desc),
+		copy_female: rt(option.female.desc)
 	}))
 
 	const allProducts = Object.values(tm('products')).map(product => ({
@@ -472,7 +475,8 @@ const buildBase64Payload = dataUrl => {
  * @returns {string} - Absolute URL of the print card image
  */
 const generatePrintCardUrl = () => {
-	let aura = appStore.getResult.get('aura').title.toLowerCase()
+	let aura = appStore.getResult.get('aura').id.toLowerCase()
+
 	if (aura === 'elegant') aura = '00-elegant'
 	if (aura === 'warm') aura = '01-warm'
 	if (aura === 'discrete') aura = '02-mysterious'
@@ -881,17 +885,6 @@ const animateMask = () => {
 				content_type: 'results_page',
 				generic_event_and_label: 'tool_end',
 				customizator_option: slugify(appStore.getResult.get('aura').title),
-			})
-
-			const productName = slugify(
-				`${appStore.getResult.get('product').title} ${
-					appStore.getResult.get('product').sub_title
-				}`
-			)
-			Tracking.sendEvent({
-				content_type: 'results_page',
-				generic_event_and_label: 'tool_end_product_view',
-				customizator_option: productName,
 			})
 		},
 		null,

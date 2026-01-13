@@ -12,9 +12,9 @@
 
 		<p class="copy | text-gold" v-html="$t('timeline_intro.copy')" />
 
-		<ButtonGolden :to="ctaLink" @click="handleCtaClick" class="!text-gold">{{
-			$t('timeline_intro.cta')
-		}}</ButtonGolden>
+		<ButtonGolden :to="ctaLink" @click="handleCtaClick" class="!text-gold">
+			<span v-html="$t('timeline_intro.cta')" />
+		</ButtonGolden>
 	</Container>
 </template>
 
