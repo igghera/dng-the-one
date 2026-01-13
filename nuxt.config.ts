@@ -1,4 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+const locales = [
+	{ code: 'en', file: 'en.json' },
+	{ code: 'it', file: 'it.json' },
+]
+
+process.env.LOCALE_ES_ENABLED === 'true' &&
+	locales.push({ code: 'es', file: 'es.json' })
+
 export default defineNuxtConfig({
 	ssr: false, // Capacitor requires SPA mode for full functionality
 	nitro: {
@@ -63,12 +72,7 @@ export default defineNuxtConfig({
 		bundle: {
 			optimizeTranslationDirective: false
 		},
-		locales: [
-			{ code: 'en', file: 'en.json' },
-			{ code: 'it', file: 'it.json' },
-			{ code: 'es', file: 'es.json' },
-			// { code: 'ar', name: 'AR / العربية', file: 'ar.json', dir: 'rtl' },
-		]
+		locales
 	},
 
 	runtimeConfig: {
