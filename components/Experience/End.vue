@@ -326,9 +326,10 @@ const setResult = () => {
 		},
 	}))
 
-	const allAuras = Object.values(tm('experience_end.options')).map(option => ({
+	const allAuras = Object.values(tm('auras')).map(option => ({
 		title: rt(option.title),
-		copy: rt(option.copy),
+		copy_male: rt(option.male.desc),
+		copy_female: rt(option.female.desc)
 	}))
 
 	const allProducts = Object.values(tm('products')).map(product => ({

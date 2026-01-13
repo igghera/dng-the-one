@@ -16,8 +16,8 @@ export default defineNuxtConfig({
 				{ name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
 			],
 			link: [
-        { rel: 'icon', type: 'image/png', href: '/favicon.png' }
-      ]
+				{ rel: 'icon', type: 'image/png', href: '/favicon.png' }
+			]
 
 		},
 	},
@@ -30,11 +30,11 @@ export default defineNuxtConfig({
 		},
 	},
 
-  dir: {
-    pages: process.env.SHOW_SPLASH_PAGE === 'true' ? 'splash' : 'pages',
-  },
+	dir: {
+		pages: process.env.SHOW_SPLASH_PAGE === 'true' ? 'splash' : 'pages',
+	},
 
-  compatibilityDate: '2024-01-01',
+	compatibilityDate: '2024-01-01',
 
 	devtools: { enabled: false },
 
@@ -47,28 +47,29 @@ export default defineNuxtConfig({
 		'@nuxt/scripts'
 	],
 
-  i18n: {
-    defaultLocale: 'en',
-    strategy: 'no_prefix',
-    detectBrowserLanguage: {
-      useCookie: false,
-      redirectOn: 'no prefix',
-      alwaysRedirect: false,
-      fallbackLocale: 'en',
-    },
-    compilation: {
-      strictMessage: false,
-      escapeHtml: false,
-    },
-    bundle: {
-      optimizeTranslationDirective: false
-    },
-    locales: [
-      { code: 'en', name: 'EN / English', file: 'en.json' },
-      { code: 'it', name: 'IT / Italiano', file: 'it.json' },
-      // { code: 'ar', name: 'AR / العربية', file: 'ar.json', dir: 'rtl' },
-    ]
-  },
+	i18n: {
+		defaultLocale: 'es',
+		strategy: 'no_prefix',
+		detectBrowserLanguage: {
+			useCookie: false,
+			redirectOn: 'no prefix',
+			alwaysRedirect: false,
+			fallbackLocale: 'es',
+		},
+		compilation: {
+			strictMessage: false,
+			escapeHtml: false,
+		},
+		bundle: {
+			optimizeTranslationDirective: false
+		},
+		locales: [
+			// { code: 'en', file: 'en.json' },
+			// { code: 'it', file: 'it.json' },
+			{ code: 'es', file: 'es.json' },
+			// { code: 'ar', name: 'AR / العربية', file: 'ar.json', dir: 'rtl' },
+		]
+	},
 
 	runtimeConfig: {
 		public: {
@@ -81,12 +82,12 @@ export default defineNuxtConfig({
 	},
 
 	$production: {
-    scripts: {
-      registry: {
-        googleTagManager: {
-          id: process.env.GTM_ID,
-        }
-      }
-    }
-  }
+		scripts: {
+			registry: {
+				googleTagManager: {
+					id: process.env.GTM_ID,
+				}
+			}
+		}
+	}
 });

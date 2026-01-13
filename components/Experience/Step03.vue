@@ -80,12 +80,11 @@
 		</div>
 
 		<p
+			v-html="$t('experience_step_03.instructions')"
 			class="instructions | body-5 | text-gold-light text-shadow"
 			style="opacity: 0.001"
 			ref="instructionsRef"
-		>
-			{{ $t('experience_step_03.instructions') }}
-		</p>
+		/>
 	</Container>
 </template>
 

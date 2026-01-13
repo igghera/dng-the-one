@@ -21,7 +21,6 @@
 
 		<ButtonGolden
 			class="self-end pointer-events-auto md:portrait:-translate-y-1/2"
-			style="opacity: 0"
 			size="wide"
 			@click="handleClick"
 			ref="buttonRef"

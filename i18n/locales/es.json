@@ -1,0 +1,506 @@
+{
+  "start": "Empezar",
+  "start_experience": "Empezar la experiencia",
+  "select": "Seleccionar",
+  "shop_now": "Comprar ahora",
+  "press_and_hold": "Mantener pulsado",
+  "download": "Descargar",
+  "done": "Hecho",
+  "scroll_down": "Desplazarse hacia abajo",
+  "link_privacy_policy": "https://world.dolcegabbana.com/privacy",
+  "link_cookies_policy": "https://world.dolcegabbana.com/cookie-policy",
+  "modal_configuration": {
+    "title": "Configura tu experiencia",
+    "options": [
+      {
+        "label": "Habilitar impresi&oacute;n",
+        "options": [
+          "S&iacute;",
+          "No"
+        ]
+      }
+    ]
+  },
+  "experience_start": {
+    "title": "Encuentra tu Aura",
+    "copy": "Expresa tu confianza y revela tu aura &uacute;nica"
+  },
+  "experience_enter_name": {
+    "title": "Introduce tu nombre<br>para comenzar la experiencia",
+    "input_palceholder": "Tu nombre"
+  },
+  "experience_step_01": {
+    "title": "¿C&oacute;mo describir&iacute;as<br>tu Aura?",
+    "instructions": "Gira para seleccionar tu preferencia",
+    "labels": [
+      "Refinada y exclusiva",
+      "Audaz y dominante",
+      "Misteriosa y magn&eacute;tica",
+      "Segura y sofisticada"
+    ]
+  },
+  "experience_step_02": {
+    "title": "Cuando entras<br>en una habitaci&oacute;n...",
+    "instructions": "Desliza hacia arriba para elegir",
+    "labels": [
+      "Mi aura habla por s&iacute; misma",
+      "Acaparo todas las miradas",
+      "Me gano a todo el mundo",
+      "Soy el centro de atenci&oacute;n"
+    ]
+  },
+  "experience_step_03": {
+    "title": "¿Qu&eacute; sensaci&oacute;n<br>quieres irradiar?",
+    "instructions": "Arrastra y suelta dentro del c&iacute;rculo",
+    "labels": [
+      "Masculina",
+      "Femenina",
+      "No me importa"
+    ]
+  },
+  "experience_end": {
+    "intro_title": [
+      "Danos un momento.<br>Estamos descubriendo tu",
+      "Aura"
+    ],
+    "title": "Tu Aura es",
+    "cta": "Mantener pulsado"
+  },
+  "results": {
+    "pre_title": "Tu aura es",
+    "cta_print": "Imprime tu aura",
+    "cta_download": "Descargar",
+    "cta_restart": "Jugar de nuevo"
+  },
+  "timeline_intro": {
+    "copy": "Celebramos los 20 a&ntilde;os de un icono.<br>Descubre la evoluci&oacute;n de The One, un cl&aacute;sico contempor&aacute;neo con un Aura que nunca pasa de moda.",
+    "cta": "Explora la colecci&oacute;n The One"
+  },
+  "download_card": {
+    "pre_title": "Tu aura es",
+    "subcontent_title": "Mi match ideal seg&uacute;n mi aura es:"
+  },
+  "engagement": {
+    "pre_title": "Tus matches ideales seg&uacute;n tu Aura son:",
+    "result": [
+      {
+        "title": [
+          "The One Gold For Men Eau De Parfum Intense",
+          "The One Gold Eau De Parfum Intense"
+        ],
+        "image": "/images/engagement/01.webp",
+        "copy": "Luminosa, moderna, magn&eacute;tica. Descubre dos fragancias que cautivan los sentidos: Dolce&amp;Gabbana The One Gold Eau de Parfum Intense y The One For Men Gold Eau de Parfum Intense."
+      },
+      {
+        "title": [
+          "The One For Men Parfum",
+          "The One Eau De Parfum Intense"
+        ],
+        "image": "/images/engagement/03.webp",
+        "copy": "Dos nuevas fragancias emblem&aacute;ticas que juegan con contrastes refinados. Descubre Dolce&amp;Gabbana The One Eau de Parfum Intense y The One For Men Parfum."
+      },
+      {
+        "title": [
+          "The One For Men Eau De Parfum",
+          "The One Eau De Parfum"
+        ],
+        "image": "/images/engagement/02.webp",
+        "copy": "Dos iconos imperecederos. Dolce&amp;Gabbana The One Eau de Parfum y The One For Men Eau de Parfum, ahora en una versi&oacute;n actualizada a&uacute;n m&aacute;s duradera y m&aacute;s irresistible."
+      },
+      {
+        "title": [
+          "The One For Men Eau De Toilette",
+          "The One Eau De Parfum"
+        ],
+        "image": "/images/engagement/04.webp",
+        "copy": "Sofisticada e irresistible. Descubre las dos fragancias emblem&aacute;ticas de Dolce&amp;Gabbana: The One Eau de Parfum y The One Eau de Toilette."
+      }
+    ]
+  },
+  "products": [
+    {
+      "id": "FEMALE_EDP",
+      "title": "The One",
+      "sub_title": "Eau De Parfum",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/FEMALE_EDP.webp"
+    },
+    {
+      "id": "FEMALE_EDPI",
+      "title": "The One",
+      "sub_title": "Eau De Parfum Intense",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/FEMALE_EDPI.webp"
+    },
+    {
+      "id": "FEMALE_GOLD_EDPI",
+      "title": "The One Gold",
+      "sub_title": "Eau De Parfum Intense",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/FEMALE_GOLD_EDPI.webp"
+    },
+    {
+      "id": "MALE_EDP",
+      "title": "The One for Men",
+      "sub_title": "Eau De Parfum",
+      "copy": "Una fragancia que destaca por su masculinidad sofisticada y aut&eacute;ntica. Radiante e intensa.",
+      "image": "/images/products/MALE_EDP.webp"
+    },
+    {
+      "id": "MALE_EDT",
+      "title": "The One for Men",
+      "sub_title": "Eau De Toilette",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/MALE_EDT.webp"
+    },
+    {
+      "id": "MALE_GOLD_EDPI",
+      "title": "The One for Men Gold",
+      "sub_title": "Eau De Parfum Intense",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/MALE_GOLD_EDPI.webp"
+    },
+    {
+      "id": "MALE_PARFUM",
+      "title": "The One for Men",
+      "sub_title": "Parfum",
+      "copy": "[lorem ipsum dolor sit amet]",
+      "image": "/images/products/MALE_PARFUM.webp"
+    }
+  ],
+  "auras": [
+    {
+      "title": "Elegante",
+      "male": {
+        "desc": "Tu aura se mueve antes que t&uacute;, una fuerza silenciosa que acapara todas las miradas.",
+        "fragrance": {
+          "title": "The One for Men",
+          "sub_title": "Eau De Parfum",
+          "desc": "Un icono imperecedero, reimaginado. Creado para el hombre distinguido, revela matices m&aacute;s profundos de elegancia, poder y encanto."
+        }
+      },
+      "female": {
+        "desc": "Tu aura irradia confianza y una elegancia tranquila, convirtiendo la sencillez en singularidad.",
+        "fragrance": {
+          "title": "The One",
+          "sub_title": "Eau De Parfum",
+          "desc": "Un icono imperecedero, reinventado con una profundidad radiante. Creado para la mujer elegante, irradia elegancia, confianza y un encanto que perdura."
+        }
+      }
+    },
+    {
+      "title": "C&aacute;lida",
+      "male": {
+        "desc": "Tu aura perdura m&aacute;s all&aacute; del momento, una profundidad tranquila que la gente nunca olvidar&aacute;.",
+        "fragrance": {
+          "title": "The One for Men",
+          "sub_title": "Parfum",
+          "desc": "Descubriendo una nueva intensidad donde la sensualidad refinada se une a la fuerza masculina. Las c&aacute;lidas y envolventes notas de &aacute;mbar dejan una estela profunda e irresistiblemente carism&aacute;tica."
+        }
+      },
+      "female": {
+        "desc": "Tu Aura perdura m&aacute;s all&aacute; del momento, una profundidad emocional que la gente nunca olvidar&aacute;.",
+        "fragrance": {
+          "title": "The One",
+          "sub_title": "Eau De Parfum Intense",
+          "desc": "Una expresi&oacute;n audaz y refinada de feminidad. Captura la esencia de una mujer segura de s&iacute; misma. Elegante e inolvidable."
+        }
+      }
+    },
+    {
+      "title": "Misteriosa",
+      "male": {
+        "desc": "Reservas tus palabras para los momentos importantes. Tu Aura susurra poder, atrayendo a los dem&aacute;s sin esfuerzo.",
+        "fragrance": {
+          "title": "The One Men",
+          "sub_title": "Eau De Toilette",
+          "desc": "Esta fragancia encarna la confianza natural de un hombre cuyo encanto deja una impresi&oacute;n duradera e inolvidable en las personas."
+        }
+      },
+      "female": {
+        "desc": "Reservas tus palabras para los momentos importantes. Tu Aura susurra poder, atrayendo a los dem&aacute;s sin esfuerzo.",
+        "fragrance": {
+          "title": "The One",
+          "sub_title": "Eau De Parfum",
+          "desc": "Un icono imperecedero, reinventado con una profundidad radiante. Creado para la mujer elegante, irradia elegancia, confianza y un encanto que perdura."
+        }
+      }
+    },
+    {
+      "title": "Audaz",
+      "male": {
+        "desc": "Tu aura domina la habitaci&oacute;n. Inolvidable, dejando el silencio cargado de presencia.",
+        "fragrance": {
+          "title": "The One for Men Gold",
+          "sub_title": "Eau De Parfum Intense",
+          "desc": "Un homenaje al magnetismo de quien lo lleva, con una cautivadora mezcla de notas amaderadas y especiadas, entre las que se incluyen salvia, bergamota y pachul&iacute;."
+        }
+      },
+      "female": {
+        "desc": "Nunca tienes miedo de brillar. Tu aura valerosa ilumina la habitaci&oacute;n en cuanto entras.",
+        "fragrance": {
+          "title": "The One Gold",
+          "sub_title": "Eau De Parfum Intense",
+          "desc": "Un homenaje a la feminidad luminosa y al poder interior. Rinde homenaje a la mujer que posee una elegancia y un encanto irresistibles."
+        }
+      }
+    }
+  ],
+  "modal_qr_code": {
+    "title": "Escanea para descargar<br>tu Aura"
+  },
+  "explore": {
+    "intro": "Sum&eacute;rgete en los seductores aromas de<br>The One Collection",
+    "instructions": "Desliza y toca para explorar",
+    "items": [
+      {
+        "year": "2006",
+        "title": "The One Eau De Parfum",
+        "copy": "El nacimiento de un icono.<br>Una visi&oacute;n audaz de la feminidad.",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One",
+                "Eau De Parfum"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDP.webp"
+            },
+            {
+              "component": "p",
+              "value": "Elegante y moderna, combina notas de mandarina con rosa y vainilla, en una mezcla excepcional de caracter&iacute;sticas cl&aacute;sicas y contempor&aacute;neas."
+            }
+          ]
+        ]
+      },
+      {
+        "year": "2008",
+        "title": "The One for Men<br>Eau de Toilette",
+        "copy": "Un nuevo c&oacute;digo<br>de la elegancia<br>masculina",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One for Men",
+                "Eau de Toilette"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_EDT.webp"
+            },
+            {
+              "component": "p",
+              "value": "Encantadora y sensual, como el hombre que lo lleva. Con una mezcla absolutamente carism&aacute;tica de notas de albahaca, lavanda embriagadora y acordes de s&aacute;ndalo."
+            }
+          ]
+        ]
+      },
+      {
+        "year": "2015",
+        "title": "The One for Men<br>Eau de Parfum",
+        "copy": "Una audaz revoluci&oacute;n<br>del eau de toilette original",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One for Men",
+                "Eau De Parfum"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_PARFUM.webp"
+            },
+            {
+              "component": "p",
+              "value": "Un icono imperecedero se reinventa con una fragancia mejorada que revela nuevas profundidades olfativas, creada para un hombre refinado con un car&aacute;cter elegante y distintivo."
+            }
+          ]
+        ]
+      },
+      {
+        "year": "2021",
+        "title": "The One Gold<br>Eau De Parfum Intense",
+        "copy": "Un nuevo d&uacute;o dorado<br>que irradia brillo y<br> encanto magn&eacute;tico",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One Gold",
+                "Eau De Parfum Intense"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_GOLD_EDPI.webp"
+            },
+            {
+              "component": "p",
+              "value": "Un homenaje a la feminidad luminosa y al poder interior. Rinde homenaje a la mujer que posee una elegancia y un encanto irresistibles."
+            }
+          ],
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One for Men Gold",
+                "Eau De Parfum Intense"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_GOLD_EDPI.webp"
+            },
+            {
+              "component": "p",
+              "value": "Un homenaje al magnetismo de quien lo lleva, con una cautivadora mezcla de notas amaderadas y especiadas, entre las que se incluyen salvia, bergamota y pachul&iacute;."
+            }
+          ]
+        ]
+      },
+      {
+        "year": "2026",
+        "title": "20 a&ntilde;os despu&eacute;s,<br>se abre un nuevo cap&iacute;tulo de la historia.",
+        "copy": "",
+        "data": [
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One",
+                "Eau De Parfum"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDP.webp"
+            },
+            {
+              "component": "p",
+              "value": "Elegante y moderna, combina notas de mandarina con rosa y vainilla, en una mezcla excepcional de caracter&iacute;sticas cl&aacute;sicas y contempor&aacute;neas."
+            },
+            {
+              "component": "title",
+              "value": [
+                "La campa&ntilde;a"
+              ]
+            },
+            {
+              "component": "video",
+              "value": "/videos/TheOne_30s.mp4",
+              "poster": "/images/campaign-video-poster.webp"
+            },
+            {
+              "component": "p",
+              "value": "Una poderosa red de carisma, encanto y magnetismo. Descubre la nueva campa&ntilde;a The One de Dolce&amp;Gabbana, capturada por Mert Alas."
+            }
+          ],
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One",
+                "Eau De Parfum Intense"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/FEMALE_EDPI.webp"
+            },
+            {
+              "component": "p",
+              "value": "Una expresi&oacute;n audaz pero refinada de la feminidad. La potencia de notas intensas y luminosas se funde con la suavidad de toques m&aacute;s delicados."
+            },
+            {
+              "component": "title",
+              "value": [
+                "La campa&ntilde;a"
+              ]
+            },
+            {
+              "component": "video",
+              "value": "/videos/TheOne_30s.mp4",
+              "poster": "/images/campaign-video-poster.webp"
+            },
+            {
+              "component": "p",
+              "value": "Una poderosa red de carisma, encanto y magnetismo. Descubre la nueva campa&ntilde;a The One de Dolce&amp;Gabbana, capturada por Mert Alas."
+            }
+          ],
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One for Men",
+                "Parfum"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_PARFUM_2026.webp"
+            },
+            {
+              "component": "p",
+              "value": "Descubriendo una nueva intensidad donde la sensualidad refinada se une a la fuerza masculina. Las c&aacute;lidas y envolventes notas de &aacute;mbar dejan una estela profunda e irresistiblemente carism&aacute;tica."
+            },
+            {
+              "component": "title",
+              "value": [
+                "La campa&ntilde;a"
+              ]
+            },
+            {
+              "component": "video",
+              "value": "/videos/TheOne_30s.mp4",
+              "poster": "/images/campaign-video-poster.webp"
+            },
+            {
+              "component": "p",
+              "value": "Una poderosa red de carisma, encanto y magnetismo. Descubre la nueva campa&ntilde;a The One de Dolce&amp;Gabbana, capturada por Mert Alas."
+            }
+          ],
+          [
+            {
+              "component": "title",
+              "value": [
+                "The One for Men",
+                "Eau De Parfum"
+              ]
+            },
+            {
+              "component": "image",
+              "value": "/images/products/MALE_EDP.webp"
+            },
+            {
+              "component": "p",
+              "value": "Un icono imperecedero se reinventa con una fragancia mejorada que revela nuevas profundidades olfativas, creada para un hombre refinado con un car&aacute;cter elegante y distintivo."
+            },
+            {
+              "component": "title",
+              "value": [
+                "La campa&ntilde;a"
+              ]
+            },
+            {
+              "component": "video",
+              "value": "/videos/TheOne_30s.mp4",
+              "poster": "/images/campaign-video-poster.webp"
+            },
+            {
+              "component": "p",
+              "value": "Una poderosa red de carisma, encanto y magnetismo. Descubre la nueva campa&ntilde;a The One de Dolce&amp;Gabbana, capturada por Mert Alas."
+            }
+          ]
+        ]
+      }
+    ]
+  }
+}

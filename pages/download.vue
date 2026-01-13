@@ -17,13 +17,9 @@
 					{{ $t('results.pre_title') }}
 				</span>
 
-				<span class="display-3 | golden-text | uppercase">
-					{{ result.get('auraFull').title }}
-				</span>
+				<span v-html="result.get('auraFull').title" class="display-3 | golden-text | uppercase" />
 
-				<span class="card-content-copy | text-gold-light">
-					{{ result.get('auraFull')[result.get('shape')].desc }}
-				</span>
+				<span v-html="result.get('auraFull')[result.get('shape')].desc" class="card-content-copy | text-gold-light" />
 			</div>
 
 			<div class="card-sub-content">
@@ -37,9 +33,7 @@
 					/>
 				</picture>
 
-				<span class="card-sub-content-title | text-gold-light">
-					{{ $t('download_card.subcontent_title') }}
-				</span>
+				<span v-html="$t('download_card.subcontent_title')" class="card-sub-content-title | text-gold-light" />
 
 				<span class="card-sub-content-copy">
 					<span
@@ -94,9 +88,7 @@
 			/>
 		</picture>
 
-		<p class="copy | body-4">
-			{{ result.get('auraFull')[result.get('shape')].fragrance.desc }}
-		</p>
+		<p v-html="result.get('auraFull')[result.get('shape')].fragrance.desc" class="copy | body-4" />
 
 		<ExperienceTimelineIntro class="explore | !p-0" cta-link="/explore" />
 	</div>
@@ -208,7 +200,7 @@ const handleDownloadButtonClick = async () => {
 
 	await downloadCard('download', Number(q1), get(result))
 
-	set(isDownloading, true)
+	set(isDownloading, false)
 }
 </script>
 
