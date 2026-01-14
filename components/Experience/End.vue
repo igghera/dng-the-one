@@ -62,16 +62,9 @@
 					{{ $t('experience_end.title') }}
 				</span>
 
-				<span class="result-title | golden-text">
-					{{ appStore.getResult.get('auraFull').title }}
-				</span>
+				<span class="result-title | golden-text" v-html="appStore.getResult.get('auraFull').title" />
 
-				<span class="result-copy">
-					{{
-						appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
-							.desc
-					}}
-				</span>
+				<span class="result-copy" v-html="appStore.getResult.get('auraFull')[appStore.getResult.get('shape')].desc" />
 			</div>
 		</Transition>
 
@@ -98,7 +91,7 @@
 					</template>
 
 					<template v-else>
-						<ButtonRestart class="!text-gold" />
+						<ButtonRestart to="/" class="!text-gold" />
 
 						<ButtonGolden
 							class="!text-gold"
@@ -690,13 +683,15 @@ const handleDownloadButtonClick = async () => {
 	const base = `/images/download-cards/experience/${get(locale)}`
 	const shape = data.get('shape')
 
-	let aura = data.get('aura').title.toLowerCase()
+	let aura = data.get('aura').id.toLowerCase()
 	if (aura === 'elegant') aura = '00-elegant'
 	if (aura === 'warm') aura = '01-warm'
 	if (aura === 'discrete') aura = '02-mysterious'
 	if (aura === 'bold') aura = '03-bold'
 
 	const imageUrl = `${base}/${aura}-${shape}.png`
+
+	console.log('⚠️ Downloading card:', imageUrl)
 
 	const link = document.createElement('a')
 	link.href = imageUrl
