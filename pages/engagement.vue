@@ -85,11 +85,11 @@ const images = Object.freeze([
 	'00-bold',
 	'01-elegant',
 	'02-warm',
-	'03-intriguing',
+	'03-mysterious',
 	'04-powerful',
 	'05-sophisticated',
 	'06-charming',
-	'07-mysterious',
+	'07-intriguing',
 ])
 
 //
