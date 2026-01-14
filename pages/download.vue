@@ -64,7 +64,7 @@
 		<header class="header">
 			<h1 class="title | gap-y-5">
 				<span class="pre-title | body-7">{{
-					$t('download_card.pre_title')
+					$t('results.pre_title')
 				}}</span>
 
 				<span class="title-text">
