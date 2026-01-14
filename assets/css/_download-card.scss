@@ -23,8 +23,9 @@
   }
 
   .title {
-    @apply uppercase font-normal leading-none whitespace-nowrap;
+    @apply uppercase font-normal leading-none whitespace-nowrap overflow-visible w-full;
 
+    -webkit-text-stroke: 1px #7B4A1E;
     font-size: toRem(92);
   }
 
