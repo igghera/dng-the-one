@@ -60,7 +60,7 @@ export default defineNuxtConfig({
 		defaultLocale: 'en',
 		strategy: 'no_prefix',
 		detectBrowserLanguage: {
-			useCookie: false,
+			useCookie: true,
 			redirectOn: 'no prefix',
 			alwaysRedirect: false,
 			fallbackLocale: 'en',
