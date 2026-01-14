@@ -198,7 +198,7 @@ const setResult = () => {
 const handleDownloadButtonClick = async () => {
 	set(isDownloading, true)
 
-	get(result).set('pre-title', $t('results.pre_title'))
+	get(result).set('pre-title', $t('download_page.pre_title'))
 	get(result).set('sub-content-title', $t('download_card.subcontent_title'))
 
 	await downloadCard('download', Number(q1), get(result))
