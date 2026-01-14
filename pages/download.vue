@@ -14,7 +14,7 @@
 
 			<div class="card-content | text-shadow">
 				<span class="body-9 | uppercase text-gold-light">
-					{{ $t('results.pre_title') }}
+					{{ $t('download_page.pre_title') }}
 				</span>
 
 				<span v-html="result.get('auraFull').title" class="display-3 | golden-text | uppercase" />
