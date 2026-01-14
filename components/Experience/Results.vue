@@ -44,12 +44,7 @@
 			{{ $t('shop_now') }}
 		</ButtonGolden>
 
-		<p class="copy">
-			{{
-				appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
-					.fragrance.desc
-			}}
-		</p>
+		<p class="copy" v-html="appStore.getResult.get('auraFull')[appStore.getResult.get('shape')].fragrance.desc" />
 	</Container>
 </template>
 

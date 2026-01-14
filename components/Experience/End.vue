@@ -62,16 +62,9 @@
 					{{ $t('experience_end.title') }}
 				</span>
 
-				<span class="result-title | golden-text">
-					{{ appStore.getResult.get('auraFull').title }}
-				</span>
+				<span class="result-title | golden-text" v-html="appStore.getResult.get('auraFull').title" />
 
-				<span class="result-copy">
-					{{
-						appStore.getResult.get('auraFull')[appStore.getResult.get('shape')]
-							.desc
-					}}
-				</span>
+				<span class="result-copy" v-html="appStore.getResult.get('auraFull')[appStore.getResult.get('shape')].desc" />
 			</div>
 		</Transition>
 
