@@ -152,7 +152,8 @@ const setResult = () => {
 	const allAuras = Object.values(tm('auras')).map(option => ({
 		id: rt(option.id),
 		title: rt(option.title),
-		copy: rt(option.copy),
+		copy_male: rt(option.male.desc),
+		copy_female: rt(option.female.desc)
 	}))
 
 	const allAurasFull = Object.values(tm('auras')).map(aura => ({
