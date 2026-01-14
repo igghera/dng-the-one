@@ -4,6 +4,9 @@
 			<header class="header | text-shadow">
 				<h1
 					class="display-1 | golden-text uppercase"
+					:class="{
+						'whitespace-nowrap': config.public.isAppMode,
+					}"
 					ref="titleRef"
 					style="opacity: 0.001"
 				>
@@ -38,6 +41,8 @@ import { get } from '@vueuse/core'
 // Refs / State
 //
 const { gsap, SplitText } = useGSAP()
+
+const config = useRuntimeConfig()
 
 const appStore = useAppStore()
 const uiStore = useUiStore()
