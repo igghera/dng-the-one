@@ -15,14 +15,14 @@ export class Tracking {
 
     const params = {
       event: "attributes_push",
-      market: "", // “Americas” or “Emea” or “Apac” etc..
-      region: "", // “Peru” or “Panama” or “Italia” etc..
-      store: "", // “Convent Garden” etc..
-      store_type: "", // “Permanent” or “Temporary” etc..
-      entry_point: "", // “Touch screen” or “Ipad” or “QR code” etc..
-      store_id: "", // ID of the store
-      retailer: "", // name of the retailer
-      retailer_id: "", // ID of the retailer
+      market: undefined, // “Americas” or “Emea” or “Apac” etc..
+      region: undefined, // “Peru” or “Panama” or “Italia” etc..
+      store: undefined, // “Convent Garden” etc..
+      store_type: undefined, // “Permanent” or “Temporary” etc..
+      entry_point: undefined, // “Touch screen” or “Ipad” or “QR code” etc..
+      store_id: undefined, // ID of the store
+      retailer: undefined, // name of the retailer
+      retailer_id: undefined, // ID of the retailer
     }
 
     console.log('Init tracking')

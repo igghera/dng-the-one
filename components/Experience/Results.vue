@@ -104,8 +104,10 @@ onMounted(() => {
 // Method
 //
 const handleShopNowButtonClick = () => {
+	const product = appStore.getResult.get('product')
+
 	Tracking.sendEvent({
-		customizator_option: "shop-now",
+		customizator_option: slugify(`${product.title} ${product.sub_title}`),
 		generic_event_and_label: "shop_now"
 	})
 }
