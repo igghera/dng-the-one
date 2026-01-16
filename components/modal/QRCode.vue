@@ -122,7 +122,10 @@ const generateQrCode = () => {
 	const q1 = appStore.getStep01Selection ?? 0
 	const q2 = appStore.getStep02Selection ?? 0
 	const q3 = appStore.getStep03Selection ?? 0
-	const data = `${window.location.origin}/download?q1=${q1}&q2=${q2}&q3=${q3}`
+
+	const baseUrl = config.public.isAppMode ? config.public.siteUrl : window.location.origin
+
+	const data = `${baseUrl}/download?q1=${q1}&q2=${q2}&q3=${q3}`
 
 	console.info('⚠️ Generated QR code:', data)
 
