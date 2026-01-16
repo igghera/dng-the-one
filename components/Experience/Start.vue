@@ -4,9 +4,6 @@
 			<header class="header | text-shadow">
 				<h1
 					class="display-1 | golden-text uppercase"
-					:class="{
-						'whitespace-nowrap': config.public.isAppMode,
-					}"
 					ref="titleRef"
 					style="opacity: 0.001"
 				>
