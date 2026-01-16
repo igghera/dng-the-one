@@ -684,9 +684,10 @@ const handleDownloadButtonClick = async () => {
 	const shape = data.get('shape')
 
 	let aura = data.get('aura').id.toLowerCase()
+	console.log('aura', aura)
 	if (aura === 'elegant') aura = '00-elegant'
 	if (aura === 'warm') aura = '01-warm'
-	if (aura === 'discrete') aura = '02-mysterious'
+	if (aura === 'mysterious') aura = '02-mysterious'
 	if (aura === 'bold') aura = '03-bold'
 
 	const imageUrl = `${base}/${aura}-${shape}.png`
