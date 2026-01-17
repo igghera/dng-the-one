@@ -249,6 +249,9 @@ onMounted(async () => {
 			})
 
 			rotationOnPress = draggableInstance[0].rotation
+
+			set(instructionsVisible, false)
+			set(ctaVisible, true)
 		},
 		onDrag() {
 			set(instructionsVisible, false)
@@ -256,6 +259,8 @@ onMounted(async () => {
 			update()
 		},
 		onThrowUpdate() {
+			set(instructionsVisible, false)
+			set(ctaVisible, true)
 			update()
 		},
 	})
