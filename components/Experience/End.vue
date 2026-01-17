@@ -354,6 +354,7 @@ const back = async () => {
 	await animateBack()
 
 	uiStore.setExperienceStep03Visible(true)
+	uiStore.setExperienceEndVisible(false)
 }
 
 const animateBack = async () => {
