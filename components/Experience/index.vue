@@ -6,13 +6,13 @@
 		/>
 
 		<ExperienceStart
-			v-show="uiStore.isExperienceStartVisible"
+			v-if="uiStore.isExperienceStartVisible"
 			class="relative z-[1]"
 		/>
 
 		<ClientOnly>
 			<ExperienceEnterName
-				v-show="uiStore.isExperienceEnterNameVisible"
+				v-if="uiStore.isExperienceEnterNameVisible"
 				class="experience-step | relative z-[1]"
 			/>
 		</ClientOnly>
