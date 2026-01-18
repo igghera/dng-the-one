@@ -19,6 +19,8 @@ const urlParams = useUrlSearchParams('history')
 const lenisRef = shallowRef()
 const { gsap } = useGSAP()
 
+const { setLocale } = useI18n()
+
 const isFromExplore = urlParams.ref === 'explore'
 
 const lenisOptions = {
@@ -29,6 +31,10 @@ const lenisOptions = {
 onMounted(() => {
 	const state = useStorage('isFirstView', true)
 	state.value = true
+
+	if (Object.hasOwn(urlParams, 'locale')) {
+		setLocale(urlParams.locale)
+	}
 
 	Tracking.init()
 })
