@@ -135,20 +135,15 @@ onMounted(async () => {
 
 	await animateIn()
 
+	emitter.once(EVENTS.BACK, handleBack)
+
 	uiStore.setBackButtonVisible(true)
 })
 
 onBeforeUnmount(() => {
 	draggableInstance.forEach(instance => instance.kill())
-})
 
-//
-// Events
-//
-emitter.on(EVENTS.BACK, () => {
-	if (!uiStore.isExperienceStep03Visible) return
-
-	back()
+	emitter.off(EVENTS.BACK, handleBack)
 })
 
 //
@@ -317,6 +312,12 @@ const pulseDraggers = () => {
 		repeat: 1,
 		yoyo: true,
 	})
+}
+
+function handleBack() {
+	if (!uiStore.isExperienceStep03Visible) return
+
+	back()
 }
 
 const back = async () => {

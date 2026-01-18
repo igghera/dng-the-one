@@ -295,7 +295,7 @@ onMounted(async () => {
 	trackingStore.setFunnel('3')
 
 	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async params => {
-		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START')
+		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START', params)
 
 		gsap.set(get(trackRef), {
 			yPercent: trackTranslateValues[0],
