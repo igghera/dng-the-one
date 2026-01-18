@@ -135,7 +135,7 @@ onMounted(async () => {
 
 	await animateIn()
 
-	emitter.once(EVENTS.BACK, handleBack)
+	emitter.on(EVENTS.BACK, handleBack)
 
 	uiStore.setBackButtonVisible(true)
 })
@@ -316,6 +316,8 @@ const pulseDraggers = () => {
 
 function handleBack() {
 	if (!uiStore.isExperienceStep03Visible) return
+
+	console.log('handleBack().', 'Step 03 -> Step 02')
 
 	back()
 }

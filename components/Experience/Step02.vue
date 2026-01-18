@@ -294,43 +294,32 @@ onMounted(async () => {
 
 	trackingStore.setFunnel('3')
 
-	emitter.once(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START, async params => {
-		// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START', params)
+	emitter.on(EVENTS.BACK, handleBack)
 
-		gsap.set(get(trackRef), {
-			yPercent: trackTranslateValues[0],
-		})
+	emitter.once(
+		EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START,
+		handlePositionTrackStart,
+	)
 
-		await nextTick()
-
-		if (params?.back) {
-			await animateIn()
-
-			uiStore.setBackButtonVisible(true)
-
-			createDraggable()
-		} else {
-			// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
-			emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
-		}
-	})
-
-	emitter.once(EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE, async () => {
-		// console.log(
-		// 	'✅ received: EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE'
-		// )
-
-		await animateIn()
-
-		uiStore.setBackButtonVisible(true)
-
-		createDraggable()
-	})
+	emitter.once(
+		EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE,
+		handleDotAnimateInComplete,
+	)
 })
 
 onBeforeUnmount(() => {
 	draggableInstance?.[0]?.kill()
 	stopIdle()
+
+	emitter.off(EVENTS.BACK, handleBack)
+	emitter.off(
+		EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START,
+		handlePositionTrackStart,
+	)
+	emitter.off(
+		EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE,
+		handleDotAnimateInComplete,
+	)
 })
 
 //
@@ -341,12 +330,6 @@ emitter.on(EVENTS.RESTART, () => {
 	stopIdle()
 
 	gsap.killTweensOf([get(draggerMaskRef), get(trackRef)])
-})
-
-emitter.on(EVENTS.BACK, () => {
-	if (!uiStore.isExperienceStep02Visible) return
-
-	back()
 })
 
 //
@@ -399,7 +382,7 @@ watch(isIdle, idle => {
 				ease: 'none',
 				repeat: -1,
 				repeatDelay: 2,
-			}
+			},
 		)
 	} else {
 		idleTween?.kill()
@@ -439,6 +422,48 @@ const setInitialState = () => {
 	set(instructionsVisible, false)
 }
 
+async function handlePositionTrackStart(params) {
+	// console.log(
+	// 	'✅ received: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_START',
+	// 	params,
+	// )
+
+	gsap.set(get(trackRef), {
+		yPercent: trackTranslateValues[0],
+	})
+
+	await nextTick()
+
+	if (params?.back) {
+		await animateIn()
+
+		uiStore.setBackButtonVisible(true)
+
+		createDraggable()
+	} else {
+		// console.log('▶️ emitted: EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE')
+		emitter.emit(EVENTS.EXPERIENCE_STEP_02_POSITION_TRACK_COMPLETE)
+	}
+}
+
+async function handleDotAnimateInComplete() {
+	// console.log('✅ received: EVENTS.EXPERIENCE_STEP_02_DOT_ANIMATE_IN_COMPLETE')
+
+	await animateIn()
+
+	uiStore.setBackButtonVisible(true)
+
+	createDraggable()
+}
+
+function handleBack() {
+	if (!uiStore.isExperienceStep02Visible) return
+
+	console.log('handleBack().', 'Step 02 -> Step 01')
+
+	back()
+}
+
 const back = async () => {
 	uiStore.setBackButtonVisible(false)
 
@@ -462,7 +487,7 @@ const animateIn = () => {
 			},
 			duration: 0.5,
 		},
-		'start'
+		'start',
 	)
 
 	tl.fromTo(
@@ -480,7 +505,7 @@ const animateIn = () => {
 				resetIdle()
 			},
 		},
-		'<0.2'
+		'<0.2',
 	)
 
 	tl.to(
@@ -494,7 +519,7 @@ const animateIn = () => {
 				audioManager.play(AUDIO_LABELS.SFX_STEP_02_ANIMATE_IN)
 			},
 		},
-		'start+=0.2'
+		'start+=0.2',
 	)
 
 	return tl.play()
@@ -524,7 +549,7 @@ const animateOut = async () => {
 			opacity: 0,
 			duration: 1,
 		},
-		'start'
+		'start',
 	)
 
 	tl.to(
@@ -535,7 +560,7 @@ const animateOut = async () => {
 			},
 			duration: 1,
 		},
-		'start'
+		'start',
 	)
 
 	return tl.play()
@@ -591,7 +616,7 @@ const updateCurrentStep = () => {
 	const prevIndex = get(currentStep)
 	const closest = getClosestValue(
 		dotsCoords.map(dot => dot.y),
-		draggableInstance[0].y + 48
+		draggableInstance[0].y + 48,
 	)
 	const newIndex = dotsCoords.findIndex(dot => closest === dot.y)
 
@@ -603,7 +628,7 @@ const updateCurrentStep = () => {
 const translateTrackToPosition = yPosition => {
 	const snappedPosition = getClosestValue(
 		dotsCoords.map(dot => dot.y),
-		yPosition
+		yPosition,
 	)
 
 	const index = dotsCoords.findIndex(dot => dot.y === snappedPosition)
