@@ -135,20 +135,13 @@ onMounted(async () => {
 
 	await animateIn()
 
-	uiStore.setBackButtonVisible(true)
+	emitter.on(EVENTS.BACK, handleBack)
 })
 
 onBeforeUnmount(() => {
 	draggableInstance.forEach(instance => instance.kill())
-})
 
-//
-// Events
-//
-emitter.on(EVENTS.BACK, () => {
-	if (!uiStore.isExperienceStep03Visible) return
-
-	back()
+	emitter.off(EVENTS.BACK, handleBack)
 })
 
 //
@@ -164,7 +157,7 @@ const setInitialState = () => {
 		],
 		{
 			opacity: 0,
-		}
+		},
 	)
 
 	gsap.set(get(dotWrapperStep03Ref), { clearProps: 'all' })
@@ -183,7 +176,7 @@ const animateIn = () => {
 			opacity: 1,
 			duration: 1.5,
 		},
-		'start'
+		'start',
 	)
 
 	// Fade in dots
@@ -193,7 +186,7 @@ const animateIn = () => {
 			opacity: 1,
 			duration: 1,
 		},
-		'>-0.4'
+		'>-0.4',
 	)
 
 	// Move draggers to final positions
@@ -223,16 +216,24 @@ const animateIn = () => {
 			})
 		},
 		null,
-		'>0.7'
+		'>0.7',
 	)
 
 	// Animate in dropzone circle
 	tl.to(
 		get(dropzoneCircleWrapperRef),
 		{ rotation: 290, duration: 2, ease: 'power2.out' },
-		'>0.75'
+		'>0.75',
 	)
-	tl.to(get(dropzoneCircleRef), { drawSVG: '0% 100%', duration: 2 }, '<')
+	tl.to(
+		get(dropzoneCircleRef),
+		{
+			drawSVG: '0% 100%',
+			duration: 2,
+			onComplete: () => void uiStore.setBackButtonVisible(true),
+		},
+		'<',
+	)
 
 	// Fade in dropzone arrow
 	tl.to(
@@ -241,7 +242,7 @@ const animateIn = () => {
 			opacity: 1,
 			duration: 1.2,
 		},
-		'>0.55'
+		'>0.55',
 	)
 
 	// Fade in instructions
@@ -251,7 +252,7 @@ const animateIn = () => {
 			opacity: 1,
 			duration: 1.5,
 		},
-		'<0.1'
+		'<0.1',
 	)
 
 	// Fade in labels
@@ -262,7 +263,7 @@ const animateIn = () => {
 			duration: 1.5,
 			stagger: 0.12,
 		},
-		'<0.7'
+		'<0.7',
 	)
 
 	tl.call(
@@ -270,7 +271,7 @@ const animateIn = () => {
 			createDraggable()
 		},
 		null,
-		'<'
+		'<',
 	)
 
 	return tl.play()
@@ -319,6 +320,14 @@ const pulseDraggers = () => {
 	})
 }
 
+function handleBack() {
+	if (!uiStore.isExperienceStep03Visible) return
+
+	console.log('handleBack().', 'Step 03 -> Step 02')
+
+	back()
+}
+
 const back = async () => {
 	uiStore.setBackButtonVisible(false)
 
@@ -332,7 +341,7 @@ const back = async () => {
 
 	const svgImage = document.createElementNS(
 		'http://www.w3.org/2000/svg',
-		'image'
+		'image',
 	)
 	svgImage.setAttribute('id', 'glowing-dot')
 	svgImage.setAttribute('href', '/images/glowing-dot.webp')
@@ -416,7 +425,6 @@ const createDraggable = () => {
 			generic_event_and_label: 'drag_and_drop_into_the_circle',
 			customizator_option: slugify(labelsEN[appStore.getStep03Selection]),
 		})
-		// trackingStore.setFunnel('5')
 
 		uiStore.setBackButtonVisible(false)
 
@@ -481,7 +489,7 @@ const createDraggable = () => {
 				stagger: 0.1,
 				duration: 0.8,
 			},
-			'start'
+			'start',
 		)
 
 		// Move selected item to dropzone's center
@@ -490,7 +498,7 @@ const createDraggable = () => {
 				duration: 1.5,
 				ease: 'expo.out',
 			}),
-			'start'
+			'start',
 		)
 
 		// Fade out selected item's label
@@ -503,7 +511,7 @@ const createDraggable = () => {
 				autoAlpha: 0,
 				duration: 0.5,
 			},
-			'start+=0.3'
+			'start+=0.3',
 		)
 
 		tl.to(
@@ -513,7 +521,7 @@ const createDraggable = () => {
 				stagger: 0.15,
 				duration: 0.8,
 			},
-			'>0.5'
+			'>0.5',
 		)
 
 		tl.to(
@@ -522,13 +530,13 @@ const createDraggable = () => {
 				opacity: 0,
 				duration: 0.8,
 			},
-			'<0.5'
+			'<0.5',
 		)
 	}
 
 	function fadeOutDraggers(idx) {
 		const targetDraggers = get(draggersRef).filter(
-			(item, index) => index !== idx
+			(item, index) => index !== idx,
 		)
 		gsap.to(targetDraggers, {
 			autoAlpha: 0,

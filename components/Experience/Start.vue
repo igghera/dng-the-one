@@ -5,14 +5,12 @@
 				<h1
 					class="display-1 | golden-text uppercase"
 					ref="titleRef"
-					style="opacity: 0.001"
 				>
 					{{ $t('experience_start.title') }}
 				</h1>
 
 				<p
 					class="copy | body-4 | text-gold"
-					style="opacity: 0"
 					v-html="$t('experience_start.copy')"
 					ref="copyRef"
 				/>
@@ -32,7 +30,7 @@
 
 <script setup>
 import { Howler } from 'howler'
-import { get } from '@vueuse/core'
+import { get, set } from '@vueuse/core'
 
 //
 // Refs / State
@@ -44,32 +42,34 @@ const config = useRuntimeConfig()
 const appStore = useAppStore()
 const uiStore = useUiStore()
 
-const el = useCurrentElement()
 const titleRef = useTemplateRef('titleRef')
 const copyRef = useTemplateRef('copyRef')
 const buttonRef = useTemplateRef('buttonRef')
 
-const visible = useElementVisibility(el)
-
-let split
+const ready = shallowRef(false)
 
 //
-// Watchers
+// Lifecycle
 //
-watch(visible, value => {
-	if (value) {
-		animateIn()
-	} else {
-		gsap.set([get(titleRef), get(copyRef), get(buttonRef).$el], { opacity: 0 })
-		split?.revert()
-	}
+onMounted(async () => {
+	await nextTick()
+
+	gsap.set([get(titleRef), get(copyRef), get(buttonRef).$el], { opacity: 0 })
+
+	await nextTick()
+
+	set(ready, true)
+})
+
+watchOnce(ready, () => {
+	animateIn()
 })
 
 //
 // Methods
 //
 const animateIn = () => {
-	split = SplitText.create(get(copyRef), {
+	const split = SplitText.create(get(copyRef), {
 		type: 'words,chars',
 	})
 
@@ -112,7 +112,7 @@ const animateIn = () => {
 			autoAlpha: 1,
 			duration: 1.5,
 		},
-		'>-0.4'
+		'>-1'
 	)
 }
 

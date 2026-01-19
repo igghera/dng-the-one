@@ -288,6 +288,8 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE, async () => {
 emitter.once(EVENTS.BACK, () => {
 	if (!uiStore.isExperienceEndVisible) return
 
+	console.log('handleBack().', 'End -> Step 03')
+
 	back()
 })
 
@@ -354,6 +356,7 @@ const back = async () => {
 	await animateBack()
 
 	uiStore.setExperienceStep03Visible(true)
+	uiStore.setExperienceEndVisible(false)
 }
 
 const animateBack = async () => {

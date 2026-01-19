@@ -25,9 +25,10 @@ export class Tracking {
       retailer_id: undefined, // ID of the retailer
     }
 
-    console.log('Init tracking')
+    console.warn('🌍 [TRACKING] Init')
     console.table(params)
     console.log('--------------------------------')
+    console.log('')
 
     !!proxy.google_tag_manager && proxy.dataLayer.push(params)
   }
@@ -47,9 +48,10 @@ export class Tracking {
       funnel_name: trackingStore.getFunnelName,
     }
 
-    console.log('sendEvent')
+    console.warn('🌍 [TRACKING] sendEvent')
     console.table(paramsToSend)
     console.log('--------------------------------')
+    console.log('')
 
     !!proxy.google_tag_manager && proxy.dataLayer.push(paramsToSend)
   }

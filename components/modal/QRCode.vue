@@ -24,6 +24,8 @@ import { get } from '@vueuse/core'
 const appStore = useAppStore()
 const uiStore = useUiStore()
 
+const { locale } = useI18n()
+
 const config = useRuntimeConfig()
 
 const innerRef = useTemplateRef('innerRef')
@@ -123,9 +125,11 @@ const generateQrCode = () => {
 	const q2 = appStore.getStep02Selection ?? 0
 	const q3 = appStore.getStep03Selection ?? 0
 
-	const baseUrl = config.public.isAppMode ? config.public.siteUrl : window.location.origin
+	const baseUrl = config.public.isAppMode
+		? config.public.siteUrl
+		: window.location.origin
 
-	const data = `${baseUrl}/download?q1=${q1}&q2=${q2}&q3=${q3}`
+	const data = `${baseUrl}/download?q1=${q1}&q2=${q2}&q3=${q3}&locale=${get(locale)}`
 
 	console.info('⚠️ Generated QR code:', data)
 
@@ -157,7 +161,8 @@ const generateQrCode = () => {
 
 	background-clip: padding-box, border-box;
 	background-origin: border-box;
-	background-image: linear-gradient(#8c3610, #3c1707),
+	background-image:
+		linear-gradient(#8c3610, #3c1707),
 		linear-gradient(
 			147.91deg,
 			#f5d982 0.03%,
