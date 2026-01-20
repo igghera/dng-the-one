@@ -256,6 +256,10 @@
   "modal_qr_code": {
     "title": "Scan to download<br>your Aura"
   },
+  "modal_privacy": {
+    "title": "Privacy Policy",
+    "content": []
+  },
   "explore": {
     "intro": "Immerse yourself in the alluring scents of<br>The One Collection",
     "instructions": "Swipe and tap to explore",

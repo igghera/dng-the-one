@@ -17,6 +17,7 @@ export const useUiStore = defineStore('uiStore', {
     bottomGradientVisible: false,
     resultsScrollDownVisible: false,
     qrCodeModalVisible: false,
+    privacyModalVisible: false,
   }),
 
   actions: {
@@ -37,6 +38,7 @@ export const useUiStore = defineStore('uiStore', {
       this.bottomGradientVisible = false
       this.resultsScrollDownVisible = false
       this.qrCodeModalVisible = false
+      this.privacyModalVisible = false
     },
 
     setConfigPanelVisible(visible) {
@@ -106,6 +108,10 @@ export const useUiStore = defineStore('uiStore', {
     setQrCodeModalVisible(visible) {
       this.qrCodeModalVisible = visible
     },
+
+    setPrivacyModalVisible(visible) {
+      this.privacyModalVisible = visible
+    },
   },
 
   getters: {
@@ -126,5 +132,6 @@ export const useUiStore = defineStore('uiStore', {
     isBottomGradientVisible: (state) => state.bottomGradientVisible,
     isResultsScrollDownVisible: (state) => state.resultsScrollDownVisible,
     isQrCodeModalVisible: (state) => state.qrCodeModalVisible,
+    isPrivacyModalVisible: (state) => state.privacyModalVisible,
   }
 })

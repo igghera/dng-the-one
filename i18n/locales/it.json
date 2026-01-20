@@ -256,6 +256,10 @@
   "modal_qr_code": {
     "title": "Scansiona per scaricare<br>la tua Aura"
   },
+  "modal_privacy": {
+    "title": "Privacy Policy",
+    "content": []
+  },
   "explore": {
     "intro": "Scopri le note avvolgenti della<br>Collezione The One",
     "instructions": "Swipe e tap per esplorare",

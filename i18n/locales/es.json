@@ -256,6 +256,10 @@
   "modal_qr_code": {
     "title": "Escanea para descargar<br>tu Aura"
   },
+  "modal_privacy": {
+    "title": "Privacy Policy",
+    "content": []
+  },
   "explore": {
     "intro": "Sum&eacute;rgete en los seductores aromas de<br>The One Collection",
     "instructions": "Desliza y toca para explorar",

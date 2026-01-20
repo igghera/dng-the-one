@@ -269,6 +269,8 @@ onMounted(async () => {
 		}
 	})
 
+	await gsap.delayedCall(0.5, () => {})
+
 	gsap.ticker.add((time, deltaTime) => {
 		if (!get(visible)) return
 
@@ -298,7 +300,7 @@ onMounted(async () => {
 			experienceEndDrawMaterial,
 			experienceIntroDrawMaterial,
 			introSceneVisibility,
-			seaMesh
+			seaMesh,
 		)
 
 		const { default: Stats } = await import('stats-gl')
@@ -347,7 +349,7 @@ emitter.on(EVENTS.RESTART, () => {
 	introMesh.position.set(
 		introMeshParams.positionStart.x,
 		introMeshParams.positionStart.y,
-		introMeshParams.positionStart.z
+		introMeshParams.positionStart.z,
 	)
 	experienceIntroDrawMaterial.progress.value = 0
 	experienceIntroDrawMaterial.opacity.value = 1
@@ -413,7 +415,7 @@ emitter.on(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_START, () => {
 				emitter.emit(EVENTS.EXPERIENCE_END_DRAW_ANIMATION_COMPLETE)
 				uiStore.setBackButtonVisible(true)
 			},
-		}
+		},
 	)
 })
 
@@ -428,7 +430,7 @@ emitter.on(EVENTS.TRIGGER_FLASH_EFFECT, () => {
 			duration: 0.1,
 			ease: 'power1.out',
 		},
-		'start'
+		'start',
 	)
 
 	tl.to(
@@ -438,7 +440,7 @@ emitter.on(EVENTS.TRIGGER_FLASH_EFFECT, () => {
 			duration: 1.5,
 			ease: 'power1.out',
 		},
-		'>'
+		'>',
 	)
 })
 
@@ -473,7 +475,7 @@ watch(
 			? bloomStrengthMobile
 			: bloomStrengthDesktop
 		bloomPass.radius.value = value[0] ? bloomRadiusMobile : bloomRadiusDesktop
-	}
+	},
 )
 
 //
@@ -496,7 +498,7 @@ function animateInIntroShape() {
 			value: 1,
 			duration: 5,
 		},
-		'start'
+		'start',
 	)
 
 	tl.fromTo(
@@ -513,7 +515,7 @@ function animateInIntroShape() {
 			duration: 3,
 			ease: 'power2.out',
 		},
-		'start'
+		'start',
 	)
 
 	tl.call(
@@ -522,7 +524,7 @@ function animateInIntroShape() {
 			uiStore.setBottomGradientVisible(true)
 		},
 		null,
-		'<2'
+		'<2',
 	)
 
 	tl.call(
@@ -530,7 +532,7 @@ function animateInIntroShape() {
 			uiStore.setExperienceStartVisible(true)
 		},
 		null,
-		'<0.5'
+		'<0.5',
 	)
 }
 
@@ -546,7 +548,7 @@ function animateOutIntroShape() {
 			ease: 'circ.in',
 			duration: 0.5,
 		},
-		'start'
+		'start',
 	)
 
 	tl.fromTo(
@@ -556,7 +558,7 @@ function animateOutIntroShape() {
 			value: 0,
 			duration: 0.3,
 		},
-		'start+=0.15'
+		'start+=0.15',
 	)
 
 	tl.call(
@@ -564,7 +566,7 @@ function animateOutIntroShape() {
 			emitter.emit(EVENTS.TRIGGER_FLASH_EFFECT)
 		},
 		null,
-		'start+=0.3'
+		'start+=0.3',
 	)
 
 	tl.call(
@@ -573,7 +575,7 @@ function animateOutIntroShape() {
 			uiStore.setExperienceStartVisible(false)
 		},
 		null,
-		'start+=0.5'
+		'start+=0.5',
 	)
 }
 
@@ -592,7 +594,7 @@ function animateInMainScene() {
 		introSceneVisibility,
 		{ value: 1 },
 		{ value: END_PARANS.introSceneVisibility, duration: 0.1 },
-		'start'
+		'start',
 	)
 
 	tl.addLabel('animateCamera', '>')
@@ -605,7 +607,7 @@ function animateInMainScene() {
 			duration: 3.5,
 			ease: 'power2.out',
 		},
-		'animateCamera'
+		'animateCamera',
 	)
 
 	tl.call(
@@ -613,7 +615,7 @@ function animateInMainScene() {
 			uiStore.setExperienceStep01Visible(true)
 		},
 		null,
-		'animateCamera+=2'
+		'animateCamera+=2',
 	)
 }
 
@@ -624,7 +626,7 @@ function updateScene(time = 0) {
 		camera.lookAt(
 			mainCameraParams.lookAt.x,
 			mainCameraParams.lookAt.y,
-			mainCameraParams.lookAt.z
+			mainCameraParams.lookAt.z,
 		)
 	}
 
@@ -661,7 +663,7 @@ function createCamera() {
 		40,
 		get(componentWidth) / get(componentHeight),
 		0.1,
-		20
+		20,
 	)
 
 	camera.name = 'Main Camera'
@@ -671,13 +673,13 @@ function createCamera() {
 		isFromExplore
 			? mainCameraParams.positionEnd.y
 			: mainCameraParams.positionStart.y,
-		mainCameraParams.positionStart.z
+		mainCameraParams.positionStart.z,
 	)
 
 	camera.lookAt(
 		mainCameraParams.lookAt.x,
 		mainCameraParams.lookAt.y,
-		mainCameraParams.lookAt.z
+		mainCameraParams.lookAt.z,
 	)
 }
 
@@ -818,7 +820,7 @@ async function createWinDrawingPlane() {
 	const geometry = new THREE.PlaneGeometry(0.828, 1.36, 1, 1)
 	experienceEndDrawMaterial.init(
 		textures.get('product_outline_male'),
-		textures.get('product_outline_female')
+		textures.get('product_outline_female'),
 	)
 	const mesh = new THREE.Mesh(geometry, experienceEndDrawMaterial.material)
 
@@ -889,7 +891,7 @@ async function createIntroScene() {
 		40,
 		get(componentWidth) / get(componentHeight),
 		0.1,
-		10
+		10,
 	)
 	introCamera.position.set(0, 0, 4)
 	introCamera.lookAt(0, 0, 0)
@@ -909,14 +911,14 @@ async function createIntroScene() {
 	introMesh.position.set(
 		introMeshParams.positionStart.x,
 		introMeshParams.positionStart.y,
-		introMeshParams.positionStart.z
+		introMeshParams.positionStart.z,
 	)
 
 	setIntroMeshScale()
 
 	introBackground = new THREE.Mesh(
 		new THREE.PlaneGeometry(1, 1),
-		IntroBackgroundMaterial
+		IntroBackgroundMaterial,
 	)
 
 	introBackground.name = 'Intro Background'
@@ -972,7 +974,7 @@ function createPostprocessing() {
 	const introToMain = mix(
 		scenePassColor,
 		introPassColor,
-		introSceneVisibility
+		introSceneVisibility,
 	).toVec4()
 
 	bloomPass = bloom(introToMain)
@@ -994,7 +996,7 @@ function createPostprocessing() {
 	const lutPass = lut3D(
 		compose,
 		texture3D(textures.get('lut_cube').texture3D),
-		textures.get('lut_cube').texture3D.image.width
+		textures.get('lut_cube').texture3D.image.width,
 	)
 	lutPass.intensityNode = lutIntensity
 

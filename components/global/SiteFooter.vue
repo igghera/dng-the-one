@@ -1,6 +1,15 @@
 <template>
 	<Container class="site-footer" tag="footer">
+		<button
+			v-if="config.public.isAppMode"
+			class="button button-left | ui-2 | uppercase"
+			@click="uiStore.setPrivacyModalVisible(true)"
+		>
+			Privacy
+		</button>
+
 		<NuxtLink
+			v-else
 			class="button button-left | ui-2 | uppercase"
 			:to="$t('link_privacy_policy')"
 			target="_blank"
@@ -19,6 +28,8 @@
 
 <script setup>
 const config = useRuntimeConfig()
+
+const uiStore = useUiStore()
 </script>
 
 <style lang="scss" scoped>
