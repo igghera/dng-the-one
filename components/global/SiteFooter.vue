@@ -8,6 +8,7 @@
 		>
 
 		<NuxtLink
+			v-if="!config.public.isAppMode"
 			class="button button-right | ui-2 | uppercase"
 			:to="$t('link_cookies_policy')"
 			target="_blank"
@@ -15,6 +16,10 @@
 		>
 	</Container>
 </template>
+
+<script setup>
+const config = useRuntimeConfig()
+</script>
 
 <style lang="scss" scoped>
 .site-footer {
