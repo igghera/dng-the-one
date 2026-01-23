@@ -2,7 +2,7 @@
 	<Container class="site-footer" tag="footer">
 		<button
 			v-if="config.public.isAppMode"
-			class="button button-left | ui-2 | uppercase"
+			class="button | ui-2 | uppercase justify-self-center col-span-full"
 			@click="uiStore.setPrivacyModalVisible(true)"
 		>
 			Privacy
