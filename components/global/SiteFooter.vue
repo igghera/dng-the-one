@@ -1,6 +1,15 @@
 <template>
 	<Container class="site-footer" tag="footer">
+		<button
+			v-if="config.public.isAppMode"
+			class="button | ui-2 | uppercase justify-self-center col-span-full"
+			@click="uiStore.setPrivacyModalVisible(true)"
+		>
+			Privacy
+		</button>
+
 		<NuxtLink
+			v-else
 			class="button button-left | ui-2 | uppercase"
 			:to="$t('link_privacy_policy')"
 			target="_blank"
@@ -8,6 +17,7 @@
 		>
 
 		<NuxtLink
+			v-if="!config.public.isAppMode"
 			class="button button-right | ui-2 | uppercase"
 			:to="$t('link_cookies_policy')"
 			target="_blank"
@@ -15,6 +25,12 @@
 		>
 	</Container>
 </template>
+
+<script setup>
+const config = useRuntimeConfig()
+
+const uiStore = useUiStore()
+</script>
 
 <style lang="scss" scoped>
 .site-footer {

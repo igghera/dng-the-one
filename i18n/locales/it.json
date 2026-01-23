@@ -256,6 +256,157 @@
   "modal_qr_code": {
     "title": "Scansiona per scaricare<br>la tua Aura"
   },
+  "modal_privacy": {
+    "title": "Privacy Policy",
+    "content": [
+      {
+        "type": "paragraph",
+        "body": "Dolce & Gabbana S.r.l. società costituita ed operante in conformità alla legge italiana (di seguito anche solo “Dolce & Gabbana” o il “Titolare”), riconosce l’importanza della privacy degli utenti dei propri siti e si impegna al rispetto della stessa. Con la presente privacy policy (di seguito, “Privacy Policy”) riferita al sito world.dolcegabbana.com/it (di seguito il “Sito”), Dolce & Gabbana si propone di fornire agli utenti indicazioni circa il titolare del trattamento, le informazioni personali raccolte attraverso il Sito, le finalità e le modalità per cui tali informazioni vengono trattate, i soggetti terzi coinvolti nel trattamento, l’eventuale trasferimento all’estero, le misure di sicurezza adottate al fine di proteggere e tutelare i dati raccolti e le modalità con cui l’utente può verificare il trattamento di dati che lo riguarda ed esercitare i diritti allo stesso riconosciuti dal Regolamento UE n. 2016/679 (di seguito, “GDPR”). La Privacy Policy è resa solo per il Sito e non anche per altri siti web eventualmente consultati dall’utente tramite link presenti sul Sito."
+      },
+      {
+        "type": "headline",
+        "body": "Tipologia di dati personali raccolti e trattati"
+      },
+      {
+        "type": "headline",
+        "body": "Dati di navigazione"
+      },
+      {
+        "type": "paragraph",
+        "body": "In caso di visita e consultazione del Sito, Dolce & Gabbana raccoglie, in genere, i c.d. dati di navigazione. La piattaforma tecnologica tramite cui il Sito viene messo a disposizione dell’utente registra, infatti, automaticamente alcuni dati di navigazione – la cui trasmissione è implicita nell’uso dei protocolli di comunicazione di Internet – quali, ad esempio, nome del provider di accesso alla rete Internet, sito di provenienza, pagine visitate, data e durata della visita, etc. Tali informazioni consentono l’accesso al Sito nonché la fruizione di alcuni servizi e possono essere utilizzate in forma anonima ed aggregata per fini statistici e per verificare il corretto funzionamento del Sito. Dolce & Gabbana non raccoglie questi dati per associarli ad altre informazioni sugli utenti e per poter in seguito identificare gli utenti; tuttavia, tali dati, per la loro stessa natura possono consentire l’identificazione degli utenti a seguito di elaborazioni e associazioni con altre informazioni. I dati di navigazione possono quindi essere utilizzati da Dolce & Gabbana per l’accertamento di eventuali responsabilità concernenti reati informatici commessi ai danni del Sito o tramite il Sito."
+      },
+      {
+        "type": "headline",
+        "body": "Dati forniti volontariamente dall’utente"
+      },
+      {
+        "type": "paragraph",
+        "body": "Dolce & Gabbana raccoglie e tratta i dati personali che l’utente fornisce volontariamente quando interagisce con le funzionalità e i servizi del Sito, ad esempio in caso di registrazione per conoscere le novità dal mondo Dolce & Gabbana e ricevere newsletter e altre comunicazioni commerciali, nonché per inviare candidature spontanee così come in caso di richiesta di informazioni o invio di comunicazioni a Dolce & Gabbana. Maggiori informazioni saranno fornite in tali specifiche sezioni. Nelle sezioni del Sito in cui sono raccolti i dati personali dell’utente, è pubblicata un’informativa redatta ai sensi dell’articolo 13 del GDPR e, laddove necessario, è richiesto uno specifico consenso al trattamento dei dati forniti in dette sezioni, in conformità al menzionato regolamento."
+      },
+      {
+        "type": "headline",
+        "body": "Finalità del trattamento"
+      },
+      {
+        "type": "ordered_list",
+        "items": [
+          "gestione operativa della navigazione sul Sito",
+          "gestione della sicurezza del Sito",
+          "elaborazioni statistiche",
+          "adempimento di obblighi di legge",
+          "esercizio di diritti in sede giudiziaria"
+        ]
+      },
+      {
+        "type": "headline",
+        "body": "Base giuridica"
+      },
+      {
+        "type": "paragraph",
+        "body": "La base giuridica di tali finalità è: per le finalità di cui ai punti a), b), c) ed e) è il legittimo interesse di Dolce & Gabbana; per le finalità di cui al punto d) è obbligo di legge."
+      },
+      {
+        "type": "headline",
+        "body": "Durata del trattamento"
+      },
+      {
+        "type": "paragraph",
+        "body": "Salvo quanto già indicato sopra per i dati di navigazione, indicazioni circa la durata di conservazione dei dati sono contenute nell’informativa ai sensi dell’articolo 13 del GDPR pubblicata nelle sezioni del Sito."
+      },
+      {
+        "type": "headline",
+        "body": "Natura del conferimento"
+      },
+      {
+        "type": "paragraph",
+        "body": "Il conferimento dei dati da parte dell’utente per le finalità sopra indicate è obbligatorio per l’utilizzo il Sito."
+      },
+      {
+        "type": "headline",
+        "body": "Modalità del trattamento"
+      },
+      {
+        "type": "paragraph",
+        "body": "I dati personali dell’utente sono trattati tramite modalità informatiche e telematiche, prevalentemente con mezzi elettronici e automatizzati e, limitatamente a particolari operazioni, tramite supporto cartaceo. In conformità al GDPR, adeguate misure di sicurezza sono osservate per prevenire la perdita dei dati, usi illeciti o non corretti ed accessi non autorizzati."
+      },
+      {
+        "type": "headline",
+        "body": "Soggetti coinvolti nel trattamento"
+      },
+      {
+        "type": "paragraph",
+        "body": "I dati personali dell’utente sono trattati da soggetti autorizzati al trattamento, secondo quanto previsto dal GDPR. Tali dati potranno essere portati a conoscenza delle altre società appartenenti al gruppo Dolce & Gabbana. In aggiunta a quanto precede, i dati potranno essere portati a conoscenza di altri soggetti terzi quali professionisti, consulenti e più in generale soggetti terzi che cooperano con Dolce & Gabbana per il perseguimento delle finalità di cui sopra, ovvero soggetti terzi a cui siano stati affidate attività in regime di outsourcing. In ogni caso, Dolce & Gabbana si impegna a fornire a tali terzi solo i dati necessari all’espletamento delle funzioni e attività ad essi affidati; si impegna inoltre a fare quanto possibile affinché i terzi usino i dati ricevuti solo per le finalità indicate da Dolce & Gabbana e nel rispetto della normativa in materia di trattamento dei dati personali applicabile. I dati personali dell’utente potranno essere portati a conoscenza di società terze altresì in caso di fusione o scissione, in caso di acquisizioni, cessione di azienda o di ramo d’azienda o di altre operazioni societarie di natura straordinaria. I dati personali dell’utente potranno inoltre essere portati a conoscenza di legittimi destinatari ai sensi di legge o di regolamento, ad esempio in caso di richieste da parte delle autorità pubbliche competenti e dell’autorità giudiziaria o, più in generale, nell’ambito di procedimenti giudiziari, nonché per proteggere e difendere il Sito e i diritti di Dolce & Gabbana."
+      },
+      {
+        "type": "headline",
+        "body": "Trasferimento dei dati al di fuori dell’Unione Europea"
+      },
+      {
+        "type": "paragraph",
+        "body": "I dati personali potranno essere trasferiti fuori dal paese o dall’Unione Europea, in paesi che non garantiscono un livello adeguato di protezione dei dati unicamente in conformità alle garanzie previste dalle leggi applicabili."
+      },
+      {
+        "type": "headline",
+        "body": "Collegamenti a siti e servizi di terzi"
+      },
+      {
+        "type": "paragraph",
+        "body": "All’interno del Sito o di altri messaggi e comunicazioni che Dolce & Gabbana invia all’utente, possono essere contenuti banner, messaggi pubblicitari e inserzioni di soggetti terzi o partner commerciali del Titolare. Aderendo alle proposte dei citati soggetti terzi, l’utente può accedere a pagine multimediali di esclusiva pertinenza di tali terzi, i quali, trovandosi al di fuori del controllo del Titolare, non sono in alcun modo tenuti al rispetto di quanto previsto nella presente Privacy Policy, né essere ritenuti responsabili."
+      },
+      {
+        "type": "headline",
+        "body": "Titolare del trattamento"
+      },
+      {
+        "type": "paragraph",
+        "body": "Titolare del trattamento è Dolce&Gabbana S.r.l., con sede legale in Milano, Via C. Goldoni n. 10."
+      },
+      {
+        "type": "headline",
+        "body": "Responsabile della protezione dei dati personali"
+      },
+      {
+        "type": "paragraph",
+        "body": "Il Responsabile della protezione dei dati personali (DPO) è contattabile all’indirizzo mail dpo[at]dolcegabbana.it."
+      },
+      {
+        "type": "headline",
+        "body": "Ulteriori diritti degli utenti in Europa"
+      },
+      {
+        "type": "paragraph",
+        "body": "Contattando la Società via e-mail all’indirizzo privacy[at]dolcegabbana.it, l’utente può chiedere alla Società l’accesso ai dati che lo riguardano, la loro cancellazione, la rettifica dei dati inesatti, l’integrazione dei dati incompleti, la limitazione del trattamento nei casi previsti dall’art. 18 del GDPR, nonché l’opposizione al trattamento nelle ipotesi di legittimo interesse della Società. Inoltre, nel caso in cui il trattamento sia basato sul consenso o sul contratto e sia effettuato con strumenti automatizzati, l’utente ha il diritto di ricevere in un formato strutturato, di uso comune e leggibile da dispositivo automatico i suoi dati personali, nonché, se tecnicamente fattibile, di trasmetterli ad altro titolare senza impedimenti. L’utente ha il diritto di revocare il consenso prestato in qualsiasi momento per finalità di marketing e/o di profilazione, nonché di opporsi al trattamento dei dati per finalità di marketing, compresa la profilazione connessa al marketing diretto. L’utente ha infine il diritto di proporre reclamo all’Autorità di controllo competente nello Stato membro in cui risiede abitualmente o lavora o nello Stato in cui si è verificata la presunta violazione."
+      },
+      {
+        "type": "headline",
+        "body": "Ulteriori informazioni per i consumatori californiani"
+      },
+      {
+        "type": "paragraph",
+        "body": "Secondo il California Consumer Privacy Act or “CCPA” (Codice Civile della California Articolo 1798.100 e ss.), la Società è tenuta a fornire ulteriori informazioni in merito alla raccolta, utilizzo, divulgazione e vendita di dati personali e ai diritti dei consumatori californiani in relazione a tali dati. Negli ultimi 12 mesi la Società ha raccolto le seguenti categorie di dati personali attraverso il Sito: identificativi (es. nome e dati di contatto), informazioni commerciali (es. i prodotti acquistati), informazioni su internet o altra attività elettronica di rete (es. comportamenti di navigazione) e informazioni valutative (es. le preferenze di prodotti). Per ulteriori dettagli circa i dati personali raccolti dalla Società e le fonti di tale raccolta si veda la sezione “Tipologia di dati personali raccolti e trattati” che precede. La Società raccoglie dati personali per le finalità aziendali e commerciali descritte nella sezione “Finalità del trattamento” che precede e comunica tali dati alle categorie di terzi descritte nella sezione “Soggetti coinvolti nel trattamento” che precede."
+      },
+      {
+        "type": "paragraph",
+        "body": "La legge della California prevede trasparenza per i dati personali oggetto di “vendita”, che ai fini del CCPA include in senso ampio scenari in cui i dati personali sono condivisi con terzi a titolo oneroso. La Società non vende né venderà in futuro i dati **identificativi dell’utente** (es. nome, indirizzo e-mail, numero di telefono o indirizzo fisico); tuttavia la Società consente ai partner pubblicitari di utilizzare cookie e altre tecnologie per ricevere informazioni che riguardano l’utente così da poter mostrare annunci pubblicitari mirati ai suoi interessi. Per maggiori informazioni in merito agli annunci mirati ovvero per revocare il consenso dato all’utilizzo dei dati di navigazione per finalità di pubblicità mirata si veda la Cookie Policy oppure la pagina http://www.aboutads.info/choices."
+      },
+      {
+        "type": "paragraph",
+        "body": "Fatte salve alcune limitazioni, il CCPA attribuisce ai consumatori californiani il diritto di richiedere maggiori informazioni circa le categorie e gli specifici dati personali raccolti dalla Società, di cancellare i propri dati personali, di revocare il consenso alle eventuali “vendite” dei dati e di non essere discriminati per l’esercizio di tali diritti. I consumatori californiani potranno esercitare tali diritti indirizzando le richieste all’indirizzo privacy[at]dolcegabbana.it. La Società, ricevuta la richiesta, la verificherà chiedendo all’utente di fornire dati di contatto e informazioni riguardanti le recenti interazioni con la Società, come informazioni sugli ultimi acquisti. Nel caso di richieste avanzate per il tramite di un incaricato autorizzato, la Società potrà richiedere la prova che il consumatore abbia delegato tale incaricato o che questi risulti diversamente e validamente autorizzato per iscritto ad avanzare richieste di esercizio dei diritti per conto del consumatore. La Società si riserva il diritto di negare le richieste in determinate circostanze, ad esempio laddove ritenga ragionevolmente che la richiesta sia di natura fraudolenta. La Società non discriminerà l’utente per l’esercizio dei suoi diritti ai sensi del CCPA."
+      },
+      {
+        "type": "headline",
+        "body": "Modifiche al presente documento"
+      },
+      {
+        "type": "paragraph",
+        "body": "La presente Privacy Policy può essere modificata per conformarsi a nuove disposizioni di legge, alle mutate modalità di trattamento dei dati da parte di Dolce & Gabbana, a causa di modifiche relative all’operativa del Sito o all’erogazione dei servizi resi per mezzo dello stesso. Dolce & Gabbana avrà cura di comunicare tempestivamente ogni aggiornamento attraverso la pubblicazione nella presente sezione del Sito. Dolce & Gabbana invita quindi gli utenti a consultare periodicamente la Privacy Policy per accertarsi di consultare l’ultima versione pubblicata."
+      },
+      {
+        "type": "paragraph",
+        "body": "Ultimo aggiornamento: 28.02.2020"
+      }
+    ]
+  },
   "explore": {
     "intro": "Scopri le note avvolgenti della<br>Collezione The One",
     "instructions": "Swipe e tap per esplorare",

@@ -33,6 +33,12 @@
 		</Transition>
 
 		<Transition name="fade">
+			<ModalPrivacy
+				v-if="uiStore.isPrivacyModalVisible && config.public.isAppMode"
+			/>
+		</Transition>
+
+		<Transition name="fade">
 			<ModalConfiguration
 				v-if="uiStore.isConfigPanelVisible && config.public.isAppMode"
 			/>
