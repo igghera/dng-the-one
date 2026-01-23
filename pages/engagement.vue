@@ -59,6 +59,10 @@
 		<Transition name="fade">
 			<ExperienceTopGradient v-if="uiStore.isTopGradientVisible" />
 		</Transition>
+
+		<Transition name="fade">
+			<ExperienceScrollDown v-if="uiStore.isResultsScrollDownVisible" />
+		</Transition>
 	</div>
 </template>
 
@@ -109,7 +113,7 @@ const data = computed(() => {
 		case '4':
 			return {
 				title: Object.values(
-					tm('engagement.result[0].title').map(row => rt(row))
+					tm('engagement.result[0].title').map(row => rt(row)),
 				),
 				image: rt(tm('engagement.result[0].image')),
 				copy: rt(tm('engagement.result[0].copy')),
@@ -118,7 +122,7 @@ const data = computed(() => {
 		case '5':
 			return {
 				title: Object.values(
-					tm('engagement.result[2].title').map(row => rt(row))
+					tm('engagement.result[2].title').map(row => rt(row)),
 				),
 				image: rt(tm('engagement.result[2].image')),
 				copy: rt(tm('engagement.result[2].copy')),
@@ -127,7 +131,7 @@ const data = computed(() => {
 		case '6':
 			return {
 				title: Object.values(
-					tm('engagement.result[1].title').map(row => rt(row))
+					tm('engagement.result[1].title').map(row => rt(row)),
 				),
 				image: rt(tm('engagement.result[1].image')),
 				copy: rt(tm('engagement.result[1].copy')),
@@ -136,7 +140,7 @@ const data = computed(() => {
 		case '7':
 			return {
 				title: Object.values(
-					tm('engagement.result[3].title').map(row => rt(row))
+					tm('engagement.result[3].title').map(row => rt(row)),
 				),
 				image: rt(tm('engagement.result[3].image')),
 				copy: rt(tm('engagement.result[3].copy')),
@@ -203,7 +207,8 @@ const handleDownloadButtonClick = async () => {
 
 	background-clip: padding-box, border-box;
 	background-origin: border-box;
-	background-image: linear-gradient(#8c3610, #3c1707),
+	background-image:
+		linear-gradient(#8c3610, #3c1707),
 		linear-gradient(
 			147.91deg,
 			#f5d982 0.03%,
