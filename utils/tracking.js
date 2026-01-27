@@ -1,5 +1,5 @@
 export class Tracking {
-  constructor() { }
+  constructor() {}
 
   static globalParams = {
     event: 'select_content',
@@ -8,10 +8,7 @@ export class Tracking {
   }
 
   static init() {
-    // const appStore = useAppStore()
     const { proxy } = useScriptGoogleTagManager()
-
-    // this.globalParams.store_id = appStore.getStoreID
 
     const params = {
       event: "attributes_push",
@@ -19,7 +16,7 @@ export class Tracking {
       region: undefined, // “Peru” or “Panama” or “Italia” etc..
       store: undefined, // “Convent Garden” etc..
       store_type: undefined, // “Permanent” or “Temporary” etc..
-      entry_point: undefined, // “Touch screen” or “Ipad” or “QR code” etc..
+      entry_point: this.getEntryPoint(), // “Touch screen” or “Ipad” or “QR code” etc..
       store_id: undefined, // ID of the store
       retailer: undefined, // name of the retailer
       retailer_id: undefined, // ID of the retailer
@@ -34,16 +31,14 @@ export class Tracking {
   }
 
   static sendEvent(params = {}) {
-    // const appStore = useAppStore()
     const trackingStore = useTrackingStore()
 
     const { proxy } = useScriptGoogleTagManager()
 
-    // this.globalParams.store_id = appStore.getStoreID
-
     const paramsToSend = {
       ...this.globalParams,
       ...params,
+      entry_point: this.getEntryPoint(),
       funnel_step: trackingStore.getFunnelStep,
       funnel_name: trackingStore.getFunnelName,
     }
@@ -54,5 +49,15 @@ export class Tracking {
     console.log('')
 
     !!proxy.google_tag_manager && proxy.dataLayer.push(paramsToSend)
+  }
+
+  static getEntryPoint() {
+    const config = useRuntimeConfig()
+
+    let entry_point = 'web'
+
+    config.public.isAppMode && (entry_point = 'ipad')
+
+    return entry_point
   }
 }
