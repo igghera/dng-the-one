@@ -1,3 +1,5 @@
+import { useOnline, get, set, useLocalStorage } from '@vueuse/core'
+
 export class Tracking {
   constructor() {}
 
@@ -9,6 +11,8 @@ export class Tracking {
 
   static init() {
     const { proxy } = useScriptGoogleTagManager()
+    const online = useOnline()
+    const offlineEvents = useLocalStorage('offline-events', [])
 
     const params = {
       event: "attributes_push",
@@ -27,11 +31,35 @@ export class Tracking {
     console.log('--------------------------------')
     console.log('')
 
-    !!proxy.google_tag_manager && proxy.dataLayer.push(params)
+    if (!!proxy.google_tag_manager) {
+      get(online) && proxy.dataLayer.push(params)
+      !get(online) && get(offlineEvents).push(params)
+    }
+
+    watchEffect(() => {
+      if (get(online)) {
+        console.warn('🌍 [TRACKING] send offline events')
+
+        get(offlineEvents).forEach(event => {
+          console.table(event)
+
+          proxy.dataLayer.push(event)
+        })
+
+        get(offlineEvents).length > 0 && set(offlineEvents, [])
+
+        console.log('--------------------------------')
+        console.log('')
+      } else {
+        get(offlineEvents).push(params)
+      }
+    })
   }
 
   static sendEvent(params = {}) {
     const trackingStore = useTrackingStore()
+    const online = useOnline()
+    const offlineEvents = useLocalStorage('offline-events', [])
 
     const { proxy } = useScriptGoogleTagManager()
 
@@ -48,7 +76,10 @@ export class Tracking {
     console.log('--------------------------------')
     console.log('')
 
-    !!proxy.google_tag_manager && proxy.dataLayer.push(paramsToSend)
+    if (!!proxy.google_tag_manager) {
+      get(online) && proxy.dataLayer.push(paramsToSend)
+      !get(online) && get(offlineEvents).push(paramsToSend)
+    }
   }
 
   static getEntryPoint() {
