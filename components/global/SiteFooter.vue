@@ -1,8 +1,12 @@
 <template>
-	<Container class="site-footer" tag="footer">
+	<Container
+		class="site-footer"
+		tag="footer"
+		:data-is-app="config.public.isAppMode"
+	>
 		<button
 			v-if="config.public.isAppMode"
-			class="button | ui-2 | uppercase justify-self-center col-span-full"
+			class="button button-left | ui-2 | uppercase"
 			@click="uiStore.setPrivacyModalVisible(true)"
 		>
 			Privacy
@@ -37,6 +41,11 @@ const uiStore = useUiStore()
 	@apply fixed z-[40] bottom-3 w-full text-gold py-[5px] pointer-events-none;
 	@apply md:bottom-14;
 	@apply lg:bottom-11;
+
+	&[data-is-app='true'] {
+		@apply md:bottom-9;
+		@apply lg:bottom-6;
+	}
 
 	:deep(.site-grid) {
 		--cols: 2;
