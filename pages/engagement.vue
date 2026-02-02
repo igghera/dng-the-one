@@ -75,7 +75,7 @@ import { get, set } from '@vueuse/core'
 const lenis = useLenis()
 const uiStore = useUiStore()
 
-const { rt, tm, locale } = useI18n()
+const { rt, tm, locale, setLocale } = useI18n()
 
 const { gsap } = useGSAP()
 
@@ -159,6 +159,11 @@ onMounted(async () => {
 
 	uiStore.setMainUiVisible(true)
 	document.documentElement.dataset.init = true
+
+	// If the locale is disabled for the engagement page, set the locale to English
+	if (ENGAGEMENT_DISABLED_LOCALES.includes(get(locale))) {
+		setLocale('en')
+	}
 })
 
 //

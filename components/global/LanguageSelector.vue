@@ -24,6 +24,7 @@ import { get, set } from '@vueuse/core'
 // Refs / State
 //
 const { locale, locales, setLocale } = useI18n()
+const route = useRoute()
 const { gsap } = useGSAP()
 
 const isOpen = shallowRef(false)
@@ -34,9 +35,15 @@ const labelsRefs = useTemplateRef('labelsRefs')
 
 //
 // Computed
-const availableLocales = computed(() =>
-	get(locales).filter(curr => curr.code !== get(locale))
-)
+//
+const availableLocales = computed(() => {
+	// Filter out locales that are not enabled for the engagement page
+	if (route.name === 'engagement') {
+		return get(locales).filter(curr => !ENGAGEMENT_DISABLED_LOCALES.includes(curr.code) && curr.code !== get(locale))
+	}
+
+	return get(locales).filter(curr => curr.code !== get(locale))
+})
 
 //
 // Events
