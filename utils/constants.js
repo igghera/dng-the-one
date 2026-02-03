@@ -35,3 +35,5 @@ export const AUDIO_LABELS = Object.freeze({
 export const STORAGE_LABELS = Object.freeze({
   PRINT_ENABLED: 'printEnabled',
 })
+
+export const ENGAGEMENT_DISABLED_LOCALES = Object.freeze(['es'])
