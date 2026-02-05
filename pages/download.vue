@@ -95,17 +95,20 @@
 </template>
 
 <script setup>
-import { get, set } from '@vueuse/core'
+import { get, set, useStorage } from '@vueuse/core'
 
 //
 // Refs / State
 //
 const lenis = useLenis()
+
+const appStore = useAppStore()
 const uiStore = useUiStore()
 
 const { rt, tm, locale } = useI18n()
 
 const urlParams = useUrlSearchParams('history')
+const storage = useStorage('experience-answers', {})
 
 const result = shallowRef(null)
 const isDownloading = shallowRef(false)
@@ -134,6 +137,14 @@ onMounted(async () => {
 	uiStore.setMainUiVisible(true)
 	uiStore.setBottomGradientVisible(true)
 	document.documentElement.dataset.init = true
+
+	storage.value.q1 = Number(q1)
+	storage.value.q2 = Number(q2)
+	storage.value.q3 = Number(q3)
+
+	appStore.setStep01Selection(get(storage).q1)
+	appStore.setStep02Selection(get(storage).q2)
+	appStore.setStep03Selection(get(storage).q3)
 
 	setResult()
 })
